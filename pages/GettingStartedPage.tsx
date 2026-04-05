@@ -58,30 +58,21 @@ export default function GettingStartedPage() {
           </h2>
 
           <div className="space-y-6">
-            <Notice type="warning">
-              If you have a previous version of UniText installed, remove it first via{' '}
-              <strong>Window &rarr; Package Manager</strong> before installing{' '}
-              {version.replace(/^v/, '')}. This is a major update and cannot be installed over
-              the previous version.
-            </Notice>
-
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">Setup Tool</h3>
-              <ol className="space-y-2 text-white/70 list-decimal list-inside">
+              <h3 className="font-semibold mb-4">Unity Package Manager (Git URL)</h3>
+              <ol className="space-y-2 text-white/70 list-decimal list-inside mb-4">
                 <li>
-                  Check your email for a setup email from Light Side with your{' '}
-                  <strong>access token</strong>
+                  Open <strong>Window &rarr; Package Manager</strong>
                 </li>
                 <li>
-                  Download the <strong>setup tool</strong> from the email and import it into
-                  your Unity project. The setup window opens automatically — paste your token
-                  and click <strong>Set Up</strong>
+                  Click <strong>+</strong> &rarr; <strong>Add package from git URL...</strong>
                 </li>
-                <li>
-                  Done! UniText is installed. You can manage versions anytime via{' '}
-                  <strong>Light Side &rarr; UniText Setup</strong> in the Unity menu bar
-                </li>
+                <li>Enter:</li>
               </ol>
+              <CodeBlock
+                code={`https://github.com/LightSideMeowshop/unitext.git#${version.replace(/^v/, '')}`}
+                language="plaintext"
+              />
             </div>
           </div>
 
