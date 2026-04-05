@@ -103,12 +103,11 @@ export default function GettingStartedPage() {
               <strong>GameObject &rarr; UI &rarr; UniText - Button</strong> — button with UniText
               label (Image + Button + UniText child)
             </li>
+            <li>
+              <strong>GameObject &rarr; UI &rarr; UniText - Input Field</strong> — input field with
+              text, placeholder, caret, and viewport
+            </li>
           </ul>
-
-          <Notice type="info" className="mb-6">
-            <strong>Input Field</strong> is currently in development and will be available in a
-            future release.
-          </Notice>
 
           <p className="text-white/70 mb-4">
             Canvas and EventSystem are created automatically if not present. Default font stack from{' '}
@@ -117,8 +116,8 @@ export default function GettingStartedPage() {
 
           <p className="text-white/70 mb-4">
             You can also override default prefabs in{' '}
-            <strong>Project Settings &rarr; UniText</strong> (Text Prefab, Button Prefab) — the menu
-            will instantiate your prefab instead.
+            <strong>Project Settings &rarr; UniText</strong> (Text Prefab, Button Prefab, Input
+            Field Prefab) — the menu will instantiate your prefab instead.
           </p>
 
           <CodeBlock
@@ -763,27 +762,25 @@ uniText.Text = "Hello, World!";`}
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <strong>Parse Rule</strong> (<code>IParseRule</code>) — finds patterns in text and
-                  produces ranges with optional parameters
+                  produces ranges
                 </li>
                 <li>
                   <strong>Modifier</strong> (<code>BaseModifier</code>) — applies a visual or
                   structural effect to those ranges
                 </li>
               </ul>
-
-              <p className="text-white/70 mb-4">
-                There is <strong>no hard coupling</strong> between tags and modifiers. Any parse
-                rule can drive any modifier. The tag name, the syntax, and even the parsing strategy
-                are all independent from the effect being applied. A <code>&lt;highlight&gt;</code>{' '}
-                tag can trigger a <code>ColorModifier</code>. A <code>**markdown**</code> wrapper
-                can trigger an <code>OutlineModifier</code>. You decide.
-              </p>
+              <p className="text-white/70 mb-4">This separation means:</p>
+              <ul className="space-y-1 text-white/70 list-disc list-inside mb-6">
+                <li>One modifier can work with multiple parse rules</li>
+                <li>One parse rule can trigger different modifiers</li>
+                <li>You can create custom rules and modifiers independently</li>
+              </ul>
 
               <p className="text-white/70 mb-3">
-                <strong>Example:</strong> The same <code>BoldModifier</code> works with completely
-                different syntaxes:
+                <strong>Example:</strong> <code>BoldModifier</code> can work with any rule that
+                detects "bold" intent:
               </p>
-              <div className="overflow-x-auto mb-4">
+              <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10">
@@ -795,7 +792,7 @@ uniText.Text = "Hello, World!";`}
                   <tbody className="text-white/70">
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>TagRule</code> (tagName=&quot;b&quot;)
+                        <code>TagRule</code> (tagName="b")
                       </td>
                       <td className="py-2 pr-4">
                         <code>&lt;b&gt;bold&lt;/b&gt;</code>
@@ -806,18 +803,7 @@ uniText.Text = "Hello, World!";`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>TagRule</code> (tagName=&quot;strong&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <code>&lt;strong&gt;bold&lt;/strong&gt;</code>
-                      </td>
-                      <td className="py-2">
-                        <code>BoldModifier</code>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule</code> (marker=&quot;**&quot;)
+                        <code>MarkdownWrapRule</code> (marker="**")
                       </td>
                       <td className="py-2 pr-4">
                         <code>**bold**</code>
@@ -827,11 +813,9 @@ uniText.Text = "Hello, World!";`}
                       </td>
                     </tr>
                     <tr>
+                      <td className="py-2 pr-4">Your BBCodeRule</td>
                       <td className="py-2 pr-4">
-                        <code>RangeRule</code> (range=&quot;..&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <em>(entire text, no markup)</em>
+                        <code>[b]bold[/b]</code>
                       </td>
                       <td className="py-2">
                         <code>BoldModifier</code>
@@ -840,29 +824,24 @@ uniText.Text = "Hello, World!";`}
                   </tbody>
                 </table>
               </div>
-
-              <p className="text-white/70">
-                And the same <code>TagRule</code> (tagName=&quot;b&quot;) can be paired with any
-                modifier — <code>BoldModifier</code>, <code>ColorModifier</code>, or your own custom
-                modifier.
-              </p>
             </div>
 
-            {/* 3.2 Built-in Modifiers */}
+            {/* 3.2 Built-in Tags */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.2 Built-in Modifiers</h3>
+              <h3 className="font-semibold mb-4">3.2 Built-in Tags</h3>
 
               <p className="text-white/70 mb-4">
-                The table below shows <strong>default pairings</strong> (how presets configure
-                them). These are conventions, not constraints — you can reassign any tag to any
-                modifier.
+                All tag-based rules use the universal <code>TagRule</code> class with a configurable
+                tag name. Individual parse rule classes (<code>BoldParseRule</code>,{' '}
+                <code>ItalicParseRule</code>, etc.) are deprecated but still deserializable for
+                backward compatibility.
               </p>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto mb-6">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10">
-                      <th className="text-left py-2 pr-4 text-white/60">Default Tag</th>
+                      <th className="text-left py-2 pr-4 text-white/60">Tag</th>
                       <th className="text-left py-2 pr-4 text-white/60">Modifier</th>
                       <th className="text-left py-2 text-white/60">Example</th>
                     </tr>
@@ -919,88 +898,6 @@ uniText.Text = "Hello, World!";`}
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            {/* 3.3 Custom Tags with Default Parameters */}
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.3 Custom Tags with Default Parameters</h3>
-
-              <p className="text-white/70 mb-4">
-                <code>TagRule</code> has a <code>defaultParameter</code> field that lets you create
-                custom tags with pre-configured values. This way your text stays clean — no need to
-                repeat parameter values in every tag.
-              </p>
-
-              <p className="text-white/70 mb-3">
-                <strong>Example:</strong> Create a <code>&lt;warning&gt;</code> tag that always
-                applies red color:
-              </p>
-              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
-                <div>Style:</div>
-                <div className="ml-4">
-                  Rule: TagRule (tagName = &quot;warning&quot;, defaultParameter =
-                  &quot;#FF0000&quot;)
-                </div>
-                <div className="ml-4">Modifier: ColorModifier</div>
-              </div>
-
-              <p className="text-white/70 mb-2">Now in text:</p>
-              <ul className="space-y-1 text-white/70 list-disc list-inside mb-6">
-                <li>
-                  <code>&lt;warning&gt;error occurred&lt;/warning&gt;</code> — uses default red
-                  (#FF0000)
-                </li>
-                <li>
-                  <code>&lt;warning=#FFA500&gt;caution&lt;/warning&gt;</code> — overrides with
-                  orange
-                </li>
-              </ul>
-
-              <p className="text-white/70 mb-3">
-                <strong>Multi-parameter defaults:</strong> For modifiers with multiple parameters
-                (like <code>OutlineModifier</code>: dilate, color), defaults fill in missing values:
-              </p>
-              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
-                <div>Style:</div>
-                <div className="ml-4">
-                  Rule: TagRule (tagName = &quot;glow&quot;, defaultParameter =
-                  &quot;0.3,#00FF00&quot;)
-                </div>
-                <div className="ml-4">Modifier: OutlineModifier</div>
-              </div>
-
-              <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
-                <li>
-                  <code>&lt;glow&gt;text&lt;/glow&gt;</code> — dilate 0.3, green outline
-                </li>
-                <li>
-                  <code>&lt;glow=0.5&gt;text&lt;/glow&gt;</code> — dilate 0.5, green outline (color
-                  from default)
-                </li>
-              </ul>
-
-              <p className="text-white/70 mb-2">
-                This works because <code>TagRule</code> merges text parameters with defaults: values
-                from the tag take priority, remaining parameters come from{' '}
-                <code>defaultParameter</code>.
-              </p>
-              <p className="text-white/70">
-                <code>MarkdownWrapRule</code> also supports <code>defaultParameter</code> the same
-                way.
-              </p>
-            </div>
-
-            {/* 3.4 Parse Rule Types */}
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.4 Parse Rule Types</h3>
-
-              {/* Tag-Based Rules */}
-              <h4 className="font-semibold text-white/90 mb-3">Tag-Based Rules</h4>
-              <p className="text-white/70 mb-6">
-                All tag-based rules use the universal <strong>TagRule</strong> class with a
-                configurable tag name. Parameters are always optional. Self-closing is syntax-driven
-                (<code>&lt;tag/&gt;</code> or <code>&lt;tag=value/&gt;</code>).
-              </p>
 
               {/* Markdown-Style Rules */}
               <h4 className="font-semibold text-white/90 mb-3">Markdown-Style Rules</h4>
@@ -1010,7 +907,7 @@ uniText.Text = "Hello, World!";`}
                     <tr className="border-b border-white/10">
                       <th className="text-left py-2 pr-4 text-white/60">Parse Rule</th>
                       <th className="text-left py-2 pr-4 text-white/60">Syntax</th>
-                      <th className="text-left py-2 text-white/60">Typical Modifier</th>
+                      <th className="text-left py-2 text-white/60">Modifier</th>
                     </tr>
                   </thead>
                   <tbody className="text-white/70">
@@ -1091,7 +988,8 @@ uniText.Text = "Hello, World!";`}
                   <thead>
                     <tr className="border-b border-white/10">
                       <th className="text-left py-2 pr-4 text-white/60">Parse Rule</th>
-                      <th className="text-left py-2 text-white/60">Purpose</th>
+                      <th className="text-left py-2 pr-4 text-white/60">Purpose</th>
+                      <th className="text-left py-2 text-white/60">Modifier</th>
                     </tr>
                   </thead>
                   <tbody className="text-white/70">
@@ -1099,33 +997,33 @@ uniText.Text = "Hello, World!";`}
                       <td className="py-2 pr-4">
                         <code>RangeRule</code>
                       </td>
-                      <td className="py-2">
-                        Apply modifier to specific character ranges without any markup in text
+                      <td className="py-2 pr-4">
+                        Apply modifier to specific ranges without markup
                       </td>
+                      <td className="py-2">Any</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>StringParseRule</code>
                       </td>
-                      <td className="py-2">Match and optionally replace literal string patterns</td>
+                      <td className="py-2 pr-4">Match literal string patterns</td>
+                      <td className="py-2">Any</td>
                     </tr>
                     <tr>
                       <td className="py-2 pr-4">
                         <code>CompositeParseRule</code>
                       </td>
-                      <td className="py-2">
-                        Groups multiple rules under one modifier — each position in text is checked
-                        against child rules in order until one matches
-                      </td>
+                      <td className="py-2 pr-4">Combine multiple rules into one</td>
+                      <td className="py-2">Any</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
 
-            {/* 3.5 Parameter Formats Reference */}
+            {/* 3.3 Parameter Formats Reference */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.5 Parameter Formats Reference</h3>
+              <h3 className="font-semibold mb-4">3.3 Parameter Formats Reference</h3>
 
               <h4 className="font-semibold text-white/90 mb-2">Color</h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
@@ -1276,9 +1174,9 @@ uniText.Text = "Hello, World!";`}
               </ul>
             </div>
 
-            {/* 3.6 Adding Styles to a Component */}
+            {/* 3.4 Adding Styles to a Component */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.6 Adding Styles to a Component</h3>
+              <h3 className="font-semibold mb-4">3.4 Adding Styles to a Component</h3>
 
               <h4 className="font-semibold text-white/90 mb-3">In the Inspector</h4>
               <ol className="space-y-1 text-white/70 list-decimal list-inside mb-4">
@@ -1315,9 +1213,9 @@ uniText.ClearStyles();`}
               />
             </div>
 
-            {/* 3.7 Style Preset */}
+            {/* 3.5 Style Preset */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.7 Style Preset — Shared Configuration</h3>
+              <h3 className="font-semibold mb-4">3.5 Style Preset — Shared Configuration</h3>
 
               <p className="text-white/70 mb-3">
                 <strong>Problem:</strong> You have 50 UniText components that all need the same set
@@ -1415,10 +1313,10 @@ uniText.ClearStyles();`}
               </p>
             </div>
 
-            {/* 3.8 RangeRule */}
+            {/* 3.6 RangeRule */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                3.8 <code>RangeRule</code> — Applying Modifiers Without Markup
+                3.6 <code>RangeRule</code> — Applying Modifiers Without Markup
               </h3>
 
               <p className="text-white/70 mb-4">
@@ -1565,10 +1463,10 @@ uniText.AddStyle(new Style
               </div>
             </div>
 
-            {/* 3.9 StringParseRule */}
+            {/* 3.7 StringParseRule */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                3.9 <code>StringParseRule</code> — Literal Pattern Matching
+                3.7 <code>StringParseRule</code> — Literal Pattern Matching
               </h3>
               <p className="text-white/70 mb-4">
                 <code>StringParseRule</code> matches literal string patterns in text (no XML/HTML
@@ -1589,10 +1487,10 @@ uniText.AddStyle(new Style
               />
             </div>
 
-            {/* 3.10 CompositeParseRule */}
+            {/* 3.8 CompositeParseRule */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                3.10 <code>CompositeParseRule</code> — Combining Rules
+                3.8 <code>CompositeParseRule</code> — Combining Rules
               </h3>
               <p className="text-white/70 mb-4">
                 <code>CompositeParseRule</code> groups multiple rules into one. It tries child rules
@@ -1613,9 +1511,9 @@ uniText.AddStyle(new Style
               />
             </div>
 
-            {/* 3.11 Priority System */}
+            {/* 3.9 Priority System */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.11 Priority System</h3>
+              <h3 className="font-semibold mb-4">3.9 Priority System</h3>
               <p className="text-white/70 mb-4">
                 Parse rules have a <code>Priority</code> property that controls matching order
                 (higher = matched first):
@@ -1664,9 +1562,9 @@ uniText.AddStyle(new Style
               </p>
             </div>
 
-            {/* 3.12 Creating Custom Parse Rules */}
+            {/* 3.10 Creating Custom Parse Rules */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.12 Creating Custom Parse Rules</h3>
+              <h3 className="font-semibold mb-4">3.10 Creating Custom Parse Rules</h3>
               <p className="text-white/70 mb-4">
                 Implement <code>IParseRule</code> to create your own markup syntax:
               </p>
@@ -1697,9 +1595,9 @@ uniText.AddStyle(new Style
               </p>
             </div>
 
-            {/* 3.13 Creating Custom Modifiers */}
+            {/* 3.11 Creating Custom Modifiers */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.13 Creating Custom Modifiers</h3>
+              <h3 className="font-semibold mb-4">3.11 Creating Custom Modifiers</h3>
               <p className="text-white/70 mb-6">
                 UniText has three modifier base classes for different use cases:
               </p>
