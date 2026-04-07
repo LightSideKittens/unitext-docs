@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0",
-  "generatedAt": "2026-03-12T14:02:55.5029916Z",
+  "version": "2.0.3",
+  "generatedAt": "2026-04-07T07:40:08.6679797Z",
   "namespaces": [],
   "types": [
     {
@@ -95,7 +95,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["UniText"],
+            "paramTypes": [
+              "UniText"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -111,7 +113,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "InteractiveRange",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -127,7 +132,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "InteractiveRange",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -143,7 +151,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange"],
+            "paramTypes": [
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -159,7 +169,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "int",
+              "int",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -187,7 +201,10 @@
                 "description": "End of the range (cluster index, exclusive)."
               }
             ],
-            "paramTypes": ["int", "int"],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -407,7 +424,18 @@
             "isConst": false,
             "type": "DirtyFlags",
             "defaultValue": "1 \u003C\u003C 7",
-            "summary": "Material changed."
+            "summary": "Material changed (atlas texture, render mode)."
+          },
+          {
+            "id": "UniTextBase.DirtyFlags.Sorting",
+            "name": "Sorting",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DirtyFlags",
+            "defaultValue": "1 \u003C\u003C 8",
+            "summary": "Sorting order or layer changed (world-space only)."
           },
           {
             "id": "UniTextBase.DirtyFlags.LayoutRebuild",
@@ -439,7 +467,7 @@
             "isReadonly": true,
             "isConst": false,
             "type": "DirtyFlags",
-            "defaultValue": "Color | Alignment | Layout | FontSize | FullRebuild",
+            "defaultValue": "Color | Alignment | Layout | FontSize | FullRebuild | Sorting",
             "summary": "Everything needs rebuilding."
           }
         ],
@@ -509,10 +537,15 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
-      "interfaces": ["IInteractiveRangeProvider"],
+      "interfaces": [
+        "IInteractiveRangeProvider"
+      ],
       "summary": "Interface for modifiers that provide interactive ranges AND handle their own interactions.",
       "remarks": "Extends [[IInteractiveRangeProvider]] with callbacks for click and hover events. Implement this when the modifier needs to respond directly to user interactions (e.g., LinkModifier opening URLs, custom modifiers showing tooltips). For simple providers that only define ranges but don\u0027t handle events, implement [[IInteractiveRangeProvider]] instead.",
-      "seeAlso": ["IInteractiveRangeProvider", "InteractiveModifier"],
+      "seeAlso": [
+        "IInteractiveRangeProvider",
+        "InteractiveModifier"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -540,7 +573,10 @@
                 "description": "The text hit result with position details."
               }
             ],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -568,7 +604,10 @@
                 "description": "The text hit result with position details."
               }
             ],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -591,7 +630,9 @@
                 "description": "The range being exited."
               }
             ],
-            "paramTypes": ["InteractiveRange"],
+            "paramTypes": [
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -614,7 +655,10 @@
       "interfaces": [],
       "summary": "Interface for modifiers that provide interactive text ranges.",
       "remarks": "Implement this interface to register clickable/hoverable regions in text. The [[InteractiveRangeRegistry]] queries all providers to find which range (if any) contains a given cluster position. For modifiers that also want to handle click/hover events directly, implement [[IInteractiveRangeHandler]] instead.",
-      "seeAlso": ["IInteractiveRangeHandler", "InteractiveRangeRegistry"],
+      "seeAlso": [
+        "IInteractiveRangeHandler",
+        "InteractiveRangeRegistry"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -643,7 +687,10 @@
                 "description": "The range if found, otherwise default."
               }
             ],
-            "paramTypes": ["int", "InteractiveRange"],
+            "paramTypes": [
+              "int",
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -732,7 +779,13 @@
                 "description": "Priority for overlap resolution."
               }
             ],
-            "paramTypes": ["int", "int", "string", "string", "int"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string",
+              "string",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -749,7 +802,9 @@
             "returnType": "bool",
             "summary": "Returns true if the cluster is within this range.",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -874,7 +929,10 @@
                 "description": "The underlying text hit result."
               }
             ],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -939,7 +997,10 @@
       "interfaces": [],
       "summary": "Central registry for interactive text ranges.",
       "remarks": "Stores references to all [[IInteractiveRangeProvider]] instances for a UniText component. Used by [[UniText]] to perform hit testing against interactive ranges. Stored in [[UniTextBuffers]] as [[IAttributeData]].",
-      "seeAlso": ["IInteractiveRangeProvider", "IInteractiveRangeHandler"],
+      "seeAlso": [
+        "IInteractiveRangeProvider",
+        "IInteractiveRangeHandler"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -962,7 +1023,9 @@
                 "description": "The provider to register."
               }
             ],
-            "paramTypes": ["IInteractiveRangeProvider"],
+            "paramTypes": [
+              "IInteractiveRangeProvider"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -985,7 +1048,9 @@
                 "description": "The provider to unregister."
               }
             ],
-            "paramTypes": ["IInteractiveRangeProvider"],
+            "paramTypes": [
+              "IInteractiveRangeProvider"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1020,7 +1085,11 @@
                 "description": "The provider that owns the range, or null if none."
               }
             ],
-            "paramTypes": ["int", "InteractiveRange", "IInteractiveRangeProvider"],
+            "paramTypes": [
+              "int",
+              "InteractiveRange",
+              "IInteractiveRangeProvider"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1049,7 +1118,27 @@
                 "description": "The found range, or default if none."
               }
             ],
-            "paramTypes": ["int", "InteractiveRange"],
+            "paramTypes": [
+              "int",
+              "InteractiveRange"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InteractiveRangeRegistry.UpdateProviderHighlighters",
+            "name": "UpdateProviderHighlighters",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Calls [[Update]] on per-provider highlighters for animation updates.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1089,7 +1178,9 @@
                 "description": "The UniText buffers."
               }
             ],
-            "paramTypes": ["UniTextBuffers"],
+            "paramTypes": [
+              "UniTextBuffers"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1113,7 +1204,9 @@
                 "description": "The UniText buffers."
               }
             ],
-            "paramTypes": ["UniTextBuffers"],
+            "paramTypes": [
+              "UniTextBuffers"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1566,7 +1659,9 @@
             "returnType": "void",
             "summary": "Initializes the handler with its owner UniText.",
             "params": [],
-            "paramTypes": ["UniText"],
+            "paramTypes": [
+              "UniText"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1594,7 +1689,10 @@
                 "description": "Visual bounds of the range (may be multiple for BiDi text)."
               }
             ],
-            "paramTypes": ["InteractiveRange", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "InteractiveRange",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1622,7 +1720,10 @@
                 "description": "Visual bounds of the range."
               }
             ],
-            "paramTypes": ["InteractiveRange", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "InteractiveRange",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1645,7 +1746,9 @@
                 "description": "The exited range."
               }
             ],
-            "paramTypes": ["InteractiveRange"],
+            "paramTypes": [
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1678,7 +1781,11 @@
                 "description": "Visual bounds of selection."
               }
             ],
-            "paramTypes": ["int", "int", "List\u003CRect\u003E"],
+            "paramTypes": [
+              "int",
+              "int",
+              "List\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1770,7 +1877,12 @@
             "isConstructor": true,
             "returnType": "TextHitResult",
             "params": [],
-            "paramTypes": ["int", "int", "Vector2", "float"],
+            "paramTypes": [
+              "int",
+              "int",
+              "Vector2",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1854,7 +1966,10 @@
       "interfaces": [],
       "summary": "Positions glyphs within the layout bounds based on line breaking results and alignment settings.",
       "remarks": "This is the final positioning stage of the text processing pipeline. It takes the output from [[LineBreaker]] (lines and runs) and produces [[PositionedGlyph]] data with final X/Y coordinates. Handles: Horizontal alignment (left, center, right) with RTL awareness Vertical alignment (top, middle, bottom) Line spacing and margins Glyph scaling based on font size",
-      "seeAlso": ["TextProcessor", "LayoutSettings"],
+      "seeAlso": [
+        "TextProcessor",
+        "LayoutSettings"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -1914,7 +2029,13 @@
                 "description": "Cap height for visual vertical centering (0 to skip correction)."
               }
             ],
-            "paramTypes": ["float", "float", "float", "float", "float"],
+            "paramTypes": [
+              "float",
+              "float",
+              "float",
+              "float",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1937,7 +2058,9 @@
                 "description": "The new layout settings to apply."
               }
             ],
-            "paramTypes": ["LayoutSettings"],
+            "paramTypes": [
+              "LayoutSettings"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -1965,7 +2088,10 @@
                 "description": "Effective height of the last line (0 = use base metrics)."
               }
             ],
-            "paramTypes": ["float", "float"],
+            "paramTypes": [
+              "float",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2174,7 +2300,17 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Total width of all runs in this line."
+            "summary": "Content width (excluding trailing whitespace)."
+          },
+          {
+            "id": "TextLine.trailingWhitespace",
+            "name": "trailingWhitespace",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Width of trailing whitespace that hangs outside the content box (CSS Text \u00A74.1.3)."
           },
           {
             "id": "TextLine.paragraphBaseLevel",
@@ -2267,8 +2403,11 @@
       "interfaces": [],
       "summary": "Processes Unicode text through script analysis, BiDi reordering, shaping, and layout.",
       "remarks": "[[TextProcessor]] is the main entry point for the text processing pipeline. It orchestrates multiple Unicode algorithms to produce correctly shaped and positioned glyphs. Processing pipeline: Parsing \u2014 converts UTF-16 to codepoints Script analysis (UAX #24) \u2014 identifies script per codepoint BiDi algorithm (UAX #9) \u2014 determines text direction and reordering Itemization \u2014 splits text into runs by script, direction, and font Shaping \u2014 converts codepoints to positioned glyphs via HarfBuzz Line breaking (UAX #14) \u2014 determines line break opportunities Layout \u2014 positions glyphs according to alignment settings Performance: The processor caches intermediate results. Use invalidation methods only when necessary to avoid redundant processing.",
-      "example": "var buffers = new UniTextBuffers();\r\nvar processor = new TextProcessor(buffers);\r\nprocessor.SetFontProvider(fontProvider);\r\n\r\nvar settings = new TextProcessSettings\r\n{\r\n    fontSize = 24f,\r\n    MaxWidth = 400f,\r\n    enableWordWrap = true\r\n};\r\n\r\nprocessor.EnsureFirstPass(text, settings);\r\nprocessor.EnsureLines(settings.MaxWidth, settings.fontSize, settings.enableWordWrap);\r\nprocessor.EnsurePositions(settings);\r\n\r\n// Access results\r\nvar glyphs = processor.PositionedGlyphs;",
-      "seeAlso": ["UniTextBuffers", "TextProcessSettings"],
+      "example": "var buffers = new UniTextBuffers();\nvar processor = new TextProcessor(buffers);\nprocessor.SetFontProvider(fontProvider);\n\nvar settings = new TextProcessSettings\n{\n    fontSize = 24f,\n    MaxWidth = 400f,\n    enableWordWrap = true\n};\n\nprocessor.EnsureFirstPass(text, settings);\nprocessor.EnsureLines(settings.MaxWidth, settings.fontSize, settings.enableWordWrap);\nprocessor.EnsurePositions(settings);\n\n// Access results\nvar glyphs = processor.PositionedGlyphs;",
+      "seeAlso": [
+        "UniTextBuffers",
+        "TextProcessSettings"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -2291,7 +2430,9 @@
                 "description": "The buffer container for processing data."
               }
             ],
-            "paramTypes": ["UniTextBuffers"],
+            "paramTypes": [
+              "UniTextBuffers"
+            ],
             "exceptions": [
               {
                 "type": "ArgumentNullException",
@@ -2323,7 +2464,9 @@
                 "description": "The font provider to use, or to clear."
               }
             ],
-            "paramTypes": ["UniTextFontProvider"],
+            "paramTypes": [
+              "UniTextFontProvider"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2406,7 +2549,10 @@
                 "description": "The processing settings including font size and direction."
               }
             ],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "TextProcessSettings"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "TextProcessSettings"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2440,7 +2586,11 @@
                 "description": "Whether word wrapping is enabled."
               }
             ],
-            "paramTypes": ["float", "float", "bool"],
+            "paramTypes": [
+              "float",
+              "float",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2474,7 +2624,11 @@
                 "description": "The vertical alignment."
               }
             ],
-            "paramTypes": ["float", "HorizontalAlignment", "VerticalAlignment"],
+            "paramTypes": [
+              "float",
+              "HorizontalAlignment",
+              "VerticalAlignment"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2508,7 +2662,11 @@
                 "description": "Whether to wrap text at word boundaries."
               }
             ],
-            "paramTypes": ["float", "float", "bool"],
+            "paramTypes": [
+              "float",
+              "float",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2532,7 +2690,9 @@
                 "description": "The layout settings including alignment and max dimensions."
               }
             ],
-            "paramTypes": ["TextProcessSettings"],
+            "paramTypes": [
+              "TextProcessSettings"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2576,7 +2736,9 @@
                 "description": "The font size in points."
               }
             ],
-            "paramTypes": ["float"],
+            "paramTypes": [
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2675,7 +2837,13 @@
                 "description": "The base processing settings."
               }
             ],
-            "paramTypes": ["float", "float", "float", "float", "TextProcessSettings"],
+            "paramTypes": [
+              "float",
+              "float",
+              "float",
+              "float",
+              "TextProcessSettings"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2699,7 +2867,9 @@
                 "description": "Custom widths for each codepoint, used for layout calculations."
               }
             ],
-            "paramTypes": ["ReadOnlySpan\u003Cfloat\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cfloat\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -2848,7 +3018,10 @@
       "interfaces": [],
       "summary": "Configuration settings for text processing operations.",
       "remarks": "This struct encapsulates all parameters needed by [[TextProcessor]] to process, shape, and lay out Unicode text. It combines layout settings with text-specific options like font size and base direction.",
-      "seeAlso": ["TextProcessor", "LayoutSettings"],
+      "seeAlso": [
+        "TextProcessor",
+        "LayoutSettings"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -3010,7 +3183,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "interfaces": ["IEquatable\u003CTextRange\u003E"],
+      "interfaces": [
+        "IEquatable\u003CTextRange\u003E"
+      ],
       "summary": "Represents a range of indices in a text buffer.",
       "seeAlso": [],
       "typeParameters": [],
@@ -3040,7 +3215,10 @@
                 "description": "The number of elements."
               }
             ],
-            "paramTypes": ["int", "int"],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3064,7 +3242,9 @@
                 "description": "The index to check."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3088,7 +3268,9 @@
                 "description": "The other range to check."
               }
             ],
-            "paramTypes": ["TextRange"],
+            "paramTypes": [
+              "TextRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3104,7 +3286,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["TextRange"],
+            "paramTypes": [
+              "TextRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3120,7 +3304,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["object"],
+            "paramTypes": [
+              "object"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3321,14 +3507,19 @@
       "isStatic": false,
       "baseType": "UniTextBase",
       "interfaces": [
+        "ILayoutController",
+        "IPointerDownHandler",
+        "IPointerUpHandler",
         "IPointerEnterHandler",
         "IPointerExitHandler",
-        "IPointerMoveHandler",
-        "ILayoutController"
+        "IPointerMoveHandler"
       ],
       "summary": "Canvas text rendering component with full Unicode support. Uses CanvasRenderer for rendering within Unity UI Canvas.",
       "remarks": "UniText is a drop-in replacement for Unity\u0027s Text/TextMeshPro with proper support for: Bidirectional text (Arabic, Hebrew) via UAX #9 Complex script shaping (Devanagari, Thai, etc.) via HarfBuzz Proper line breaking via UAX #14 Color emoji rendering Extensible markup system via [[IParseRule]] (HTML tags, Markdown, custom markers) For world-space text without Canvas, use [[UniTextWorld]] instead.",
-      "seeAlso": ["InteractiveRangeRegistry", "IInteractiveRangeHandler"],
+      "seeAlso": [
+        "InteractiveRangeRegistry",
+        "IInteractiveRangeHandler"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -3392,7 +3583,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["DirtyFlags"],
+            "paramTypes": [
+              "DirtyFlags"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3488,7 +3681,12 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["Color", "float", "bool", "bool"],
+            "paramTypes": [
+              "Color",
+              "float",
+              "bool",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3504,7 +3702,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["float", "float", "bool"],
+            "paramTypes": [
+              "float",
+              "float",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3521,7 +3723,10 @@
             "returnType": "void",
             "summary": "Sets the clipping rectangle for masking, applying to all sub-mesh renderers.",
             "params": [],
-            "paramTypes": ["Rect", "bool"],
+            "paramTypes": [
+              "Rect",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3538,7 +3743,9 @@
             "returnType": "void",
             "summary": "Sets soft clipping edges for smooth mask transitions on all sub-mesh renderers.",
             "params": [],
-            "paramTypes": ["Vector2"],
+            "paramTypes": [
+              "Vector2"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3555,7 +3762,10 @@
             "returnType": "void",
             "summary": "Applies visibility culling to all sub-mesh renderers based on clip rect.",
             "params": [],
-            "paramTypes": ["Rect", "bool"],
+            "paramTypes": [
+              "Rect",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3578,6 +3788,58 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.InvalidateLayoutCache",
+            "name": "InvalidateLayoutCache",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.OnPointerDown",
+            "name": "OnPointerDown",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.OnPointerUp",
+            "name": "OnPointerUp",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.OnPointerClick",
             "name": "OnPointerClick",
             "accessModifier": "public",
@@ -3588,7 +3850,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["PointerEventData"],
+            "paramTypes": [
+              "PointerEventData"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3604,7 +3868,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["PointerEventData"],
+            "paramTypes": [
+              "PointerEventData"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3620,7 +3886,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["PointerEventData"],
+            "paramTypes": [
+              "PointerEventData"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3636,7 +3904,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["PointerEventData"],
+            "paramTypes": [
+              "PointerEventData"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3665,7 +3935,10 @@
                 "description": "Maximum distance from glyph center to count as a hit."
               }
             ],
-            "paramTypes": ["Vector2", "float"],
+            "paramTypes": [
+              "Vector2",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3699,23 +3972,11 @@
                 "description": "Maximum distance from glyph center to count as a hit."
               }
             ],
-            "paramTypes": ["Vector2", "Camera", "float"],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniText.InvalidateLayoutCache",
-            "name": "InvalidateLayoutCache",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "Vector2",
+              "Camera",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3776,76 +4037,6 @@
             "hasSetter": false,
             "summary": "Gets the interactive range currently being hovered, if any.",
             "seeAlso": []
-          },
-          {
-            "id": "UniText.minWidth",
-            "name": "minWidth",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.preferredWidth",
-            "name": "preferredWidth",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.flexibleWidth",
-            "name": "flexibleWidth",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.minHeight",
-            "name": "minHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.preferredHeight",
-            "name": "preferredHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.flexibleHeight",
-            "name": "flexibleHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniText.layoutPriority",
-            "name": "layoutPriority",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "int",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
           }
         ],
         "fields": [],
@@ -3905,7 +4096,10 @@
       "interfaces": [],
       "summary": "High-performance array pool with thread-local caching and shared overflow storage.",
       "remarks": "This pool uses a two-tier caching strategy: Thread-local cache: One array per bucket per thread for instant access Shared buckets: Concurrent queues for cross-thread array sharing Arrays are organized into buckets by size (powers of 2 starting at 32). Supported sizes: 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536. Arrays larger than 65536 are allocated directly without pooling. Usage pattern: var array = UniTextArrayPool\u003Cint\u003E.Rent(100); // Gets array of size 128 try { // Use array... } finally { UniTextArrayPool\u003Cint\u003E.Return(array); }",
-      "seeAlso": ["PooledBuffer{T}", "PooledList{T}"],
+      "seeAlso": [
+        "PooledBuffer{T}",
+        "PooledList{T}"
+      ],
       "typeParameters": [
         {
           "name": "T",
@@ -3935,7 +4129,9 @@
                 "description": "The minimum required array length."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -3959,7 +4155,30 @@
                 "description": "The array to return. Can be (no-op)."
               }
             ],
-            "paramTypes": ["T[]"],
+            "paramTypes": [
+              "T[]"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextArrayPool.GrowDouble",
+            "name": "GrowDouble",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Doubles the capacity of a pooled array when count has reached the current capacity. Copies existing elements, returns the old array to the pool, and updates the reference.",
+            "params": [],
+            "paramTypes": [
+              "T[]",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4071,7 +4290,11 @@
             "returnType": "void",
             "summary": "Sets text content from a char array without allocating a string. Ideal for frequently updated text (timers, scores, etc.).",
             "params": [],
-            "paramTypes": ["char[]", "int", "int"],
+            "paramTypes": [
+              "char[]",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4088,7 +4311,41 @@
             "returnType": "void",
             "summary": "Marks the specified aspects of the text as needing rebuild.",
             "params": [],
-            "paramTypes": ["DirtyFlags"],
+            "paramTypes": [
+              "DirtyFlags"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetVerticesDirty",
+            "name": "SetVerticesDirty",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetMaterialDirty",
+            "name": "SetMaterialDirty",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4105,7 +4362,9 @@
             "returnType": "void",
             "summary": "Adds a style to this component at runtime.",
             "params": [],
-            "paramTypes": ["Style"],
+            "paramTypes": [
+              "Style"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4122,7 +4381,9 @@
             "returnType": "bool",
             "summary": "Removes a style from this component at runtime.",
             "params": [],
-            "paramTypes": ["Style"],
+            "paramTypes": [
+              "Style"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4138,6 +4399,61 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Removes all styles from this component.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.AddStylePreset",
+            "name": "AddStylePreset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds a shared style preset to this component at runtime.",
+            "params": [],
+            "paramTypes": [
+              "StylePreset"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.RemoveStylePreset",
+            "name": "RemoveStylePreset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes a shared style preset from this component at runtime.",
+            "params": [],
+            "paramTypes": [
+              "StylePreset"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ClearStylePresets",
+            "name": "ClearStylePresets",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Removes all shared style presets from this component.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -4235,7 +4551,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["bool"],
+            "paramTypes": [
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4283,7 +4601,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["CanvasUpdate"],
+            "paramTypes": [
+              "CanvasUpdate"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4383,7 +4703,9 @@
             "returnType": "void",
             "summary": "Called after SetDirty. Override to trigger Canvas layout rebuild.",
             "params": [],
-            "paramTypes": ["DirtyFlags"],
+            "paramTypes": [
+              "DirtyFlags"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4450,7 +4772,11 @@
                 "description": "List to receive bounds (cleared before use)."
               }
             ],
-            "paramTypes": ["int", "int", "IList\u003CRect\u003E"],
+            "paramTypes": [
+              "int",
+              "int",
+              "IList\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4465,6 +4791,23 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureFirstPassComplete",
+            "name": "EnsureFirstPassComplete",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -4980,6 +5323,13 @@
             "isStatic": true,
             "type": "Action",
             "summary": "Raised before canvas rendering begins, after all components are processed."
+          },
+          {
+            "id": "UniTextBase.AfterProcess",
+            "name": "AfterProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action"
           }
         ]
       }
@@ -4996,7 +5346,10 @@
       "interfaces": [],
       "summary": "Container for all intermediate and final buffers used during text processing.",
       "remarks": "[[UniTextBuffers]] holds all data produced during the text processing pipeline: codepoints, BiDi levels, text runs, shaped glyphs, line breaks, and positioned glyphs. Performance: All buffers use [[PooledBuffer{T}]] for zero-allocation operation in steady state. Call [[EnsureRentBuffers]] before processing and [[EnsureReturnBuffers]] when done.",
-      "seeAlso": ["TextProcessor", "PooledBuffer{T}"],
+      "seeAlso": [
+        "TextProcessor",
+        "PooledBuffer{T}"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -5021,13 +5374,39 @@
                 "description": "The unique key identifying this attribute data."
               }
             ],
-            "paramTypes": ["string"],
+            "paramTypes": [
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": [
               {
                 "name": "T",
                 "description": "The attribute data type, must implement [[IAttributeData]]."
+              }
+            ]
+          },
+          {
+            "id": "UniTextBuffers.PrepareAttribute",
+            "name": "PrepareAttribute",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Gets or creates a [[PooledArrayAttribute{T}]] and clears it to codepoint count. Combines GetOrCreateAttributeData \u002B EnsureCountAndClear into a single call.",
+            "params": [],
+            "paramTypes": [
+              "PooledArrayAttribute\u003CT\u003E",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
               }
             ]
           },
@@ -5050,7 +5429,9 @@
                 "description": "The unique key identifying this attribute data."
               }
             ],
-            "paramTypes": ["string"],
+            "paramTypes": [
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": [
@@ -5078,7 +5459,9 @@
                 "description": "The unique key identifying the attribute data to release."
               }
             ],
-            "paramTypes": ["string"],
+            "paramTypes": [
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5102,7 +5485,9 @@
                 "description": "The desired font size."
               }
             ],
-            "paramTypes": ["float"],
+            "paramTypes": [
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5126,7 +5511,9 @@
                 "description": "The expected text length for capacity estimation."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5185,7 +5572,9 @@
                 "description": "The minimum required codepoint capacity."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5410,7 +5799,10 @@
       "interfaces": [],
       "summary": "ScriptableObject containing named gradients for use with \u003Cgradient=name\u003E tags.",
       "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Gradients. Reference in UniTextSettings to make gradients available to all UniText components.",
-      "seeAlso": ["GradientModifier", "UniTextSettings"],
+      "seeAlso": [
+        "GradientModifier",
+        "UniTextSettings"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
@@ -5439,7 +5831,10 @@
                 "description": "The gradient if found."
               }
             ],
-            "paramTypes": ["string", "Gradient"],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5455,7 +5850,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["string", "Gradient"],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5501,11 +5899,34 @@
       "interfaces": [],
       "summary": "Converts positioned glyphs into Unity mesh data for text rendering.",
       "remarks": "This is the final stage of the text processing pipeline. It takes [[PositionedGlyph]] data from [[TextProcessor]] and generates vertex, UV, color, and triangle data suitable for Unity\u0027s mesh system. Key features: Groups glyphs by rendering target to minimize draw calls: one segment per font (Texture2DArray atlas) Uses pooled buffers from [[UniTextArrayPool{T}]] for zero allocations Provides callbacks for text modifiers to inject custom processing Typical usage: generator.SetRectOffset(rect); generator.GenerateMeshDataOnly(positionedGlyphs); var renderData = generator.ApplyMeshesToUnity(meshProvider); // Use renderData to render each segment generator.ReturnInstanceBuffers();",
-      "seeAlso": ["TextProcessor", "PositionedGlyph", "UniTextRenderData"],
+      "seeAlso": [
+        "TextProcessor",
+        "PositionedGlyph",
+        "UniTextRenderData"
+      ],
       "typeParameters": [],
       "category": "core",
       "members": {
         "methods": [
+          {
+            "id": "UniTextMeshGenerator.TrackGlyphKey",
+            "name": "TrackGlyphKey",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Tracks a glyph key for atlas ref counting. Deduplicates automatically. Use for modifier glyphs that don\u0027t need cached entry data.",
+            "params": [],
+            "paramTypes": [
+              "long"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "UniTextMeshGenerator.ctor",
             "name": "UniTextMeshGenerator",
@@ -5529,13 +5950,39 @@
                 "description": "The shared buffer container from text processing."
               }
             ],
-            "paramTypes": ["UniTextFontProvider", "UniTextBuffers"],
+            "paramTypes": [
+              "UniTextFontProvider",
+              "UniTextBuffers"
+            ],
             "exceptions": [
               {
                 "type": "ArgumentNullException",
                 "description": "Thrown when fontProvider or uniTextBuffers is."
               }
             ],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextMeshGenerator.ScaleGlyphQuad",
+            "name": "ScaleGlyphQuad",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scales a glyph quad (4 vertices) around its left edge and baseline. Used by SizeModifier, SmallCapsModifier, ScriptPositionModifier.",
+            "params": [],
+            "paramTypes": [
+              "Vector3[]",
+              "int",
+              "float",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           },
@@ -5557,7 +6004,9 @@
                 "description": "UV channel: 2 or 3."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5621,7 +6070,10 @@
                 "description": "Number of additional triangle indices needed."
               }
             ],
-            "paramTypes": ["int", "int"],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5649,7 +6101,10 @@
                 "description": "Whether the canvas uses a world camera."
               }
             ],
-            "paramTypes": ["float", "bool"],
+            "paramTypes": [
+              "float",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5672,7 +6127,9 @@
                 "description": "The rect defining the text layout bounds."
               }
             ],
-            "paramTypes": ["Rect"],
+            "paramTypes": [
+              "Rect"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -5748,6 +6205,50 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextMeshGenerator.SdfVertexCount",
+            "name": "SdfVertexCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of vertices in the SDF segment.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextMeshGenerator.SdfTriangleCount",
+            "name": "SdfTriangleCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of triangle indices in the SDF segment.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextMeshGenerator.EmojiVertexCount",
+            "name": "EmojiVertexCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of vertices in the emoji segment.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextMeshGenerator.EmojiTriangleCount",
+            "name": "EmojiTriangleCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of triangle indices in the emoji segment.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextMeshGenerator.CurrentSegmentVertexStart",
             "name": "CurrentSegmentVertexStart",
             "accessModifier": "public",
@@ -5767,6 +6268,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the font size in points for mesh generation.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextMeshGenerator.RenderMode",
+            "name": "RenderMode",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RenderModee",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets the atlas mode (SDF or MSDF) for glyph lookup and material selection.",
             "seeAlso": []
           },
           {
@@ -6104,7 +6616,10 @@
             "returnType": "UniTextRenderData",
             "summary": "Initializes a new instance of the [[UniTextRenderData]] struct.",
             "params": [],
-            "paramTypes": ["Mesh", "int"],
+            "paramTypes": [
+              "Mesh",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6172,7 +6687,9 @@
                 "description": "The settings instance to use."
               }
             ],
-            "paramTypes": ["UniTextSettings"],
+            "paramTypes": [
+              "UniTextSettings"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6236,8 +6753,7 @@
       "isStatic": false,
       "baseType": "UniTextBase",
       "interfaces": [],
-      "summary": "World-space text rendering component with full Unicode support. Uses MeshRenderer for rendering without requiring a Canvas.",
-      "remarks": "UniTextWorld provides the same text processing pipeline as [[UniText]] (Unicode, BiDi, shaping, line breaking, modifiers, emoji, font fallback, variable fonts) but renders via MeshRenderer \u002B MeshFilter instead of CanvasRenderer. Effect passes (outline, shadow) use child GameObjects with separate MeshRenderer \u002B MeshFilter pairs, ordered by [[sortingOrder]].",
+      "summary": "World-space text rendering component with full Unicode support. Rendering is handled by [[UniTextWorldBatcher]] \u2014 no per-object MeshRenderers.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -6388,6 +6904,22 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextWorld.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextWorld.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
@@ -6428,6 +6960,29 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextWorldBatcher",
+      "name": "UniTextWorldBatcher",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "MonoBehaviour",
+      "interfaces": [],
+      "summary": "Invisible singleton that batches all [[UniTextWorld]] components into combined meshes for minimal draw calls. Uses a unified shader that handles both face and effects in one pass.",
+      "remarks": "Each component\u0027s vertices are duplicated per effect pass \u002B face into a single combined mesh. UV2 determines the mode: zeros = face, non-zero = effect. Triangle order controls visual layering (sorted by sorting layer \u2192 sorting order). Result: 1 SDF draw call \u002B 1 emoji draw call.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -6535,7 +7090,9 @@
             "isConstructor": true,
             "returnType": "EscapeTextAreaAttribute",
             "params": [],
-            "paramTypes": ["bool"],
+            "paramTypes": [
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6551,7 +7108,11 @@
             "isConstructor": true,
             "returnType": "EscapeTextAreaAttribute",
             "params": [],
-            "paramTypes": ["int", "int", "bool"],
+            "paramTypes": [
+              "int",
+              "int",
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6642,7 +7203,12 @@
             "isConstructor": true,
             "returnType": "ParameterFieldAttribute",
             "params": [],
-            "paramTypes": ["int", "string", "string", "string"],
+            "paramTypes": [
+              "int",
+              "string",
+              "string",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6721,7 +7287,9 @@
             "isConstructor": true,
             "returnType": "TypeDescriptionAttribute",
             "params": [],
-            "paramTypes": ["string"],
+            "paramTypes": [
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6770,7 +7338,10 @@
             "isConstructor": true,
             "returnType": "TypeGroupAttribute",
             "params": [],
-            "paramTypes": ["string", "int"],
+            "paramTypes": [
+              "string",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6836,7 +7407,11 @@
       "interfaces": [],
       "summary": "Font asset specialized for color emoji rendering using FreeType or browser APIs.",
       "remarks": "EmojiFont extends [[UniTextFont]] to provide native color emoji support across all platforms. It uses FreeType for desktop/mobile and browser Canvas API for WebGL. The class provides a singleton [[Instance]] that automatically loads the system emoji font. Custom emoji fonts can be created via factory methods. Key features: Automatic system emoji font detection on Windows, macOS, iOS, Android, Linux Dynamic atlas population with shelf-based packing Parallel glyph rendering using FreeType face pool WebGL support via browser Canvas 2D rendering",
-      "seeAlso": ["UniTextFont", "SystemEmojiFont", "FreeType"],
+      "seeAlso": [
+        "UniTextFont",
+        "SystemEmojiFont",
+        "FreeType"
+      ],
       "typeParameters": [],
       "category": "emoji",
       "members": {
@@ -6887,7 +7462,11 @@
                 "description": "Desired emoji pixel size."
               }
             ],
-            "paramTypes": ["string", "int", "int"],
+            "paramTypes": [
+              "string",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6926,7 +7505,12 @@
                 "description": "Optional name for logging purposes."
               }
             ],
-            "paramTypes": ["byte[]", "int", "int", "string"],
+            "paramTypes": [
+              "byte[]",
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6959,6 +7543,24 @@
             "returnType": "UniTextFontError",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EmojiFont.EstimateTileArea",
+            "name": "EstimateTileArea",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "long",
+            "params": [],
+            "paramTypes": [
+              "object"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7011,17 +7613,6 @@
             "seeAlso": []
           },
           {
-            "id": "EmojiFont.AtlasTextures",
-            "name": "AtlasTextures",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "List\u003CTexture2D\u003E",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets all staging atlas textures (CPU-side).",
-            "seeAlso": []
-          },
-          {
             "id": "EmojiFont.AtlasSize",
             "name": "AtlasSize",
             "accessModifier": "public",
@@ -7030,6 +7621,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the atlas texture size in pixels (square).",
+            "seeAlso": []
+          },
+          {
+            "id": "EmojiFont.AtlasPadding",
+            "name": "AtlasPadding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Atlas padding for emoji glyph UV sampling (gutter inside tile prevents bilinear bleeding).",
             "seeAlso": []
           },
           {
@@ -7154,7 +7756,9 @@
       "interfaces": [],
       "summary": "Utility for locating system emoji fonts across platforms.",
       "remarks": "Provides automatic detection of color emoji fonts on: Windows: Segoe UI Emoji (seguiemj.ttf) macOS: Apple Color Emoji (.ttc) iOS: Apple Color Emoji Android: NotoColorEmoji, Samsung/Huawei vendor fonts (via fonts.xml or API) Linux: Noto Color Emoji, Symbola In the Unity Editor, also searches for emoji fonts in the EmojiCore/Editor folder.",
-      "seeAlso": ["EmojiFont"],
+      "seeAlso": [
+        "EmojiFont"
+      ],
       "typeParameters": [],
       "category": "emoji",
       "members": {
@@ -7475,7 +8079,12 @@
             "isConstructor": true,
             "returnType": "Glyph",
             "params": [],
-            "paramTypes": ["uint", "GlyphMetrics", "GlyphRect", "int"],
+            "paramTypes": [
+              "uint",
+              "GlyphMetrics",
+              "GlyphRect",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7554,7 +8163,13 @@
             "isConstructor": true,
             "returnType": "GlyphMetrics",
             "params": [],
-            "paramTypes": ["float", "float", "float", "float", "float"],
+            "paramTypes": [
+              "float",
+              "float",
+              "float",
+              "float",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7666,7 +8281,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "interfaces": ["IEquatable\u003CGlyphRect\u003E"],
+      "interfaces": [
+        "IEquatable\u003CGlyphRect\u003E"
+      ],
       "summary": "Position and size of a glyph within an atlas texture.",
       "seeAlso": [],
       "typeParameters": [],
@@ -7684,7 +8301,12 @@
             "isConstructor": true,
             "returnType": "GlyphRect",
             "params": [],
-            "paramTypes": ["int", "int", "int", "int"],
+            "paramTypes": [
+              "int",
+              "int",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7700,7 +8322,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["GlyphRect"],
+            "paramTypes": [
+              "GlyphRect"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7716,7 +8340,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["object"],
+            "paramTypes": [
+              "object"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7806,7 +8432,10 @@
       "interfaces": [],
       "summary": "Font asset containing glyph data, metrics, and texture atlases for text rendering.",
       "remarks": "UniTextFont is a ScriptableObject that stores: Font file data (TTF/OTF bytes) for FreeType rendering Face information (metrics, ascender, descender) Glyph table with metrics for text layout Glyph curve cache for SDF rendering Glyph curves are extracted at runtime when first needed and stored in a shared curve atlas.",
-      "seeAlso": ["UniTextFontProvider", "UniTextFontStack"],
+      "seeAlso": [
+        "UniTextFontProvider",
+        "UniTextFontStack"
+      ],
       "typeParameters": [],
       "category": "fonts",
       "members": {
@@ -7848,7 +8477,9 @@
                 "description": "Font file bytes."
               }
             ],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7942,7 +8573,9 @@
                 "description": "Unicode codepoint."
               }
             ],
-            "paramTypes": ["uint"],
+            "paramTypes": [
+              "uint"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7965,7 +8598,9 @@
                 "description": "List of (unicode, glyphIndex) pairs."
               }
             ],
-            "paramTypes": ["List\u003CValueTuple\u003Cuint, uint\u003E\u003E"],
+            "paramTypes": [
+              "List\u003CValueTuple\u003Cuint, uint\u003E\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7982,7 +8617,9 @@
             "returnType": "List\u003Cuint\u003E",
             "summary": "Filters glyph indices, removing zeros and already-known glyphs. Returns a reusable list of unique indices to add, or null if nothing to add.",
             "params": [],
-            "paramTypes": ["List\u003Cuint\u003E"],
+            "paramTypes": [
+              "List\u003Cuint\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7999,7 +8636,9 @@
             "returnType": "bool",
             "summary": "Checks if a glyph is already cached (curve data extracted or bitmap rendered).",
             "params": [],
-            "paramTypes": ["uint"],
+            "paramTypes": [
+              "uint"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8009,13 +8648,15 @@
             "name": "EstimateTileArea",
             "accessModifier": "public",
             "isAbstract": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "long",
             "params": [],
-            "paramTypes": ["object"],
+            "paramTypes": [
+              "object"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8039,7 +8680,9 @@
                 "description": "TTF or OTF font file data."
               }
             ],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8257,6 +8900,15 @@
             "isReadonly": false,
             "isConst": false,
             "type": "List\u003Cuint\u003E"
+          },
+          {
+            "id": "UniTextFont.batchProtectedKeys",
+            "name": "batchProtectedKeys",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "List\u003Clong\u003E"
           }
         ],
         "events": []
@@ -8335,7 +8987,10 @@
       "interfaces": [],
       "summary": "Manages font assets and provides font lookup services for text rendering.",
       "remarks": "The font provider handles: Primary font and fallback font resolution Font scaling based on requested font size Glyph caching in texture atlases Font data access (glyph lookup, font data bytes) Font family lookup for variant/variable font resolution Uses [[SharedFontCache]] for fast codepoint-to-font mapping.",
-      "seeAlso": ["UniTextFont", "UniTextFontStack"],
+      "seeAlso": [
+        "UniTextFont",
+        "UniTextFontStack"
+      ],
       "typeParameters": [],
       "category": "fonts",
       "members": {
@@ -8358,7 +9013,9 @@
                 "description": "Font size in points."
               }
             ],
-            "paramTypes": ["float"],
+            "paramTypes": [
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8386,7 +9043,10 @@
                 "description": "Initial font size in points."
               }
             ],
-            "paramTypes": ["UniTextFontStack", "float"],
+            "paramTypes": [
+              "UniTextFontStack",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8410,7 +9070,9 @@
                 "description": "The font asset."
               }
             ],
-            "paramTypes": ["UniTextFont"],
+            "paramTypes": [
+              "UniTextFont"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8438,7 +9100,10 @@
                 "description": "Font asset to register."
               }
             ],
-            "paramTypes": ["int", "UniTextFont"],
+            "paramTypes": [
+              "int",
+              "UniTextFont"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8462,7 +9127,9 @@
                 "description": "The font identifier."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8500,7 +9167,12 @@
                 "description": "Output: total line height."
               }
             ],
-            "paramTypes": ["float", "float", "float", "float"],
+            "paramTypes": [
+              "float",
+              "float",
+              "float",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8524,7 +9196,9 @@
                 "description": "Target font size in points."
               }
             ],
-            "paramTypes": ["float"],
+            "paramTypes": [
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8548,7 +9222,9 @@
                 "description": "Unicode codepoint to find a font for."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8565,7 +9241,9 @@
             "returnType": "ushort",
             "summary": "Gets the family index for a font ID. Returns 0 (first family) if not found.",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8589,7 +9267,9 @@
                 "description": "Font identifier."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8658,7 +9338,10 @@
       "interfaces": [],
       "summary": "ScriptableObject container for font families with fallback chain support.",
       "remarks": "Ordered list of font families. The first family\u0027s primary font is the primary font and provides strut metrics (line height, ascent, descent). Each family contains a primary font and optional faces (Bold, Italic, Variable, etc.). Face matching uses pre-computed lookup tables with CSS Fonts Level 4 \u00A75.2 weight matching. Create via Assets menu: Create \u2192 UniText \u2192 Fonts",
-      "seeAlso": ["UniTextFont", "UniTextFontProvider"],
+      "seeAlso": [
+        "UniTextFont",
+        "UniTextFontProvider"
+      ],
       "typeParameters": [],
       "category": "fonts",
       "members": {
@@ -8687,7 +9370,10 @@
                 "description": "Set of already-searched font IDs (to prevent loops)."
               }
             ],
-            "paramTypes": ["uint", "HashSet\u003Cint\u003E"],
+            "paramTypes": [
+              "uint",
+              "HashSet\u003Cint\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8866,6 +9552,15 @@
             "isReadonly": false,
             "isConst": true,
             "type": "string"
+          },
+          {
+            "id": "AttributeKeys.ScriptPosition",
+            "name": "ScriptPosition",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string"
           }
         ],
         "events": []
@@ -8884,7 +9579,10 @@
       "interfaces": [],
       "summary": "Base class for modifiers that render horizontal lines across text (underline, strikethrough).",
       "remarks": "Subclasses define the vertical offset of the line relative to the baseline. The line automatically breaks across multiple lines and respects color changes.",
-      "seeAlso": ["UnderlineModifier", "StrikethroughModifier"],
+      "seeAlso": [
+        "UnderlineModifier",
+        "StrikethroughModifier"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -8900,7 +9598,10 @@
             "isConstructor": false,
             "returnType": "float",
             "params": [],
-            "paramTypes": ["FaceInfo", "float"],
+            "paramTypes": [
+              "FaceInfo",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8916,7 +9617,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8980,7 +9683,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9024,7 +9731,10 @@
       "interfaces": [],
       "summary": "Base class for all text modifiers that alter text appearance or behavior.",
       "remarks": "Modifiers are applied to text ranges via markup tags parsed by [[IParseRule]] implementations and can modify glyph rendering, colors, animations, or other properties. Lifecycle: [[SetOwner]] is called when the modifier is attached to UniText (sets references only) [[Apply]] is called for each text range - lazy initialization on first call [[Disable]] is called when text changes [[Destroy]] is called when the modifier is removed",
-      "seeAlso": ["GlyphModifier{T}", "Style"],
+      "seeAlso": [
+        "GlyphModifier{T}",
+        "Style"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -9074,7 +9784,11 @@
                 "description": "Parameter from the tag (e.g., color value)."
               }
             ],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9097,7 +9811,9 @@
                 "description": "The UniText component to attach to."
               }
             ],
-            "paramTypes": ["UniTextBase"],
+            "paramTypes": [
+              "UniTextBase"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9157,13 +9873,13 @@
             "id": "BaseModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
+            "isAbstract": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Subscribes to UniText events.",
+            "summary": "Subscribes to UniText events. Override to set up buffers and event handlers.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -9174,13 +9890,13 @@
             "id": "BaseModifier.OnDisable",
             "name": "OnDisable",
             "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
+            "isAbstract": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Unsubscribes from UniText events.",
+            "summary": "Unsubscribes from UniText events. Override to remove event handlers.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -9191,13 +9907,13 @@
             "id": "BaseModifier.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
+            "isAbstract": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Releases buffers when the modifier is removed.",
+            "summary": "Releases buffers when the modifier is removed. Override to clean up resources.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -9232,7 +9948,11 @@
                 "description": "Parameter from the tag."
               }
             ],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9353,7 +10073,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9377,7 +10101,9 @@
       "interfaces": [],
       "summary": "Applies color to text ranges using hex codes or named colors.",
       "remarks": "Parameter: a color value in hex or by name. Supported formats: - Hex: #RGB, #RRGGBB, #RRGGBBAA - Named colors: white, black, red, green, blue, yellow, cyan, magenta, orange, purple, gray, lime, brown, pink, navy, teal, olive, maroon, silver, gold The alpha channel from the color parameter is preserved. The base alpha is inherited from the component\u0027s color.",
-      "seeAlso": ["IParseRule"],
+      "seeAlso": [
+        "IParseRule"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -9409,7 +10135,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9443,7 +10173,11 @@
                 "description": "The color if found."
               }
             ],
-            "paramTypes": ["UniTextBuffers", "int", "Color32"],
+            "paramTypes": [
+              "UniTextBuffers",
+              "int",
+              "Color32"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9492,7 +10226,10 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["string", "Color32"],
+            "paramTypes": [
+              "string",
+              "Color32"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9508,7 +10245,10 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "Color32"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "Color32"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9524,7 +10264,10 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "Color32"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "Color32"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9532,6 +10275,125 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "CompositeModifier",
+      "name": "CompositeModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "interfaces": [],
+      "summary": "Combines multiple modifiers into a single modifier.",
+      "remarks": "Splits the tag parameter by; and passes each segment to the corresponding child modifier. For example, \u003Cwobble-color=3,10,1;#FF0000\u003E passes \u00223,10,1\u0022 to the first modifier and \u0022#FF0000\u0022 to the second. Child modifiers with no corresponding segment (fewer; groups than modifiers) receive a null parameter and fall back to their defaults.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "CompositeModifier.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "CompositeModifier.modifiers",
+            "name": "modifiers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "TypedList\u003CBaseModifier\u003E",
+            "summary": "Child modifiers to apply in order."
+          }
+        ],
         "events": []
       }
     },
@@ -9564,6 +10426,22 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Called for each glyph during mesh generation. Subclass should check cluster ranges and call [[RecordEffectGlyph]] for matching glyphs.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -9647,7 +10525,10 @@
             "returnType": "void",
             "summary": "Records a glyph for this effect and reports required padding extent to the generator.",
             "params": [],
-            "paramTypes": ["EffectGlyph", "float"],
+            "paramTypes": [
+              "EffectGlyph",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9706,7 +10587,9 @@
                 "description": "The color to pack."
               }
             ],
-            "paramTypes": ["Color32"],
+            "paramTypes": [
+              "Color32"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9783,7 +10666,9 @@
       "interfaces": [],
       "summary": "Truncates text that overflows its container and appends an ellipsis (...).",
       "remarks": "Parameter: optional position (0-1) controlling where the ellipsis appears: - 0: Truncates from the start, ellipsis at the beginning - 0.5: Truncates from the middle, ellipsis in the center - 1 (default): Truncates from the end, ellipsis at the end The modifier automatically detects overflow based on container height (with word wrap) or width (without word wrap) and uses binary search to find the optimal truncation point.",
-      "seeAlso": ["IParseRule"],
+      "seeAlso": [
+        "IParseRule"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -9847,7 +10732,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9877,54 +10766,6 @@
       "members": {
         "methods": [
           {
-            "id": "EmptyModifier.OnEnable",
-            "name": "OnEnable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "EmptyModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "EmptyModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "EmptyModifier.OnApply",
             "name": "OnApply",
             "accessModifier": "protected",
@@ -9935,7 +10776,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9958,8 +10803,10 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Base class for modifiers that store per-glyph attribute data.",
-      "remarks": "GlyphModifier provides automatic buffer management for per-glyph attributes. Derived classes implement [[GetOnGlyphCallback]] to receive callbacks during mesh generation, where they can modify vertex data based on attribute values. Examples of glyph modifiers include: color, bold, italic, underline, strikethrough.",
-      "seeAlso": ["BaseModifier"],
+      "remarks": "GlyphModifier provides automatic buffer management for per-glyph attributes. Derived classes implement [[GetOnGlyphCallback]] to receive callbacks during mesh generation, where they can modify vertex data based on attribute values. Optionally override [[GetOnShapedCallback]] to also receive a callback after shaping completes, for modifying glyph advances or run widths.",
+      "seeAlso": [
+        "BaseModifier"
+      ],
       "typeParameters": [
         {
           "name": "T",
@@ -10027,9 +10874,13 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Called by BaseModifier.Apply(). Ensures buffer capacity and delegates to DoApply.",
+            "summary": "Called by BaseModifier.Apply(). Delegates to DoApply.",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10062,7 +10913,11 @@
                 "description": "Parameter from the tag."
               }
             ],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10078,6 +10933,23 @@
             "isConstructor": false,
             "returnType": "Action",
             "summary": "Returns the callback to invoke during glyph mesh generation.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphModifier.GetOnShapedCallback",
+            "name": "GetOnShapedCallback",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Action",
+            "summary": "Returns a callback to invoke after shaping completes. Override to modify glyph advances or run widths. Returns null by default (no shaped callback).",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -10125,8 +10997,11 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Applies gradient coloring to text ranges using named gradients.",
-      "remarks": "Parameter format: name \u2014 Visual mode, horizontal (angle=0) name,angle \u2014 Visual mode with angle (0=\u2192, 90=\u2191) name,L \u2014 Logical mode (by character position) Visual mode: Gradient based on visual X/Y coordinates. Multi-line text may restart gradient on each line since X resets. Logical mode: Gradient based on character index within the range. Provides smooth color transition regardless of line breaks. Gradients are defined in [[UniTextGradients]] ScriptableObject referenced by [[UniTextSettings]].",
-      "seeAlso": ["UniTextGradients", "IParseRule"],
+      "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). Gradients are defined in [[UniTextGradients]] ScriptableObject referenced by [[UniTextSettings]].",
+      "seeAlso": [
+        "UniTextGradients",
+        "IParseRule"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -10190,7 +11065,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10213,7 +11092,10 @@
       "interfaces": [],
       "summary": "Interface for custom attribute data stored in [[UniTextBuffers]].",
       "remarks": "Implement this interface to create custom per-text attribute storage for modifiers. Use [[GetOrCreateAttributeData{T}]] to retrieve instances.",
-      "seeAlso": ["PooledArrayAttribute{T}", "UniTextBuffers"],
+      "seeAlso": [
+        "PooledArrayAttribute{T}",
+        "UniTextBuffers"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -10368,11 +11250,17 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
-      "interfaces": ["IInteractiveRangeHandler"],
+      "interfaces": [
+        "IInteractiveRangeHandler"
+      ],
       "summary": "Base class for modifiers that create interactive (clickable/hoverable) text ranges.",
       "remarks": "Inherit from this class to create custom interactive modifiers like links, hashtags, mentions, or any other clickable text elements. This class automatically: Registers/unregisters with [[InteractiveRangeRegistry]] Stores ranges in a [[PooledArrayAttribute{T}]] Delegates click/hover events to subclass implementations",
-      "example": "public class HashtagModifier : InteractiveModifier\r\n{\r\n    public override string RangeType =\u003E \u0022hashtag\u0022;\r\n    public override int Priority =\u003E 50;\r\n\r\n    public event Action\u003Cstring\u003E HashtagClicked;\r\n\r\n    protected override void HandleRangeClicked(InteractiveRange range, TextHitResult hit)\r\n    {\r\n        HashtagClicked?.Invoke(range.data);\r\n    }\r\n}",
-      "seeAlso": ["IInteractiveRangeHandler", "InteractiveRangeRegistry", "LinkModifier"],
+      "example": "public class HashtagModifier : InteractiveModifier\n{\n    public override string RangeType =\u003E \u0022hashtag\u0022;\n    public override int Priority =\u003E 50;\n\n    public event Action\u003Cstring\u003E HashtagClicked;\n\n    protected override void HandleRangeClicked(InteractiveRange range, TextHitResult hit)\n    {\n        HashtagClicked?.Invoke(range.data);\n    }\n}",
+      "seeAlso": [
+        "IInteractiveRangeHandler",
+        "InteractiveRangeRegistry",
+        "LinkModifier"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -10453,7 +11341,11 @@
                 "description": "Associated data (URL, tag, ID, etc.)."
               }
             ],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10469,7 +11361,10 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int", "InteractiveRange"],
+            "paramTypes": [
+              "int",
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10497,7 +11392,10 @@
                 "description": "The text hit result."
               }
             ],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10525,7 +11423,10 @@
                 "description": "The text hit result."
               }
             ],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10548,13 +11449,26 @@
                 "description": "The range being exited."
               }
             ],
-            "paramTypes": ["InteractiveRange"],
+            "paramTypes": [
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           }
         ],
         "properties": [
+          {
+            "id": "InteractiveModifier.Highlighter",
+            "name": "Highlighter",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextHighlighter",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets the per-modifier text highlighter. When null, the global UniText highlighter is used as fallback.",
+            "seeAlso": []
+          },
           {
             "id": "InteractiveModifier.RangeType",
             "name": "RangeType",
@@ -10638,7 +11552,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10672,7 +11590,7 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Applies character spacing (tracking) adjustments to text ranges.",
-      "remarks": "Parameter: spacing value with unit. 10 \u2014 add 10 pixels between characters -5 \u2014 reduce spacing by 5 pixels 0.5em \u2014 add 0.5 em (relative to font size)",
+      "remarks": "Parameter: spacing value with unit. 10 \u2014 add 10 pixels between characters -5 \u2014 reduce spacing by 5 pixels 0.5em \u2014 add 0.5 em (relative to font size) For cursive joining scripts (Arabic, Syriac, N\u0027Ko, Adlam, etc.), visual kashida (tatweel) bars are rendered between connected letter pairs using 9-slice SDF rendering, preserving the appearance of cursive connections at any spacing value.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -10737,7 +11655,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10825,7 +11747,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10862,7 +11788,15 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["UniTextFontProvider", "float", "float", "float", "float", "Color32"],
+            "paramTypes": [
+              "UniTextFontProvider",
+              "float",
+              "float",
+              "float",
+              "float",
+              "Color32",
+              "long"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10886,8 +11820,13 @@
       "interfaces": [],
       "summary": "Modifier that creates clickable hyperlinks in text.",
       "remarks": "Applies link styling (color and optional underline) to text ranges and handles click events. Parameter: URL string. Subscribe to [[LinkClicked]] to handle link clicks, or let the modifier open URLs automatically via [[OpenURL]].",
-      "example": "var linkMod = uniText.GetModifier\u003CLinkModifier\u003E();\r\nlinkMod.LinkClicked \u002B= url =\u003E Debug.Log($\u0022Link clicked: {url}\u0022);",
-      "seeAlso": ["IParseRule", "MarkdownLinkParseRule", "RawUrlParseRule", "InteractiveModifier"],
+      "example": "var linkMod = uniText.GetModifier\u003CLinkModifier\u003E();\nlinkMod.LinkClicked \u002B= url =\u003E Debug.Log($\u0022Link clicked: {url}\u0022);",
+      "seeAlso": [
+        "IParseRule",
+        "MarkdownLinkParseRule",
+        "RawUrlParseRule",
+        "InteractiveModifier"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -10951,7 +11890,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10967,7 +11910,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10983,7 +11929,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange", "TextHitResult"],
+            "paramTypes": [
+              "InteractiveRange",
+              "TextHitResult"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10999,7 +11948,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["InteractiveRange"],
+            "paramTypes": [
+              "InteractiveRange"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11160,7 +12111,10 @@
       "interfaces": [],
       "summary": "Renders list markers (bullets or numbers) for text items with automatic indentation.",
       "remarks": "Parameter: optional level:number for numbered lists. Without parameter, renders a bullet. Features: - Supports nested lists with configurable indentation per level - Bullet markers are customizable per nesting level - Ordered lists support decimal, alphabetic, and Roman numeral styles - Automatically handles RTL text direction",
-      "seeAlso": ["MarkdownListParseRule", "OrderedMarkerStyle"],
+      "seeAlso": [
+        "MarkdownListParseRule",
+        "OrderedMarkerStyle"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -11224,7 +12178,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11283,54 +12241,6 @@
       "members": {
         "methods": [
           {
-            "id": "LowercaseModifier.OnEnable",
-            "name": "OnEnable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "LowercaseModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "LowercaseModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "LowercaseModifier.OnApply",
             "name": "OnApply",
             "accessModifier": "protected",
@@ -11341,7 +12251,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11380,7 +12294,10 @@
             "returnType": "bool",
             "summary": "Checks if a byte flag is set at the specified index.",
             "params": [],
-            "paramTypes": ["byte[]", "int"],
+            "paramTypes": [
+              "byte[]",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11397,7 +12314,9 @@
             "returnType": "bool",
             "summary": "Checks if any flags are set in the buffer.",
             "params": [],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11414,7 +12333,11 @@
             "returnType": "void",
             "summary": "Sets byte flags for a range of indices.",
             "params": [],
-            "paramTypes": ["byte[]", "int", "int"],
+            "paramTypes": [
+              "byte[]",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11431,7 +12354,10 @@
             "returnType": "bool",
             "summary": "Checks if a uint value is non-zero at the specified index.",
             "params": [],
-            "paramTypes": ["uint[]", "int"],
+            "paramTypes": [
+              "uint[]",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11448,7 +12374,10 @@
             "returnType": "uint",
             "summary": "Gets a uint value or returns 0 if out of bounds.",
             "params": [],
-            "paramTypes": ["uint[]", "int"],
+            "paramTypes": [
+              "uint[]",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11465,7 +12394,12 @@
             "returnType": "void",
             "summary": "Sets uint values for a range of indices.",
             "params": [],
-            "paramTypes": ["uint[]", "int", "int", "uint"],
+            "paramTypes": [
+              "uint[]",
+              "int",
+              "int",
+              "uint"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11489,7 +12423,10 @@
       "interfaces": [],
       "summary": "Embeds UI prefabs (images, icons, custom elements) inline with text.",
       "remarks": "Parameter: the name of the object to embed (must match an entry in the [[objects]] list). The modifier replaces placeholder text with instantiated prefabs positioned in the text flow. Objects are defined in the [[objects]] list and referenced by name in the tag parameter. All metrics are in em units (relative to fontSize). With width=1, height=1 the object will be fontSize x fontSize pixels, matching the size of a typical character.",
-      "seeAlso": ["IParseRule", "InlineObject"],
+      "seeAlso": [
+        "IParseRule",
+        "InlineObject"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -11553,7 +12490,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11711,7 +12652,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11778,7 +12723,11 @@
             "returnType": "ParsedRange",
             "summary": "Creates a simple range without tag information.",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11795,7 +12744,13 @@
             "returnType": "ParsedRange",
             "summary": "Creates a range with opening and closing tag positions.",
             "params": [],
-            "paramTypes": ["int", "int", "int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11812,7 +12767,12 @@
             "returnType": "ParsedRange",
             "summary": "Creates a self-closing tag range that inserts content.",
             "params": [],
-            "paramTypes": ["int", "int", "string", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12013,6 +12973,98 @@
       }
     },
     {
+      "id": "ScriptPositionModifier",
+      "name": "ScriptPositionModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "interfaces": [],
+      "summary": "Applies superscript or subscript formatting to text ranges.",
+      "remarks": "Two-tier approach: Native: activates OpenType \u0027sups\u0027/\u0027subs\u0027 feature via HarfBuzz (proper glyphs). Synthesis: scales down and shifts vertically using OS/2 metrics (fallback). Attribute sbyte encoding: 0 = unchanged, \u002B1 = native super, -1 = native sub, \u002B2 = synth super, -2 = synth sub. Create two styles to support both tags: Style 1: ScriptPositionModifier \u002B TagRule(\u0022sup\u0022) with defaultParameter = \u0022super\u0022 Style 2: ScriptPositionModifier \u002B TagRule(\u0022sub\u0022) with defaultParameter = \u0022sub\u0022",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "ScriptPositionModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ScriptPositionModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ScriptPositionModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ScriptPositionModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "ShadowModifier",
       "name": "ShadowModifier",
       "namespace": "LightSide",
@@ -12063,6 +13115,22 @@
             "typeParameters": []
           },
           {
+            "id": "ShadowModifier.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "ShadowModifier.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
@@ -12089,7 +13157,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12204,7 +13276,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12292,7 +13368,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12332,7 +13412,10 @@
             "isConstructor": false,
             "returnType": "float",
             "params": [],
-            "paramTypes": ["FaceInfo", "float"],
+            "paramTypes": [
+              "FaceInfo",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12348,7 +13431,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12382,7 +13467,11 @@
       "interfaces": [],
       "summary": "Serializable container that links a modifier with its parse rule. Tracks registration state and ownership to prevent bugs.",
       "remarks": "Note: \u0022Initialized\u0022 state (buffers created, events subscribed) is tracked by BaseModifier.IsInitialized and happens lazily on first Apply(). Ownership rules: - Style tracks its owner UniText - Registration fails if already registered to different owner - State resets on deserialization",
-      "seeAlso": ["BaseModifier", "IParseRule", "AttributeParser"],
+      "seeAlso": [
+        "BaseModifier",
+        "IParseRule",
+        "AttributeParser"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
@@ -12457,7 +13546,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "interfaces": ["IReadOnlyList\u003CT\u003E"],
+      "interfaces": [
+        "IReadOnlyList\u003CT\u003E"
+      ],
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -12490,7 +13581,9 @@
             "isConstructor": true,
             "returnType": "StyledList",
             "params": [],
-            "paramTypes": ["T[]"],
+            "paramTypes": [
+              "T[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12506,7 +13599,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12522,7 +13617,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12538,7 +13635,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12570,7 +13669,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "T"],
+            "paramTypes": [
+              "int",
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12704,7 +13806,10 @@
             "isConstructor": false,
             "returnType": "float",
             "params": [],
-            "paramTypes": ["FaceInfo", "float"],
+            "paramTypes": [
+              "FaceInfo",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12720,7 +13825,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12761,54 +13868,6 @@
       "members": {
         "methods": [
           {
-            "id": "UppercaseModifier.OnEnable",
-            "name": "OnEnable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UppercaseModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UppercaseModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UppercaseModifier.OnApply",
             "name": "OnApply",
             "accessModifier": "protected",
@@ -12819,7 +13878,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12907,7 +13970,119 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "string"],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "WobbleAnimationModifier",
+      "name": "WobbleAnimationModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "interfaces": [],
+      "summary": "Applies a sine-wave wobble animation to text by oscillating glyph vertices vertically.",
+      "remarks": "Each glyph moves up and down based on sin(time * speed \u002B cluster * spread) * amplitude. The modifier continuously triggers mesh rebuilds while active.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "WobbleAnimationModifier.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WobbleAnimationModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WobbleAnimationModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WobbleAnimationModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WobbleAnimationModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13031,7 +14206,29 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeParseRule.PostParse",
+            "name": "PostParse",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13217,7 +14414,10 @@
       "interfaces": [],
       "summary": "Interface for custom text parsing rules that identify modifier application ranges.",
       "remarks": "Parse rules scan text for markup (XML tags, Markdown, custom markers) and produce [[ParsedRange]] entries that specify where modifiers should be applied. Rules are matched in priority order (highest first). Use higher priority for explicit markup rules (tags, Markdown) and lower priority for auto-detection rules (raw URLs).",
-      "seeAlso": ["TagParseRule", "AttributeParser"],
+      "seeAlso": [
+        "TagParseRule",
+        "AttributeParser"
+      ],
       "typeParameters": [],
       "category": "parseRules",
       "members": {
@@ -13272,7 +14472,30 @@
             "returnType": "void",
             "summary": "Called after parsing completes to finalize any pending ranges (e.g., unclosed tags).",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IParseRule.PostParse",
+            "name": "PostParse",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Called after tag stripping to add ranges in clean-text space.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13452,7 +14675,10 @@
       "baseType": "IParseRule",
       "interfaces": [],
       "summary": "Parses Markdown-style links: [link text](https://example.com).",
-      "seeAlso": ["LinkModifier", "IParseRule"],
+      "seeAlso": [
+        "LinkModifier",
+        "IParseRule"
+      ],
       "typeParameters": [],
       "category": "parseRules",
       "members": {
@@ -13496,7 +14722,9 @@
       "interfaces": [],
       "summary": "Parses Markdown-style lists (bulleted and numbered).",
       "remarks": "Supports unordered lists with -, *, \u002B markers and ordered lists with 1., 2) etc. Nested lists are detected by indentation level.",
-      "seeAlso": ["ListModifier"],
+      "seeAlso": [
+        "ListModifier"
+      ],
       "typeParameters": [],
       "category": "parseRules",
       "members": {
@@ -13603,7 +14831,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13746,8 +14977,8 @@
             "typeParameters": []
           },
           {
-            "id": "RangeRule.Finalize",
-            "name": "Finalize",
+            "id": "RangeRule.PostParse",
+            "name": "PostParse",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
@@ -13756,7 +14987,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13790,7 +15024,9 @@
       "interfaces": [],
       "summary": "Auto-detects URLs in plain text and converts them to clickable links.",
       "remarks": "Recognizes schemes: http://, https://, ftp://, ftps://, file://, mailto:, tel:, and www. prefixes. Uses negative priority (-100) to run after explicit markup rules (tags, Markdown), so URLs inside other markup are not detected.",
-      "seeAlso": ["LinkModifier"],
+      "seeAlso": [
+        "LinkModifier"
+      ],
       "typeParameters": [],
       "category": "parseRules",
       "members": {
@@ -14017,7 +15253,9 @@
       "interfaces": [],
       "summary": "Base class for parsing XML-style markup tags (e.g., \u003Cb\u003E, \u003Ccolor=#FF0000\u003E).",
       "remarks": "Derived classes override [[TagName]] to specify the tag name to match. Parameters are always optional: \u003Ctag\u003E, \u003Ctag=value\u003E, \u003Ctag/\u003E, \u003Ctag=value/\u003E. Self-closing is purely syntax-driven via /\u003E.",
-      "seeAlso": ["IParseRule"],
+      "seeAlso": [
+        "IParseRule"
+      ],
       "typeParameters": [],
       "category": "parseRules",
       "members": {
@@ -14049,7 +15287,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14137,7 +15378,9 @@
             "isConstructor": true,
             "returnType": "TagRule",
             "params": [],
-            "paramTypes": ["string"],
+            "paramTypes": [
+              "string"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14173,7 +15416,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["ReadOnlySpan\u003Cchar\u003E", "PooledList\u003CParsedRange\u003E"],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14484,7 +15730,10 @@
                 "description": "The Unicode codepoint."
               }
             ],
-            "paramTypes": ["UniTextFont", "uint"],
+            "paramTypes": [
+              "UniTextFont",
+              "uint"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14528,7 +15777,13 @@
                 "description": "Output horizontal advance in font units."
               }
             ],
-            "paramTypes": ["UniTextFont", "uint", "float", "uint", "float"],
+            "paramTypes": [
+              "UniTextFont",
+              "uint",
+              "float",
+              "uint",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14552,7 +15807,9 @@
                 "description": "The font asset."
               }
             ],
-            "paramTypes": ["UniTextFont"],
+            "paramTypes": [
+              "UniTextFont"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14569,7 +15826,9 @@
             "returnType": "int",
             "summary": "Gets upem directly from font data without caching.",
             "params": [],
-            "paramTypes": ["byte[]"],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14592,7 +15851,9 @@
                 "description": "Instance ID of the font asset to clear."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14610,6 +15871,26 @@
             "summary": "Clears all shaping caches for all fonts.",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Shaper.ComputeScale",
+            "name": "ComputeScale",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Computes the glyph scale factor for a font.",
+            "params": [],
+            "paramTypes": [
+              "UniTextFontProvider",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14672,7 +15953,10 @@
                 "description": "The total advance width."
               }
             ],
-            "paramTypes": ["ReadOnlySpan\u003CShapedGlyph\u003E", "float"],
+            "paramTypes": [
+              "ReadOnlySpan\u003CShapedGlyph\u003E",
+              "float"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14902,7 +16186,9 @@
       "interfaces": [],
       "summary": "Provides access to Unicode character properties and the global data provider.",
       "remarks": "Contains common Unicode codepoint constants (whitespace, control characters, BiDi marks) and helper methods for character classification. The static [[Provider]] property gives access to the full Unicode property database for script, line break, and grapheme cluster information.",
-      "seeAlso": ["UnicodeDataProvider"],
+      "seeAlso": [
+        "UnicodeDataProvider"
+      ],
       "typeParameters": [],
       "category": "unicode",
       "members": {
@@ -14918,7 +16204,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14935,7 +16223,9 @@
             "returnType": "bool",
             "summary": "Returns true if the codepoint is a line or paragraph separator that produces a mandatory break (UAX #14 classes BK, CR, LF, NL) and should not be shaped.",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14951,7 +16241,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14967,7 +16259,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14983,7 +16277,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14999,7 +16295,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -15015,7 +16313,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17680,7 +18980,9 @@
       "interfaces": [],
       "summary": "Extension methods for parsing [[Index]] from string representation.",
       "remarks": "Supports C# index syntax: \u00220\u0022 for start-based, \u0022^1\u0022 for end-based indices. Used internally for markup parameter parsing.",
-      "seeAlso": ["RangeEx"],
+      "seeAlso": [
+        "RangeEx"
+      ],
       "typeParameters": [],
       "category": "utilities",
       "members": {
@@ -17709,7 +19011,10 @@
                 "description": "The parsed index if successful."
               }
             ],
-            "paramTypes": ["string", "Index"],
+            "paramTypes": [
+              "string",
+              "Index"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17729,10 +19034,12 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "interfaces": ["IAttributeData"],
+      "interfaces": [
+        "IAttributeData"
+      ],
       "summary": "A pooled array-based implementation of [[IAttributeData]].",
       "remarks": "Use this class to store per-codepoint or per-glyph attribute data in modifiers. The underlying array is rented from [[UniTextArrayPool{T}]] for zero-allocation operation.",
-      "example": "var colors = buffers.GetOrCreateAttributeData\u003CPooledArrayAttribute\u003CColor32\u003E\u003E(\u0022colors\u0022);\r\ncolors.EnsureCount(codepointCount);\r\ncolors[0] = Color.red;",
+      "example": "var colors = buffers.GetOrCreateAttributeData\u003CPooledArrayAttribute\u003CColor32\u003E\u003E(\u0022colors\u0022);\ncolors.EnsureCount(codepointCount);\ncolors[0] = Color.red;",
       "seeAlso": [],
       "typeParameters": [
         {
@@ -17761,7 +19068,9 @@
                 "description": "The item to add."
               }
             ],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17784,7 +19093,9 @@
                 "description": "The minimum required element count."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17846,7 +19157,10 @@
       "interfaces": [],
       "summary": "A value-type wrapper for managing a pooled array with count tracking.",
       "remarks": "Provides a List-like interface over a pooled array without heap allocations for the container itself. Use [[Rent]] to acquire an array and [[Return]] to release it back to the pool. The [[count]] field tracks how many elements are in use, while [[Capacity]] reflects the actual array length. Operations like [[Add]] automatically grow the buffer.",
-      "seeAlso": ["UniTextArrayPool{T}", "PooledList{T}"],
+      "seeAlso": [
+        "UniTextArrayPool{T}",
+        "PooledList{T}"
+      ],
       "typeParameters": [
         {
           "name": "T",
@@ -17874,7 +19188,9 @@
                 "description": "The minimum required capacity."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17966,7 +19282,9 @@
                 "description": "The minimum required capacity."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -17989,7 +19307,9 @@
                 "description": "The minimum required count."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18012,7 +19332,9 @@
                 "description": "The item to add."
               }
             ],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18040,7 +19362,10 @@
                 "description": "The number of elements to remove."
               }
             ],
-            "paramTypes": ["int", "int"],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18063,7 +19388,9 @@
                 "description": "The index of the element to remove."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18091,7 +19418,10 @@
                 "description": "The item to insert."
               }
             ],
-            "paramTypes": ["int", "T"],
+            "paramTypes": [
+              "int",
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18115,7 +19445,9 @@
                 "description": "The index of the element to remove."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18138,7 +19470,9 @@
                 "description": "The comparison delegate."
               }
             ],
-            "paramTypes": ["Comparison\u003CT\u003E"],
+            "paramTypes": [
+              "Comparison\u003CT\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18171,7 +19505,11 @@
                 "description": "The comparer to use."
               }
             ],
-            "paramTypes": ["int", "int", "IComparer\u003CT\u003E"],
+            "paramTypes": [
+              "int",
+              "int",
+              "IComparer\u003CT\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18235,10 +19573,15 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "interfaces": ["IList\u003CT\u003E"],
+      "interfaces": [
+        "IList\u003CT\u003E"
+      ],
       "summary": "A reference-type wrapper around [[PooledBuffer{T}]] for scenarios requiring heap allocation.",
       "remarks": "Use this when you need to store a pooled collection in a field or pass it by reference without boxing. The underlying [[buffer]] is a struct, so modifications are in-place. Provides the same API as [[PooledBuffer{T}]] but as a class for scenarios where value-type semantics are not suitable.",
-      "seeAlso": ["PooledBuffer{T}", "UniTextArrayPool{T}"],
+      "seeAlso": [
+        "PooledBuffer{T}",
+        "UniTextArrayPool{T}"
+      ],
       "typeParameters": [
         {
           "name": "T",
@@ -18283,7 +19626,9 @@
                 "description": "The initial capacity."
               }
             ],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18299,7 +19644,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18363,7 +19710,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18379,7 +19728,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18395,7 +19746,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int"],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18411,7 +19765,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18427,7 +19783,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["Comparison\u003CT\u003E"],
+            "paramTypes": [
+              "Comparison\u003CT\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18443,7 +19801,11 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "int", "IComparer\u003CT\u003E"],
+            "paramTypes": [
+              "int",
+              "int",
+              "IComparer\u003CT\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18459,7 +19821,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18475,7 +19839,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["T[]", "int"],
+            "paramTypes": [
+              "T[]",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18491,7 +19858,9 @@
             "isConstructor": false,
             "returnType": "int",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18507,7 +19876,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "T"],
+            "paramTypes": [
+              "int",
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18523,7 +19895,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18596,7 +19970,9 @@
       "interfaces": [],
       "summary": "Extension methods for parsing [[Range]] from string representation.",
       "remarks": "Supports C# range syntax: \u00220..5\u0022, \u0022..5\u0022, \u00222..\u0022, \u0022^3..^1\u0022. Used internally for markup parameter parsing.",
-      "seeAlso": ["IndexEx"],
+      "seeAlso": [
+        "IndexEx"
+      ],
       "typeParameters": [],
       "category": "utilities",
       "members": {
@@ -18625,7 +20001,10 @@
                 "description": "The parsed range if successful."
               }
             ],
-            "paramTypes": ["string", "Range"],
+            "paramTypes": [
+              "string",
+              "Range"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18654,7 +20033,10 @@
                 "description": "The range to convert."
               }
             ],
-            "paramTypes": ["int", "Range"],
+            "paramTypes": [
+              "int",
+              "Range"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18674,7 +20056,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "interfaces": ["IReadOnlyList\u003CT\u003E"],
+      "interfaces": [
+        "IReadOnlyList\u003CT\u003E"
+      ],
       "seeAlso": [],
       "typeParameters": [],
       "category": "utilities",
@@ -18707,7 +20091,9 @@
             "isConstructor": true,
             "returnType": "TypedList",
             "params": [],
-            "paramTypes": ["T[]"],
+            "paramTypes": [
+              "T[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18723,7 +20109,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18739,7 +20127,9 @@
             "isConstructor": false,
             "returnType": "bool",
             "params": [],
-            "paramTypes": ["T"],
+            "paramTypes": [
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18755,7 +20145,9 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int"],
+            "paramTypes": [
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18787,7 +20179,10 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
-            "paramTypes": ["int", "T"],
+            "paramTypes": [
+              "int",
+              "T"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -18973,6 +20368,10 @@
       {
         "name": "UniTextWorld",
         "priority": 100
+      },
+      {
+        "name": "UniTextWorldBatcher",
+        "priority": 100
       }
     ],
     "editor": [
@@ -19095,6 +20494,10 @@
         "priority": 100
       },
       {
+        "name": "CompositeModifier",
+        "priority": 100
+      },
+      {
         "name": "EffectModifier",
         "priority": 100
       },
@@ -19183,6 +20586,10 @@
         "priority": 100
       },
       {
+        "name": "ScriptPositionModifier",
+        "priority": 100
+      },
+      {
         "name": "ShadowModifier",
         "priority": 100
       },
@@ -19216,6 +20623,10 @@
       },
       {
         "name": "VariationModifier",
+        "priority": 100
+      },
+      {
+        "name": "WobbleAnimationModifier",
         "priority": 100
       }
     ],
@@ -19421,6 +20832,7 @@
     "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
     "Material": "https://docs.unity3d.com/ScriptReference/Material.html",
     "Mesh": "https://docs.unity3d.com/ScriptReference/Mesh.html",
+    "MonoBehaviour": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.html",
     "PointerEventData": "https://docs.unity3d.com/ScriptReference/EventSystems.PointerEventData.html",
     "ReadOnlyMemory": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlymemory-1",
     "ReadOnlySpan": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlyspan-1",
@@ -19428,7 +20840,6 @@
     "RectTransform": "https://docs.unity3d.com/ScriptReference/RectTransform.html",
     "ScriptableObject": "https://docs.unity3d.com/ScriptReference/ScriptableObject.html",
     "Span": "https://learn.microsoft.com/en-us/dotnet/api/system.span-1",
-    "Texture2D": "https://docs.unity3d.com/ScriptReference/Texture2D.html",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
     "Vector2": "https://docs.unity3d.com/ScriptReference/Vector2.html",
     "Vector3": "https://docs.unity3d.com/ScriptReference/Vector3.html",
