@@ -1,6 +1,6 @@
 {
-  "version": "2.0.7",
-  "generatedAt": "2026-04-08T01:51:22.4398298Z",
+  "version": "2.0.8",
+  "generatedAt": "2026-04-14T18:30:55.2147209Z",
   "namespaces": [],
   "types": [
     {
@@ -3507,12 +3507,12 @@
       "isStatic": false,
       "baseType": "UniTextBase",
       "interfaces": [
-        "ILayoutController",
         "IPointerDownHandler",
         "IPointerUpHandler",
         "IPointerEnterHandler",
         "IPointerExitHandler",
-        "IPointerMoveHandler"
+        "IPointerMoveHandler",
+        "ILayoutController"
       ],
       "summary": "Canvas text rendering component with full Unicode support. Uses CanvasRenderer for rendering within Unity UI Canvas.",
       "remarks": "UniText is a drop-in replacement for Unity\u0027s Text/TextMeshPro with proper support for: Bidirectional text (Arabic, Hebrew) via UAX #9 Complex script shaping (Devanagari, Thai, etc.) via HarfBuzz Proper line breaking via UAX #14 Color emoji rendering Extensible markup system via [[IParseRule]] (HTML tags, Markdown, custom markers) For world-space text without Canvas, use [[UniTextWorld]] instead.",
@@ -3788,22 +3788,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniText.InvalidateLayoutCache",
-            "name": "InvalidateLayoutCache",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniText.OnPointerDown",
             "name": "OnPointerDown",
             "accessModifier": "public",
@@ -3977,6 +3961,22 @@
               "Camera",
               "float"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.InvalidateLayoutCache",
+            "name": "InvalidateLayoutCache",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -8131,6 +8131,275 @@
             "isConst": false,
             "type": "int",
             "summary": "Index of the atlas texture containing this glyph."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "GlyphAtlas",
+      "name": "GlyphAtlas",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "interfaces": [
+        "IDisposable"
+      ],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [
+          {
+            "id": "GlyphAtlas.GetInstance",
+            "name": "GetInstance",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "GlyphAtlas",
+            "params": [],
+            "paramTypes": [
+              "RenderModee"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.MakeKey",
+            "name": "MakeKey",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "long",
+            "params": [],
+            "paramTypes": [
+              "long",
+              "uint"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.DefaultVarHash",
+            "name": "DefaultVarHash",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "long",
+            "summary": "Computes default varHash48 for a non-variable font.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.ComputeVarHash48",
+            "name": "ComputeVarHash48",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "long",
+            "summary": "Computes varHash48 for a variable font with specific axis values. Uses FNV-1a to mix fontDataHash with axis values. Returns DefaultVarHash if axisValues is empty.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ReadOnlySpan\u003Cfloat\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.TileSizeFromEncoded",
+            "name": "TileSizeFromEncoded",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.TryGetEntry",
+            "name": "TryGetEntry",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "long",
+              "uint",
+              "GlyphEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.TryGetEntry",
+            "name": "TryGetEntry",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "long",
+              "GlyphEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlyphAtlas.Dispose",
+            "name": "Dispose",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "GlyphAtlas.Pad",
+            "name": "Pad",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "float"
+          },
+          {
+            "id": "GlyphAtlas.PageStride",
+            "name": "PageStride",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "GlyphAtlas.DefaultBandPixels",
+            "name": "DefaultBandPixels",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "GlyphAtlas.GlyphEntry",
+      "name": "GlyphEntry",
+      "namespace": "LightSide",
+      "declaringType": "GlyphAtlas",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "interfaces": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "GlyphEntry.encodedTile",
+            "name": "encodedTile",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "GlyphEntry.pageIndex",
+            "name": "pageIndex",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "GlyphEntry.metrics",
+            "name": "metrics",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "GlyphMetrics"
+          },
+          {
+            "id": "GlyphEntry.pixelWidth",
+            "name": "pixelWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Rendered pixel width (emoji only, 0 for SDF)."
+          },
+          {
+            "id": "GlyphEntry.pixelHeight",
+            "name": "pixelHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Rendered pixel height (emoji only, 0 for SDF)."
           }
         ],
         "events": []
@@ -12695,6 +12964,215 @@
       }
     },
     {
+      "id": "ParameterReader",
+      "name": "ParameterReader",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Zero-allocation tokenizer for comma-separated modifier parameters. Eliminates manual IndexOf/Slice/Trim boilerplate in modifier parsers.",
+      "example": "var reader = new ParameterReader(parameter);\nreader.NextString(out var name);\nreader.NextFloat(out var angle);\nreader.NextColor(out var color);",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "ParameterReader.ctor",
+            "name": "ParameterReader",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "ParameterReader",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.ctor",
+            "name": "ParameterReader",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "ParameterReader",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.Next",
+            "name": "Next",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next comma-delimited token (trimmed). Returns false if no tokens remain.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.ParseFloat",
+            "name": "ParseFloat",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Parses a span as float using InvariantCulture. For pre-extracted tokens where Next() was already called.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextFloat",
+            "name": "NextFloat",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as a float. Returns false if missing or unparseable.",
+            "params": [],
+            "paramTypes": [
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextInt",
+            "name": "NextInt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as an int. Returns false if missing or unparseable.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextColor",
+            "name": "NextColor",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as a Color32 via [[ColorParsing]]. Returns false if missing or unparseable.",
+            "params": [],
+            "paramTypes": [
+              "Color32"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextUnitFloat",
+            "name": "NextUnitFloat",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as a float with optional unit suffix. Recognizes: 24 (absolute), 150%, 0.5em, \u002B10/-5 (delta). Always uses InvariantCulture.",
+            "params": [],
+            "paramTypes": [
+              "float",
+              "UnitKind",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextString",
+            "name": "NextString",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as a string (allocates). Returns false if missing or empty.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "ParameterReader.IsEmpty",
+            "name": "IsEmpty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True if there are no more tokens to read.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "ParsedRange",
       "name": "ParsedRange",
       "namespace": "LightSide",
@@ -13846,6 +14324,68 @@
           }
         ],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ParameterReader.UnitKind",
+      "name": "UnitKind",
+      "declaringType": "ParameterReader",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Unit type for values parsed by [[NextUnitFloat]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "ParameterReader.UnitKind.Absolute",
+            "name": "Absolute",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "UnitKind",
+            "defaultValue": "0"
+          },
+          {
+            "id": "ParameterReader.UnitKind.Percent",
+            "name": "Percent",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "UnitKind",
+            "defaultValue": "1"
+          },
+          {
+            "id": "ParameterReader.UnitKind.Em",
+            "name": "Em",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "UnitKind",
+            "defaultValue": "2"
+          },
+          {
+            "id": "ParameterReader.UnitKind.Delta",
+            "name": "Delta",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "UnitKind",
+            "defaultValue": "3"
+          }
+        ],
         "events": []
       }
     },
@@ -20436,6 +20976,14 @@
         "priority": 100
       },
       {
+        "name": "GlyphAtlas",
+        "priority": 100
+      },
+      {
+        "name": "GlyphEntry",
+        "priority": 100
+      },
+      {
         "name": "GlyphMetrics",
         "priority": 100
       },
@@ -20582,6 +21130,10 @@
         "priority": 100
       },
       {
+        "name": "ParameterReader",
+        "priority": 100
+      },
+      {
         "name": "Range",
         "priority": 100
       },
@@ -20615,6 +21167,10 @@
       },
       {
         "name": "UnderlineModifier",
+        "priority": 100
+      },
+      {
+        "name": "UnitKind",
         "priority": 100
       },
       {
@@ -20822,6 +21378,7 @@
     "Gradient": "https://docs.unity3d.com/ScriptReference/Gradient.html",
     "HashSet": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1",
     "IComparer": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1",
+    "IDisposable": "https://learn.microsoft.com/en-us/dotnet/api/system.idisposable",
     "IEnumerable": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1",
     "IEnumerator": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1",
     "IEquatable": "https://learn.microsoft.com/en-us/dotnet/api/system.iequatable-1",
