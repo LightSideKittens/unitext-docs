@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import type { ReactNode } from 'react';
 import {
   BookOpen,
   Code2,
@@ -6,6 +7,18 @@ import {
   CheckCircle,
   Sparkles,
   Layers,
+  Globe,
+  ArrowLeftRight,
+  Smile,
+  Zap,
+  Type,
+  Palette,
+  Tag,
+  MousePointer,
+  ScanText,
+  Box,
+  Package,
+  Wrench,
 } from 'lucide-react';
 import {
   useDocs,
@@ -13,13 +26,96 @@ import {
   Notice,
 } from '@lightside/docs-system';
 
-const HIGHLIGHTS = [
-  '150+ languages with HarfBuzz shaping',
-  'Full Unicode 17.0 compliance',
-  'Zero GC allocations at runtime',
-  '3-14x faster than TextMesh Pro',
-  'BiDi algorithm (UAX #9)',
-  'Grapheme clustering (UAX #29)',
+const Code = ({ children }: { children: ReactNode }) => (
+  <code className="px-1 py-0.5 rounded bg-white/10 text-[var(--color-accent)] text-[0.85em] font-mono">
+    {children}
+  </code>
+);
+
+interface Highlight {
+  icon: typeof Globe;
+  title: string;
+  description: ReactNode;
+}
+
+const HIGHLIGHTS: Highlight[] = [
+  {
+    icon: Globe,
+    title: '150+ Languages',
+    description:
+      'Arabic, Hebrew, Hindi, Thai, CJK, and every other Unicode script. One component, automatic font fallback',
+  },
+  {
+    icon: ArrowLeftRight,
+    title: 'Full BiDi',
+    description: 'Mixed LTR/RTL with numbers and punctuation renders correctly (UAX #9)',
+  },
+  {
+    icon: Smile,
+    title: 'Native Color Emoji',
+    description: 'ZWJ sequences, skin tones, flags via system fonts. Zero extra build size',
+  },
+  {
+    icon: Zap,
+    title: 'SDF & MSDF Rendering',
+    description: (
+      <>
+        Curve-based Burst-compiled rasterization. Shared <Code>Texture2DArray</Code> atlas with
+        adaptive tile sizes, reference counting, and LRU eviction
+      </>
+    ),
+  },
+  {
+    icon: Type,
+    title: 'Font Families',
+    description:
+      'CSS §5.2 weight matching, variable font axes (wght, wdth, ital, slnt, opsz), three-tier resolution: variable axes → static faces → synthesis',
+  },
+  {
+    icon: Palette,
+    title: 'Effects',
+    description: (
+      <>
+        Outline and shadow via multi-pass SDF. <Code>&lt;outline&gt;</Code>{' '}
+        <Code>&lt;shadow&gt;</Code> tags with color, dilate, offset, softness
+      </>
+    ),
+  },
+  {
+    icon: Tag,
+    title: 'Extensible Markup',
+    description: (
+      <>
+        30+ modifier presets, Markdown (<Code>**bold**</Code>, <Code>*italic*</Code>), custom parse
+        rules, shared configurations
+      </>
+    ),
+  },
+  {
+    icon: MousePointer,
+    title: 'Interactive Text',
+    description: 'Clickable/hoverable regions with typed events and highlight system',
+  },
+  {
+    icon: ScanText,
+    title: 'Word Segmentation',
+    description: 'Dictionary-based word breaking for Thai, Lao, Khmer, Myanmar',
+  },
+  {
+    icon: Box,
+    title: 'UniTextWorld',
+    description: '3D text without Canvas — full pipeline via MeshRenderer',
+  },
+  {
+    icon: Package,
+    title: 'Zstd Compression',
+    description: '~2.7x smaller builds for Latin/Arabic, ~1.3x for CJK',
+  },
+  {
+    icon: Wrench,
+    title: 'Editor UX',
+    description: 'Style selector with ~30 presets, font family inspector, glyph picker, atlas preview',
+  },
 ];
 
 const QUICK_LINKS = [
@@ -97,15 +193,20 @@ export default function HomePage() {
       </section>
 
       <section className="p-6 rounded-xl bg-gradient-to-br from-[var(--color-accent)]/10 to-purple-500/10 border border-[var(--color-accent)]/20">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
           <CheckCircle className="w-5 h-5 text-[var(--color-accent)]" />
           Key Features
         </h2>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-2 gap-4">
           {HIGHLIGHTS.map((feature) => (
-            <div key={feature} className="flex items-center gap-2 text-white/70">
-              <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-              {feature}
+            <div key={feature.title} className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                <feature.icon className="w-4 h-4 text-[var(--color-accent)]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-white/90 mb-1">{feature.title}</h3>
+                <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
+              </div>
             </div>
           ))}
         </div>
