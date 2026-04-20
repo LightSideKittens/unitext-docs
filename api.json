@@ -1,6 +1,6 @@
 {
-  "version": "2.0.14",
-  "generatedAt": "2026-04-18T19:14:37.1190102Z",
+  "version": "2.0.15",
+  "generatedAt": "2026-04-20T11:32:58.7390337Z",
   "namespaces": [],
   "types": [
     {
@@ -5973,11 +5973,18 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Scales a glyph quad (4 vertices) around its left edge and baseline. Used by SizeModifier, SmallCapsModifier, ScriptPositionModifier.",
-            "params": [],
+            "summary": "Scales a glyph quad (4 vertices) around the cursor position and baseline. Used by SizeModifier, SmallCapsModifier, ScriptPositionModifier.",
+            "params": [
+              {
+                "name": "pivotX",
+                "type": "float",
+                "description": "Cursor position (pen X) \u2014 bearing and width scale proportionally from this pivot."
+              }
+            ],
             "paramTypes": [
               "Vector3[]",
               "int",
+              "float",
               "float",
               "float",
               "float"
@@ -6402,6 +6409,16 @@
             "isConst": false,
             "type": "float",
             "summary": "Y coordinate of the text baseline for the current glyph."
+          },
+          {
+            "id": "UniTextMeshGenerator.cursorX",
+            "name": "cursorX",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "X coordinate of the cursor position (pen position) for the current glyph."
           },
           {
             "id": "UniTextMeshGenerator.scale",
