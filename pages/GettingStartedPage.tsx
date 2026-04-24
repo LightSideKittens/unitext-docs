@@ -21,6 +21,9 @@ import {
   MousePointerClick,
   Wrench,
   Download,
+  Globe,
+  Palette,
+  FileText,
 } from 'lucide-react';
 import { useDocs, CodeBlock, Notice, AutoLink } from '@lightside/docs-system';
 
@@ -100,47 +103,180 @@ export default function GettingStartedPage() {
           </h2>
 
           <p className="text-white/70 mb-4">
-            Use the <strong>GameObject</strong> menu to create ready-to-use UniText objects:
+            UniText ships two rendering components. Pick the one that matches your scene:
           </p>
 
-          <ul className="space-y-2 text-white/70 mb-6 list-disc list-inside">
-            <li>
-              <strong>GameObject &rarr; UI &rarr; UniText - Text</strong> — text with default font
-              and size
-            </li>
-            <li>
-              <strong>GameObject &rarr; UI &rarr; UniText - Button</strong> — button with UniText
-              label (Image + Button + UniText child)
-            </li>
-          </ul>
+          <div className="overflow-x-auto mb-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2 pr-4 text-white/60">Component</th>
+                  <th className="text-left py-2 pr-4 text-white/60">Use when</th>
+                  <th className="text-left py-2 text-white/60">Renders via</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/70">
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>UniText</code>
+                  </td>
+                  <td className="py-2 pr-4">Text in a Canvas UI (screens, HUDs, inspector overlays)</td>
+                  <td className="py-2">
+                    <code>CanvasRenderer</code> (UGUI)
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4">
+                    <code>UniTextWorld</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    Text placed in 3D world space, particle-like text, floating labels
+                  </td>
+                  <td className="py-2">Combined mesh via an invisible batcher (see §1.3)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <Notice type="info" className="mb-6">
-            <strong>Input Field</strong> is currently in development and will be available in a
-            future release.
-          </Notice>
-
-          <p className="text-white/70 mb-4">
-            Canvas and EventSystem are created automatically if not present. Default font stack from{' '}
-            <strong>Project Settings &rarr; UniText</strong> is applied to all created components.
+          <p className="text-white/70 mb-6">
+            Both components share 100% of the text processing pipeline (parsing, shaping, layout,
+            modifiers, emoji, variable fonts, language). Only the rendering surface differs.
           </p>
 
-          <p className="text-white/70 mb-4">
-            You can also override default prefabs in{' '}
-            <strong>Project Settings &rarr; UniText</strong> (Text Prefab, Button Prefab) — the menu
-            will instantiate your prefab instead.
-          </p>
+          <div className="space-y-6">
+            {/* 1.1 Canvas text */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                1.1 Canvas text (<code>UniText</code>)
+              </h3>
 
-          <CodeBlock
-            code={`// Via code:
+              <p className="text-white/70 mb-4">
+                Use the <strong>GameObject</strong> menu to create ready-to-use Canvas UniText
+                objects:
+              </p>
+
+              <ul className="space-y-2 text-white/70 mb-6 list-disc list-inside">
+                <li>
+                  <strong>GameObject &rarr; UI (Canvas) &rarr; UniText &rarr; Text</strong> — text
+                  with default font and size
+                </li>
+                <li>
+                  <strong>GameObject &rarr; UI (Canvas) &rarr; UniText &rarr; Button</strong> —
+                  button with UniText label (Image + Button + UniText child)
+                </li>
+              </ul>
+
+              <Notice type="info" className="mb-6">
+                <strong>Input Field</strong> is currently in development and will be available in a
+                future release.
+              </Notice>
+
+              <p className="text-white/70 mb-4">
+                Canvas and EventSystem are created automatically if not present. Default font stack
+                from <strong>Project Settings &rarr; UniText</strong> is applied to all created
+                components.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                You can also override default prefabs in{' '}
+                <strong>Project Settings &rarr; UniText</strong> (Text Prefab, Button Prefab) — the
+                menu will instantiate your prefab instead.
+              </p>
+
+              <CodeBlock
+                code={`// Via code:
 var uniText = gameObject.AddComponent<UniText>();
 uniText.FontStack = myFontStack;
 uniText.Text = "Hello, World!";`}
-          />
+              />
 
-          <Notice type="info" className="mt-4">
-            Editor defaults (from Project Settings &rarr; UniText) are only applied when adding the
-            component via the menu or Inspector.
-          </Notice>
+              <Notice type="info" className="mt-4">
+                Editor defaults (from Project Settings &rarr; UniText) are only applied when adding
+                the component via the menu or Inspector.
+              </Notice>
+            </div>
+
+            {/* 1.2 World-space text */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                1.2 World-space text (<code>UniTextWorld</code>)
+              </h3>
+
+              <p className="text-white/70 mb-4">
+                Use the menu to create a ready-to-go world-space text object:
+              </p>
+
+              <ul className="space-y-2 text-white/70 mb-6 list-disc list-inside">
+                <li>
+                  <strong>GameObject &rarr; UI (World) &rarr; UniText &rarr; World Text</strong>
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                The menu creates a <code>UniTextWorld</code> scaled to <code>0.01</code> (so world
+                units line up with your typical 3D scene), and auto-adds a{' '}
+                <code>UniTextWorldRaycaster</code> to <code>Camera.main</code> so pointer events
+                work out of the box (see §4.4). Override the prefab in{' '}
+                <strong>Project Settings &rarr; UniText &rarr; World Text Prefab</strong>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                World-space text authoring is identical to Canvas text — same{' '}
+                <code>FontStack</code>, <code>FontSize</code>, alignment, modifiers, styles,
+                language, and so on. The component also exposes Unity's standard sorting knobs:
+              </p>
+
+              <CodeBlock
+                code={`var world = gameObject.AddComponent<UniTextWorld>();
+world.Text = "Hello from world space!";
+world.SortingOrder = 5;
+world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
+              />
+            </div>
+
+            {/* 1.3 How world-space rendering works */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">1.3 How world-space rendering works</h3>
+
+              <p className="text-white/70 mb-4">
+                You never attach a <code>MeshRenderer</code> to a <code>UniTextWorld</code>. An
+                invisible <code>UniTextWorldBatcher</code> in the scene subscribes to{' '}
+                <code>UniTextWorld</code> events and assembles combined meshes:
+              </p>
+
+              <ul className="space-y-2 text-white/70 mb-4 list-disc list-inside">
+                <li>
+                  All active <code>UniTextWorld</code> components sharing the same{' '}
+                  <code>(material, SortingLayer, OrderInLayer, SortingGroup)</code> are batched into
+                  one draw call.
+                </li>
+                <li>
+                  Large groups are split into multiple shards automatically (target shard size
+                  configured via <code>UniTextSettings.WorldBatcherShardTargetVertexCount</code>,
+                  default 8192 vertices).
+                </li>
+                <li>
+                  Each batched group respects Unity's sorting model, so world-space text
+                  interleaves correctly with <code>SpriteRenderer</code> and other renderers
+                  per-instance.
+                </li>
+                <li>
+                  When a component moves, only its slice of the shard's vertex buffer is rewritten
+                  (no full rebuild for transform-only changes).
+                </li>
+              </ul>
+
+              <p className="text-white/70">
+                The batcher is fully transparent — you don't configure it. If you need to observe
+                the render pipeline from outside (custom batchers, debug overlays),{' '}
+                <code>UniTextWorld</code> exposes public events: static <code>Activated</code> /{' '}
+                <code>Deactivated</code>, per-instance <code>RenderDataAvailable</code> /{' '}
+                <code>RenderDataCleared</code> / <code>SortingChanged</code> /{' '}
+                <code>ParentChanged</code>, and a <code>UniTextWorld.Active</code> list of
+                currently enabled instances.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
@@ -330,10 +466,28 @@ uniText.Text = "Hello, World!";`}
                 2.3 Creating a UniTextFontStack (Font Collection)
               </h3>
 
-              <p className="text-white/70 mb-6">
+              <p className="text-white/70 mb-4">
                 <code>UniTextFontStack</code> organizes fonts into <strong>Font Families</strong>.
-                Each family has a <strong>primary</strong> font and optional <strong>faces</strong>{' '}
-                (bold, italic, light, etc.). Families are searched in order for glyph fallback.
+                Each family has:
+              </p>
+
+              <ul className="space-y-2 text-white/70 mb-4 list-disc list-inside">
+                <li>
+                  a <strong>primary</strong> font and optional <strong>faces</strong> (bold,
+                  italic, light, etc.) — the same family, different weights/styles;
+                </li>
+                <li>
+                  an optional <code>name</code> — a user-facing identifier addressable from markup
+                  (see §5 and <code>FontModifier</code>);
+                </li>
+                <li>
+                  an optional <code>preferredLanguage</code> — a BCP 47 tag that biases codepoint
+                  resolution toward this family when the active language matches (see §5).
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-6">
+                Families are searched in order for glyph fallback.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -515,36 +669,15 @@ uniText.Text = "Hello, World!";`}
               </p>
             </div>
 
-            {/* 2.4 Material Management */}
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[var(--color-accent)]" />
-                2.4 Material Management
-              </h3>
-
-              <p className="text-white/70 mb-4">
-                Materials are managed automatically by <code>UniTextMaterialCache</code>. There is
-                no manual material assignment — the system creates and caches shared materials for
-                SDF Face, SDF Base, MSDF Face, and MSDF Base internally.
-              </p>
-
-              <p className="text-white/70">
-                Effects like outlines and shadows use multi-pass rendering: the effect layer renders
-                first (Base material), then the text face renders on top (Face material). This is
-                handled automatically when you use <code>&lt;outline&gt;</code> or{' '}
-                <code>&lt;shadow&gt;</code> tags.
-              </p>
-            </div>
-
-            {/* 2.5 UniText Tools Window */}
+            {/* 2.4 UniText Tools Window */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <Wrench className="w-5 h-5 text-[var(--color-accent)]" />
-                2.5 UniText Tools Window
+                2.4 UniText Tools Window
               </h3>
 
               <p className="text-white/70 mb-6">
-                Open via <strong>Tools &rarr; UniText Tools</strong>. Three tabs:
+                Open via <strong>Tools &rarr; UniText &rarr; Tools</strong>. Three tabs:
               </p>
 
               {/* Tab 1: Create Font Asset */}
@@ -744,6 +877,31 @@ uniText.Text = "Hello, World!";`}
                 . UniText ships with a Thai dictionary (26K words from ICU).
               </p>
             </div>
+
+            {/* 2.5 Materials */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Layers className="w-5 h-5 text-[var(--color-accent)]" />
+                2.5 Materials
+              </h3>
+
+              <p className="text-white/70 mb-4">
+                Materials for the base text pass (SDF Face, SDF Base, MSDF Face, MSDF Base) and the
+                emoji pass are managed automatically by <code>UniTextMaterialCache</code> — there is
+                no manual material assignment on <code>UniText</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Outline and shadow effects render as extra quads appended to the same mesh as the
+                face (not as separate <code>CanvasRenderer</code> objects). Any number of outline /
+                shadow modifiers can be layered on the same text without extra sub-meshes.
+              </p>
+
+              <p className="text-white/70">
+                If you want to apply a <strong>custom material / shader</strong> to a text range,
+                see §6.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -912,6 +1070,21 @@ uniText.Text = "Hello, World!";`}
                         '<shadow=#00000080>text</shadow> or <shadow=0.1,#000,2,2,0.5>',
                       ],
                       ['<var>', 'VariationModifier', '<var=700>weight</var> (direct axis control)'],
+                      [
+                        '<font>',
+                        'FontModifier',
+                        '<font=pixel>Score</font> — selects a family by FontFamily.name (see §5)',
+                      ],
+                      [
+                        '<lang>',
+                        'LanguageModifier',
+                        '<lang=zh-Hans>汉字</lang> — BCP 47 tag (see §5)',
+                      ],
+                      [
+                        '<mat>',
+                        'MaterialModifier',
+                        '<mat>text</mat> or <mat=#FF8800> — custom material (see §6)',
+                      ],
                     ].map(([tag, modifier, example], i, arr) => (
                       <tr key={tag} className={i < arr.length - 1 ? 'border-b border-white/5' : ''}>
                         <td className="py-2 pr-4">
@@ -1130,6 +1303,82 @@ uniText.Text = "Hello, World!";`}
                   </tbody>
                 </table>
               </div>
+
+              {/* Protection Rules (standalone) */}
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">
+                Protection Rules (standalone)
+              </h4>
+              <p className="text-white/70 mb-3">
+                Protection rules shield their content from being consumed by any other parse rule.
+                They are <strong>standalone</strong> — they implement{' '}
+                <code>IParseRule.IsStandalone = true</code> and register without a paired modifier
+                (the rule acts on its own). The text is passed through unaltered except that the
+                delimiters themselves are stripped.
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">Parse Rule</th>
+                      <th className="text-left py-2 pr-4 text-white/60">Syntax</th>
+                      <th className="text-left py-2 text-white/60">Behavior</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>NoparseTagRule</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>&lt;noparse&gt;...&lt;/noparse&gt;</code>
+                      </td>
+                      <td className="py-2">
+                        Everything inside is treated as literal text. Missing closer = rest of
+                        string protected
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>CodeSpanRule</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>`x`</code>, <code>``x``</code>, <code>```x```</code>
+                      </td>
+                      <td className="py-2">Balanced backtick runs per CommonMark §6.1</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>BackslashEscapeRule</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>\*</code>, <code>\[</code>, <code>\#</code>, …
+                      </td>
+                      <td className="py-2">
+                        Escapes a single ASCII punctuation character after <code>\</code>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-3">
+                Register standalone rules with <code>AddRule</code>:
+              </p>
+              <CodeBlock
+                code={`uniText.AddRule(new NoparseTagRule());
+uniText.AddRule(new BackslashEscapeRule());
+
+// Remove later if needed:
+uniText.RemoveRule(myRule);`}
+              />
+
+              <p className="text-white/70 text-sm mt-3">
+                <code>AddRule</code> enforces <code>IParseRule.IsStandalone == true</code> —
+                passing a non-standalone rule logs an error and does nothing (use{' '}
+                <code>AddStyle</code> with a modifier for those). Your own rules can opt into
+                standalone behavior by overriding <code>IsStandalone =&gt; true</code>.
+              </p>
             </div>
 
             {/* 3.5 Parameter Formats Reference */}
@@ -1271,7 +1520,7 @@ uniText.Text = "Hello, World!";`}
               </ul>
 
               <h4 className="font-semibold text-white/90 mb-2">Ellipsis (Text Truncation)</h4>
-              <ul className="space-y-1 text-white/70 list-disc list-inside">
+              <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>&lt;ellipsis=1&gt;</code> — truncate end (default): <code>Hello Wo...</code>
                 </li>
@@ -1282,6 +1531,46 @@ uniText.Text = "Hello, World!";`}
                   <code>&lt;ellipsis=0.5&gt;</code> — truncate middle: <code>Hel...rld</code>
                 </li>
                 <li>Any float 0–1 for fine-grained control</li>
+              </ul>
+
+              <h4 className="font-semibold text-white/90 mb-2">
+                Font (<code>&lt;font&gt;</code>)
+              </h4>
+              <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  Parameter is a <code>FontFamily.name</code> from the component's font stack
+                </li>
+                <li>
+                  <code>&lt;font=pixel&gt;Score&lt;/font&gt;</code> — render "Score" in the family
+                  named <code>pixel</code>
+                </li>
+              </ul>
+
+              <h4 className="font-semibold text-white/90 mb-2">
+                Language (<code>&lt;lang&gt;</code>)
+              </h4>
+              <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
+                <li>Parameter is a BCP 47 tag</li>
+                <li>
+                  <code>&lt;lang=zh-Hans&gt;汉字&lt;/lang&gt;</code>,{' '}
+                  <code>&lt;lang=ja&gt;...&lt;/lang&gt;</code>,{' '}
+                  <code>&lt;lang=ko&gt;...&lt;/lang&gt;</code>,{' '}
+                  <code>&lt;lang=en-US&gt;...&lt;/lang&gt;</code>
+                </li>
+              </ul>
+
+              <h4 className="font-semibold text-white/90 mb-2">
+                Material (<code>&lt;mat&gt;</code>)
+              </h4>
+              <ul className="space-y-1 text-white/70 list-disc list-inside">
+                <li>Parameter is an optional tint color (same syntax as Color)</li>
+                <li>
+                  <code>&lt;mat&gt;text&lt;/mat&gt;</code> — use the material's tint as-is
+                </li>
+                <li>
+                  <code>&lt;mat=#FF8800&gt;text&lt;/mat&gt;</code> — multiply the vertex color by
+                  orange
+                </li>
               </ul>
             </div>
 
@@ -1295,8 +1584,9 @@ uniText.Text = "Hello, World!";`}
                   Expand <strong>Styles</strong> list on the UniText component
                 </li>
                 <li>
-                  Click <strong>+</strong> — a searchable selector opens with ~30 predefined presets
-                  (Bold, Italic, Outline, Shadow, Markdown variants, etc.)
+                  Click <strong>+</strong> — a searchable selector opens with predefined presets
+                  (Bold, Italic, Color, Font, Language, Material, Markdown variants, Protection
+                  rules, and more)
                 </li>
                 <li>Select a preset — both the Rule and Modifier are configured automatically</li>
               </ol>
@@ -1306,7 +1596,26 @@ uniText.Text = "Hello, World!";`}
                 Modifier manually for custom combinations.
               </p>
 
-              <h4 className="font-semibold text-white/90 mb-3">Via Code</h4>
+              <h4 className="font-semibold text-white/90 mb-3">Via Code — Fluent Builders</h4>
+              <p className="text-white/70 mb-3">
+                <code>Style</code> exposes three static builders that cover the common cases:
+              </p>
+              <CodeBlock
+                code={`// Whole-text application (equivalent to RangeRule with ".."):
+uniText.AddStyle(Style.WholeText(new ColorModifier(), "#FF6600"));
+
+// Fixed codepoint range:
+uniText.AddStyle(Style.Range(new ColorModifier(), start: 0, end: 5, parameter: "#FF0000"));
+
+// Tag-based:
+uniText.AddStyle(Style.Tag(new ColorModifier(), "color"));
+uniText.AddStyle(Style.Tag(new ColorModifier(), "warning", defaultParameter: "#FF0000"));`}
+              />
+
+              <p className="text-white/70 mt-4 mb-3">
+                For custom combinations (<code>StringParseRule</code>, <code>CompositeParseRule</code>
+                , custom rules) use the explicit form:
+              </p>
               <CodeBlock
                 code={`uniText.AddStyle(new Style
 {
@@ -1318,10 +1627,35 @@ uniText.Text = "Hello, World!";`}
               <p className="text-white/70 mt-4 mb-2">Remove at runtime:</p>
               <CodeBlock
                 code={`bool removed = uniText.RemoveStyle(style);
-
-// Or remove all:
 uniText.ClearStyles();`}
               />
+
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">
+                Querying and Mutating Styles at Runtime
+              </h4>
+              <CodeBlock
+                code={`// Check presence
+bool hasBold = uniText.HasModifier<BoldModifier>();
+
+// Find the first style backed by a given modifier type
+if (uniText.TryGetStyle<ColorModifier>(out var colorStyle)) { ... }
+
+// Enumerate every matching style (local + preset copies)
+foreach (var s in uniText.GetStylesOfType<LinkModifier>()) { ... }
+
+// Whole-text convenience — add/update/toggle/clear a style that covers the full text
+uniText.SetWholeText<BoldModifier>();                      // bold everything
+uniText.SetWholeText<ColorModifier>("#FF0000");            // red everything
+bool isBold = uniText.ToggleWholeText<BoldModifier>();     // invert
+string currentColor = uniText.GetWholeTextParameter<ColorModifier>();
+uniText.ClearWholeText<ColorModifier>();`}
+              />
+
+              <p className="text-white/70 text-sm mt-3">
+                <code>SetWholeText</code> / <code>ClearWholeText</code> / <code>ToggleWholeText</code>{' '}
+                operate on the component's <strong>local</strong> Styles list only — they never
+                mutate Style Presets (those are shared assets).
+              </p>
             </div>
 
             {/* 3.7 Style Preset */}
@@ -1422,6 +1756,18 @@ uniText.ClearStyles();`}
               <p className="text-white/70 text-sm mt-3">
                 A component's effective set of modifiers = its local Styles + all Style Presets.
               </p>
+
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">Runtime API</h4>
+              <CodeBlock
+                code={`uniText.AddStylePreset(myPreset);
+bool removed = uniText.RemoveStylePreset(myPreset);
+uniText.ClearStylePresets();`}
+              />
+              <p className="text-white/70 text-sm mt-3">
+                Useful for toggling a markup configuration at runtime (e.g., apply a "chat
+                formatting" preset while the chat panel is open, remove it when it closes) without
+                building individual styles.
+              </p>
             </div>
 
             {/* 3.8 RangeRule */}
@@ -1441,18 +1787,17 @@ uniText.ClearStyles();`}
                 the range <code>".."</code>:
               </p>
               <CodeBlock
-                code={`var rangeRule = new RangeRule();
+                code={`// Shortest form — Style.WholeText:
+uniText.AddStyle(Style.WholeText(new ColorModifier(), "#FF0000"));
+
+// Explicit form:
+var rangeRule = new RangeRule();
 rangeRule.data.Add(new RangeRule.Data
 {
-    range = "..",           // ".." means the full text range
-    parameter = "#FF0000"  // parameter passed to the modifier
+    range = "..",          // ".." means the full text range
+    parameter = "#FF0000"
 });
-
-uniText.AddStyle(new Style
-{
-    Rule = rangeRule,
-    Modifier = new ColorModifier()  // entire text becomes red
-});`}
+uniText.AddStyle(new Style { Rule = rangeRule, Modifier = new ColorModifier() });`}
               />
 
               <h4 className="font-semibold text-white/90 mt-6 mb-3">Range Syntax</h4>
@@ -1508,17 +1853,19 @@ uniText.AddStyle(new Style
                 </table>
               </div>
 
+              <p className="text-white/70 mb-6 text-sm">
+                <code>RangeEx.WholeText</code> is the canonical <code>".."</code> constant, and{' '}
+                <code>RangeEx.IsWholeText(expr)</code> accepts any equivalent form (<code>".."</code>
+                , <code>"..^0"</code>, <code>"0.."</code>).
+              </p>
+
               <h4 className="font-semibold text-white/90 mb-3">Multiple Ranges</h4>
               <CodeBlock
                 code={`var rangeRule = new RangeRule();
 rangeRule.data.Add(new RangeRule.Data { range = "0..5", parameter = "#FF0000" });
 rangeRule.data.Add(new RangeRule.Data { range = "10..20", parameter = "#00FF00" });
 
-uniText.AddStyle(new Style
-{
-    Rule = rangeRule,
-    Modifier = new ColorModifier()
-});
+uniText.AddStyle(new Style { Rule = rangeRule, Modifier = new ColorModifier() });
 // Codepoints 0-4 are red, 10-19 are green`}
               />
 
@@ -1683,8 +2030,9 @@ uniText.AddStyle(new Style
                 code={`public interface IParseRule
 {
     int Priority => 0;
-    int TryMatch(string text, int index, PooledList<ParsedRange> results);
-    void Finalize(string text, PooledList<ParsedRange> results) { }
+    bool IsStandalone => false;   // true = register without a modifier (protection rules)
+    int TryMatch(ReadOnlySpan<char> text, int index, PooledList<ParsedRange> results);
+    void Finalize(ReadOnlySpan<char> text, PooledList<ParsedRange> results) { }
     void Reset() { }
 }`}
               />
@@ -1710,7 +2058,7 @@ uniText.AddStyle(new Style
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">3.13 Creating Custom Modifiers</h3>
               <p className="text-white/70 mb-6">
-                UniText has three modifier base classes for different use cases:
+                UniText has several modifier base classes for different use cases:
               </p>
 
               {/* Pattern 1 */}
@@ -1771,16 +2119,70 @@ public class HighlightModifier : GlyphModifier<byte>
             return;
 
         var colors = gen.Colors;
-        var baseIdx = gen.vertexCount - 4;
+        var baseIdx = gen.faceBaseIdx;   // stable index of the face quad for this glyph
         colors[baseIdx] = colors[baseIdx + 1] =
         colors[baseIdx + 2] = colors[baseIdx + 3] = highlightColor;
     }
 }`}
               />
 
-              {/* Pattern 3 */}
+              <Notice type="warning" className="mt-4">
+                Use <code>gen.faceBaseIdx</code> to address the current glyph's face quad. Never
+                use <code>gen.vertexCount - 4</code> — other modifiers can append geometry before
+                your <code>onGlyph</code> runs and shift the last-four assumption.
+              </Notice>
+
+              {/* Pattern 3 — EffectModifier */}
               <h4 className="font-semibold text-white/90 mt-6 mb-3">
-                Pattern 3: Interactive Region (<code>InteractiveModifier</code>)
+                Pattern 3: Effect Quads (<code>EffectModifier</code>)
+              </h4>
+              <p className="text-white/70 mb-3">
+                For effects like outline, shadow, glow — duplicate geometry rendered behind/ahead of
+                the face, painted per effect:
+              </p>
+              <CodeBlock
+                code={`[Serializable]
+public class MyGlowModifier : EffectModifier
+{
+    [SerializeField] private Color glowColor = Color.cyan;
+    [SerializeField] private float dilate = 0.3f;
+
+    protected override void OnGlyphEffect()
+    {
+        var gen = UniTextMeshGenerator.Current;
+        if (gen.font.IsColor) return;                // skip emoji
+
+        var baseIdx = gen.faceBaseIdx;
+        EnqueueEffectQuad(
+            baseIdx,
+            new Vector4(dilate, EffectPacking.PackColor(glowColor), 0f, 0f),
+            expandDelta: 0f);
+    }
+}`}
+              />
+
+              <p className="text-white/70 text-sm mt-3">
+                <code>EnqueueEffectQuad</code> records a request for an extra quad that renders
+                behind the face in registration order. All outline-modifier quads render before all
+                shadow-modifier quads, which render before the face — painter order is grouped per
+                modifier, not per glyph.
+              </p>
+
+              {/* Pattern 4 — SubMeshModifier */}
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">
+                Pattern 4: Sub-mesh With Its Own Material (<code>SubMeshModifier</code>)
+              </h4>
+              <p className="text-white/70 mb-3">
+                For effects that need a separate <code>Material</code> / shader (like{' '}
+                <code>MaterialModifier</code>). Inherit <code>SubMeshModifier</code> and override{' '}
+                <code>ShouldIncludeCurrentGlyph</code>, <code>GetMaterialForSlot</code>,{' '}
+                <code>GetRenderOrder</code>, <code>GetSortIndex</code> — see{' '}
+                <code>MaterialModifier.cs</code> for a full reference.
+              </p>
+
+              {/* Pattern 5 — InteractiveModifier */}
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">
+                Pattern 5: Interactive Region (<code>InteractiveModifier</code>)
               </h4>
               <p className="text-white/70 mb-3">For clickable/hoverable text regions:</p>
               <CodeBlock
@@ -1863,12 +2265,18 @@ public class HashtagModifier : InteractiveModifier
                   <strong>
                     Use <code>PrepareForParallel()</code>
                   </strong>{' '}
-                  for anything that calls Unity API (<code>Material.GetFloat()</code>, etc.)
+                  for anything that calls a Unity API (<code>Material.GetFloat()</code>, transform
+                  reads, etc.)
                 </li>
                 <li>
-                  <strong>Modifiers are fully encapsulated</strong> — external code doesn't need to
-                  know about them. If a modifier adds geometry, it calls{' '}
-                  <code>UniTextMeshGenerator</code> methods internally
+                  <strong>
+                    Address the face quad via <code>gen.faceBaseIdx</code>
+                  </strong>
+                  , not <code>gen.vertexCount - 4</code>
+                </li>
+                <li>
+                  <strong>Skip color (emoji) glyphs in effects</strong> —{' '}
+                  <code>if (gen.font.IsColor) return;</code>
                 </li>
               </ul>
             </div>
@@ -1886,13 +2294,15 @@ public class HashtagModifier : InteractiveModifier
 
           <p className="text-white/70 mb-6">
             UniText provides built-in support for clickable regions, hover detection, and visual
-            feedback.
+            feedback. Everything in this section works for both <code>UniText</code> (Canvas) and{' '}
+            <code>UniTextWorld</code> (world-space) — only the raycasting setup differs (see §4.4
+            for world-space).
           </p>
 
           <div className="space-y-6">
-            {/* Click and Hover Events */}
+            {/* 4.1 Click and Hover Events */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">Click and Hover Events</h3>
+              <h3 className="font-semibold mb-4">4.1 Click and Hover Events</h3>
               <CodeBlock
                 code={`// Any text click
 uniText.TextClicked += hit => Debug.Log($"Clicked cluster: {hit.cluster}");
@@ -1907,9 +2317,9 @@ uniText.HoverChanged += hit => Debug.Log($"Hover at cluster: {hit.cluster}");`}
               />
             </div>
 
-            {/* Hit Testing */}
+            {/* 4.2 Hit Testing */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">Hit Testing</h3>
+              <h3 className="font-semibold mb-4">4.2 Hit Testing</h3>
               <p className="text-white/70 mb-3">For custom interaction logic:</p>
               <CodeBlock
                 code={`// Local space
@@ -1924,40 +2334,602 @@ uniText.GetRangeBounds(startCluster, endCluster, bounds);`}
               />
             </div>
 
-            {/* Text Highlighter */}
+            {/* 4.3 Text Highlighter */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">Text Highlighter</h3>
+              <h3 className="font-semibold mb-4">4.3 Text Highlighter</h3>
               <p className="text-white/70 mb-4">
-                The <code>Highlighter</code> property controls visual feedback. The built-in{' '}
-                <code>DefaultTextHighlighter</code> provides click and hover animations:
+                The <code>Highlighter</code> property controls visual feedback — clicks, hover, and
+                programmatic selection. It lives on <code>UniTextBase</code>, so it works
+                identically on Canvas and world-space text.
+              </p>
+              <p className="text-white/70 mb-4">
+                The built-in <code>DefaultTextHighlighter</code> provides click flash (with
+                fade-out), hover tint, and selection highlight:
               </p>
               <CodeBlock
                 code={`if (uniText.Highlighter is DefaultTextHighlighter highlighter)
 {
     highlighter.ClickColor = new Color(1, 0, 0, 0.5f);
     highlighter.HoverColor = new Color(0, 0, 1, 0.1f);
+    highlighter.SelectionColor = new Color(0.3f, 0.6f, 1f, 0.3f);
     highlighter.FadeDuration = 0.5f;
+
+    // Programmatic selection (e.g., for searching, cursor, etc.)
+    highlighter.SetSelection(startCluster: 10, endCluster: 20);
+    highlighter.ClearSelection();
 }
 
-// Disable highlighting
+// Disable highlighting entirely
 uniText.Highlighter = null;`}
               />
+
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">Custom Highlighters</h4>
+              <p className="text-white/70 mb-3">
+                Extend <code>TextHighlighter</code> and override <code>OnRangeClicked</code>,{' '}
+                <code>OnRangeEntered</code>, <code>OnRangeExited</code>,{' '}
+                <code>OnSelectionChanged</code>, <code>Update</code>. To render visuals without
+                caring about whether you're on Canvas or world-space, request a backend-agnostic
+                surface from the owner:
+              </p>
+              <CodeBlock
+                code={`public override void Initialize(UniTextBase owner)
+{
+    base.Initialize(owner);
+    myRenderer = owner.CreateHighlightRenderer("MyHighlight", HighlightOrder.Behind);
+    myRenderer.Color = Color.yellow;
+}
+
+public override void OnRangeClicked(InteractiveRange range, List<Rect> bounds)
+{
+    myRenderer.SetRects(bounds);   // rects are in text-local space
+}
+
+public override void Destroy()
+{
+    myRenderer?.Destroy();
+    base.Destroy();
+}`}
+              />
               <p className="text-white/70 text-sm mt-3">
-                Implement your own by extending <code>TextHighlighter</code> and overriding{' '}
-                <code>OnRangeClicked</code>, <code>OnRangeEntered</code>, <code>OnRangeExited</code>
-                , <code>Update</code>.
+                <code>HighlightOrder.Behind</code> renders below the text (selection, hover glow),{' '}
+                <code>HighlightOrder.Above</code> renders above it (click flash, cursor).
+              </p>
+            </div>
+
+            {/* 4.4 World-Space Pointer Routing */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                4.4 World-Space Pointer Routing (<code>UniTextWorldRaycaster</code>)
+              </h3>
+              <p className="text-white/70 mb-4">
+                Canvas text receives <code>EventSystem</code> pointer events automatically through
+                the Canvas's <code>GraphicRaycaster</code>. For world-space text, you need a{' '}
+                <code>UniTextWorldRaycaster</code> component on the camera that should pick up
+                pointer events:
+              </p>
+              <CodeBlock
+                code={`var camera = Camera.main;
+camera.gameObject.AddComponent<UniTextWorldRaycaster>();`}
+              />
+              <p className="text-white/70 mt-4 mb-4">
+                The{' '}
+                <strong>
+                  GameObject &rarr; UI (World) &rarr; UniText &rarr; World Text
+                </strong>{' '}
+                menu adds this automatically to <code>Camera.main</code> if it's not already there.
+              </p>
+
+              <p className="text-white/70 mb-2">Properties:</p>
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <strong>BlockingObjects</strong> (<code>None</code> / <code>TwoD</code> /{' '}
+                  <code>ThreeD</code> / <code>All</code>) — physical geometry that should occlude
+                  clicks between the camera and the text. Leave as <code>None</code> if the scene
+                  already has a <code>PhysicsRaycaster</code> / <code>Physics2DRaycaster</code> on
+                  the same camera (Unity's <code>EventSystem</code> distance-sorts across
+                  raycasters automatically).
+                </li>
+                <li>
+                  <strong>BlockingMask</strong> — layer mask used when{' '}
+                  <code>BlockingObjects</code> is non-None.
+                </li>
+              </ul>
+
+              <p className="text-white/70">
+                Once the raycaster is on the camera, <code>UniTextWorld</code> receives the same
+                events as <code>UniText</code>: <code>TextClicked</code>, <code>RangeClicked</code>,{' '}
+                <code>RangeEntered</code>, <code>RangeExited</code>, <code>HoverChanged</code>,
+                plus link / hashtag / custom interactive range events.
+              </p>
+            </div>
+
+            {/* 4.5 Text Resolver */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                4.5 Text Resolver (<code>IUniTextResolver</code>)
+              </h3>
+              <p className="text-white/70 mb-4">
+                The resolver hook substitutes a component's source text <em>before</em> parsing /
+                shaping / layout, <strong>without writing to the serialized <code>text</code> field</strong>
+                . Scenes and prefabs stay clean — ideal for editor-time localization preview,
+                template expansion, or runtime key-to-string binding.
+              </p>
+              <CodeBlock
+                code={`public class LocalizationResolver : IUniTextResolver
+{
+    private UniTextBase owner;
+    private Action<string> onLanguageChanged;
+
+    private Dictionary<string, string> table;
+
+    public void OnAttached(UniTextBase owner)
+    {
+        this.owner = owner;
+        onLanguageChanged = _ => owner.SetDirty(UniTextDirtyFlags.Text);
+        LocalizationSignal.LanguageChanged += onLanguageChanged;
+    }
+
+    public void OnDetached(UniTextBase owner)
+    {
+        if (onLanguageChanged != null)
+            LocalizationSignal.LanguageChanged -= onLanguageChanged;
+        onLanguageChanged = null;
+        this.owner = null;
+        table = null;
+    }
+
+    public void PrepareForParallel()
+    {
+        // Cache main-thread-only values here — TryResolve below may run off-thread.
+        table = LocalizationTables.GetTable(LocalizationSignal.CurrentLanguage);
+    }
+
+    public bool TryResolve(ReadOnlyMemory<char> source, out ReadOnlyMemory<char> result)
+    {
+        var key = source.ToString();
+        if (table != null && table.TryGetValue(key, out var translated))
+        {
+            result = translated.AsMemory();
+            return true;
+        }
+        result = default;
+        return false;
+    }
+}
+
+uniText.TextResolver = new LocalizationResolver();
+uniText.Text = "greeting.hello";   // serialized key; rendered as the localized translation
+
+// Later, to detach:
+uniText.TextResolver = null;       // OnDetached is called automatically, signal is unsubscribed`}
+              />
+              <Notice type="warning" className="mt-4">
+                Always implement <code>OnDetached</code> if you subscribe to anything in{' '}
+                <code>OnAttached</code> — the resolver stays alive until GC collects it, and an
+                orphan subscription keeps the owner reference around and fires{' '}
+                <code>SetDirty</code> on a destroyed component.
+              </Notice>
+              <p className="text-white/70 text-sm mt-3">
+                <code>TryResolve</code> may run on a worker thread — don't call Unity APIs directly
+                inside it; populate caches in <code>PrepareForParallel</code> and read them from{' '}
+                <code>TryResolve</code>. To know whether a resolver is currently active, inspect{' '}
+                <code>uniText.TextOverride &amp; TextOverrideSource.Resolver</code>.
               </p>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 5. RTL and Bidirectional Text                                       */}
+        {/* 5. Language & Internationalization                                  */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <Globe className="w-6 h-6 text-[var(--color-accent)]" />
+            5. Language &amp; Internationalization
+          </h2>
+
+          <p className="text-white/70 mb-4">
+            UniText routes a BCP 47 language tag through the shaping pipeline. Three things depend
+            on this tag:
+          </p>
+
+          <ol className="space-y-2 text-white/70 mb-6 list-decimal list-inside">
+            <li>
+              <strong>
+                OpenType <code>locl</code> feature
+              </strong>{' '}
+              — pan-CJK fonts (Noto Sans CJK, Source Han Sans, etc.) render the correct regional
+              form for Han ideographs depending on whether the text is tagged Simplified Chinese,
+              Traditional Chinese, Japanese, or Korean.
+            </li>
+            <li>
+              <strong>
+                <code>FontFamily.preferredLanguage</code>
+              </strong>{' '}
+              — during codepoint-to-font resolution, families whose <code>preferredLanguage</code>{' '}
+              matches the current tag are preferred over the normal fallback order. Useful for
+              holding SC/TC/JP/KR cuts in one stack.
+            </li>
+            <li>
+              <strong>Any custom modifier</strong> that reads per-codepoint language via{' '}
+              <code>AttributeKeys.Language</code>.
+            </li>
+          </ol>
+
+          <div className="space-y-6">
+            {/* 5.1 Three places to set the language */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">5.1 Three places to set the language</h3>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">Scope</th>
+                      <th className="text-left py-2 pr-4 text-white/60">API</th>
+                      <th className="text-left py-2 text-white/60">Wins over</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Per-range</td>
+                      <td className="py-2 pr-4">
+                        <code>LanguageModifier</code> via{' '}
+                        <code>&lt;lang=...&gt;...&lt;/lang&gt;</code> or <code>Style.Tag</code> /{' '}
+                        <code>Style.Range</code> / <code>Style.WholeText</code>
+                      </td>
+                      <td className="py-2">Everything below</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Per-component</td>
+                      <td className="py-2 pr-4">
+                        <code>uniText.Language = "zh-Hans"</code>
+                      </td>
+                      <td className="py-2">Project-wide default</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">Project-wide</td>
+                      <td className="py-2 pr-4">
+                        <code>UniTextSettings.Language</code> (
+                        <strong>
+                          Project Settings &rarr; UniText &rarr; Localization &rarr; Language
+                        </strong>
+                        )
+                      </td>
+                      <td className="py-2">(base)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                <code>UniText.Language</code> is a runtime shortcut: the setter finds or creates a
+                whole-text <code>LanguageModifier</code> style in the component's local Styles
+                list. There's no serialized inspector field — components that never set a language
+                see nothing extra.
+              </p>
+
+              <CodeBlock
+                code={`uniText.Language = "zh-Hant";   // whole text
+uniText.Language = null;        // clear — back to component/project default`}
+              />
+            </div>
+
+            {/* 5.2 Per-range language in markup */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">5.2 Per-range language in markup</h3>
+              <CodeBlock
+                code={`// Register the modifier once (either directly, via a preset, or on a Style Preset asset):
+uniText.AddStyle(Style.Tag(new LanguageModifier(), "lang"));
+
+// Then in text:
+uniText.Text = "日本語: <lang=ja>骨</lang>, 中文简: <lang=zh-Hans>骨</lang>, 中文繁: <lang=zh-Hant>骨</lang>";`}
+              />
+              <p className="text-white/70 mt-3">
+                Itemization splits runs on language boundaries, so each run shapes with its own
+                OpenType language tag.
+              </p>
+            </div>
+
+            {/* 5.3 Picking the right font family by language */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                5.3 Picking the right font family by language
+              </h3>
+              <p className="text-white/70 mb-3">
+                Attach <code>preferredLanguage</code> to each region-specific family in one stack:
+              </p>
+              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
+                <div>CJKStack.asset</div>
+                <div className="ml-4">
+                  ├── Family: NotoSansCJK-SC &nbsp;&nbsp;(preferredLanguage: "zh-Hans")
+                </div>
+                <div className="ml-4">
+                  ├── Family: NotoSansCJK-TC &nbsp;&nbsp;(preferredLanguage: "zh-Hant")
+                </div>
+                <div className="ml-4">
+                  ├── Family: NotoSansCJK-JP &nbsp;&nbsp;(preferredLanguage: "ja")
+                </div>
+                <div className="ml-4">
+                  └── Family: NotoSansCJK-KR &nbsp;&nbsp;(preferredLanguage: "ko")
+                </div>
+              </div>
+              <p className="text-white/70">
+                With <code>UniText.Language = "zh-Hans"</code>, codepoints are resolved against the
+                SC family first; unmatched codepoints fall through the normal chain as usual. A
+                matching family wins over the default fallback order for that codepoint.
+              </p>
+            </div>
+
+            {/* 5.4 Naming families */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                5.4 Naming families (<code>FontFamily.name</code> + <code>FontModifier</code>)
+              </h3>
+              <p className="text-white/70 mb-3">
+                You can give each family a user-facing name and address it from markup or code:
+              </p>
+              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
+                <div>UIStack.asset</div>
+                <div className="ml-4">
+                  ├── Family: name="body" &nbsp;&nbsp;primary: Inter-Regular
+                </div>
+                <div className="ml-4">
+                  ├── Family: name="pixel" &nbsp;primary: PressStart2P
+                </div>
+                <div className="ml-4">
+                  └── Family: name="icons" &nbsp;primary: MyIconFont
+                </div>
+              </div>
+              <CodeBlock
+                code={`uniText.AddStyle(Style.Tag(new FontModifier(), "font"));
+uniText.Text = "Score: <font=pixel>100</font> <font=icons>♥</font>";`}
+              />
+              <p className="text-white/70 mt-3">
+                A matched name wins over both <code>preferredLanguage</code> selection and the
+                default fallback chain. If the chosen family doesn't have a glyph for a particular
+                codepoint, the normal fallback chain still kicks in for that codepoint. Unknown
+                names log a one-time warning.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 6. Custom Materials & Shaders                                       */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <Palette className="w-6 h-6 text-[var(--color-accent)]" />
+            6. Custom Materials &amp; Shaders
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            <code>MaterialModifier</code> applies an arbitrary <code>Material</code> to a text
+            range by emitting a dedicated sub-mesh. Use it for dissolve effects, hologram shaders,
+            flame text, custom SDF looks, anything a shader can do.
+          </p>
+
+          <div className="space-y-6">
+            {/* 6.1 Quick start */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.1 Quick start — use a ready material</h3>
+              <p className="text-white/70 mb-4">
+                UniText ships example materials in <code>UniText/Defaults/Materials/</code>:
+              </p>
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">Material</th>
+                      <th className="text-left py-2 text-white/60">Effect</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>UniTextLit</code>
+                      </td>
+                      <td className="py-2">
+                        World-space lit SDF (ambient + directional light + fog)
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>UniTextEmojiLit</code>
+                      </td>
+                      <td className="py-2">World-space lit emoji</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>UniTextHologram</code>
+                      </td>
+                      <td className="py-2">Scanlines + flicker + edge glow</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>UniTextDisolve</code>
+                      </td>
+                      <td className="py-2">Noise-driven dissolve</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>UniTextRainbow</code>
+                      </td>
+                      <td className="py-2">Animated color cycle</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-white/70 mb-3">
+                Set up a <code>MaterialModifier</code> in the inspector, point its{' '}
+                <code>Material</code> field at one of these, and use the tag:
+              </p>
+              <CodeBlock code={`uniText.Text = "Hello <mat>dissolving</mat> world!";`} />
+              <p className="text-white/70 mt-3 text-sm">
+                For <code>UniTextWorld</code>, you can also assign these materials as the
+                component's base material instead of using <code>MaterialModifier</code> (useful
+                for whole-text effects).
+              </p>
+            </div>
+
+            {/* 6.2 Authoring your own shader */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.2 Authoring your own shader</h3>
+              <p className="text-white/70 mb-3">Use the asset creation menu:</p>
+              <p className="text-white/70 mb-4">
+                <strong>Assets &rarr; Create &rarr; UniText &rarr; Custom Material Shader</strong>
+              </p>
+              <p className="text-white/70 mb-4">
+                This scaffolds a new <code>.shader</code> file pre-wired for{' '}
+                <code>MaterialModifier</code> — includes <code>UniText_Custom.cginc</code>, binds{' '}
+                <code>_MainTex</code> as the glyph atlas <code>Texture2DArray</code>, exposes the
+                standard UV layout UniText writes. Rename it, tweak the fragment function, you're
+                done.
+              </p>
+              <p className="text-white/70 mb-3">
+                Three example shaders ship as starting points (in{' '}
+                <code>UniText/Shaders/Templates/Examples/</code>):
+              </p>
+              <ul className="space-y-1 text-white/70 list-disc list-inside">
+                <li>
+                  <code>UniText/Custom/Dissolve</code>
+                </li>
+                <li>
+                  <code>UniText/Custom/Hologram</code>
+                </li>
+                <li>
+                  <code>UniText/Custom/Rainbow</code>
+                </li>
+              </ul>
+            </div>
+
+            {/* 6.3 Compose modes */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.3 Compose modes</h3>
+              <p className="text-white/70 mb-3">
+                <code>MaterialModifier.renderOrder</code> controls how the custom material
+                composes with the base text pass on the range:
+              </p>
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">Mode</th>
+                      <th className="text-left py-2 text-white/60">Effect</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Replace</code> (default)
+                      </td>
+                      <td className="py-2">
+                        Base SDF pass is suppressed on the range (face alpha zeroed); only the
+                        custom material renders
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Over</code>
+                      </td>
+                      <td className="py-2">Custom material renders in front of the base text</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Under</code>
+                      </td>
+                      <td className="py-2">Custom material renders behind the base text</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <Notice type="warning">
+                <strong>Ordering note (Replace mode):</strong> <code>Replace</code> zeroes the face
+                alpha during the <code>onGlyph</code> callback. UniText invokes <code>onGlyph</code>{' '}
+                subscribers in the order styles appear in the component's Styles list. If a{' '}
+                <code>ColorModifier</code> / <code>GradientModifier</code> comes <em>after</em>{' '}
+                <code>MaterialModifier</code>, it will overwrite the zeroed alpha and make the base
+                face reappear. Place <code>MaterialModifier</code> <strong>after</strong> any
+                color-writing modifiers.
+              </Notice>
+            </div>
+
+            {/* 6.4 Per-text and per-glyph shader data */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.4 Per-text and per-glyph shader data</h3>
+              <ul className="space-y-4 text-white/70 list-disc list-inside">
+                <li>
+                  <strong>Per-text constants</strong> — <code>ConstantUv2</code> /{' '}
+                  <code>ConstantUv3</code> (<code>Vector4</code> each) are written into{' '}
+                  <code>TEXCOORD2</code> / <code>TEXCOORD3</code> of every glyph vertex in this
+                  modifier's sub-mesh. Animate them at runtime without touching{' '}
+                  <code>Material.Set*</code> (which would affect every component sharing the cached
+                  material clone):
+                  <div className="mt-3">
+                    <CodeBlock
+                      code={`var mat = GetComponent<MyMaterialAnimator>().mod; // your MaterialModifier reference
+mat.ConstantUv2 = new Vector4(Time.time, 0, 0, 0);`}
+                    />
+                  </div>
+                </li>
+                <li>
+                  <strong>Per-glyph writer</strong> — set <code>glyphDataWriter</code> (a{' '}
+                  <code>MaterialGlyphWriter</code> delegate) to compute <code>uv2</code> /{' '}
+                  <code>uv3</code> per glyph at sub-mesh build time. Useful for staggered effects
+                  (wave, cascade, per-character dissolve).
+                </li>
+                <li>
+                  <strong>Emoji material slot</strong> — <code>emojiMaterial</code> accepts a
+                  separate material for emoji glyphs in the range. Leave null and emoji render
+                  through the base emoji pass (the modifier does nothing for them).
+                </li>
+              </ul>
+            </div>
+
+            {/* 6.5 Noise texture generator */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.5 Noise texture generator</h3>
+              <p className="text-white/70">
+                Many custom shaders need noise textures.{' '}
+                <strong>Tools &rarr; UniText &rarr; Noise Generator</strong> produces seamless
+                grayscale value-noise / FBM PNG assets (64–1024 px, configurable seed / frequency /
+                octaves / lacunarity / gain / invert / tileable). The shipped Dissolve and
+                Hologram examples use this.
+              </p>
+            </div>
+
+            {/* 6.6 Lit shaders for world-space text */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">6.6 Lit shaders for world-space text</h3>
+              <p className="text-white/70 mb-3">
+                Two SDF/emoji shader variants with lighting are provided for 3D scenes:
+              </p>
+              <ul className="space-y-1 text-white/70 list-disc list-inside mb-3">
+                <li>
+                  <code>UniText/Lit/SDF</code> — SDF text that picks up ambient + one directional
+                  light + fog
+                </li>
+                <li>
+                  <code>UniText/Lit/Emoji</code> — same but for emoji
+                </li>
+              </ul>
+              <p className="text-white/70">
+                Assign them via <code>UniTextWorld</code>'s material or through{' '}
+                <code>MaterialModifier</code>. <code>_LightInfluence</code> controls the mix
+                between unlit and fully lit.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 7. RTL and Bidirectional Text                                       */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Languages className="w-6 h-6 text-[var(--color-accent)]" />
-            5. RTL and Bidirectional Text
+            7. RTL and Bidirectional Text
           </h2>
 
           <p className="text-white/70 mb-4">UniText automatically handles:</p>
@@ -1996,12 +2968,12 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 6. Emoji                                                            */}
+        {/* 8. Emoji                                                            */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Smile className="w-6 h-6 text-[var(--color-accent)]" />
-            6. Emoji
+            8. Emoji
           </h2>
 
           <p className="text-white/70 mb-6">
@@ -2054,12 +3026,141 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 7. Common Properties                                                */}
+        {/* 9. Text Model                                                       */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <FileText className="w-6 h-6 text-[var(--color-accent)]" />
+            9. Text Model
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            When you read <code>uniText.Text</code>, you see the serialized authored value — what's
+            stored on disk. What's actually drawn can be different. Five properties cover the full
+            pipeline from authoring to rendering:
+          </p>
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2 pr-4 text-white/60">Property</th>
+                  <th className="text-left py-2 pr-4 text-white/60">Type</th>
+                  <th className="text-left py-2 text-white/60">What it is</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/70">
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>Text</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>string</code>
+                  </td>
+                  <td className="py-2">
+                    Serialized authored value (setter persists into the scene/prefab)
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>RawText</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>ReadOnlyMemory&lt;char&gt;</code>
+                  </td>
+                  <td className="py-2">
+                    Runtime source — <code>Text</code>, or the buffer passed to{' '}
+                    <code>SetText</code>, before any resolver
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>ResolvedText</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>ReadOnlyMemory&lt;char&gt;</code>
+                  </td>
+                  <td className="py-2">
+                    Resolver's substitute from the last rebuild, or empty if none
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>RenderedText</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>ReadOnlyMemory&lt;char&gt;</code>
+                  </td>
+                  <td className="py-2">
+                    What actually goes through shaping/layout: resolver output if active, else{' '}
+                    <code>RawText</code>
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">
+                    <code>CleanText</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>ReadOnlySpan&lt;char&gt;</code>
+                  </td>
+                  <td className="py-2">
+                    <code>RenderedText</code> with markup stripped
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4">
+                    <code>TextOverride</code>
+                  </td>
+                  <td className="py-2 pr-4">
+                    <code>TextOverrideSource</code> flags
+                  </td>
+                  <td className="py-2">
+                    Tells you which runtime source(s) currently diverge from <code>Text</code>:{' '}
+                    <code>None</code>, <code>SetText</code>, <code>Resolver</code>, or a
+                    combination
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-white/70 mb-6">
+            Everything except <code>Text</code> is zero-allocation. <code>CleanText</code>'s
+            backing buffer is pooled and may be rewritten on the next rebuild — copy to a string
+            via <code>new string(span)</code> if you need to keep it.
+          </p>
+
+          <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+            <h3 className="font-semibold mb-4">9.1 Assigning text at runtime</h3>
+            <p className="text-white/70 mb-3">Three ways:</p>
+            <CodeBlock
+              code={`// 1) Standard — writes to the serialized field (scene/prefab becomes dirty).
+uniText.Text = "Hello";
+
+// 2) Zero-alloc buffer assignment — does NOT touch the serialized field, no dirty flag.
+char[] buffer = ...;
+uniText.SetText(buffer, offset: 0, length: 5);
+
+// 3) Zero-alloc memory assignment — same semantics as (2).
+ReadOnlyMemory<char> mem = "Hello".AsMemory();
+uniText.SetText(mem);
+uniText.SetText("Hello");   // convenience overload (null → empty)`}
+            />
+            <p className="text-white/70 mt-4 text-sm">
+              After a <code>SetText(buffer, ...)</code> call, the <code>Text</code> getter returns
+              the <em>serialized</em> value, not the buffer. Read <code>RawText</code> (or{' '}
+              <code>RenderedText</code>) to see what the component actually holds.
+            </p>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 10. Common Properties                                               */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <List className="w-6 h-6 text-[var(--color-accent)]" />
-            7. Common Properties
+            10. Common Properties
           </h2>
 
           <div className="overflow-x-auto mb-8">
@@ -2098,7 +3199,7 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
                     <code>RenderMode</code>
                   </td>
                   <td className="py-3 pr-4">
-                    <code>RenderMode</code>
+                    <code>UniTextRenderMode</code>
                   </td>
                   <td className="py-3 pr-4">SDF</td>
                   <td className="py-3">SDF (single-channel) or MSDF (multi-channel)</td>
@@ -2175,7 +3276,17 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
                   <td className="py-3 pr-4">72</td>
                   <td className="py-3">Auto-size maximum</td>
                 </tr>
-                <tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
+                    <code>Language</code>
+                  </td>
+                  <td className="py-3 pr-4">string</td>
+                  <td className="py-3 pr-4">null</td>
+                  <td className="py-3">
+                    Whole-text BCP 47 language tag (shortcut over <code>LanguageModifier</code>)
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
                   <td className="py-3 pr-4">
                     <code>Highlighter</code>
                   </td>
@@ -2183,12 +3294,58 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
                   <td className="py-3 pr-4">DefaultTextHighlighter</td>
                   <td className="py-3">Interaction visual feedback</td>
                 </tr>
+                <tr>
+                  <td className="py-3 pr-4">
+                    <code>TextResolver</code>
+                  </td>
+                  <td className="py-3 pr-4">IUniTextResolver</td>
+                  <td className="py-3 pr-4">null</td>
+                  <td className="py-3">Hook that overrides source text before parsing</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* UniTextWorld additional properties */}
+          <h3 className="font-semibold mb-4">
+            Additional on <code>UniTextWorld</code>
+          </h3>
+          <div className="overflow-x-auto mb-8">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-3 pr-4 text-white/60">Property</th>
+                  <th className="text-left py-3 pr-4 text-white/60">Type</th>
+                  <th className="text-left py-3 pr-4 text-white/60">Default</th>
+                  <th className="text-left py-3 text-white/60">Description</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/70">
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
+                    <code>SortingOrder</code>
+                  </td>
+                  <td className="py-3 pr-4">int</td>
+                  <td className="py-3 pr-4">0</td>
+                  <td className="py-3">OrderInLayer for batching/sorting</td>
+                </tr>
+                <tr>
+                  <td className="py-3 pr-4">
+                    <code>SortingLayerID</code>
+                  </td>
+                  <td className="py-3 pr-4">int</td>
+                  <td className="py-3 pr-4">0 (Default)</td>
+                  <td className="py-3">Sorting layer for batching/sorting</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
           {/* Read-Only Properties */}
           <h3 className="font-semibold mb-4">Read-Only Properties</h3>
+          <p className="text-white/70 mb-4 text-sm">
+            Text pipeline stages (in order — each row reads its predecessor):
+          </p>
           <div className="overflow-x-auto mb-8">
             <table className="w-full text-sm">
               <thead>
@@ -2201,10 +3358,52 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
               <tbody className="text-white/70">
                 <tr className="border-b border-white/5">
                   <td className="py-3 pr-4">
+                    <code>RawText</code>
+                  </td>
+                  <td className="py-3 pr-4">ReadOnlyMemory&lt;char&gt;</td>
+                  <td className="py-3">
+                    Runtime input — <code>Text</code> or the buffer passed to <code>SetText</code>,
+                    before any resolver
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
+                    <code>ResolvedText</code>
+                  </td>
+                  <td className="py-3 pr-4">ReadOnlyMemory&lt;char&gt;</td>
+                  <td className="py-3">
+                    Resolver substitute from the last rebuild, or empty
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
+                    <code>RenderedText</code>
+                  </td>
+                  <td className="py-3 pr-4">ReadOnlyMemory&lt;char&gt;</td>
+                  <td className="py-3">
+                    What goes through shaping/layout: resolver output if active, else{' '}
+                    <code>RawText</code>
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
                     <code>CleanText</code>
                   </td>
-                  <td className="py-3 pr-4">string</td>
-                  <td className="py-3">Text with all markup stripped</td>
+                  <td className="py-3 pr-4">ReadOnlySpan&lt;char&gt;</td>
+                  <td className="py-3">
+                    <code>RenderedText</code> with markup stripped. Backing buffer is pooled —
+                    don't store the span
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
+                    <code>TextOverride</code>
+                  </td>
+                  <td className="py-3 pr-4">TextOverrideSource [Flags]</td>
+                  <td className="py-3">
+                    <code>None</code>, <code>SetText</code>, <code>Resolver</code>, or a
+                    combination — the runtime source(s) overriding <code>Text</code>
+                  </td>
                 </tr>
                 <tr className="border-b border-white/5">
                   <td className="py-3 pr-4">
@@ -2295,15 +3494,22 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
               </tbody>
             </table>
           </div>
+
+          <p className="text-white/70 text-sm mt-4">
+            <code>UniTextWorld</code> additionally raises <code>RenderDataAvailable</code> /{' '}
+            <code>RenderDataCleared</code> / <code>SortingChanged</code> /{' '}
+            <code>ParentChanged</code> (per-instance) and static <code>Activated</code> /{' '}
+            <code>Deactivated</code>.
+          </p>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 8. Code Examples                                                    */}
+        {/* 11. Code Examples                                                   */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <FileCode className="w-6 h-6 text-[var(--color-accent)]" />
-            8. Code Examples
+            11. Code Examples
           </h2>
 
           <div className="space-y-6">
@@ -2339,11 +3545,7 @@ void Start()
 {
     linkModifier = new LinkModifier();
     linkModifier.AutoOpenUrl = false;
-    uniText.AddStyle(new Style
-    {
-        Modifier = linkModifier,
-        Rule = new TagRule { tagName = "link" }
-    });
+    uniText.AddStyle(Style.Tag(linkModifier, "link"));
 
     uniText.Text = "Visit <link=https://example.com>our website</link> for more info.";
 
@@ -2360,20 +3562,10 @@ void Start()
                 Markdown Links and Auto-URL Detection
               </h3>
               <CodeBlock
-                code={`// Markdown-style links
-uniText.AddStyle(new Style
-{
-    Modifier = new LinkModifier(),
-    Rule = new MarkdownLinkParseRule()
-});
+                code={`uniText.AddStyle(new Style { Modifier = new LinkModifier(), Rule = new MarkdownLinkParseRule() });
 uniText.Text = "Visit [our website](https://example.com) for details.";
 
-// Auto-detect raw URLs
-uniText.AddStyle(new Style
-{
-    Modifier = new LinkModifier(),
-    Rule = new RawUrlParseRule()
-});
+uniText.AddStyle(new Style { Modifier = new LinkModifier(), Rule = new RawUrlParseRule() });
 uniText.Text = "Check https://example.com for updates.";`}
               />
             </div>
@@ -2384,9 +3576,8 @@ uniText.Text = "Check https://example.com for updates.";`}
                 Inline Objects (Icons in Text)
               </h3>
               <CodeBlock
-                code={`// Requires: ObjModifier + ObjParseRule registered
-// ObjModifier must have InlineObject named "coin" with RectTransform prefab
-
+                code={`// Requires: ObjModifier + TagRule("obj") registered
+// ObjModifier must have an InlineObject named "coin" with a RectTransform prefab
 uniText.Text = "You earned <obj=coin/> 100 gold!";`}
               />
             </div>
@@ -2411,16 +3602,43 @@ uniText.Text = "Steps:\\n1. Open app\\n2. Click button\\n3. Done";`}
                 Apply Color to Entire Text (<code>RangeRule</code>)
               </h3>
               <CodeBlock
-                code={`var rangeRule = new RangeRule();
-rangeRule.data.Add(new RangeRule.Data { range = "..", parameter = "#FF6600" });
-
-uniText.AddStyle(new Style
-{
-    Rule = rangeRule,
-    Modifier = new ColorModifier()
-});
-
+                code={`uniText.AddStyle(Style.WholeText(new ColorModifier(), "#FF6600"));
 uniText.Text = "This entire text is orange.";`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-white/40" />
+                Whole-text via component API
+              </h3>
+              <CodeBlock
+                code={`uniText.SetWholeText<BoldModifier>();                // make everything bold
+uniText.SetWholeText<ColorModifier>("#FF0000");      // everything red
+bool isBold = uniText.ToggleWholeText<BoldModifier>();
+uniText.ClearWholeText<ColorModifier>();`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-white/40" />
+                Language and font switching
+              </h3>
+              <CodeBlock
+                code={`// Project-wide default
+UniTextSettings.Language = "zh-Hans";
+
+// Per-component
+uniText.Language = "ja";
+
+// Per-range (requires LanguageModifier registered):
+uniText.AddStyle(Style.Tag(new LanguageModifier(), "lang"));
+uniText.Text = "日: <lang=ja>骨</lang>  中: <lang=zh-Hans>骨</lang>";
+
+// Named font families (requires FontModifier registered):
+uniText.AddStyle(Style.Tag(new FontModifier(), "font"));
+uniText.Text = "Score: <font=pixel>100</font>";`}
               />
             </div>
 
@@ -2430,6 +3648,48 @@ uniText.Text = "This entire text is orange.";`}
                 Emoji
               </h3>
               <CodeBlock code={`uniText.Text = "Hello! \u{1F44B} Great job! \u{1F389}";`} />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Type className="w-4 h-4 text-white/40" />
+                World-Space text
+              </h3>
+              <CodeBlock
+                code={`public class WorldLabel : MonoBehaviour
+{
+    [SerializeField] private UniTextWorld label;
+
+    void Start()
+    {
+        label.Text = "Target <color=red>acquired</color>";
+        label.SortingOrder = 10;
+        label.FontSize = 48;
+
+        label.RangeClicked += hit => Debug.Log($"Clicked: {hit.range.data}");
+    }
+}
+// Make sure Camera.main has a UniTextWorldRaycaster (added automatically by the menu).`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Palette className="w-4 h-4 text-white/40" />
+                Custom Material via <code>MaterialModifier</code>
+              </h3>
+              <CodeBlock
+                code={`var mat = new MaterialModifier { Material = myDissolveMaterial };
+uniText.AddStyle(Style.Tag(mat, "mat"));
+
+uniText.Text = "Attacked: <mat>*HIT*</mat>";
+
+// Animate a shader parameter (e.g., dissolve progress) via the per-text UV:
+void Update()
+{
+    mat.ConstantUv2 = new Vector4(Mathf.PingPong(Time.time, 1f), 0, 0, 0);
+}`}
+              />
             </div>
           </div>
         </section>
