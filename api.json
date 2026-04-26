@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "generatedAt": "2026-04-25T04:56:33.9837381Z",
+  "version": "2.1.1",
+  "generatedAt": "2026-04-26T01:03:58.3528706Z",
   "namespaces": [],
   "types": [
     {
@@ -88,6 +88,15 @@
         "methods": [],
         "properties": [],
         "fields": [
+          {
+            "id": "CachedTransformData.name",
+            "name": "name",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string"
+          },
           {
             "id": "CachedTransformData.rectTransform",
             "name": "rectTransform",
@@ -11342,6 +11351,76 @@
       }
     },
     {
+      "id": "AssetGradientProvider",
+      "name": "AssetGradientProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IGradientProvider",
+      "interfaces": [],
+      "summary": "[[IGradientProvider]] backed by an explicit [[UniTextGradients]] asset referenced on the modifier. Use this when a single component should resolve gradients from a different catalog than the project-wide one.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "AssetGradientProvider.TryGetGradient",
+            "name": "TryGetGradient",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AssetGradientProvider.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CNamedGradient\u003E",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "AssetGradientProvider.Asset",
+            "name": "Asset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniTextGradients",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "The asset used for name resolution. Setting to makes [[TryGetGradient]] return for every name.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "AttributeKeys",
       "name": "AttributeKeys",
       "namespace": "LightSide",
@@ -12746,6 +12825,64 @@
       }
     },
     {
+      "id": "GlobalSettingsGradientProvider",
+      "name": "GlobalSettingsGradientProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IGradientProvider",
+      "interfaces": [],
+      "summary": "[[IGradientProvider]] backed by the project-wide [[Gradients]] asset. Use this when the same gradient catalog is shared across all UniText components in the project.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "GlobalSettingsGradientProvider.TryGetGradient",
+            "name": "TryGetGradient",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GlobalSettingsGradientProvider.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CNamedGradient\u003E",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "GlyphModifier\u003CT\u003E",
       "name": "GlyphModifier\u003CT\u003E",
       "namespace": "LightSide",
@@ -12947,8 +13084,9 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Applies gradient coloring to text ranges using named gradients.",
-      "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). Gradients are defined in [[UniTextGradients]] ScriptableObject referenced by [[UniTextSettings]].",
+      "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). The set of named gradients available to \u003Cgradient=name\u003E tags is supplied by an [[IGradientProvider]]. The default provider resolves names through the project-wide [[Gradients]] asset; alternative providers allow per-component asset references or inline catalogs edited on the modifier itself.",
       "seeAlso": [
+        "IGradientProvider",
         "UniTextGradients",
         "IParseRule"
       ],
@@ -13025,9 +13163,70 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "GradientModifier.Provider",
+            "name": "Provider",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IGradientProvider",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets the gradient source used by this modifier. disables resolution and causes \u003Cgradient\u003E tags to be skipped with a warning.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
+      }
+    },
+    {
+      "id": "GradientNotifier",
+      "name": "GradientNotifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "interfaces": [],
+      "summary": "Broadcast channel for changes in any gradient source visible to [[GradientModifier]]. Fires when a [[UniTextGradients]] asset is edited, when an [[InlineGradientProvider]]\u0027s entries are changed in the inspector, or when a custom [[IGradientProvider]] implementation invokes [[NotifyChanged]] directly.",
+      "remarks": "[[GradientModifier]] subscribes during its active lifecycle and marks the owning UniText component dirty so colors are recomputed on the next rebuild. Custom providers that expose their own mutable state should call [[NotifyChanged]] when their resolution result changes.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "GradientNotifier.NotifyChanged",
+            "name": "NotifyChanged",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Raises [[AnyChanged]]. Safe to call when there are no subscribers.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": [
+          {
+            "id": "GradientNotifier.AnyChanged",
+            "name": "AnyChanged",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised when any subscribed gradient source has changed. Subscribers should treat this as \u0022invalidate cached gradient resolution and rebuild\u0022 \u2014 there is no per-source filtering."
+          }
+        ]
       }
     },
     {
@@ -13061,6 +13260,143 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Releases all pooled resources back to the pool.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "IGradientProvider",
+      "name": "IGradientProvider",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Resolves named [[Gradient]] entries for [[GradientModifier]].",
+      "remarks": "Implementations decide where the gradient catalog lives \u2014 project-wide settings, an explicit asset reference, or an inline list edited per-modifier. Names are matched case-insensitively, matching \u003Cgradient=name\u003E tag behavior.",
+      "seeAlso": [
+        "GradientModifier",
+        "GlobalSettingsGradientProvider",
+        "AssetGradientProvider",
+        "InlineGradientProvider"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "IGradientProvider.TryGetGradient",
+            "name": "TryGetGradient",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Tries to resolve a name (as used in \u003Cgradient=name\u003E) to a Gradient.",
+            "returns": "when a gradient with the given name was found.",
+            "params": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "Gradient name. Case-insensitive."
+              },
+              {
+                "name": "gradient",
+                "type": "Gradient",
+                "description": "The resolved gradient when this call returns; otherwise."
+              }
+            ],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IGradientProvider.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CNamedGradient\u003E",
+            "summary": "Enumerates all gradients exposed by this provider. Used by editor tooling to populate the \u003Cgradient=\u2026\u003E dropdown for the modifier instance that owns this provider. Lazy or runtime-resolved providers may return an empty sequence.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineGradientProvider",
+      "name": "InlineGradientProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IGradientProvider",
+      "interfaces": [
+        "ISerializationCallbackReceiver"
+      ],
+      "summary": "[[IGradientProvider]] with an inline list of named gradients edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineGradientProvider.TryGetGradient",
+            "name": "TryGetGradient",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "Gradient"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineGradientProvider.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CNamedGradient\u003E",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -14275,7 +14611,7 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Transforms text to lowercase within marked ranges.",
-      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for lowercase characters.",
+      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for lowercase characters. Uses the bundled UCD case mapping table rather than char.ToLowerInvariant to avoid runtime gaps in Mono/IL2CPP.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -17088,7 +17424,7 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Transforms text to uppercase within marked ranges.",
-      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for uppercase characters.",
+      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for uppercase characters. Uses the bundled UCD case mapping table rather than char.ToUpperInvariant to avoid runtime gaps in Mono/IL2CPP (e.g. Greek final sigma U\u002B03C2 \u2192 \u03A3).",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -18925,6 +19261,358 @@
       }
     },
     {
+      "id": "GeneralCategory",
+      "name": "GeneralCategory",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Unicode General Category property values.",
+      "remarks": "Each codepoint belongs to exactly one general category. Use with [[GetGeneralCategory]] for character classification \u2014 for example to apply a modifier only to letters, only to punctuation, or to skip combining marks. Values follow the Unicode Character Database short aliases.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "unicode",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "GeneralCategory.Lu",
+            "name": "Lu",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "0",
+            "summary": "Letter, Uppercase"
+          },
+          {
+            "id": "GeneralCategory.Ll",
+            "name": "Ll",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "1",
+            "summary": "Letter, Lowercase"
+          },
+          {
+            "id": "GeneralCategory.Lt",
+            "name": "Lt",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "2",
+            "summary": "Letter, Titlecase"
+          },
+          {
+            "id": "GeneralCategory.Lm",
+            "name": "Lm",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "3",
+            "summary": "Letter, Modifier"
+          },
+          {
+            "id": "GeneralCategory.Lo",
+            "name": "Lo",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "4",
+            "summary": "Letter, Other"
+          },
+          {
+            "id": "GeneralCategory.Mn",
+            "name": "Mn",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "5",
+            "summary": "Mark, Nonspacing"
+          },
+          {
+            "id": "GeneralCategory.Mc",
+            "name": "Mc",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "6",
+            "summary": "Mark, Spacing Combining"
+          },
+          {
+            "id": "GeneralCategory.Me",
+            "name": "Me",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "7",
+            "summary": "Mark, Enclosing"
+          },
+          {
+            "id": "GeneralCategory.Nd",
+            "name": "Nd",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "8",
+            "summary": "Number, Decimal Digit"
+          },
+          {
+            "id": "GeneralCategory.Nl",
+            "name": "Nl",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "9",
+            "summary": "Number, Letter"
+          },
+          {
+            "id": "GeneralCategory.No",
+            "name": "No",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "10",
+            "summary": "Number, Other"
+          },
+          {
+            "id": "GeneralCategory.Pc",
+            "name": "Pc",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "11",
+            "summary": "Punctuation, Connector"
+          },
+          {
+            "id": "GeneralCategory.Pd",
+            "name": "Pd",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "12",
+            "summary": "Punctuation, Dash"
+          },
+          {
+            "id": "GeneralCategory.Ps",
+            "name": "Ps",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "13",
+            "summary": "Punctuation, Open"
+          },
+          {
+            "id": "GeneralCategory.Pe",
+            "name": "Pe",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "14",
+            "summary": "Punctuation, Close"
+          },
+          {
+            "id": "GeneralCategory.Pi",
+            "name": "Pi",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "15",
+            "summary": "Punctuation, Initial quote"
+          },
+          {
+            "id": "GeneralCategory.Pf",
+            "name": "Pf",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "16",
+            "summary": "Punctuation, Final quote"
+          },
+          {
+            "id": "GeneralCategory.Po",
+            "name": "Po",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "17",
+            "summary": "Punctuation, Other"
+          },
+          {
+            "id": "GeneralCategory.Sm",
+            "name": "Sm",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "18",
+            "summary": "Symbol, Math"
+          },
+          {
+            "id": "GeneralCategory.Sc",
+            "name": "Sc",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "19",
+            "summary": "Symbol, Currency"
+          },
+          {
+            "id": "GeneralCategory.Sk",
+            "name": "Sk",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "20",
+            "summary": "Symbol, Modifier"
+          },
+          {
+            "id": "GeneralCategory.So",
+            "name": "So",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "21",
+            "summary": "Symbol, Other"
+          },
+          {
+            "id": "GeneralCategory.Zs",
+            "name": "Zs",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "22",
+            "summary": "Separator, Space"
+          },
+          {
+            "id": "GeneralCategory.Zl",
+            "name": "Zl",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "23",
+            "summary": "Separator, Line"
+          },
+          {
+            "id": "GeneralCategory.Zp",
+            "name": "Zp",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "24",
+            "summary": "Separator, Paragraph"
+          },
+          {
+            "id": "GeneralCategory.Cc",
+            "name": "Cc",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "25",
+            "summary": "Other, Control"
+          },
+          {
+            "id": "GeneralCategory.Cf",
+            "name": "Cf",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "26",
+            "summary": "Other, Format"
+          },
+          {
+            "id": "GeneralCategory.Cs",
+            "name": "Cs",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "27",
+            "summary": "Other, Surrogate"
+          },
+          {
+            "id": "GeneralCategory.Co",
+            "name": "Co",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "28",
+            "summary": "Other, Private Use"
+          },
+          {
+            "id": "GeneralCategory.Cn",
+            "name": "Cn",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GeneralCategory",
+            "defaultValue": "29",
+            "summary": "Other, Not Assigned"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "IWordSegmenter",
       "name": "IWordSegmenter",
       "namespace": "LightSide",
@@ -19248,6 +19936,178 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.GetSimpleUppercase",
+            "name": "GetSimpleUppercase",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Returns the simple uppercase mapping for a codepoint, falling back to the codepoint itself when no mapping is defined. Backed by UnicodeData.txt so behavior is identical across Mono/IL2CPP/standard.NET \u2014 unlike char.ToUpperInvariant, which has gaps for codepoints such as Greek final sigma U\u002B03C2.",
+            "remarks": "\u0022Simple\u0022 means a single-codepoint default mapping that ignores locale and the conditional rules in SpecialCasing.txt (Turkish dotless I, Lithuanian dot-above, German \u00DF \u2192 SS, etc.). Use this in custom BaseModifier implementations for predictable case conversion.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.GetSimpleLowercase",
+            "name": "GetSimpleLowercase",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Returns the simple lowercase mapping for a codepoint, falling back to the codepoint itself when no mapping is defined. See [[GetSimpleUppercase]] for the rationale.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.GetSimpleTitlecase",
+            "name": "GetSimpleTitlecase",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Returns the simple titlecase mapping for a codepoint, falling back to the codepoint itself when no mapping is defined. Differs from uppercase only for digraph letters such as U\u002B01C5 (\u01C5) \u2014 uppercase \u01C4, titlecase \u01C5, lowercase \u01C6.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.GetGeneralCategory",
+            "name": "GetGeneralCategory",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "GeneralCategory",
+            "summary": "Returns the Unicode General Category of a codepoint. Useful for filtering codepoints in custom modifiers \u2014 apply only to letters (Lu/Ll/Lt/Lm/Lo), skip combining marks (Mn/Mc/Me), select punctuation (Pc/Pd/Ps/Pe/Pi/Pf/Po), and so on.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.GetScript",
+            "name": "GetScript",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "UnicodeScript",
+            "summary": "Returns the Unicode Script of a codepoint (UAX #24). Useful for script-conditional modifiers \u2014 for example applying a stylistic effect only to Devanagari or only to Han. Values [[Common]] and [[Inherited]] are shared across scripts (punctuation, combining marks).",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsExtendedPictographic",
+            "name": "IsExtendedPictographic",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when the codepoint has the Extended_Pictographic property (UTS #51). Distinct from emoji presentation: pictographic glyphs that may render either as text or as emoji depending on context.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsEmojiPresentation",
+            "name": "IsEmojiPresentation",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when the codepoint defaults to emoji-style presentation (UTS #51 Emoji_Presentation). Use this to skip emoji glyphs in text-only effects (color, gradient, outline) without relying on the live mesh-pass font.IsColor flag.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsEmojiModifierBase",
+            "name": "IsEmojiModifierBase",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when the codepoint is an emoji that accepts a skin-tone modifier (U\u002B1F3FB..U\u002B1F3FF) immediately after it (UTS #51 Emoji_Modifier_Base).",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsDefaultIgnorable",
+            "name": "IsDefaultIgnorable",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when the codepoint has the Default_Ignorable_Code_Point property (formatting characters, variation selectors, ZWJ/ZWNJ, etc.). Custom modifiers that walk codepoints to compute statistics or apply effects should typically skip these.",
             "params": [],
             "paramTypes": [
               "int"
@@ -23553,6 +24413,10 @@
         "priority": 26
       },
       {
+        "name": "AssetGradientProvider",
+        "priority": 100
+      },
+      {
         "name": "AttributeKeys",
         "priority": 100
       },
@@ -23597,6 +24461,10 @@
         "priority": 100
       },
       {
+        "name": "GlobalSettingsGradientProvider",
+        "priority": 100
+      },
+      {
         "name": "GlyphModifier\u003CT\u003E",
         "priority": 100
       },
@@ -23605,7 +24473,19 @@
         "priority": 100
       },
       {
+        "name": "GradientNotifier",
+        "priority": 100
+      },
+      {
         "name": "IAttributeData",
+        "priority": 100
+      },
+      {
+        "name": "IGradientProvider",
+        "priority": 100
+      },
+      {
+        "name": "InlineGradientProvider",
         "priority": 100
       },
       {
@@ -23817,6 +24697,10 @@
       {
         "name": "UnicodeData",
         "priority": 5
+      },
+      {
+        "name": "GeneralCategory",
+        "priority": 100
       },
       {
         "name": "IWordSegmenter",
