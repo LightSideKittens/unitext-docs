@@ -1,8 +1,249 @@
 {
-  "version": "2.1.1",
-  "generatedAt": "2026-04-26T01:03:58.3528706Z",
+  "version": "2.1.2",
+  "generatedAt": "2026-04-26T12:10:56.3438688Z",
   "namespaces": [],
   "types": [
+    {
+      "id": "UniText.AnimationHandler",
+      "name": "AnimationHandler",
+      "namespace": "LightSide",
+      "declaringType": "UniText",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "AnimationHandlerBase\u003CUniText\u003E",
+      "interfaces": [],
+      "summary": "Animation handler for [[UniText]]. Diffs the base [[UniTextBase]] fields only \u2014 [[UniText]] has no Canvas-specific animatable serialized fields of its own.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "AnimationHandler.ctor",
+            "name": "AnimationHandler",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "AnimationHandler",
+            "params": [],
+            "paramTypes": [
+              "UniText"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextWorld.AnimationHandler",
+      "name": "AnimationHandler",
+      "namespace": "LightSide",
+      "declaringType": "UniTextWorld",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "AnimationHandlerBase\u003CUniTextWorld\u003E",
+      "interfaces": [],
+      "summary": "Animation handler for [[UniTextWorld]]. Adds diff coverage for [[SortingOrder]] and [[SortingLayerID]] on top of the base text fields, and re-fires [[SortingChanged]] so observers (e.g. [[UniTextWorldBatcher]]) react to animated sorting just as they would to a setter call.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "AnimationHandler.ctor",
+            "name": "AnimationHandler",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "AnimationHandler",
+            "params": [],
+            "paramTypes": [
+              "UniTextWorld"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandler.CaptureSubclassBaseline",
+            "name": "CaptureSubclassBaseline",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandler.DiffSubclassFields",
+            "name": "DiffSubclassFields",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "UniTextDirtyFlags",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextBase.AnimationHandlerBase\u003CT\u003E",
+      "name": "AnimationHandlerBase\u003CT\u003E",
+      "namespace": "LightSide",
+      "declaringType": "UniTextBase",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Bridges Unity\u0027s OnDidApplyAnimationProperties callback to [[SetDirty]]. Animator writes directly into serialized fields, bypassing property setters that normally raise dirty flags \u2014 this handler diffs cached values against the post-animation field state and aggregates the appropriate [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+      "remarks": "Composed (not inherited) into a [[UniTextBase]] subclass. Nested inside [[UniTextBase]] so it can read the private/protected serialized fields directly. Subclass handlers extend the diff for their own fields by overriding [[DiffSubclassFields]] and [[CaptureSubclassBaseline]]; nest them inside their owning component to retain direct field access.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "T",
+          "description": "Concrete [[UniTextBase]] subclass driving the animation."
+        }
+      ],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "AnimationHandlerBase.ctor",
+            "name": "AnimationHandlerBase",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "AnimationHandlerBase",
+            "params": [],
+            "paramTypes": [
+              "T"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandlerBase.CaptureBaseline",
+            "name": "CaptureBaseline",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Snapshots current property values as the comparison baseline. Called from the constructor and may be invoked again after non-animator state changes (e.g. property setters) to keep the baseline aligned with the live fields.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandlerBase.Handle",
+            "name": "Handle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Diffs current field values against the baseline, raises a single [[SetDirty]] with the aggregated flags, and refreshes the baseline. Returns if any field changed.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandlerBase.CaptureSubclassBaseline",
+            "name": "CaptureSubclassBaseline",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Captures subclass-specific animatable fields into the baseline. Mirror of [[DiffSubclassFields]]; both must read the same set of fields.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AnimationHandlerBase.DiffSubclassFields",
+            "name": "DiffSubclassFields",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "UniTextDirtyFlags",
+            "summary": "Diffs subclass-specific animatable fields against the cached baseline, refreshes the baseline for changed fields, and returns the aggregated flags. Implementations must not call [[SetDirty]] directly \u2014 the base method aggregates flags across the whole component before issuing one call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "AnimationHandlerBase.target",
+            "name": "target",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "T"
+          }
+        ],
+        "events": []
+      }
+    },
     {
       "id": "UniTextWorldRaycaster.BlockingObjects",
       "name": "BlockingObjects",
@@ -4080,6 +4321,22 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -5172,6 +5429,40 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.HasModifier",
             "name": "HasModifier",
             "accessModifier": "public",
@@ -6194,6 +6485,14 @@
             "isStatic": false,
             "type": "Action\u003CTextHitResult\u003E",
             "summary": "Raised when hover position changes, providing hit test details (for InputField)."
+          },
+          {
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           }
         ]
       }
@@ -8179,6 +8478,22 @@
           {
             "id": "UniTextWorld.OnTransformParentChanged",
             "name": "OnTransformParentChanged",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextWorld.HandleAnimation",
+            "name": "HandleAnimation",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -24187,6 +24502,18 @@
       {
         "name": "VerticalAlignment",
         "priority": 32
+      },
+      {
+        "name": "AnimationHandler",
+        "priority": 100
+      },
+      {
+        "name": "AnimationHandler",
+        "priority": 100
+      },
+      {
+        "name": "AnimationHandlerBase\u003CT\u003E",
+        "priority": 100
       },
       {
         "name": "BlockingObjects",
