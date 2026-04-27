@@ -1,6 +1,6 @@
 {
-  "version": "2.1.2",
-  "generatedAt": "2026-04-26T12:10:56.3438688Z",
+  "version": "2.1.3",
+  "generatedAt": "2026-04-27T12:11:03.5972891Z",
   "namespaces": [],
   "types": [
     {
@@ -12424,7 +12424,7 @@
       "baseType": "GlyphModifier\u003Cuint\u003E",
       "interfaces": [],
       "summary": "Applies color to text ranges using hex codes or named colors.",
-      "remarks": "Parameter: a color value in hex or by name. Supported formats: - Hex: #RGB, #RRGGBB, #RRGGBBAA - Named colors: white, black, red, green, blue, yellow, cyan, magenta, orange, purple, gray, lime, brown, pink, navy, teal, olive, maroon, silver, gold The alpha channel from the color parameter is preserved. The base alpha is inherited from the component\u0027s color.",
+      "remarks": "Parameter: a color value in hex or by name. Supported formats: - Hex: #RGB, #RRGGBB, #RRGGBBAA - Named colors: white, black, red, green, blue, yellow, cyan, magenta, orange, purple, gray, lime, brown, pink, navy, teal, olive, maroon, silver, gold The alpha channel of the color parameter is multiplied with the component\u0027s base alpha (per W3C alpha compositing). A fully opaque parameter inherits the component alpha; a semi-transparent parameter scales it further.",
       "seeAlso": [
         "IParseRule"
       ],
@@ -12852,6 +12852,46 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.ApplyOwnRequests",
+            "name": "ApplyOwnRequests",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Default per-frame application of queued requests. Subclasses with multi-layer effects (e.g. extrude) may override to flush their own per-layer buffers in render-order rather than the per-glyph order that [[EnqueueEffectQuad]] implies.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.AppendSharedEffectQuad",
+            "name": "AppendSharedEffectQuad",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Appends one duplicate quad to the generator\u0027s vertex buffer and queues its triangle indices into the thread-static shared pre-face buffer. Returns the destination vertex index of the new quad\u0027s first vertex (use it with [[ExpandQuad]]).",
+            "params": [],
+            "paramTypes": [
+              "UniTextMeshGenerator",
+              "int",
+              "Vector4",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [],
@@ -12870,7 +12910,7 @@
       "isStatic": true,
       "interfaces": [],
       "summary": "Utility methods for packing effect layer parameters into vertex UV channels.",
-      "remarks": "Used by effect modifiers to encode per-glyph layer parameters (color, offsets) into float UV values that are unpacked in the shader. Packing formats: [[PackColor]]: Color32 RGBA \u2192 uint \u2192 float (bit-reinterpret)",
+      "remarks": "Used by effect modifiers to encode per-glyph layer parameters (color, offsets) into float UV values that are unpacked in the shader.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -12885,17 +12925,10 @@
             "isStatic": true,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "float",
-            "summary": "Packs a Color32 into a single float via bit reinterpretation.",
-            "remarks": "Layout: R in bits 24\u201331, G in 16\u201323, B in 8\u201315, A in 0\u20137. Unpacked in shader with asuint and bit shifts.",
-            "returns": "A float whose bits represent the packed RGBA bytes.",
-            "params": [
-              {
-                "name": "c",
-                "type": "Color32",
-                "description": "The color to pack."
-              }
-            ],
+            "returnType": "Vector2",
+            "summary": "Packs a Color32 into two floats safe for hardware interpolation: x = R*256 \u002B G, y = B*256 \u002B A. The two floats are stored in UV2.y and UV2.z of every effect-quad vertex and decoded in the shader by UnpackColor.",
+            "remarks": "Both packed values lie in [0, 65535], well inside the 24-bit integer range that single-precision float represents exactly. The previous bit-reinterpret packing produced NaN/Inf bit patterns for many color values; some GPUs canonicalize quiet-NaN at the vertex\u2013fragment interpolator boundary, which forced bit 22 of the mantissa (the high bit of the green channel) on, randomly tinting effect layers as their channels crossed bit-6 thresholds.",
+            "params": [],
             "paramTypes": [
               "Color32"
             ],
@@ -13044,6 +13077,174 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ExtrudeModifier",
+      "name": "ExtrudeModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "EffectModifier",
+      "interfaces": [],
+      "summary": "Adds a 3D extrude/bevel effect by appending a stack of progressively offset duplicate quads behind the face.",
+      "remarks": "Layers are flushed back-to-front in layer-major order across all glyphs (every glyph\u0027s deepest slice first, then every glyph\u0027s next-deeper slice, \u2026, then face). Na\u00EFve per-glyph fanout would invert that order at glyph boundaries when the cumulative offset exceeds glyph advance, leaving farther slices of glyph N\u002B1 covering closer slices of glyph N. Per-layer buffers preserve the painter order regardless of overlap. Format: \u003Cextrude=offsetX,offsetY,#nearColor,#farColor,dilate,softness\u003E. Defaults: offset = (3,-3), near = white, far = black, dilate = 0, softness = 0.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "ExtrudeModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.OnGlyphEffect",
+            "name": "OnGlyphEffect",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.ApplyOwnRequests",
+            "name": "ApplyOwnRequests",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "ExtrudeModifier.steps",
+            "name": "steps",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "ExtrudeModifier.bevel",
+            "name": "bevel",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
+          },
+          {
+            "id": "ExtrudeModifier.fixedPixelSize",
+            "name": "fixedPixelSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
+          }
+        ],
         "events": []
       }
     },
@@ -13428,22 +13629,6 @@
           {
             "id": "GradientModifier.OnDisable",
             "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "GradientModifier.OnDestroy",
-            "name": "OnDestroy",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -14373,8 +14558,8 @@
       "isStatic": false,
       "baseType": "BaseModifier",
       "interfaces": [],
-      "summary": "Adjusts line height/spacing for text ranges.",
-      "remarks": "Parameter: line height or spacing value. 1.5 \u2014 150% of default line height (multiplier) 40 \u2014 absolute 40 pixels \u002B10 \u2014 add 10 pixels to default (delta) -5 \u2014 reduce by 5 pixels (delta)",
+      "summary": "Adjusts line height for text ranges.",
+      "remarks": "Parameter: line height value with optional unit. 1.5 or 150% \u2014 150% of default line height 40 \u2014 absolute 40 pixels (replaces default) \u002B10 \u2014 add 10 pixels to base (default or absolute) -5 \u2014 reduce by 5 pixels When multiple overlapping ranges set an absolute height, the largest absolute wins and serves as the base for any delta or multiplier on the same line.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -24781,6 +24966,10 @@
       },
       {
         "name": "EmptyModifier",
+        "priority": 100
+      },
+      {
+        "name": "ExtrudeModifier",
         "priority": 100
       },
       {
