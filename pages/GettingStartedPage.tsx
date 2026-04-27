@@ -1385,7 +1385,21 @@ uniText.RemoveRule(myRule);`}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">3.5 Parameter Formats Reference</h3>
 
-              <h4 className="font-semibold text-white/90 mb-2">Color</h4>
+              <p className="text-white/70 mb-6 text-sm">
+                The tag names below (<code>&lt;color&gt;</code>, <code>&lt;font&gt;</code>,{' '}
+                <code>&lt;mat&gt;</code>, …) are the conventional names used by the built-in
+                presets — they are not hard-coded into the modifiers. Any modifier can be
+                registered under any name via{' '}
+                <code>Style.Tag(new XxxModifier(), "yourName")</code>, or driven by{' '}
+                <code>MarkdownWrapRule</code> / <code>RangeRule</code> /{' '}
+                <code>StringParseRule</code> / a custom rule with no tag at all (see §3.1). The{' '}
+                <strong>parameter</strong> syntax shown for each modifier is what the modifier
+                itself parses, regardless of how the range was matched.
+              </p>
+
+              <h4 className="font-semibold text-white/90 mb-2">
+                Color (<code>ColorModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   Hex: <code>#RGB</code>, <code>#RRGGBB</code>, <code>#RRGGBBAA</code>
@@ -1396,7 +1410,9 @@ uniText.RemoveRule(myRule);`}
                 </li>
               </ul>
 
-              <h4 className="font-semibold text-white/90 mb-2">Size</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Size (<code>SizeModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   Absolute: <code>&lt;size=24&gt;</code> — 24 pixels
@@ -1410,7 +1426,9 @@ uniText.RemoveRule(myRule);`}
                 </li>
               </ul>
 
-              <h4 className="font-semibold text-white/90 mb-2">Gradient</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Gradient (<code>GradientModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-2">
                 <li>
                   Format: <code>&lt;gradient=name[,shape][,angle]&gt;</code>
@@ -1443,10 +1461,12 @@ uniText.RemoveRule(myRule);`}
                 &rarr; UniText &rarr; Gradients).
               </p>
 
-              <h4 className="font-semibold text-white/90 mb-2">Letter Spacing</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Letter Spacing (<code>LetterSpacingModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
-                  Format: <code>&lt;cspace=spacing[,monospace]&gt;</code>
+                  Format: <code>spacing[,monospace]</code>
                 </li>
                 <li>
                   Pixels: <code>&lt;cspace=5&gt;</code> — 5px extra spacing
@@ -1464,7 +1484,9 @@ uniText.RemoveRule(myRule);`}
                 </li>
               </ul>
 
-              <h4 className="font-semibold text-white/90 mb-2">Outline</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Outline (<code>OutlineModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>&lt;outline&gt;</code> — default (dilate=0.2, black)
@@ -1480,7 +1502,9 @@ uniText.RemoveRule(myRule);`}
                 </li>
               </ul>
 
-              <h4 className="font-semibold text-white/90 mb-2">Shadow</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Shadow (<code>ShadowModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>&lt;shadow&gt;</code> — default (black 50% alpha)
@@ -1495,7 +1519,7 @@ uniText.RemoveRule(myRule);`}
               </ul>
 
               <h4 className="font-semibold text-white/90 mb-2">
-                Variable Font Axes (<code>&lt;var&gt;</code>)
+                Variable Font Axes (<code>VariationModifier</code>)
               </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>Positional axis values in order: wght, wdth, ital, slnt, opsz</li>
@@ -1519,7 +1543,9 @@ uniText.RemoveRule(myRule);`}
                 </li>
               </ul>
 
-              <h4 className="font-semibold text-white/90 mb-2">Ellipsis (Text Truncation)</h4>
+              <h4 className="font-semibold text-white/90 mb-2">
+                Ellipsis (<code>EllipsisModifier</code>)
+              </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>&lt;ellipsis=1&gt;</code> — truncate end (default): <code>Hello Wo...</code>
@@ -1534,7 +1560,7 @@ uniText.RemoveRule(myRule);`}
               </ul>
 
               <h4 className="font-semibold text-white/90 mb-2">
-                Font (<code>&lt;font&gt;</code>)
+                Font (<code>FontModifier</code>)
               </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>
@@ -1547,7 +1573,7 @@ uniText.RemoveRule(myRule);`}
               </ul>
 
               <h4 className="font-semibold text-white/90 mb-2">
-                Language (<code>&lt;lang&gt;</code>)
+                Language (<code>LanguageModifier</code>)
               </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
                 <li>Parameter is a BCP 47 tag</li>
@@ -1560,7 +1586,7 @@ uniText.RemoveRule(myRule);`}
               </ul>
 
               <h4 className="font-semibold text-white/90 mb-2">
-                Material (<code>&lt;mat&gt;</code>)
+                Material (<code>MaterialModifier</code>)
               </h4>
               <ul className="space-y-1 text-white/70 list-disc list-inside">
                 <li>Parameter is an optional tint color (same syntax as Color)</li>
@@ -2153,9 +2179,10 @@ public class MyGlowModifier : EffectModifier
         if (gen.font.IsColor) return;                // skip emoji
 
         var baseIdx = gen.faceBaseIdx;
+        var packed = EffectPacking.PackColor(glowColor);
         EnqueueEffectQuad(
             baseIdx,
-            new Vector4(dilate, EffectPacking.PackColor(glowColor), 0f, 0f),
+            new Vector4(dilate, packed.x, packed.y, 0f),
             expandDelta: 0f);
     }
 }`}
@@ -2762,14 +2789,21 @@ uniText.Text = "Score: <font=pixel>100</font> <font=icons>♥</font>";`}
                 </table>
               </div>
               <p className="text-white/70 mb-3">
-                Set up a <code>MaterialModifier</code> in the inspector, point its{' '}
-                <code>Material</code> field at one of these, and use the tag:
+                Set up a <code>MaterialModifier</code> in the inspector — paired with a{' '}
+                <code>TagRule</code> whose <code>tagName</code> you choose (<code>mat</code> is
+                the convention used here) — and point its <code>Material</code> field at one of
+                these. From code:
               </p>
-              <CodeBlock code={`uniText.Text = "Hello <mat>dissolving</mat> world!";`} />
+              <CodeBlock
+                code={`var mat = new MaterialModifier { Material = myDissolveMaterial };
+uniText.AddStyle(Style.Tag(mat, "mat"));     // pick any name; "mat" is just the convention
+
+uniText.Text = "Hello <mat>dissolving</mat> world!";`}
+              />
               <p className="text-white/70 mt-3 text-sm">
                 For <code>UniTextWorld</code>, you can also assign these materials as the
                 component's base material instead of using <code>MaterialModifier</code> (useful
-                for whole-text effects).
+                for whole-text effects, no tag setup required).
               </p>
             </div>
 
