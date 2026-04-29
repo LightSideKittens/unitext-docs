@@ -2140,7 +2140,7 @@ public class HighlightModifier : GlyphModifier<byte>
 
     private void OnGlyph()
     {
-        var gen = UniTextMeshGenerator.Current;
+        var gen = uniText.MeshGenerator;
         if (!attribute.buffer.data.HasFlag(gen.currentCluster))
             return;
 
@@ -2175,7 +2175,7 @@ public class MyGlowModifier : EffectModifier
 
     protected override void OnGlyphEffect()
     {
-        var gen = UniTextMeshGenerator.Current;
+        var gen = uniText.MeshGenerator;
         if (gen.font.IsColor) return;                // skip emoji
 
         var baseIdx = gen.faceBaseIdx;
@@ -2392,31 +2392,45 @@ uniText.Highlighter = null;`}
 
               <h4 className="font-semibold text-white/90 mt-6 mb-3">Custom Highlighters</h4>
               <p className="text-white/70 mb-3">
-                Extend <code>TextHighlighter</code> and override <code>OnRangeClicked</code>,{' '}
-                <code>OnRangeEntered</code>, <code>OnRangeExited</code>,{' '}
-                <code>OnSelectionChanged</code>, <code>Update</code>. To render visuals without
-                caring about whether you're on Canvas or world-space, request a backend-agnostic
-                surface from the owner:
+                Extend <code>TextHighlighter</code> (or <code>DefaultTextHighlighter</code> to keep
+                its click/hover/selection logic). The two <code>CreateHighlightRenderer</code>{' '}
+                overloads — one taking <code>UniText</code>, one taking <code>UniTextWorld</code> —
+                are the type-safe extension points: override either or both to plug a custom visual
+                on the chosen backend. Inside event handlers, call{' '}
+                <code>CreateHighlightRenderer(name, order)</code> (no owner argument) — it
+                dispatches to the correct typed overload based on the actual owner.
               </p>
               <CodeBlock
-                code={`public override void Initialize(UniTextBase owner)
+                code={`public class MyHighlighter : TextHighlighter
 {
-    base.Initialize(owner);
-    myRenderer = owner.CreateHighlightRenderer("MyHighlight", HighlightOrder.Behind);
-    myRenderer.Color = Color.yellow;
-}
+    private TextHighlightRenderer myRenderer;
 
-public override void OnRangeClicked(InteractiveRange range, List<Rect> bounds)
-{
-    myRenderer.SetRects(bounds);   // rects are in text-local space
-}
+    protected override TextHighlightRenderer CreateHighlightRenderer(UniText owner, string name, HighlightOrder order)
+        => new MyCanvasRenderer(owner, name, order);   // your custom Canvas-side visual
 
-public override void Destroy()
-{
-    myRenderer?.Destroy();
-    base.Destroy();
+    protected override TextHighlightRenderer CreateHighlightRenderer(UniTextWorld owner, string name, HighlightOrder order)
+        => new MyWorldRenderer(owner, name, order);    // your custom mesh-based visual
+
+    public override void OnRangeClicked(InteractiveRange range, List<Rect> bounds)
+    {
+        myRenderer ??= CreateHighlightRenderer("MyHighlight", HighlightOrder.Behind);
+        myRenderer.Color = Color.yellow;
+        myRenderer.SetRects(bounds);   // rects are in text-local space
+    }
+
+    public override void Destroy()
+    {
+        myRenderer?.Destroy();
+        myRenderer = null;
+        base.Destroy();
+    }
 }`}
               />
+              <p className="text-white/70 text-sm mt-3">
+                To customize only the visual on one backend while keeping the default click flash /
+                hover / selection logic, subclass <code>DefaultTextHighlighter</code> and override
+                only the relevant <code>CreateHighlightRenderer</code> overload(s).
+              </p>
               <p className="text-white/70 text-sm mt-3">
                 <code>HighlightOrder.Behind</code> renders below the text (selection, hover glow),{' '}
                 <code>HighlightOrder.Above</code> renders above it (click flash, cursor).
@@ -2430,8 +2444,8 @@ public override void Destroy()
               </h3>
               <p className="text-white/70 mb-4">
                 Canvas text receives <code>EventSystem</code> pointer events automatically through
-                the Canvas's <code>GraphicRaycaster</code>. For world-space text, you need a{' '}
-                <code>UniTextWorldRaycaster</code> component on the camera that should pick up
+                the Canvas's <code>GraphicRaycaster</code>. For world-space text, add a{' '}
+                <code>UniTextWorldRaycaster</code> component to the camera that should pick up
                 pointer events:
               </p>
               <CodeBlock
@@ -2439,11 +2453,10 @@ public override void Destroy()
 camera.gameObject.AddComponent<UniTextWorldRaycaster>();`}
               />
               <p className="text-white/70 mt-4 mb-4">
-                The{' '}
-                <strong>
-                  GameObject &rarr; UI (World) &rarr; UniText &rarr; World Text
-                </strong>{' '}
-                menu adds this automatically to <code>Camera.main</code> if it's not already there.
+                The raycaster is <strong>not added automatically</strong> — pick the camera
+                explicitly. If a <code>UniTextWorld</code> with <code>RaycastTarget = true</code>{' '}
+                enters a play-mode scene without any <code>UniTextWorldRaycaster</code>, a one-time
+                warning is logged with the same instruction.
               </p>
 
               <p className="text-white/70 mb-2">Properties:</p>
@@ -2461,6 +2474,12 @@ camera.gameObject.AddComponent<UniTextWorldRaycaster>();`}
                   <code>BlockingObjects</code> is non-None.
                 </li>
               </ul>
+
+              <p className="text-white/70 mb-4">
+                Per-instance opt-out: <code>UniTextWorld.RaycastTarget</code> (default true). Set to
+                false on purely decorative text — the raycaster skips it entirely, the same way
+                Canvas <code>Graphic.raycastTarget = false</code> works for <code>UniText</code>.
+              </p>
 
               <p className="text-white/70">
                 Once the raycaster is on the camera, <code>UniTextWorld</code> receives the same
