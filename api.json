@@ -1,6 +1,6 @@
 {
-  "version": "2.1.4",
-  "generatedAt": "2026-04-29T08:14:39.6920004Z",
+  "version": "2.1.5",
+  "generatedAt": "2026-04-29T22:14:01.1683844Z",
   "namespaces": [],
   "types": [
     {
@@ -363,6 +363,110 @@
       }
     },
     {
+      "id": "CanvasHighlightRenderer",
+      "name": "CanvasHighlightRenderer",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "TextHighlightRenderer",
+      "interfaces": [],
+      "summary": "Canvas-backed [[TextHighlightRenderer]] \u2014 wraps a child GameObject with [[RangeHighlightGraphic]] anchored to the owning [[UniText]]. Z-order is managed via sibling index (above = last, behind = first).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "CanvasHighlightRenderer.ctor",
+            "name": "CanvasHighlightRenderer",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "CanvasHighlightRenderer",
+            "params": [],
+            "paramTypes": [
+              "UniText",
+              "string",
+              "HighlightOrder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CanvasHighlightRenderer.SetRects",
+            "name": "SetRects",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "IReadOnlyList\u003CRect\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CanvasHighlightRenderer.Clear",
+            "name": "Clear",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CanvasHighlightRenderer.Destroy",
+            "name": "Destroy",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "CanvasHighlightRenderer.Color",
+            "name": "Color",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Color",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "DefaultTextHighlighter",
       "name": "DefaultTextHighlighter",
       "namespace": "LightSide",
@@ -373,26 +477,47 @@
       "isStatic": false,
       "baseType": "TextHighlighter",
       "interfaces": [],
-      "summary": "Default implementation of text highlighting.",
-      "remarks": "Provides click flash (with fade-out), hover tint, and selection highlight. Works on both Canvas ([[UniText]]) and world-space ([[UniTextWorld]]) text \u2014 backend-specific surfaces are requested through [[CreateHighlightRenderer]] without this class knowing any Canvas or mesh specifics.",
+      "summary": "Default highlighting logic \u2014 click flash with fade-out, hover tint, programmatic selection \u2014 wired to the built-in renderers ([[CanvasHighlightRenderer]] for [[UniText]], [[WorldHighlightRenderer]] for [[UniTextWorld]]). Subclass and override either [[CreateHighlightRenderer]] or [[CreateHighlightRenderer]] to plug a custom visual on the chosen backend while keeping this logic.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
       "members": {
         "methods": [
           {
-            "id": "DefaultTextHighlighter.Initialize",
-            "name": "Initialize",
-            "accessModifier": "public",
+            "id": "DefaultTextHighlighter.CreateHighlightRenderer",
+            "name": "CreateHighlightRenderer",
+            "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "void",
+            "returnType": "TextHighlightRenderer",
             "params": [],
             "paramTypes": [
-              "UniTextBase"
+              "UniText",
+              "string",
+              "HighlightOrder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "DefaultTextHighlighter.CreateHighlightRenderer",
+            "name": "CreateHighlightRenderer",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "TextHighlightRenderer",
+            "params": [],
+            "paramTypes": [
+              "UniTextWorld",
+              "string",
+              "HighlightOrder"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -449,26 +574,6 @@
             "params": [],
             "paramTypes": [
               "InteractiveRange"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "DefaultTextHighlighter.OnSelectionChanged",
-            "name": "OnSelectionChanged",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "int",
-              "int",
-              "List\u003CRect\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -2046,7 +2151,7 @@
       "isStatic": false,
       "interfaces": [],
       "summary": "Base class for text highlighting and selection visualization.",
-      "remarks": "Inherit from this class to create custom highlight effects for interactive ranges, text selection, or any other visual feedback. Assign to [[Highlighter]] to enable highlighting. Works for both Canvas ([[UniText]]) and world-space ([[UniTextWorld]]) variants. Set to null to disable.",
+      "remarks": "Inherit from this class to create custom highlight effects for interactive ranges, text selection, or any other visual feedback. Assign to [[Highlighter]] to enable highlighting. The two CreateHighlightRenderer overloads (one per backend) are dispatched type-safely from the owner\u0027s actual type \u2014 subclass to plug a custom visual on either or both backends without runtime cast risk. Set to null to disable.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -2062,10 +2167,115 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Initializes the handler with its owner. Works for both Canvas ([[UniText]]) and world-space ([[UniTextWorld]]) variants.",
+            "summary": "Initializes the handler with its owner.",
             "params": [],
             "paramTypes": [
               "UniTextBase"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextHighlighter.CreateHighlightRenderer",
+            "name": "CreateHighlightRenderer",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextHighlightRenderer",
+            "summary": "Creates a Canvas-side [[TextHighlightRenderer]] for the given [[UniText]] owner. Override to plug a custom Canvas visual.",
+            "params": [
+              {
+                "name": "owner",
+                "type": "UniText",
+                "description": "The Canvas text component this surface anchors to."
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "GameObject name for debugging."
+              },
+              {
+                "name": "order",
+                "type": "HighlightOrder",
+                "description": "Relative render order vs the owning text."
+              }
+            ],
+            "paramTypes": [
+              "UniText",
+              "string",
+              "HighlightOrder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextHighlighter.CreateHighlightRenderer",
+            "name": "CreateHighlightRenderer",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextHighlightRenderer",
+            "summary": "Creates a world-space [[TextHighlightRenderer]] for the given [[UniTextWorld]] owner. Override to plug a custom mesh-based visual.",
+            "params": [
+              {
+                "name": "owner",
+                "type": "UniTextWorld",
+                "description": "The world-space text component this surface anchors to."
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "GameObject name for debugging."
+              },
+              {
+                "name": "order",
+                "type": "HighlightOrder",
+                "description": "Relative render order vs the owning text."
+              }
+            ],
+            "paramTypes": [
+              "UniTextWorld",
+              "string",
+              "HighlightOrder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextHighlighter.CreateHighlightRenderer",
+            "name": "CreateHighlightRenderer",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextHighlightRenderer",
+            "summary": "Creates a backend-appropriate [[TextHighlightRenderer]] for the current [[owner]], dispatching to the correct typed overload above. Call this from event handlers when a renderer is actually needed.",
+            "params": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "GameObject name for debugging."
+              },
+              {
+                "name": "order",
+                "type": "HighlightOrder",
+                "description": "Relative render order vs the owning text."
+              }
+            ],
+            "paramTypes": [
+              "string",
+              "HighlightOrder"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -2265,7 +2475,7 @@
       "isStatic": false,
       "interfaces": [],
       "summary": "Backend-agnostic view surface for [[TextHighlighter]] visuals.",
-      "remarks": "Canvas and world-space variants of UniText each provide their own implementation (see [[CreateHighlightRenderer]]): Canvas wraps [[RangeHighlightGraphic]], world-space wraps a [[MeshRenderer]]-based quad mesh. A [[TextHighlighter]] subclass requests renderers through the owner and drives them with the same lifecycle regardless of backend.",
+      "remarks": "Built-in implementations: [[CanvasHighlightRenderer]] wraps [[RangeHighlightGraphic]] for [[UniText]], while [[WorldHighlightRenderer]] wraps a [[MeshRenderer]]-based quad mesh for [[UniTextWorld]]. A [[TextHighlighter]] subclass picks one of these (or a custom subclass) per backend via its CreateHighlightRenderer(UniText,...) / CreateHighlightRenderer(UniTextWorld,...) overloads and drives the result with the same lifecycle regardless of backend.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -2604,7 +2814,7 @@
             "params": [
               {
                 "name": "lines",
-                "type": "ReadOnlySpan\u003CTextLine\u003E",
+                "type": "Span\u003CTextLine\u003E",
                 "description": "The lines produced by line breaking."
               },
               {
@@ -2649,7 +2859,7 @@
               }
             ],
             "paramTypes": [
-              "ReadOnlySpan\u003CTextLine\u003E",
+              "Span\u003CTextLine\u003E",
               "ReadOnlySpan\u003CShapedRun\u003E",
               "ReadOnlySpan\u003CShapedGlyph\u003E",
               "ReadOnlySpan\u003Cfloat\u003E",
@@ -2753,7 +2963,19 @@
       "category": "core",
       "members": {
         "methods": [],
-        "properties": [],
+        "properties": [
+          {
+            "id": "TextLine.IsRtl",
+            "name": "IsRtl",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when the line\u0027s paragraph base direction is right-to-left (UAX #9 odd embedding level).",
+            "seeAlso": []
+          }
+        ],
         "fields": [
           {
             "id": "TextLine.range",
@@ -2786,6 +3008,26 @@
             "summary": "Number of runs in this line."
           },
           {
+            "id": "TextLine.glyphStart",
+            "name": "glyphStart",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Index of the first positioned glyph belonging to this line (set during layout)."
+          },
+          {
+            "id": "TextLine.glyphCount",
+            "name": "glyphCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Number of positioned glyphs belonging to this line (set during layout)."
+          },
+          {
             "id": "TextLine.width",
             "name": "width",
             "accessModifier": "public",
@@ -2793,7 +3035,17 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Content width (excluding trailing whitespace)."
+            "summary": "Content width in font units (excluding trailing whitespace)."
+          },
+          {
+            "id": "TextLine.widthPx",
+            "name": "widthPx",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Content width in mesh-local pixels ([[width]] scaled by font size at layout time, set during layout)."
           },
           {
             "id": "TextLine.trailingWhitespace",
@@ -2803,7 +3055,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Width of trailing whitespace that hangs outside the content box (CSS Text \u00A74.1.3)."
+            "summary": "Width of trailing whitespace that hangs outside the content box (CSS Text \u00A74.1.3), in font units."
           },
           {
             "id": "TextLine.paragraphBaseLevel",
@@ -5161,6 +5413,43 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.CollectRangeEntries",
+            "name": "CollectRangeEntries",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Collects per-line geometric runs of positioned glyphs whose clusters fall inside [startCluster, endCluster). Output bounds are in mesh-local coordinates with X clamped to each line\u0027s visible content extent (trailing whitespace excluded via [[width]]). One [[LineRangeEntry]] is emitted per contiguous run within a line \u2014 multiple entries per line are possible if the matched clusters are non-contiguous in visual order.",
+            "params": [
+              {
+                "name": "startCluster",
+                "type": "int",
+                "description": "Cluster start (inclusive)."
+              },
+              {
+                "name": "endCluster",
+                "type": "int",
+                "description": "Cluster end (exclusive)."
+              },
+              {
+                "name": "output",
+                "type": "PooledList\u003CLineRangeEntry\u003E",
+                "description": "Pooled list to receive entries (cleared before use)."
+              }
+            ],
+            "paramTypes": [
+              "int",
+              "int",
+              "PooledList\u003CLineRangeEntry\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.GetRangeBounds",
             "name": "GetRangeBounds",
             "accessModifier": "public",
@@ -5170,24 +5459,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Gets bounding rectangles for a cluster range.",
-            "params": [
-              {
-                "name": "startCluster",
-                "type": "int",
-                "description": "Start cluster index (inclusive)."
-              },
-              {
-                "name": "endCluster",
-                "type": "int",
-                "description": "End cluster index (exclusive)."
-              },
-              {
-                "name": "results",
-                "type": "IList\u003CRect\u003E",
-                "description": "List to receive bounds (cleared before use)."
-              }
-            ],
+            "summary": "Gets bounding rectangles for a cluster range. One [[Rect]] per contiguous run of glyphs within a line that falls inside [startCluster, endCluster). Trailing whitespace at line ends is excluded (CSS Text \u00A74.1.3). Empty wrapped lines whose break codepoint lies inside the range receive a synthetic narrow rect for caret/selection rendering.",
+            "params": [],
             "paramTypes": [
               "int",
               "int",
@@ -8635,6 +8908,17 @@
             "hasSetter": true,
             "summary": "Gets or sets the sorting layer ID.",
             "seeAlso": []
+          },
+          {
+            "id": "UniTextWorld.RaycastTarget",
+            "name": "RaycastTarget",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When true, this text receives pointer events from [[UniTextWorldRaycaster]] (clicks, hover, interactive ranges). Set to false for purely decorative text \u2014 the raycaster will skip it entirely. Default: true.",
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -8860,6 +9144,111 @@
             "summary": "Align text to the bottom edge."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "WorldHighlightRenderer",
+      "name": "WorldHighlightRenderer",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "TextHighlightRenderer",
+      "interfaces": [],
+      "summary": "World-space [[TextHighlightRenderer]] \u2014 wraps a child GameObject with [[MeshFilter]] \u002B [[MeshRenderer]] and builds quads from rects directly into a dynamic [[Mesh]]. One shared material ([[Highlight]]) serves every instance; color travels through vertex colors.",
+      "remarks": "Z-ordering against the owning text and other world renderers uses the sorting system (sortingLayerID \u002B sortingOrder) so highlights interleave correctly with [[SpriteRenderer]], other [[UniTextWorld]] instances and the [[UniTextWorldBatcher]] meshes on the same layer.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "WorldHighlightRenderer.ctor",
+            "name": "WorldHighlightRenderer",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "WorldHighlightRenderer",
+            "params": [],
+            "paramTypes": [
+              "UniTextWorld",
+              "string",
+              "HighlightOrder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WorldHighlightRenderer.SetRects",
+            "name": "SetRects",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "IReadOnlyList\u003CRect\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WorldHighlightRenderer.Clear",
+            "name": "Clear",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WorldHighlightRenderer.Destroy",
+            "name": "Destroy",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "WorldHighlightRenderer.Color",
+            "name": "Color",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Color",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
         "events": []
       }
     },
@@ -12008,24 +12397,6 @@
             "typeParameters": []
           },
           {
-            "id": "BaseLineModifier.SetStaticBuffer",
-            "name": "SetStaticBuffer",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "byte[]"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "BaseLineModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
@@ -14795,9 +15166,9 @@
             "summary": "Emits one decoration-line quad spanning [startX, endX] at baselineY \u002B lineYOffset, sampling the underscore SDF column described by [uvLeft, uvRight] (use centerX..centerX for stretch segments and -sdfPadding..centerX / centerX..aspect\u002BsdfPadding for end caps).",
             "params": [
               {
-                "name": "thicknessOverride",
+                "name": "thickness",
                 "type": "float",
-                "description": "Override line thickness in pixels. NaN means \u0022use the underscore glyph\u0027s natural rendered height\u0022 (from-font behavior)."
+                "description": "Full visible line thickness in pixels (post.underlineThickness or OS/2.yStrikeoutSize at this font size). NaN falls back to the underscore glyph\u0027s natural rendered height. The quad height equals this thickness; SDF samples the full ink span vertically with a small padding margin for AA at top/bottom edges, so visible thickness scales linearly with the parameter regardless of underscore aspect."
               }
             ],
             "paramTypes": [
@@ -17165,24 +17536,6 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
-          },
-          {
-            "id": "StrikethroughModifier.SetStaticBuffer",
-            "name": "SetStaticBuffer",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "byte[]"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
           }
         ],
         "properties": [
@@ -18045,24 +18398,6 @@
             "paramTypes": [
               "FaceInfo",
               "float"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UnderlineModifier.SetStaticBuffer",
-            "name": "SetStaticBuffer",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "byte[]"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -20474,6 +20809,98 @@
             "type": "LineBreakType",
             "defaultValue": "2",
             "summary": "Break is required at this position (hard break after CR, LF, etc.)."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "LineRangeEntry",
+      "name": "LineRangeEntry",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "A contiguous run of positioned glyphs within a single line whose clusters fall inside a queried range. Bounds are in local mesh coordinates (relative to the text origin), with X clamped to the line\u0027s visible content extent (trailing whitespace excluded per CSS Text \u00A74.1.3 via [[width]]).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "unicode",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LineRangeEntry.lineIdx",
+            "name": "lineIdx",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Index of the line in buffers.lines."
+          },
+          {
+            "id": "LineRangeEntry.firstGlyphIdx",
+            "name": "firstGlyphIdx",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Index of the first positioned glyph of this run (inclusive)."
+          },
+          {
+            "id": "LineRangeEntry.lastGlyphIdx",
+            "name": "lastGlyphIdx",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Index of the last positioned glyph of this run (inclusive)."
+          },
+          {
+            "id": "LineRangeEntry.minX",
+            "name": "minX",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Left edge of the run in local coordinates, clamped to line content extent."
+          },
+          {
+            "id": "LineRangeEntry.maxX",
+            "name": "maxX",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Right edge of the run in local coordinates, clamped to line content extent."
+          },
+          {
+            "id": "LineRangeEntry.minY",
+            "name": "minY",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Top edge of the run in local coordinates (uses ascender of glyphs on the line)."
+          },
+          {
+            "id": "LineRangeEntry.maxY",
+            "name": "maxY",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Bottom edge of the run in local coordinates (uses descender of glyphs on the line)."
           }
         ],
         "events": []
@@ -24944,6 +25371,10 @@
         "priority": 100
       },
       {
+        "name": "CanvasHighlightRenderer",
+        "priority": 100
+      },
+      {
         "name": "DefaultTextHighlighter",
         "priority": 100
       },
@@ -25041,6 +25472,10 @@
       },
       {
         "name": "UniTextWorldRaycaster",
+        "priority": 100
+      },
+      {
+        "name": "WorldHighlightRenderer",
         "priority": 100
       }
     ],
@@ -25467,6 +25902,10 @@
       },
       {
         "name": "LineBreakType",
+        "priority": 100
+      },
+      {
+        "name": "LineRangeEntry",
         "priority": 100
       },
       {
