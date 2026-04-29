@@ -1,6 +1,6 @@
 {
-  "version": "2.1.3",
-  "generatedAt": "2026-04-27T12:11:03.5972891Z",
+  "version": "2.1.4",
+  "generatedAt": "2026-04-29T08:14:39.6920004Z",
   "namespaces": [],
   "types": [
     {
@@ -7431,6 +7431,54 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextMeshGenerator.QueueEffectTriangle",
+            "name": "QueueEffectTriangle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Queues the 6 triangle indices for an effect duplicate quad starting at destBaseIdx into the shared pre- or post-face buffer.",
+            "remarks": "Called by [[AppendSharedEffectQuad]] after writing the quad\u0027s vertices. The buffers are flushed once at the end of [[GenerateMeshDataOnly]], producing the final painter order [pre-face 1..N, face, post-face 1..N, line] regardless of how many [[EffectModifier]] instances are active.",
+            "params": [],
+            "paramTypes": [
+              "EffectPass",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextMeshGenerator.RequestBandUpgradeIfNeeded",
+            "name": "RequestBandUpgradeIfNeeded",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Requests an atlas band upgrade for the current glyph if any effect modifier asked for SDF padding wider than the current tile\u0027s computed band. Re-rasterizes the glyph at a larger tile so subsequent frames have room for the requested outline / shadow extent.",
+            "remarks": "Must be called immediately after [[onGlyph]] for any quad whose outline / shadow / extrude effects should be allowed to grow beyond the default SDF padding. Reads [[currentMaxGlyphExtent]] (effect modifiers write into it during onGlyph) and the face dilate stored in [[Uvs1]][[[faceBaseIdx]]].y.",
+            "params": [],
+            "paramTypes": [
+              "long",
+              "uint",
+              "GlyphEntry",
+              "UniTextFont",
+              "long",
+              "int[]",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextMeshGenerator.ExpandQuad",
             "name": "ExpandQuad",
             "accessModifier": "public",
@@ -7545,18 +7593,6 @@
           }
         ],
         "properties": [
-          {
-            "id": "UniTextMeshGenerator.Current",
-            "name": "Current",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "UniTextMeshGenerator",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets the currently active mesh generator on this thread (set during mesh generation).",
-            "remarks": "Used by text modifiers to access the current generator instance during callbacks. Only valid within [[onGlyph]], [[onAfterPage]], and similar callbacks.",
-            "seeAlso": []
-          },
           {
             "id": "UniTextMeshGenerator.SdfVertexCount",
             "name": "SdfVertexCount",
@@ -7907,14 +7943,24 @@
             "summary": "Index of the first vertex of the face quad of the glyph currently being processed. Stable across all [[onGlyph]] invocations for a single glyph, even when modifiers append additional geometry that grows [[vertexCount]]."
           },
           {
-            "id": "UniTextMeshGenerator.onAfterPage",
-            "name": "onAfterPage",
+            "id": "UniTextMeshGenerator.onMainPassComplete",
+            "name": "onMainPassComplete",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
             "type": "Action",
-            "summary": "Invoked after all SDF glyphs have been processed, before the segment is closed."
+            "summary": "Invoked after the main glyph loop completes, before any finalization phase. Subscribers may emit additional quads into the open vertex stream; if they call [[onGlyph]] for each emitted quad with [[isVirtualGlyph]] set, per-glyph modifiers (color, gradient, bold) and effect modifiers (outline, shadow, extrude) pick up the new quads through the standard pipeline."
+          },
+          {
+            "id": "UniTextMeshGenerator.onMainPassFinalize",
+            "name": "onMainPassFinalize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Action",
+            "summary": "Finalization phase for the main glyph pass (SDF). Runs after [[onMainPassComplete]] and before the emoji segment is processed."
           },
           {
             "id": "UniTextMeshGenerator.onGlyph",
@@ -7965,6 +8011,36 @@
             "isConst": false,
             "type": "float",
             "summary": "Maximum UV-space padding requested for the current glyph by any modifier. Reset to 0 before each [[onGlyph]] invocation. Subscribers accumulate via max. Read after [[onGlyph]] to decide atlas band upgrades."
+          },
+          {
+            "id": "UniTextMeshGenerator.isVirtualGlyph",
+            "name": "isVirtualGlyph",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool",
+            "summary": "True when the currently processed glyph is virtual (injected by a modifier \u2014 list marker, ellipsis dot \u2014 and has no [[ShapedGlyph]] behind it)."
+          },
+          {
+            "id": "UniTextMeshGenerator.currentEffectPass",
+            "name": "currentEffectPass",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "EffectPass",
+            "summary": "Determines where [[EffectModifier]] duplicate quads (outline, shadow, extrude) land in the index buffer for the currently processed glyph."
+          },
+          {
+            "id": "UniTextMeshGenerator.postFaceInsertPoint",
+            "name": "postFaceInsertPoint",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Triangle-buffer index where [[PostFace]] triangles are inserted during finalization. Negative means \u0022append to the tail\u0022."
           }
         ],
         "events": []
@@ -11903,7 +11979,7 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Base class for modifiers that render horizontal lines across text (underline, strikethrough).",
-      "remarks": "Subclasses define the vertical offset of the line relative to the baseline. The line automatically breaks across multiple lines and respects color changes.",
+      "remarks": "Subclasses define the vertical offset of the line relative to the baseline. Lines break across wrapped text lines automatically. Decoration quads run through the standard [[onGlyph]] pipeline with [[isVirtualGlyph]] set, so per-glyph modifiers (color, gradient, outline, shadow) apply uniformly to face glyphs and decoration lines.",
       "seeAlso": [
         "UnderlineModifier",
         "StrikethroughModifier"
@@ -12039,6 +12115,15 @@
             "isReadonly": false,
             "isConst": false,
             "type": "PooledArrayAttribute\u003Cbyte\u003E"
+          },
+          {
+            "id": "BaseLineModifier.paramsList",
+            "name": "paramsList",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledList\u003CLineParams\u003E"
           }
         ],
         "events": []
@@ -12733,7 +12818,7 @@
       "baseType": "BaseModifier",
       "interfaces": [],
       "summary": "Base class for modifiers that render an additional effect pass behind the face (outline, shadow, glow).",
-      "remarks": "Lifecycle per frame: onGlyph \u2014 subclass [[OnGlyphEffect]] calls [[EnqueueEffectQuad]] to record a per-glyph request into its own instance buffer. No mesh is written yet. onAfterPage \u2014 each [[EffectModifier]] applies its queued requests in registration order, appending duplicate quads to the mesh generator\u0027s vertex buffer and queueing their triangle indices into a thread-static shared pre-face buffer. onAfterPage (last) \u2014 shared pre-face triangles are prepended to the generator\u0027s index buffer, so the final order is [effect layer 1, effect layer 2,..., face]. Grouping per modifier (not per glyph) is what gives a consistent painter order when multiple effects overlap across glyph boundaries \u2014 outline of glyph N\u002B1 never covers shadow of glyph N, because all outline tris precede all shadow tris.",
+      "remarks": "Lifecycle per frame: onGlyph \u2014 subclass [[OnGlyphEffect]] calls [[EnqueueEffectQuad]] to record a per-glyph request into its own instance buffer. The current value of [[currentEffectPass]] is captured into the request, deciding whether the duplicate eventually lands before or after the face. No mesh is written yet. onMainPassFinalize \u2014 each [[EffectModifier]] applies its queued requests in registration order, appending duplicate quads to the mesh generator\u0027s vertex buffer and queueing their triangle indices into the generator\u0027s shared pre- or post-face buffer ([[QueueEffectTriangle]]) according to the captured pass. After onMainPassFinalize \u2014 the generator flushes both shared buffers in one shot: pre-face tris are prepended, post-face tris are inserted at [[postFaceInsertPoint]], producing the final order [pre-face 1..N, face, post-face 1..N, line]. Grouping per modifier (not per glyph) is what gives a consistent painter order when multiple effects overlap across glyph boundaries \u2014 outline of glyph N\u002B1 never covers shadow of glyph N, because all outline tris precede all shadow tris.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -12749,7 +12834,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Called for each glyph during mesh generation. Subclass checks cluster ranges and calls [[EnqueueEffectQuad]] for matching glyphs. Emoji glyphs must be skipped (UniTextMeshGenerator.Current.font.IsColor).",
+            "summary": "Called for each glyph during mesh generation. Subclass checks cluster ranges and calls [[EnqueueEffectQuad]] for matching glyphs. Emoji glyphs must be skipped (uniText.MeshGenerator.font.IsColor).",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -12814,7 +12899,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Queues an effect duplicate for the current glyph. The actual quad append happens later in onAfterPage, grouped per modifier so that all duplicates of this effect are contiguous in the final index buffer.",
+            "summary": "Queues an effect duplicate for the current glyph. The actual quad append happens later in onMainPassFinalize, grouped per modifier so that all duplicates of this effect are contiguous in the final index buffer. The current value of [[currentEffectPass]] is captured into the request and determines whether the duplicate eventually lands before or after the face.",
             "params": [
               {
                 "name": "sourceBaseIdx",
@@ -12880,14 +12965,15 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Appends one duplicate quad to the generator\u0027s vertex buffer and queues its triangle indices into the thread-static shared pre-face buffer. Returns the destination vertex index of the new quad\u0027s first vertex (use it with [[ExpandQuad]]).",
+            "summary": "Appends one duplicate quad to the generator\u0027s vertex buffer and queues its triangle indices into the thread-static shared buffer matching pass. Returns the destination vertex index of the new quad\u0027s first vertex (use it with [[ExpandQuad]]).",
             "params": [],
             "paramTypes": [
               "UniTextMeshGenerator",
               "int",
               "Vector4",
               "float",
-              "float"
+              "float",
+              "EffectPass"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -12939,6 +13025,48 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "EffectPass",
+      "name": "EffectPass",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Layering of an [[EffectModifier]] duplicate quad relative to the face within the SDF mesh. Effect modifiers read [[currentEffectPass]] when a quad is enqueued and route its triangles into the matching pass buffer.",
+      "remarks": "[[PreFace]] \u2014 triangles are prepended to the index buffer so the face draws on top of the duplicate (standard outline / shadow / extrude behavior under glyphs). [[PostFace]] \u2014 triangles are appended after the face so the duplicate draws on top of the face (used by overlay decoration lines whose effects must sit above text).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "EffectPass.PreFace",
+            "name": "PreFace",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "EffectPass",
+            "defaultValue": "0"
+          },
+          {
+            "id": "EffectPass.PostFace",
+            "name": "PostFace",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "EffectPass",
+            "defaultValue": "1"
+          }
+        ],
         "events": []
       }
     },
@@ -14664,15 +14792,51 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "params": [],
+            "summary": "Emits one decoration-line quad spanning [startX, endX] at baselineY \u002B lineYOffset, sampling the underscore SDF column described by [uvLeft, uvRight] (use centerX..centerX for stretch segments and -sdfPadding..centerX / centerX..aspect\u002BsdfPadding for end caps).",
+            "params": [
+              {
+                "name": "thicknessOverride",
+                "type": "float",
+                "description": "Override line thickness in pixels. NaN means \u0022use the underscore glyph\u0027s natural rendered height\u0022 (from-font behavior)."
+              }
+            ],
             "paramTypes": [
+              "UniTextMeshGenerator",
               "UniTextFontProvider",
               "float",
               "float",
               "float",
               "float",
-              "Color32",
-              "long"
+              "int",
+              "long",
+              "float",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LineRenderHelper.DrawDot",
+            "name": "DrawDot",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Emits one dot quad centered at (centerX, baselineY \u002B lineYOffset), sized dotSize * aspect \u00D7 dotSize where aspect is the bullet glyph\u0027s natural width/height ratio (typically \u22481). Samples the bullet glyph (U\u002B2022) so the SDF gives a true round shape with antialiased edge. Falls back to a square dotSize\u00D7dotSize stretched-underscore mark when the resolved font has no bullet glyph or the atlas entry is missing.",
+            "params": [],
+            "paramTypes": [
+              "UniTextMeshGenerator",
+              "UniTextFontProvider",
+              "float",
+              "float",
+              "float",
+              "int",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -14681,6 +14845,77 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LineStyle",
+      "name": "LineStyle",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Visual style of decoration lines (CSS Text Decoration Module Level 4: text-decoration-style).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LineStyle.Solid",
+            "name": "Solid",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineStyle",
+            "defaultValue": "0"
+          },
+          {
+            "id": "LineStyle.Double",
+            "name": "Double",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineStyle",
+            "defaultValue": "1"
+          },
+          {
+            "id": "LineStyle.Dotted",
+            "name": "Dotted",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineStyle",
+            "defaultValue": "2"
+          },
+          {
+            "id": "LineStyle.Dashed",
+            "name": "Dashed",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineStyle",
+            "defaultValue": "3"
+          },
+          {
+            "id": "LineStyle.Wavy",
+            "name": "Wavy",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineStyle",
+            "defaultValue": "4"
+          }
+        ],
         "events": []
       }
     },
@@ -17428,7 +17663,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Tells the base class whether the glyph currently being emitted by the generator should be copied into this modifier\u0027s sub-mesh. Inspect UniTextMeshGenerator.Current fields (currentCluster, faceBaseIdx, font.IsColor, etc.) for the decision.",
+            "summary": "Tells the base class whether the glyph currently being emitted by the generator should be copied into this modifier\u0027s sub-mesh. Inspect uniText.MeshGenerator fields (currentCluster, faceBaseIdx, font.IsColor, etc.) for the decision.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -17536,7 +17771,7 @@
               {
                 "name": "gen",
                 "type": "UniTextMeshGenerator",
-                "description": "The current mesh generator (same as UniTextMeshGenerator.Current, passed for convenience)."
+                "description": "The current mesh generator (same as uniText.MeshGenerator, passed for convenience)."
               }
             ],
             "paramTypes": [
@@ -24961,6 +25196,10 @@
         "priority": 100
       },
       {
+        "name": "EffectPass",
+        "priority": 100
+      },
+      {
         "name": "EllipsisModifier",
         "priority": 100
       },
@@ -25026,6 +25265,10 @@
       },
       {
         "name": "LineRenderHelper",
+        "priority": 100
+      },
+      {
+        "name": "LineStyle",
         "priority": 100
       },
       {
