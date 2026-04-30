@@ -1,6 +1,6 @@
 {
-  "version": "2.1.5",
-  "generatedAt": "2026-04-29T22:37:32.4049942Z",
+  "version": "2.1.6",
+  "generatedAt": "2026-04-30T10:41:30.9775215Z",
   "namespaces": [],
   "types": [
     {
@@ -4545,7 +4545,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Applies visibility culling to all sub-mesh renderers based on clip rect.",
+            "summary": "Visibility culling against the actual rendered mesh bounds rather than the [[RectTransform]]. The rendered glyphs can extend beyond the rect (long words without word wrap, overflow, outline/glow expansion, modifier transforms), so the default [[Cull]] \u2014 which tests the rect corners \u2014 would cull a still-visible mesh once the rect leaves the clip.",
             "params": [],
             "paramTypes": [
               "Rect",
