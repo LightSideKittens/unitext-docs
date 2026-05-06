@@ -1,6 +1,6 @@
 {
-  "version": "2.1.7",
-  "generatedAt": "2026-05-02T10:18:49.8583311Z",
+  "version": "2.1.8",
+  "generatedAt": "2026-05-06T11:35:44.0900889Z",
   "namespaces": [],
   "types": [
     {
@@ -13383,8 +13383,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Vector2",
-            "summary": "Packs a Color32 into two floats safe for hardware interpolation: x = R*256 \u002B G, y = B*256 \u002B A. The two floats are stored in UV2.y and UV2.z of every effect-quad vertex and decoded in the shader by UnpackColor.",
-            "remarks": "Both packed values lie in [0, 65535], well inside the 24-bit integer range that single-precision float represents exactly. The previous bit-reinterpret packing produced NaN/Inf bit patterns for many color values; some GPUs canonicalize quiet-NaN at the vertex\u2013fragment interpolator boundary, which forced bit 22 of the mantissa (the high bit of the green channel) on, randomly tinting effect layers as their channels crossed bit-6 thresholds.",
+            "summary": "Packs a Color32 into two floats safe for hardware interpolation: x = R*256 \u002B G, y = B*256 \u002B A. The two floats are stored in UV2.y and UV2.z of every effect-quad vertex and decoded in the shader by UnpackEffectColor (or UniTextUnpackEffectColor in custom shaders that include UniText_Custom.cginc).",
+            "remarks": "Color space contract: the input Color32 is treated as sRGB (gamma) and copied into the UV channel verbatim. UV channels are not converted by the Canvas vertex pipeline, so the unpack helper applies gamma\u2192linear unconditionally in linear color space. Authors of custom shaders that read this packing must use UniTextUnpackEffectColor rather than rolling their own decode. Both packed values lie in [0, 65535], well inside the 24-bit integer range that single-precision float represents exactly. The previous bit-reinterpret packing produced NaN/Inf bit patterns for many color values; some GPUs canonicalize quiet-NaN at the vertex\u2013fragment interpolator boundary, which forced bit 22 of the mantissa (the high bit of the green channel) on, randomly tinting effect layers as their channels crossed bit-6 thresholds.",
             "params": [],
             "paramTypes": [
               "Color32"
