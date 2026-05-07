@@ -1,6 +1,6 @@
 {
-  "version": "2.1.8",
-  "generatedAt": "2026-05-06T11:35:44.0900889Z",
+  "version": "2.1.9",
+  "generatedAt": "2026-05-07T18:28:41.0372202Z",
   "namespaces": [],
   "types": [
     {
@@ -14349,6 +14349,50 @@
       }
     },
     {
+      "id": "IndentModifier",
+      "name": "IndentModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "interfaces": [],
+      "summary": "Adds left indentation to every line whose first codepoint falls inside the tagged range.",
+      "remarks": "Behaves like a span-level CSS margin-left: the indent is written per codepoint and consumed by the line breaker only at line starts. A wrapped line whose first codepoint sits inside the tag is pushed to the right by the resolved value; a line that merely passes through the tagged content is unaffected. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20 or 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text. 1.5em \u2014 multiplied by the current shaping font size. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5 / -5 \u2014 explicit delta. Functionally identical to the unsigned form because indents always compose additively.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "IndentModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "InlineGradientProvider",
       "name": "InlineGradientProvider",
       "namespace": "LightSide",
@@ -19146,6 +19190,73 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Indicates whether this rule operates without a modifier (e.g., protection rules like noparse). When, the rule can be registered via UniText.RegisterRule without pairing it with a BaseModifier.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LineBreakParseRule",
+      "name": "LineBreakParseRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IParseRule",
+      "interfaces": [],
+      "summary": "Replaces every occurrence of the void \u003Cbr\u003E tag with a hard line break.",
+      "remarks": "Matches \u003Cbr\u003E, \u003Cbr/\u003E, and \u003Cbr /\u003E case-insensitively, mirroring the HTML void-element contract: there is no closing tag, no nested content, and the element renders nothing of its own. The tag is stripped and a single line-feed (U\u002B000A) is written into the parsed text in its place. Once inserted, the line-feed is consumed by the regular UAX #14 mandatory-break path, so the new line keeps the surrounding paragraph\u0027s direction, alignment, and styling \u2014 the tag forces a line wrap, not a paragraph reset. Because the rule does not pair with a modifier, it is registered as a standalone rule.",
+      "seeAlso": [
+        "IParseRule"
+      ],
+      "typeParameters": [],
+      "category": "parseRules",
+      "members": {
+        "methods": [
+          {
+            "id": "LineBreakParseRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LineBreakParseRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LineBreakParseRule.IsStandalone",
+            "name": "IsStandalone",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
             "seeAlso": []
           }
         ],
@@ -25675,6 +25786,10 @@
         "priority": 100
       },
       {
+        "name": "IndentModifier",
+        "priority": 100
+      },
+      {
         "name": "InlineGradientProvider",
         "priority": 100
       },
@@ -25838,6 +25953,10 @@
       },
       {
         "name": "Data",
+        "priority": 100
+      },
+      {
+        "name": "LineBreakParseRule",
         "priority": 100
       },
       {
