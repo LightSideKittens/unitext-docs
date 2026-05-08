@@ -1,6 +1,6 @@
 {
-  "version": "2.1.9",
-  "generatedAt": "2026-05-07T18:28:41.0372202Z",
+  "version": "2.1.10",
+  "generatedAt": "2026-05-08T19:48:36.6802489Z",
   "namespaces": [],
   "types": [
     {
@@ -14359,13 +14359,61 @@
       "isStatic": false,
       "baseType": "BaseModifier",
       "interfaces": [],
-      "summary": "Adds left indentation to every line whose first codepoint falls inside the tagged range.",
-      "remarks": "Behaves like a span-level CSS margin-left: the indent is written per codepoint and consumed by the line breaker only at line starts. A wrapped line whose first codepoint sits inside the tag is pushed to the right by the resolved value; a line that merely passes through the tagged content is unaffected. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20 or 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text. 1.5em \u2014 multiplied by the current shaping font size. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5 / -5 \u2014 explicit delta. Functionally identical to the unsigned form because indents always compose additively.",
+      "summary": "Adds left indentation that begins where the tag opens and persists across wrapped lines until the tag closes.",
+      "remarks": "Two complementary mechanisms produce a continuous visual indent: Every line whose first codepoint falls inside the tagged range is pushed right by the resolved value (line-start margin). If the tag opens in the middle of a line (i.e. the codepoint preceding the tag is not a mandatory line break), the advance of that previous codepoint is widened by the indent so that content following the open boundary visibly shifts right within the current line. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20 or 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text. 1.5em \u2014 multiplied by the current shaping font size. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5 / -5 \u2014 explicit delta. Functionally identical to the unsigned form because indents always compose additively.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
+          {
+            "id": "IndentModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IndentModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IndentModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "IndentModifier.OnApply",
             "name": "OnApply",
@@ -15626,6 +15674,49 @@
       }
     },
     {
+      "id": "ListMarkerPlacement",
+      "name": "ListMarkerPlacement",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Controls how the list marker is placed relative to the content.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "ListMarkerPlacement.Inside",
+            "name": "Inside",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ListMarkerPlacement",
+            "defaultValue": "0",
+            "summary": "Marker takes inline space at the line start; content begins immediately past the marker, so items with different marker widths (e.g. 1. and 10.) start at different positions. Default \u2014 matches Google Docs, MS Word, and Discord visual behavior. Equivalent to CSS list-style-position: inside. Direction-aware: the marker sits on the leading side of the line for both LTR and RTL paragraphs."
+          },
+          {
+            "id": "ListMarkerPlacement.Outside",
+            "name": "Outside",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ListMarkerPlacement",
+            "defaultValue": "1",
+            "summary": "Marker is aligned against a fixed content column \u2014 its trailing edge meets the content start, so all items have content at the same position regardless of marker width. Markers wider than the reserved column hang past the line start into the leading margin (left in LTR paragraphs, right in RTL). Equivalent to CSS list-style-position: outside. Use when a strictly aligned content column is required and the indent is wide enough to fit the widest marker."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "ListModifier",
       "name": "ListModifier",
       "namespace": "LightSide",
@@ -15718,14 +15809,14 @@
         "properties": [],
         "fields": [
           {
-            "id": "ListModifier.indentPerLevel",
-            "name": "indentPerLevel",
+            "id": "ListModifier.markerPlacement",
+            "name": "markerPlacement",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Indent per nesting level in em units (e.g., 0.55 = 0.55em)."
+            "type": "ListMarkerPlacement",
+            "summary": "How the marker is placed relative to the content. The per-level indent step is derived dynamically from the widest marker in the list, so columns auto-fit any marker style without manual tuning. [[Inside]] (default) renders the marker inline at the start of the line, shifting content by the marker width \u2014 matches Google Docs, MS Word, and Discord. [[Outside]] aligns markers against a fixed content column for strict column alignment."
           },
           {
             "id": "ListModifier.bulletMarkers",
@@ -19322,7 +19413,7 @@
       "baseType": "IParseRule",
       "interfaces": [],
       "summary": "Parses Markdown-style lists (bulleted and numbered).",
-      "remarks": "Supports unordered lists with -, *, \u002B markers and ordered lists with 1., 2) etc. Nested lists are detected by indentation level.",
+      "remarks": "Supports unordered lists with -, *, \u002B markers and ordered lists with 1., 2), etc. Nested lists are detected by indentation level. An item ends at the first line break unless the following line is indented deeper than the item\u0027s own indent (which extends the item to cover an indented continuation or a nested list). CommonMark-style lazy continuation across non-indented lines is not supported \u2014 a non-indented line after an item is treated as a separate paragraph.",
       "seeAlso": [
         "ListModifier"
       ],
@@ -25827,6 +25918,10 @@
       },
       {
         "name": "ListItemInfo",
+        "priority": 100
+      },
+      {
+        "name": "ListMarkerPlacement",
         "priority": 100
       },
       {
