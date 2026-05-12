@@ -1,6 +1,6 @@
 {
-  "version": "2.1.10",
-  "generatedAt": "2026-05-08T22:31:18.5137859Z",
+  "version": "2.2.0",
+  "generatedAt": "2026-05-12T06:07:08.5674589Z",
   "namespaces": [],
   "types": [
     {
@@ -6270,6 +6270,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.UseGlobalStylePreset",
+            "name": "UseGlobalStylePreset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When (default), [[GlobalStylePreset]] is applied to this component as an extra preset registered after the local [[StylePresets]] list. Disable to opt this component out of project-wide rules \u2014 local [[Styles]] and local [[StylePresets]] still apply. Toggling the value invalidates the parser so the next pipeline pass picks up the new effective preset set.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.Text",
             "name": "Text",
             "accessModifier": "public",
@@ -6705,19 +6716,28 @@
             "summary": "Raised when dirty flags change, indicating what needs rebuilding."
           },
           {
+            "id": "UniTextBase.BeforeProcess",
+            "name": "BeforeProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised before any text processing in the current canvas update cycle."
+          },
+          {
             "id": "UniTextBase.MeshApplied",
             "name": "MeshApplied",
             "accessModifier": "public",
             "isStatic": true,
             "type": "Action",
-            "summary": "Raised before canvas rendering begins, after all components are processed."
+            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
           },
           {
             "id": "UniTextBase.AfterProcess",
             "name": "AfterProcess",
             "accessModifier": "public",
             "isStatic": true,
-            "type": "Action"
+            "type": "Action",
+            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
           },
           {
             "id": "UniTextBase.TextClicked",
@@ -7413,7 +7433,7 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "ScriptableObject",
+      "baseType": "NamedCatalogAsset\u003CNamedGradient\u003E",
       "interfaces": [],
       "summary": "ScriptableObject containing named gradients for use with \u003Cgradient=name\u003E tags.",
       "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Gradients. Reference in UniTextSettings to make gradients available to all UniText components.",
@@ -7426,6 +7446,24 @@
       "members": {
         "methods": [
           {
+            "id": "UniTextGradients.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [
+              "NamedGradient"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextGradients.TryGetGradient",
             "name": "TryGetGradient",
             "accessModifier": "public",
@@ -7435,20 +7473,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Attempts to get a gradient by name.",
-            "returns": "True if the gradient was found.",
-            "params": [
-              {
-                "name": "name",
-                "type": "string",
-                "description": "The gradient name (case-insensitive)."
-              },
-              {
-                "name": "gradient",
-                "type": "Gradient",
-                "description": "The gradient if found."
-              }
-            ],
+            "summary": "Resolves a gradient by name (case-insensitive). Convenience over the generic [[TryGet]].",
+            "params": [],
             "paramTypes": [
               "string",
               "Gradient"
@@ -7467,6 +7493,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Appends a named gradient by name \u002B payload pair.",
             "params": [],
             "paramTypes": [
               "string",
@@ -7486,18 +7513,7 @@
             "type": "IEnumerable\u003Cstring\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets all gradient names.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextGradients.Count",
-            "name": "Count",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "int",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets the number of gradients.",
+            "summary": "All gradient names exposed by this asset. Convenience over the generic [[Names]].",
             "seeAlso": []
           }
         ],
@@ -8320,6 +8336,51 @@
       }
     },
     {
+      "id": "UniTextObjects",
+      "name": "UniTextObjects",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "NamedCatalogAsset\u003CInlineObject\u003E",
+      "interfaces": [],
+      "summary": "ScriptableObject containing named inline objects (UI prefabs) for use with \u003Cobj=name\u003E tags.",
+      "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Objects. Reference from an [[AssetObjProvider]] on an [[ObjModifier]] to share a catalog of inline prefabs across multiple components.",
+      "seeAlso": [
+        "ObjModifier",
+        "IObjProvider"
+      ],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextObjects.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [
+              "InlineObject"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "UniTextRenderData",
       "name": "UniTextRenderData",
       "namespace": "LightSide",
@@ -8551,6 +8612,26 @@
       "members": {
         "methods": [
           {
+            "id": "UniTextSettings.Affects",
+            "name": "Affects",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when a [[Changed]] event with payload changedProperty should trigger a reaction subscribed to interestedField \u2014 either exact name match, or the [[All]] sentinel. Canonical filter for every [[Changed]] consumer.",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextSettings.SetInstance",
             "name": "SetInstance",
             "accessModifier": "public",
@@ -8560,7 +8641,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Manually sets the singleton instance (used for testing or custom initialization).",
+            "summary": "Manually replaces the singleton settings asset (used by tests and custom initialization paths). Raises [[Changed]] with the [[All]] sentinel \u2014 every reactive field is potentially different now, so subscribers should re-bind everything.",
             "params": [
               {
                 "name": "settings",
@@ -8586,6 +8667,18 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the named gradients asset.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.GlobalStylePreset",
+            "name": "GlobalStylePreset",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "StylePreset",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Project-wide [[StylePreset]] applied to every [[UniTextBase]] component without per-component opt-in. Behaves as one extra entry appended after each component\u0027s local StylePresets list, so local Styles and per-component StylePresets register first and win parse-rule conflicts.",
+            "remarks": "Assigning fires [[Changed]] with nameof(GlobalStylePreset); subscribed components rebuild their runtime preset copies on the next frame via the standard InvalidateStyles path. Editing the preset\u0027s styles list at runtime (via the preset\u0027s own [[AddStyle]] / [[RemoveStyle]] / [[ClearStyles]]) is delivered through the asset\u0027s own [[Changed]] event, picked up by every component that has it subscribed (local StylePresets entry or this global slot).",
             "seeAlso": []
           },
           {
@@ -8634,16 +8727,73 @@
             "seeAlso": []
           }
         ],
-        "fields": [],
+        "fields": [
+          {
+            "id": "UniTextSettings.All",
+            "name": "All",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string",
+            "summary": "Sentinel passed to [[Changed]] when the whole settings asset has been swapped (see [[SetInstance]]) and every field is potentially different from its previously observed value. [[Affects]] treats this as \u0022matches every interested field\u0022 so consumers don\u0027t need to special-case it."
+          }
+        ],
         "events": [
           {
             "id": "UniTextSettings.Changed",
             "name": "Changed",
             "accessModifier": "public",
             "isStatic": true,
-            "type": "Action"
+            "type": "Action\u003Cstring\u003E",
+            "summary": "Raised when a settings field is mutated. The argument is the property name (nameof(...)) of the field that changed, allowing subscribers to filter reactions surgically without per-component snapshot bookkeeping. The sentinel [[All]] means \u0022the entire asset was replaced, re-read everything\u0022 and is fired by [[SetInstance]]. Inspector OnValidate fires one event per reactive field whose value differs from the last observed snapshot."
           }
         ]
+      }
+    },
+    {
+      "id": "UniTextSprites",
+      "name": "UniTextSprites",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "NamedCatalogAsset\u003CInlineSprite\u003E",
+      "interfaces": [],
+      "summary": "ScriptableObject containing named inline sprites for use with \u003Csprite=name\u003E tags.",
+      "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Sprites. Reference from an [[AssetSpriteProvider]] on a [[SpriteModifier]] to share a catalog across multiple components without prefabbing each icon.",
+      "seeAlso": [
+        "SpriteModifier",
+        "ISpriteProvider"
+      ],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextSprites.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [
+              "InlineSprite"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
       }
     },
     {
@@ -12139,63 +12289,65 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "IGradientProvider",
-      "interfaces": [],
+      "baseType": "AssetNamedCatalog\u003CNamedGradient, UniTextGradients\u003E",
+      "interfaces": [
+        "IGradientProvider"
+      ],
       "summary": "[[IGradientProvider]] backed by an explicit [[UniTextGradients]] asset referenced on the modifier. Use this when a single component should resolve gradients from a different catalog than the project-wide one.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [
-          {
-            "id": "AssetGradientProvider.TryGetGradient",
-            "name": "TryGetGradient",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "params": [],
-            "paramTypes": [
-              "string",
-              "Gradient"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "AssetGradientProvider.Enumerate",
-            "name": "Enumerate",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CNamedGradient\u003E",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [
-          {
-            "id": "AssetGradientProvider.Asset",
-            "name": "Asset",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "UniTextGradients",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "The asset used for name resolution. Setting to makes [[TryGetGradient]] return for every name.",
-            "seeAlso": []
-          }
-        ],
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "AssetObjProvider",
+      "name": "AssetObjProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "AssetNamedCatalog\u003CInlineObject, UniTextObjects\u003E",
+      "interfaces": [
+        "IObjProvider"
+      ],
+      "summary": "[[IObjProvider]] backed by an explicit [[UniTextObjects]] asset referenced on the modifier. Use this when multiple components should share the same inline-object catalog managed as a project asset.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "AssetSpriteProvider",
+      "name": "AssetSpriteProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "AssetNamedCatalog\u003CInlineSprite, UniTextSprites\u003E",
+      "interfaces": [
+        "ISpriteProvider"
+      ],
+      "summary": "[[ISpriteProvider]] backed by an explicit [[UniTextSprites]] asset referenced on the modifier. Use this when multiple components should share the same sprite catalog managed as a project asset.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -13077,6 +13229,63 @@
       "members": {
         "methods": [
           {
+            "id": "CompositeModifier.SetModifiers",
+            "name": "SetModifiers",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the child modifier list, re-initialises children, and queues a re-parse.",
+            "params": [],
+            "paramTypes": [
+              "IEnumerable\u003CBaseModifier\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.AddModifier",
+            "name": "AddModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Appends one child modifier and queues a re-parse.",
+            "params": [],
+            "paramTypes": [
+              "BaseModifier"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CompositeModifier.RemoveModifierAt",
+            "name": "RemoveModifierAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Removes the child modifier at index and queues a re-parse.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "CompositeModifier.PrepareForParallel",
             "name": "PrepareForParallel",
             "accessModifier": "public",
@@ -13161,19 +13370,21 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "CompositeModifier.modifiers",
-            "name": "modifiers",
+            "id": "CompositeModifier.Modifiers",
+            "name": "Modifiers",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "TypedList\u003CBaseModifier\u003E",
-            "summary": "Child modifiers to apply in order."
+            "type": "IReadOnlyList\u003CBaseModifier\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Child modifiers applied in order. The tag parameter is split by;, with the n-th segment passed to the n-th child; absent segments deliver so the child falls back to its own defaults.",
+            "remarks": "Direct list mutation does not notify the owning component \u2014 use [[SetModifiers]], [[AddModifier]], [[RemoveModifierAt]], or call uniText.SetDirty(UniTextDirtyFlags.Text) manually so the new child set is re-initialised and re-applied in the next parse pass.",
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -13714,36 +13925,45 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "ExtrudeModifier.steps",
-            "name": "steps",
+            "id": "ExtrudeModifier.Steps",
+            "name": "Steps",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "int"
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Number of extrude layers stacked behind the face (minimum 1). More layers produce a smoother depth gradient and a longer apparent extrusion at the cost of additional duplicate-quad geometry per glyph.",
+            "remarks": "Changing this re-allocates the layer ring buffers and requeues a mesh rebuild ([[Color]]). Parse / shape / layout caches are reused.",
+            "seeAlso": []
           },
           {
-            "id": "ExtrudeModifier.bevel",
-            "name": "bevel",
+            "id": "ExtrudeModifier.Bevel",
+            "name": "Bevel",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "bool"
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When, layers alternate between the near and far face colors rather than blending across, producing a faceted bevel highlight. The layer count effectively doubles ([[Steps]] \u00D7 2) because each step contributes a near face and a side face.",
+            "remarks": "Changing this re-allocates the layer ring buffers and requeues a mesh rebuild ([[Color]]).",
+            "seeAlso": []
           },
           {
-            "id": "ExtrudeModifier.fixedPixelSize",
-            "name": "fixedPixelSize",
+            "id": "ExtrudeModifier.FixedPixelSize",
+            "name": "FixedPixelSize",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "bool"
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When, the per-range offsetX / offsetY / dilate / softness values are interpreted in fixed pixels and compensated by the glyph metric factor so the extrusion has constant on-screen geometry independent of font size.",
+            "remarks": "Read on the mesh-generation hot path (onGlyphEffect); changing it requeues a mesh rebuild via [[Color]].",
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -13851,14 +14071,15 @@
       "baseType": "IGradientProvider",
       "interfaces": [],
       "summary": "[[IGradientProvider]] backed by the project-wide [[Gradients]] asset. Use this when the same gradient catalog is shared across all UniText components in the project.",
+      "remarks": "Listens to both [[Changed]] (in case the project-wide asset pointer is reassigned) and the bound asset\u0027s own [[Changed]] event (in case its entries are edited). Both subscriptions are lazy and tied to this provider\u0027s own [[Changed]] subscriber count, so an unused provider doesn\u0027t keep itself alive through the settings/asset delegate lists.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
           {
-            "id": "GlobalSettingsGradientProvider.TryGetGradient",
-            "name": "TryGetGradient",
+            "id": "GlobalSettingsGradientProvider.TryGet",
+            "name": "TryGet",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
@@ -13869,7 +14090,7 @@
             "params": [],
             "paramTypes": [
               "string",
-              "Gradient"
+              "NamedGradient"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -13894,7 +14115,15 @@
         ],
         "properties": [],
         "fields": [],
-        "events": []
+        "events": [
+          {
+            "id": "GlobalSettingsGradientProvider.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action"
+          }
+        ]
       }
     },
     {
@@ -14171,61 +14400,13 @@
             "type": "IGradientProvider",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets the gradient source used by this modifier. disables resolution and causes \u003Cgradient\u003E tags to be skipped with a warning.",
+            "summary": "Source of named gradients used by this modifier when resolving \u003Cgradient=name\u003E tags. disables resolution and causes such tags to be skipped with a warning.",
+            "remarks": "The provider is consulted in OnApply (text-attribute pass), so swapping it requeues a re-parse via [[Text]] \u2014 existing gradient definitions cached in the shared attribute data are discarded and rebuilt against the new provider.",
             "seeAlso": []
           }
         ],
         "fields": [],
         "events": []
-      }
-    },
-    {
-      "id": "GradientNotifier",
-      "name": "GradientNotifier",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": false,
-      "isStatic": true,
-      "interfaces": [],
-      "summary": "Broadcast channel for changes in any gradient source visible to [[GradientModifier]]. Fires when a [[UniTextGradients]] asset is edited, when an [[InlineGradientProvider]]\u0027s entries are changed in the inspector, or when a custom [[IGradientProvider]] implementation invokes [[NotifyChanged]] directly.",
-      "remarks": "[[GradientModifier]] subscribes during its active lifecycle and marks the owning UniText component dirty so colors are recomputed on the next rebuild. Custom providers that expose their own mutable state should call [[NotifyChanged]] when their resolution result changes.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "modifiers",
-      "members": {
-        "methods": [
-          {
-            "id": "GradientNotifier.NotifyChanged",
-            "name": "NotifyChanged",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": true,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Raises [[AnyChanged]]. Safe to call when there are no subscribers.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [],
-        "fields": [],
-        "events": [
-          {
-            "id": "GradientNotifier.AnyChanged",
-            "name": "AnyChanged",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised when any subscribed gradient source has changed. Subscribers should treat this as \u0022invalidate cached gradient resolution and rebuild\u0022 \u2014 there is no per-source filtering."
-          }
-        ]
       }
     },
     {
@@ -14280,69 +14461,18 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
-      "interfaces": [],
-      "summary": "Resolves named [[Gradient]] entries for [[GradientModifier]].",
-      "remarks": "Implementations decide where the gradient catalog lives \u2014 project-wide settings, an explicit asset reference, or an inline list edited per-modifier. Names are matched case-insensitively, matching \u003Cgradient=name\u003E tag behavior.",
+      "interfaces": [
+        "INamedCatalog\u003CNamedGradient\u003E"
+      ],
+      "summary": "Resolves named [[NamedGradient]] entries for [[GradientModifier]].",
+      "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineGradientProvider]], [[AssetGradientProvider]], [[GlobalSettingsGradientProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
       "seeAlso": [
-        "GradientModifier",
-        "GlobalSettingsGradientProvider",
-        "AssetGradientProvider",
-        "InlineGradientProvider"
+        "GradientModifier"
       ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [
-          {
-            "id": "IGradientProvider.TryGetGradient",
-            "name": "TryGetGradient",
-            "accessModifier": "public",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Tries to resolve a name (as used in \u003Cgradient=name\u003E) to a Gradient.",
-            "returns": "when a gradient with the given name was found.",
-            "params": [
-              {
-                "name": "name",
-                "type": "string",
-                "description": "Gradient name. Case-insensitive."
-              },
-              {
-                "name": "gradient",
-                "type": "Gradient",
-                "description": "The resolved gradient when this call returns; otherwise."
-              }
-            ],
-            "paramTypes": [
-              "string",
-              "Gradient"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "IGradientProvider.Enumerate",
-            "name": "Enumerate",
-            "accessModifier": "public",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CNamedGradient\u003E",
-            "summary": "Enumerates all gradients exposed by this provider. Used by editor tooling to populate the \u003Cgradient=\u2026\u003E dropdown for the modifier instance that owns this provider. Lazy or runtime-resolved providers may return an empty sequence.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
+        "methods": [],
         "properties": [],
         "fields": [],
         "events": []
@@ -14449,9 +14579,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "IGradientProvider",
+      "baseType": "InlineNamedCatalog\u003CNamedGradient\u003E",
       "interfaces": [
-        "ISerializationCallbackReceiver"
+        "IGradientProvider"
       ],
       "summary": "[[IGradientProvider]] with an inline list of named gradients edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
       "seeAlso": [],
@@ -14460,34 +14590,57 @@
       "members": {
         "methods": [
           {
-            "id": "InlineGradientProvider.TryGetGradient",
-            "name": "TryGetGradient",
-            "accessModifier": "public",
+            "id": "InlineGradientProvider.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
-            "isOverride": false,
+            "isOverride": true,
             "isConstructor": false,
-            "returnType": "bool",
+            "returnType": "string",
             "params": [],
             "paramTypes": [
-              "string",
-              "Gradient"
+              "NamedGradient"
             ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
-          },
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineMedia",
+      "name": "InlineMedia",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearing) and rendering (width, height) need; the renderable payload is added by the concrete subclass.",
+      "remarks": "All metrics are in em units (relative to fontSize): width=1, height=1 means the media is fontSize x fontSize pixels advance=1 means the cursor moves by fontSize pixels after this media bearingX/bearingY are offsets relative to fontSize",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
           {
-            "id": "InlineGradientProvider.Enumerate",
-            "name": "Enumerate",
+            "id": "InlineMedia.UpdateInstances",
+            "name": "UpdateInstances",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "IEnumerable\u003CNamedGradient\u003E",
+            "returnType": "void",
+            "summary": "Trims excess wrappers when fewer occurrences are active than instances exist, then runs [[Setup]] on every remaining instance to apply pending transform/content updates. Called per frame after the mesh rebuild.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -14496,6 +14649,248 @@
           }
         ],
         "properties": [],
+        "fields": [
+          {
+            "id": "InlineMedia.name",
+            "name": "name",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string",
+            "summary": "Lookup name used in the tag parameter (e.g. jump in \u003Csprite=jump\u003E). Case-insensitive."
+          },
+          {
+            "id": "InlineMedia.width",
+            "name": "width",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Width in em units (1 = fontSize)."
+          },
+          {
+            "id": "InlineMedia.height",
+            "name": "height",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Height in em units (1 = fontSize)."
+          },
+          {
+            "id": "InlineMedia.bearingX",
+            "name": "bearingX",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Horizontal offset in em units."
+          },
+          {
+            "id": "InlineMedia.bearingY",
+            "name": "bearingY",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Vertical offset in em units."
+          },
+          {
+            "id": "InlineMedia.advance",
+            "name": "advance",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Advance width in em units (1 = fontSize)."
+          },
+          {
+            "id": "InlineMedia.activeCount",
+            "name": "activeCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Number of on-screen occurrences claimed in the current rebuild pass; reset to 0 on every rebuild start."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+      "name": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "interfaces": [],
+      "summary": "Shared base for modifiers that embed inline-flowed media (prefab instances, sprite quads, future GPU mesh subitems) into text. Subclasses pick the entry type and wrapper type, supply a typed provider field, and translate entries into wrapper state \u2014 the base owns the cluster mapping, shape/render passes, lifecycle of wrapper instances, and provider event subscription.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The catalog entry type (must extend [[InlineMedia]])."
+        },
+        {
+          "name": "TWrapper",
+          "description": "The [[MediaWrapper]] subclass that materialises each on-screen occurrence."
+        }
+      ],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineMediaModifier.ConfigureWrapper",
+            "name": "ConfigureWrapper",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Copies the per-frame visual state from entry into wrapper (sprite/color, prefab reference, etc.).",
+            "params": [],
+            "paramTypes": [
+              "TWrapper",
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.HasRenderable",
+            "name": "HasRenderable",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns when the entry\u0027s renderable payload is present (sprite assigned, prefab assigned). Entries failing this check are skipped at render time but still influence layout.",
+            "params": [],
+            "paramTypes": [
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.RebindCatalog",
+            "name": "RebindCatalog",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Re-subscribes a swapped provider when the modifier is currently active. Concrete subclasses call this from the Provider property setter.",
+            "params": [],
+            "paramTypes": [
+              "INamedCatalog\u003CTEntry\u003E",
+              "INamedCatalog\u003CTEntry\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "InlineMediaModifier.Catalog",
+            "name": "Catalog",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "INamedCatalog\u003CTEntry\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The catalog this modifier consults. Concrete subclass exposes a typed provider field with the appropriate marker interface.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -14509,42 +14904,17 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseType": "InlineMedia",
       "interfaces": [],
-      "summary": "Defines an inline object that can be embedded within text flow.",
-      "remarks": "Inline objects are referenced by name in the text and rendered as UI prefabs that flow with the text like characters. All metrics are in em units (relative to fontSize): width=1, height=1 means the object is fontSize x fontSize pixels advance=1 means the cursor moves by fontSize pixels after this object bearingX/Y are offsets relative to fontSize",
+      "summary": "Defines an inline object (UI prefab) that can be embedded within text flow.",
+      "remarks": "Pure data: the host [[ObjModifier]] owns lifecycle state (instance count, instantiated prefab clones), so the same [[InlineObject]] instance can safely be referenced by multiple modifiers.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [
-          {
-            "id": "InlineObject.UpdateInstances",
-            "name": "UpdateInstances",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
+        "methods": [],
         "properties": [],
         "fields": [
-          {
-            "id": "InlineObject.name",
-            "name": "name",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "string"
-          },
           {
             "id": "InlineObject.prefab",
             "name": "prefab",
@@ -14552,68 +14922,150 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "RectTransform"
-          },
-          {
-            "id": "InlineObject.width",
-            "name": "width",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Width in em units (1 = fontSize)."
-          },
-          {
-            "id": "InlineObject.height",
-            "name": "height",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Height in em units (1 = fontSize)."
-          },
-          {
-            "id": "InlineObject.bearingX",
-            "name": "bearingX",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Horizontal offset in em units."
-          },
-          {
-            "id": "InlineObject.bearingY",
-            "name": "bearingY",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Vertical offset in em units."
-          },
-          {
-            "id": "InlineObject.advance",
-            "name": "advance",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Advance width in em units (1 = fontSize)."
-          },
-          {
-            "id": "InlineObject.activeCount",
-            "name": "activeCount",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "int"
+            "type": "RectTransform",
+            "summary": "UI prefab to instantiate as the inline child."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineObjProvider",
+      "name": "InlineObjProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "InlineNamedCatalog\u003CInlineObject\u003E",
+      "interfaces": [
+        "IObjProvider"
+      ],
+      "summary": "[[IObjProvider]] with an inline list of [[InlineObject]] entries edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineObjProvider.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [
+              "InlineObject"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineSprite",
+      "name": "InlineSprite",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "InlineMedia",
+      "interfaces": [],
+      "summary": "Defines an inline sprite that can be embedded within text flow.",
+      "remarks": "Pure data: the host [[SpriteModifier]] owns lifecycle state (instance count, generated GameObjects), so the same [[InlineSprite]] instance can safely be referenced by multiple modifiers.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "InlineSprite.sprite",
+            "name": "sprite",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Sprite",
+            "summary": "The sprite to draw."
+          },
+          {
+            "id": "InlineSprite.color",
+            "name": "color",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Color",
+            "summary": "Tint color multiplied with the sprite."
+          },
+          {
+            "id": "InlineSprite.preserveAspect",
+            "name": "preserveAspect",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool",
+            "summary": "If true, the sprite is letterboxed inside the width x height box to keep its native aspect ratio."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "InlineSpriteProvider",
+      "name": "InlineSpriteProvider",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "InlineNamedCatalog\u003CInlineSprite\u003E",
+      "interfaces": [
+        "ISpriteProvider"
+      ],
+      "summary": "[[ISpriteProvider]] with an inline list of [[InlineSprite]] entries edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineSpriteProvider.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [
+              "InlineSprite"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -14879,6 +15331,58 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "IObjProvider",
+      "name": "IObjProvider",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [
+        "INamedCatalog\u003CInlineObject\u003E"
+      ],
+      "summary": "Resolves named [[InlineObject]] entries for [[ObjModifier]].",
+      "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineObjProvider]], [[AssetObjProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
+      "seeAlso": [
+        "ObjModifier"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ISpriteProvider",
+      "name": "ISpriteProvider",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [
+        "INamedCatalog\u003CInlineSprite\u003E"
+      ],
+      "summary": "Resolves named [[InlineSprite]] entries for [[SpriteModifier]].",
+      "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineSpriteProvider]], [[AssetSpriteProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
+      "seeAlso": [
+        "SpriteModifier"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -15738,6 +16242,56 @@
       "members": {
         "methods": [
           {
+            "id": "ListModifier.SetBulletMarkers",
+            "name": "SetBulletMarkers",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the bullet-marker glyphs for every nesting level. Null or empty input is rejected (a list must have at least one entry, used for every level).",
+            "params": [
+              {
+                "name": "markers",
+                "type": "IEnumerable\u003Cstring\u003E",
+                "description": "New marker glyphs ordered by nesting level."
+              }
+            ],
+            "paramTypes": [
+              "IEnumerable\u003Cstring\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ListModifier.SetOrderedStyles",
+            "name": "SetOrderedStyles",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the per-level numbering styles for ordered lists.",
+            "params": [
+              {
+                "name": "styles",
+                "type": "IEnumerable\u003COrderedMarkerStyle\u003E",
+                "description": "New marker styles ordered by nesting level."
+              }
+            ],
+            "paramTypes": [
+              "IEnumerable\u003COrderedMarkerStyle\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "ListModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
@@ -15806,37 +16360,45 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "ListModifier.markerPlacement",
-            "name": "markerPlacement",
+            "id": "ListModifier.MarkerPlacement",
+            "name": "MarkerPlacement",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
             "type": "ListMarkerPlacement",
-            "summary": "How the marker is placed relative to the content. The per-level indent step is derived dynamically from the widest marker in the list, so columns auto-fit any marker style without manual tuning. [[Inside]] (default) renders the marker inline at the start of the line, shifting content by the marker width \u2014 matches Google Docs, MS Word, and Discord. [[Outside]] aligns markers against a fixed content column for strict column alignment."
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "How the marker is placed relative to the content. [[Inside]] (default) renders the marker inline at the start of the line; each nested item is indented by its own ancestors\u0027 marker widths, so a nested marker lines up with its parent\u0027s content regardless of unrelated siblings \u2014 matches Google Docs, MS Word, and Discord. [[Outside]] reserves a fixed content column derived from the widest marker in the list, so all items have content aligned at the same column regardless of marker width.",
+            "remarks": "Read in the shape phase (OnShaped) to compute start-line margins; changing it requeues a re-parse via [[Text]] so the new margins flow into line breaking.",
+            "seeAlso": []
           },
           {
-            "id": "ListModifier.bulletMarkers",
-            "name": "bulletMarkers",
+            "id": "ListModifier.BulletMarkers",
+            "name": "BulletMarkers",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "StyledList\u003Cstring\u003E"
+            "type": "IReadOnlyList\u003Cstring\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Bullet marker glyphs indexed by nesting level (level 0 first). When a list item nests deeper than the configured length, the last entry is reused.",
+            "remarks": "Mutating the returned list directly will not notify the owning component \u2014 use [[SetBulletMarkers]] for replacement, or call uniText.SetDirty(UniTextDirtyFlags.Text) after manual edits.",
+            "seeAlso": []
           },
           {
-            "id": "ListModifier.orderedStyles",
-            "name": "orderedStyles",
+            "id": "ListModifier.OrderedStyles",
+            "name": "OrderedStyles",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "StyledList\u003COrderedMarkerStyle\u003E"
+            "type": "IReadOnlyList\u003COrderedMarkerStyle\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Numbering styles indexed by nesting level (level 0 first). When a list item nests deeper than the configured length, the last entry is reused.",
+            "remarks": "Mutating the returned list directly will not notify the owning component \u2014 use [[SetOrderedStyles]] for replacement, or call uniText.SetDirty(UniTextDirtyFlags.Text) after manual edits.",
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -16244,6 +16806,53 @@
             "seeAlso": []
           },
           {
+            "id": "MaterialModifier.RenderOrder",
+            "name": "RenderOrder",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "MaterialRenderOrder",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Controls how the custom material composes with the base text pass on the modifier\u0027s ranges: [[Replace]] suppresses the base pass (face alpha zeroed); [[Over]] / [[Under]] keep the base pass and layer the custom material in front of or behind it.",
+            "remarks": "Read on the mesh-generation hot path (OnQuadAppended, GetRenderOrder); changing it requeues a mesh rebuild via [[Color]]. Parse and layout caches are reused \u2014 only the sub-mesh and base-face alpha get reapplied.",
+            "seeAlso": []
+          },
+          {
+            "id": "MaterialModifier.SortIndex",
+            "name": "SortIndex",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Stable sort key within the same [[RenderOrder]] group; lower indices render first. Use to deterministically layer multiple [[MaterialModifier]] instances with the same render order.",
+            "seeAlso": []
+          },
+          {
+            "id": "MaterialModifier.EmojiMaterial",
+            "name": "EmojiMaterial",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Material",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Optional override material for emoji glyphs in the modifier\u0027s ranges. (default) means emoji glyphs are rendered by the base emoji pass and the modifier emits no emoji sub-mesh contribution; assigning a material routes emoji quads through the modifier\u0027s sub-mesh bound to the emoji atlas.",
+            "remarks": "Read in the slot-resolution path (GetMaterialForSlot); changing it changes which atlas/material is bound, so it requeues via [[Material]].",
+            "seeAlso": []
+          },
+          {
+            "id": "MaterialModifier.QuadPaddingOverride",
+            "name": "QuadPaddingOverride",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Outward em-space padding applied to every sub-mesh quad so shader effects (glow, edge halos, distortion) aren\u0027t clipped by the glyph\u0027s tight bounding box. Negative reads the value from the bound material\u0027s _UniTextMeshPadding property (shader-driven default).",
+            "remarks": "Read in PrepareForParallel ahead of each rebuild; changing it requeues a mesh rebuild via [[Color]].",
+            "seeAlso": []
+          },
+          {
             "id": "MaterialModifier.UseVirtualWriter",
             "name": "UseVirtualWriter",
             "accessModifier": "protected",
@@ -16320,6 +16929,184 @@
             "type": "MaterialRenderOrder",
             "defaultValue": "2",
             "summary": "Custom material renders behind the base text pass."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "MediaWrapper",
+      "name": "MediaWrapper",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Owns a single inline-flowed RectTransform created by [[InlineMediaModifier{TEntry, TWrapper}]]. Subclasses decide how the instance is created (prefab clone vs fresh GameObject) and how per-frame visual state is applied (sprite/color, prefab-internal rebuild).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "MediaWrapper.Setup",
+            "name": "Setup",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "MediaWrapper.Destroy",
+            "name": "Destroy",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "MediaWrapper.TryCreate",
+            "name": "TryCreate",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Creates the underlying [[instance]] RectTransform (and any sibling components). Return to abort creation \u2014 e.g. the renderable payload is missing.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "MediaWrapper.ApplyContent",
+            "name": "ApplyContent",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Applies per-frame visual state (sprite, tint, etc.) to [[instance]] and its children. Called after the transform has been positioned and sized. No-op for wrappers whose payload is fully owned by an instantiated prefab.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "MediaWrapper.OnDestroyed",
+            "name": "OnDestroyed",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Optional hook called after [[Destroy]] tears down the instance, for subclass state reset.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "MediaWrapper.instance",
+            "name": "instance",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "RectTransform"
+          },
+          {
+            "id": "MediaWrapper.parent",
+            "name": "parent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Transform"
+          },
+          {
+            "id": "MediaWrapper.anchoredPosition",
+            "name": "anchoredPosition",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          },
+          {
+            "id": "MediaWrapper.sizeDelta",
+            "name": "sizeDelta",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          },
+          {
+            "id": "MediaWrapper.pivot",
+            "name": "pivot",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          },
+          {
+            "id": "MediaWrapper.isDirty",
+            "name": "isDirty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
+          },
+          {
+            "id": "MediaWrapper.needDestroy",
+            "name": "needDestroy",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
+          },
+          {
+            "id": "MediaWrapper.created",
+            "name": "created",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
           }
         ],
         "events": []
@@ -16476,14 +17263,15 @@
       "kind": "class",
       "accessModifier": "public",
       "isAbstract": false,
-      "isSealed": false,
+      "isSealed": true,
       "isStatic": false,
-      "baseType": "BaseModifier",
+      "baseType": "InlineMediaModifier\u003CInlineObject, PrefabMediaWrapper\u003E",
       "interfaces": [],
-      "summary": "Embeds UI prefabs (images, icons, custom elements) inline with text.",
-      "remarks": "Parameter: the name of the object to embed (must match an entry in the [[objects]] list). The modifier replaces placeholder text with instantiated prefabs positioned in the text flow. Objects are defined in the [[objects]] list and referenced by name in the tag parameter. All metrics are in em units (relative to fontSize). With width=1, height=1 the object will be fontSize x fontSize pixels, matching the size of a typical character.",
+      "summary": "Embeds UI prefabs (images, icons, custom elements) inline with text. The set of named inline objects available to \u003Cobj=name\u003E tags is supplied by an [[IObjProvider]].",
+      "remarks": "Parameter: the name of the object to embed \u2014 resolved through [[Provider]]. Built-in providers: [[InlineObjProvider]] (default \u2014 inline list on the modifier), [[AssetObjProvider]] (shared [[UniTextObjects]] asset). For dynamic catalogs, implement [[IObjProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
-        "IParseRule",
+        "SpriteModifier",
+        "IObjProvider",
         "InlineObject"
       ],
       "typeParameters": [],
@@ -16491,56 +17279,26 @@
       "members": {
         "methods": [
           {
-            "id": "ObjModifier.OnEnable",
-            "name": "OnEnable",
+            "id": "ObjModifier.HasRenderable",
+            "name": "HasRenderable",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "void",
+            "returnType": "bool",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "InlineObject"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           },
           {
-            "id": "ObjModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "ObjModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "ObjModifier.OnApply",
-            "name": "OnApply",
+            "id": "ObjModifier.ConfigureWrapper",
+            "name": "ConfigureWrapper",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -16550,27 +17308,38 @@
             "returnType": "void",
             "params": [],
             "paramTypes": [
-              "int",
-              "int",
-              "string"
+              "PrefabMediaWrapper",
+              "InlineObject"
             ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "ObjModifier.objects",
-            "name": "objects",
+            "id": "ObjModifier.Provider",
+            "name": "Provider",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "StyledList\u003CInlineObject\u003E"
+            "type": "IObjProvider",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Source of named inline objects used by this modifier when resolving \u003Cobj=name\u003E tags. disables resolution.",
+            "seeAlso": []
+          },
+          {
+            "id": "ObjModifier.Catalog",
+            "name": "Catalog",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "INamedCatalog\u003CInlineObject\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -16737,19 +17506,21 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "OutlineModifier.fixedPixelSize",
-            "name": "fixedPixelSize",
+            "id": "OutlineModifier.FixedPixelSize",
+            "name": "FixedPixelSize",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
             "type": "bool",
-            "summary": "When true, dilate is in fixed pixels and compensated by gradientScale per glyph."
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When, dilate is interpreted in fixed pixels and compensated by the glyph\u0027s gradientScale so the outline has a constant on-screen thickness independent of font size. Default \u2014 dilate scales with the glyph SDF padding.",
+            "remarks": "Read on the mesh-generation hot path (onGlyph); changing it requeues a mesh rebuild via [[Color]] \u2014 the parsed attribute buffer and glyph positions are reused.",
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -17156,6 +17927,71 @@
       }
     },
     {
+      "id": "PrefabMediaWrapper",
+      "name": "PrefabMediaWrapper",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "MediaWrapper",
+      "interfaces": [],
+      "summary": "Wrapper that clones a UI prefab into the host UniText.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "PrefabMediaWrapper.TryCreate",
+            "name": "TryCreate",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "PrefabMediaWrapper.ApplyContent",
+            "name": "ApplyContent",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "PrefabMediaWrapper.prefab",
+            "name": "prefab",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "RectTransform"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "EllipsisModifier.Range",
       "name": "Range",
       "namespace": "LightSide",
@@ -17435,19 +18271,21 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
-        "fields": [
+        "properties": [
           {
-            "id": "ShadowModifier.fixedPixelSize",
-            "name": "fixedPixelSize",
+            "id": "ShadowModifier.FixedPixelSize",
+            "name": "FixedPixelSize",
             "accessModifier": "public",
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
             "type": "bool",
-            "summary": "When true, dilate/offset/softness are in fixed pixels and compensated by gradientScale per glyph."
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When, dilate, offset, and softness are interpreted in fixed pixels and compensated by the glyph\u0027s gradientScale so the shadow has constant on-screen geometry independent of font size. Default \u2014 values scale with the glyph SDF padding and font metric factor.",
+            "remarks": "Read on the mesh-generation hot path (onGlyphEffect); changing it requeues a mesh rebuild via [[Color]].",
+            "seeAlso": []
           }
         ],
+        "fields": [],
         "events": []
       }
     },
@@ -17631,6 +18469,192 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "SpriteImageWrapper",
+      "name": "SpriteImageWrapper",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "MediaWrapper",
+      "interfaces": [],
+      "summary": "Wrapper that creates a single-Image GameObject on demand.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "SpriteImageWrapper.TryCreate",
+            "name": "TryCreate",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteImageWrapper.ApplyContent",
+            "name": "ApplyContent",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteImageWrapper.OnDestroyed",
+            "name": "OnDestroyed",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "SpriteImageWrapper.sprite",
+            "name": "sprite",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Sprite"
+          },
+          {
+            "id": "SpriteImageWrapper.color",
+            "name": "color",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Color"
+          },
+          {
+            "id": "SpriteImageWrapper.preserveAspect",
+            "name": "preserveAspect",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "SpriteModifier",
+      "name": "SpriteModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper\u003E",
+      "interfaces": [],
+      "summary": "Embeds [[Sprite]] assets inline with text. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
+      "remarks": "Parameter: the name of the sprite to embed \u2014 resolved through [[Provider]]. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
+      "seeAlso": [
+        "ObjModifier",
+        "ISpriteProvider",
+        "InlineSprite"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "SpriteModifier.HasRenderable",
+            "name": "HasRenderable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "InlineSprite"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteModifier.ConfigureWrapper",
+            "name": "ConfigureWrapper",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "SpriteImageWrapper",
+              "InlineSprite"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "SpriteModifier.Provider",
+            "name": "Provider",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "ISpriteProvider",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Source of named sprites used by this modifier when resolving \u003Csprite=name\u003E tags. disables resolution.",
+            "seeAlso": []
+          },
+          {
+            "id": "SpriteModifier.Catalog",
+            "name": "Catalog",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "INamedCatalog\u003CInlineSprite\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -18103,24 +19127,112 @@
       "isStatic": false,
       "baseType": "ScriptableObject",
       "interfaces": [],
+      "summary": "Shareable, project-asset container of [[Style]] entries that components apply in bulk via [[AddStylePreset]] or via [[GlobalStylePreset]].",
+      "remarks": "Mutating the preset at runtime through [[AddStyle]] / [[RemoveStyle]] / [[ClearStyles]] raises [[Changed]]; every [[UniTextBase]] that has this preset attached (locally or as the global preset) discards its runtime preset copies and re-instantiates from the new contents on the next frame.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
+        "methods": [
           {
-            "id": "StylePreset.styles",
-            "name": "styles",
+            "id": "StylePreset.AddStyle",
+            "name": "AddStyle",
             "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
             "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "StyledList\u003CStyle\u003E"
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Appends a style to the preset and raises [[Changed]].",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "StylePreset.RemoveStyle",
+            "name": "RemoveStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first occurrence of style. Returns on success.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "StylePreset.RemoveStyleAt",
+            "name": "RemoveStyleAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Removes the style at the given index and raises [[Changed]].",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "StylePreset.ClearStyles",
+            "name": "ClearStyles",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Removes every style from the preset and raises [[Changed]].",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
-        "events": []
+        "properties": [
+          {
+            "id": "StylePreset.Styles",
+            "name": "Styles",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IReadOnlyList\u003CStyle\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Snapshot view of the contained styles. Mutate via [[AddStyle]] / [[RemoveStyle]] / [[ClearStyles]] so subscribers are notified.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": [
+          {
+            "id": "StylePreset.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Raised whenever the preset\u0027s styles list is mutated \u2014 either through the editor inspector (OnValidate) or programmatically via [[AddStyle]] / [[RemoveStyle]] / [[ClearStyles]]. Subscribers are expected to be idempotent (the event may fire several times in a row on rapid edits)."
+          }
+        ]
       }
     },
     {
@@ -19145,6 +20257,75 @@
       }
     },
     {
+      "id": "InlineTagRule",
+      "name": "InlineTagRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "TagRule",
+      "interfaces": [],
+      "summary": "[[TagRule]] with HTML void-element semantics: every \u003Ctag\u003E or \u003Ctag=value\u003E behaves as a single self-closing placeholder, the /\u003E shorthand is no longer required, and any stray \u003C/tag\u003E is silently stripped.",
+      "remarks": "Use for inline-media tags (obj, sprite) where range semantics don\u0027t apply \u2014 the tag is always a single inline insertion, not a wrapper around following text.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "parseRules",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineTagRule.ctor",
+            "name": "InlineTagRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "InlineTagRule",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineTagRule.ctor",
+            "name": "InlineTagRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "InlineTagRule",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "InlineTagRule.IsVoid",
+            "name": "IsVoid",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "IParseRule",
       "name": "IParseRule",
       "namespace": "LightSide",
@@ -19925,6 +21106,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "seeAlso": []
+          },
+          {
+            "id": "TagParseRule.IsVoid",
+            "name": "IsVoid",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "When, the tag has HTML void-element semantics: every \u003Ctag\u003E or \u003Ctag=value\u003E form is treated as self-closing (produces a single \uFFFC placeholder), and a stray \u003C/tag\u003E is silently consumed. Use for inline-media tags (obj, sprite) where range semantics don\u0027t apply.",
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -19938,7 +21130,7 @@
       "kind": "class",
       "accessModifier": "public",
       "isAbstract": false,
-      "isSealed": true,
+      "isSealed": false,
       "isStatic": false,
       "baseType": "TagParseRule",
       "interfaces": [],
@@ -24129,6 +25321,192 @@
       }
     },
     {
+      "id": "AssetNamedCatalog\u003CTEntry, TAsset\u003E",
+      "name": "AssetNamedCatalog\u003CTEntry, TAsset\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "INamedCatalog\u003CTEntry\u003E",
+      "interfaces": [
+        "ISerializationCallbackReceiver"
+      ],
+      "summary": "Serializable base for [[INamedCatalog{TEntry}]] implementations that delegate resolution to an explicit ScriptableObject asset reference \u2014 useful when multiple components should share the same catalog managed as a project asset.",
+      "remarks": "Subscription to the underlying asset\u0027s [[Changed]] event is lazy: this provider attaches only while it has at least one subscriber and detaches when the last unsubscribes, so an unused provider doesn\u0027t keep itself alive through the asset\u0027s delegate list. The provider also re-binds on inspector edits that change the asset reference ([[OnAfterDeserialize]]).",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The entry type stored in the catalog."
+        },
+        {
+          "name": "TAsset",
+          "description": "The asset type that implements [[INamedCatalog{TEntry}]] for this domain."
+        }
+      ],
+      "category": "utilities",
+      "members": {
+        "methods": [
+          {
+            "id": "AssetNamedCatalog.TryGet",
+            "name": "TryGet",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AssetNamedCatalog.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CTEntry\u003E",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "AssetNamedCatalog.Asset",
+            "name": "Asset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TAsset",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "The asset used for name resolution. Setting to makes [[TryGet]] return for every name.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "AssetNamedCatalog.asset",
+            "name": "asset",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "TAsset"
+          }
+        ],
+        "events": [
+          {
+            "id": "AssetNamedCatalog.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action"
+          }
+        ]
+      }
+    },
+    {
+      "id": "INamedCatalog\u003CTEntry\u003E",
+      "name": "INamedCatalog\u003CTEntry\u003E",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Resolves named entries by case-insensitive name. Used by every \u0022named catalog\u0022 feature in UniText (gradients, inline sprites, inline-object prefabs) so the same set of providers \u2014 inline list, shared asset, custom code \u2014 composes across all of them.",
+      "remarks": "Concrete implementations decide where the catalog lives \u2014 an explicit asset reference, an inline list edited per-modifier, or a custom runtime resolver \u2014 and raise [[Changed]] whenever their resolution result changes. The modifier that consults the provider subscribes during its active lifecycle and rebuilds when the event fires. Per-domain marker interfaces ([[IGradientProvider]], [[ISpriteProvider]], [[IObjProvider]]) extend this with no additional members \u2014 they exist purely to scope [SerializeReference, TypeSelector] dropdowns and to give domain-specific reading.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The entry type stored in the catalog (e.g. InlineSprite, InlineObject, UniTextGradients.NamedGradient)."
+        }
+      ],
+      "category": "utilities",
+      "members": {
+        "methods": [
+          {
+            "id": "INamedCatalog.TryGet",
+            "name": "TryGet",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Tries to resolve a name to a catalog entry. Name matching is case-insensitive.",
+            "returns": "when an entry with the given name was found.",
+            "params": [
+              {
+                "name": "name",
+                "type": "string",
+                "description": "The lookup name (typically the tag parameter, e.g. jump in \u003Csprite=jump\u003E)."
+              },
+              {
+                "name": "entry",
+                "type": "TEntry",
+                "description": "The resolved entry when this call returns; otherwise."
+              }
+            ],
+            "paramTypes": [
+              "string",
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "INamedCatalog.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CTEntry\u003E",
+            "summary": "Enumerates every entry exposed by this provider in catalog order. Used by editor tooling to populate the tag-parameter dropdown. Lazy or runtime-resolved providers may legitimately return an empty sequence.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": [
+          {
+            "id": "INamedCatalog.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Raised whenever the catalog\u0027s resolution result may have changed: inline entries added/removed/edited, the underlying asset replaced or its entries mutated, or a custom provider explicitly invalidating its cache. Subscribers should treat this as \u0022invalidate cached resolution and rebuild\u0022 \u2014 there is no per-source filtering."
+          }
+        ]
+      }
+    },
+    {
       "id": "IndexEx",
       "name": "IndexEx",
       "namespace": "LightSide",
@@ -24183,6 +25561,367 @@
         "properties": [],
         "fields": [],
         "events": []
+      }
+    },
+    {
+      "id": "InlineNamedCatalog\u003CTEntry\u003E",
+      "name": "InlineNamedCatalog\u003CTEntry\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "INamedCatalog\u003CTEntry\u003E",
+      "interfaces": [
+        "ISerializationCallbackReceiver"
+      ],
+      "summary": "Serializable base for [[INamedCatalog{TEntry}]] implementations that keep their entries inline on the owning modifier \u2014 edited in the inspector or mutated at runtime via [[SetEntries]], [[Add]], [[Remove]].",
+      "remarks": "Concrete subclasses supply [[GetEntryName]]. The [[Changed]] event fires automatically on every mutation; subscribers stay alive only through their own delegate, no static channels.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The entry type stored in the catalog."
+        }
+      ],
+      "category": "utilities",
+      "members": {
+        "methods": [
+          {
+            "id": "InlineNamedCatalog.TryGet",
+            "name": "TryGet",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CTEntry\u003E",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.SetEntries",
+            "name": "SetEntries",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the entry list and raises [[Changed]].",
+            "params": [],
+            "paramTypes": [
+              "IEnumerable\u003CTEntry\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.Add",
+            "name": "Add",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Appends one entry and raises [[Changed]].",
+            "params": [],
+            "paramTypes": [
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.Remove",
+            "name": "Remove",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first entry with the given name. Returns on success.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Extracts the lookup name from an entry. Return or empty to skip it.",
+            "params": [],
+            "paramTypes": [
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineNamedCatalog.RaiseChanged",
+            "name": "RaiseChanged",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Raises [[Changed]]. Safe to call without subscribers.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "InlineNamedCatalog.Entries",
+            "name": "Entries",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IReadOnlyList\u003CTEntry\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Read-only view over the current entry list.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "InlineNamedCatalog.entries",
+            "name": "entries",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "StyledList\u003CTEntry\u003E"
+          }
+        ],
+        "events": [
+          {
+            "id": "InlineNamedCatalog.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action"
+          }
+        ]
+      }
+    },
+    {
+      "id": "NamedCatalogAsset\u003CTEntry\u003E",
+      "name": "NamedCatalogAsset\u003CTEntry\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "ScriptableObject",
+      "interfaces": [
+        "INamedCatalog\u003CTEntry\u003E"
+      ],
+      "summary": "Abstract ScriptableObject base for named-entry catalogs. Subclasses give the catalog a concrete entry type, a CreateAssetMenu path, and (optionally) a payload validity filter for editor enumeration.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The entry type stored in the catalog."
+        }
+      ],
+      "category": "utilities",
+      "members": {
+        "methods": [
+          {
+            "id": "NamedCatalogAsset.TryGet",
+            "name": "TryGet",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NamedCatalogAsset.Enumerate",
+            "name": "Enumerate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CTEntry\u003E",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NamedCatalogAsset.Add",
+            "name": "Add",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds an entry and raises [[Changed]]. Marks the asset dirty in the editor.",
+            "params": [],
+            "paramTypes": [
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NamedCatalogAsset.GetEntryName",
+            "name": "GetEntryName",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Extracts the lookup name from an entry. Return or empty to skip it.",
+            "params": [],
+            "paramTypes": [
+              "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NamedCatalogAsset.RaiseChanged",
+            "name": "RaiseChanged",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Raises [[Changed]]. Safe to call without subscribers.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "NamedCatalogAsset.Entries",
+            "name": "Entries",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IReadOnlyList\u003CTEntry\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Direct read-only view over the entry list. Use [[Add]] to mutate at runtime.",
+            "seeAlso": []
+          },
+          {
+            "id": "NamedCatalogAsset.Count",
+            "name": "Count",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of entries in the catalog.",
+            "seeAlso": []
+          },
+          {
+            "id": "NamedCatalogAsset.Names",
+            "name": "Names",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IEnumerable\u003Cstring\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "All entry names exposed by this catalog.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "NamedCatalogAsset.entries",
+            "name": "entries",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "StyledList\u003CTEntry\u003E"
+          }
+        ],
+        "events": [
+          {
+            "id": "NamedCatalogAsset.Changed",
+            "name": "Changed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action"
+          }
+        ]
       }
     },
     {
@@ -25661,7 +27400,15 @@
         "priority": 100
       },
       {
+        "name": "UniTextObjects",
+        "priority": 100
+      },
+      {
         "name": "UniTextRenderData",
+        "priority": 100
+      },
+      {
+        "name": "UniTextSprites",
         "priority": 100
       },
       {
@@ -25801,6 +27548,14 @@
         "priority": 100
       },
       {
+        "name": "AssetObjProvider",
+        "priority": 100
+      },
+      {
+        "name": "AssetSpriteProvider",
+        "priority": 100
+      },
+      {
         "name": "AttributeKeys",
         "priority": 100
       },
@@ -25865,10 +27620,6 @@
         "priority": 100
       },
       {
-        "name": "GradientNotifier",
-        "priority": 100
-      },
-      {
         "name": "IAttributeData",
         "priority": 100
       },
@@ -25885,7 +27636,35 @@
         "priority": 100
       },
       {
+        "name": "InlineMedia",
+        "priority": 100
+      },
+      {
+        "name": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+        "priority": 100
+      },
+      {
+        "name": "InlineObjProvider",
+        "priority": 100
+      },
+      {
+        "name": "InlineSprite",
+        "priority": 100
+      },
+      {
+        "name": "InlineSpriteProvider",
+        "priority": 100
+      },
+      {
         "name": "InteractiveModifier",
+        "priority": 100
+      },
+      {
+        "name": "IObjProvider",
+        "priority": 100
+      },
+      {
+        "name": "ISpriteProvider",
         "priority": 100
       },
       {
@@ -25945,6 +27724,10 @@
         "priority": 100
       },
       {
+        "name": "MediaWrapper",
+        "priority": 100
+      },
+      {
         "name": "ModifierBufferExtensions",
         "priority": 100
       },
@@ -25965,6 +27748,10 @@
         "priority": 100
       },
       {
+        "name": "PrefabMediaWrapper",
+        "priority": 100
+      },
+      {
         "name": "Range",
         "priority": 100
       },
@@ -25982,6 +27769,14 @@
       },
       {
         "name": "SmallCapsModifier",
+        "priority": 100
+      },
+      {
+        "name": "SpriteImageWrapper",
+        "priority": 100
+      },
+      {
+        "name": "SpriteModifier",
         "priority": 100
       },
       {
@@ -26048,6 +27843,10 @@
       },
       {
         "name": "Data",
+        "priority": 100
+      },
+      {
+        "name": "InlineTagRule",
         "priority": 100
       },
       {
@@ -26137,7 +27936,23 @@
     ],
     "utilities": [
       {
+        "name": "AssetNamedCatalog\u003CTEntry, TAsset\u003E",
+        "priority": 100
+      },
+      {
+        "name": "INamedCatalog\u003CTEntry\u003E",
+        "priority": 100
+      },
+      {
         "name": "IndexEx",
+        "priority": 100
+      },
+      {
+        "name": "InlineNamedCatalog\u003CTEntry\u003E",
+        "priority": 100
+      },
+      {
+        "name": "NamedCatalogAsset\u003CTEntry\u003E",
         "priority": 100
       },
       {
@@ -26192,6 +28007,8 @@
     "RectTransform": "https://docs.unity3d.com/ScriptReference/RectTransform.html",
     "ScriptableObject": "https://docs.unity3d.com/ScriptReference/ScriptableObject.html",
     "Span": "https://learn.microsoft.com/en-us/dotnet/api/system.span-1",
+    "Sprite": "https://docs.unity3d.com/ScriptReference/Sprite.html",
+    "Transform": "https://docs.unity3d.com/ScriptReference/Transform.html",
     "Type": "https://learn.microsoft.com/en-us/dotnet/api/system.type",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
     "Vector2": "https://docs.unity3d.com/ScriptReference/Vector2.html",
