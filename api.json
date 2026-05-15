@@ -1,6 +1,6 @@
 {
-  "version": "2.2.4",
-  "generatedAt": "2026-05-13T13:10:59.3196840Z",
+  "version": "2.2.5",
+  "generatedAt": "2026-05-15T02:19:30.6911326Z",
   "namespaces": [],
   "types": [
     {
@@ -4863,6 +4863,374 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.HasModifier",
+            "name": "HasModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if any style on this component has a modifier of type T.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.HasModifier",
+            "name": "HasModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if any style on this component has a modifier assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TryGetStyle",
+            "name": "TryGetStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first style whose modifier is of type T.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetStyle",
+            "name": "TryGetStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TryGetWholeTextStyle",
+            "name": "TryGetWholeTextStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first whole-text style (range..) whose modifier is of type T.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetWholeTextStyle",
+            "name": "TryGetWholeTextStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first whole-text style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetStylesOfType",
+            "name": "GetStylesOfType",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CStyle\u003E",
+            "summary": "Enumerates every style whose modifier is of type T, local first.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.GetStylesOfType",
+            "name": "GetStylesOfType",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CStyle\u003E",
+            "summary": "Enumerates every style whose modifier is assignable to modifierType, local first.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetWholeText",
+            "name": "SetWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds or updates a whole-text style of modifier type T. If an existing local whole-text style exists, its parameter is updated in place; otherwise a new style is added via [[AddStyle]].",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.SetWholeText",
+            "name": "SetWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds or updates a whole-text style for modifierType, creating a new modifier via factory when none is found locally.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "string",
+              "Func\u003CBaseModifier\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ClearWholeText",
+            "name": "ClearWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first local whole-text style whose modifier is of type T. Returns true if a style was removed.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.ClearWholeText",
+            "name": "ClearWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first local whole-text style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ToggleWholeText",
+            "name": "ToggleWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Inverts the presence of a whole-text style of type T. Adds the style with parameter when absent, removes it when present. Returns true if the style is present after the call.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.ToggleWholeText",
+            "name": "ToggleWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Inverts the presence of a whole-text style for modifierType, creating a new modifier via factory when adding.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "string",
+              "Func\u003CBaseModifier\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetWholeTextParameter",
+            "name": "GetWholeTextParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Returns the parameter of the first whole-text style of type T, or null.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.GetWholeTextParameter",
+            "name": "GetWholeTextParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Returns the parameter of the first whole-text style of modifierType, or null.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.SetText",
             "name": "SetText",
             "accessModifier": "public",
@@ -5700,374 +6068,6 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HasModifier",
-            "name": "HasModifier",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Returns true if any style on this component has a modifier of type T.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.HasModifier",
-            "name": "HasModifier",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Returns true if any style on this component has a modifier assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.TryGetStyle",
-            "name": "TryGetStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first style whose modifier is of type T.",
-            "params": [],
-            "paramTypes": [
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.TryGetStyle",
-            "name": "TryGetStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.TryGetWholeTextStyle",
-            "name": "TryGetWholeTextStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first whole-text style (range..) whose modifier is of type T.",
-            "params": [],
-            "paramTypes": [
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.TryGetWholeTextStyle",
-            "name": "TryGetWholeTextStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first whole-text style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.GetStylesOfType",
-            "name": "GetStylesOfType",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CStyle\u003E",
-            "summary": "Enumerates every style whose modifier is of type T, local first.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.GetStylesOfType",
-            "name": "GetStylesOfType",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CStyle\u003E",
-            "summary": "Enumerates every style whose modifier is assignable to modifierType, local first.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.SetWholeText",
-            "name": "SetWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Adds or updates a whole-text style of modifier type T. If an existing local whole-text style exists, its parameter is updated in place; otherwise a new style is added via [[AddStyle]].",
-            "params": [],
-            "paramTypes": [
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.SetWholeText",
-            "name": "SetWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Adds or updates a whole-text style for modifierType, creating a new modifier via factory when none is found locally.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "string",
-              "Func\u003CBaseModifier\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ClearWholeText",
-            "name": "ClearWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Removes the first local whole-text style whose modifier is of type T. Returns true if a style was removed.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.ClearWholeText",
-            "name": "ClearWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Removes the first local whole-text style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ToggleWholeText",
-            "name": "ToggleWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Inverts the presence of a whole-text style of type T. Adds the style with parameter when absent, removes it when present. Returns true if the style is present after the call.",
-            "params": [],
-            "paramTypes": [
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.ToggleWholeText",
-            "name": "ToggleWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Inverts the presence of a whole-text style for modifierType, creating a new modifier via factory when adding.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "string",
-              "Func\u003CBaseModifier\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.GetWholeTextParameter",
-            "name": "GetWholeTextParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "string",
-            "summary": "Returns the parameter of the first whole-text style of type T, or null.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.GetWholeTextParameter",
-            "name": "GetWholeTextParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "string",
-            "summary": "Returns the parameter of the first whole-text style of modifierType, or null.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
           }
         ],
         "properties": [
@@ -6684,6 +6684,14 @@
         ],
         "events": [
           {
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
+          },
+          {
             "id": "UniTextBase.Rebuilding",
             "name": "Rebuilding",
             "accessModifier": "public",
@@ -6778,14 +6786,6 @@
             "isStatic": false,
             "type": "Action\u003CTextHitResult\u003E",
             "summary": "Raised when hover position changes, providing hit test details (for InputField)."
-          },
-          {
-            "id": "UniTextBase.Animated",
-            "name": "Animated",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "Action",
-            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           }
         ]
       }
@@ -14760,11 +14760,12 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Copies the per-frame visual state from entry into wrapper (sprite/color, prefab reference, etc.).",
+            "summary": "Copies the per-frame visual state from entry into wrapper (sprite/color, prefab reference, etc.). cluster is the source-text cluster index of this occurrence \u2014 subclasses use it to apply per-occurrence overrides parsed by [[OnExtraTokens]] from extra tag arguments.",
             "params": [],
             "paramTypes": [
               "TWrapper",
-              "TEntry"
+              "TEntry",
+              "int"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -14784,6 +14785,26 @@
             "params": [],
             "paramTypes": [
               "TEntry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnExtraTokens",
+            "name": "OnExtraTokens",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Hook for parsing additional comma-separated arguments after the entry name in a tag (e.g. the i in \u003Csprite=name,i\u003E). Called once per applied range with the cluster index and a reader positioned right after the name token. Empty extras means no extra arguments were supplied \u2014 subclasses should clear any stale per-cluster state in that case so previous-rebuild overrides do not persist when the tag is later edited to drop the extras.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ReadOnlySpan\u003Cchar\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -17309,7 +17330,8 @@
             "params": [],
             "paramTypes": [
               "PrefabMediaWrapper",
-              "InlineObject"
+              "InlineObject",
+              "int"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -18584,7 +18606,7 @@
       "baseType": "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper\u003E",
       "interfaces": [],
       "summary": "Embeds [[Sprite]] assets inline with text. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
-      "remarks": "Parameter: the name of the sprite to embed \u2014 resolved through [[Provider]]. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
+      "remarks": "Tag syntax: \u003Csprite=name[,colorArg]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the entry\u0027s own [[color]] (the default; keeps atlas/asset colors, matching how raster images are embedded in HTML, iOS NSTextAttachment, Android ImageSpan). i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. The sprite name is resolved through [[Provider]]. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
         "ObjModifier",
         "ISpriteProvider",
@@ -18613,6 +18635,22 @@
             "typeParameters": []
           },
           {
+            "id": "SpriteModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "SpriteModifier.ConfigureWrapper",
             "name": "ConfigureWrapper",
             "accessModifier": "protected",
@@ -18625,7 +18663,27 @@
             "params": [],
             "paramTypes": [
               "SpriteImageWrapper",
-              "InlineSprite"
+              "InlineSprite",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteModifier.OnExtraTokens",
+            "name": "OnExtraTokens",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ReadOnlySpan\u003Cchar\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
