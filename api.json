@@ -1,6 +1,6 @@
 {
-  "version": "2.2.9",
-  "generatedAt": "2026-05-18T08:00:53.7558692Z",
+  "version": "2.2.10",
+  "generatedAt": "2026-05-19T21:29:56.4956952Z",
   "namespaces": [],
   "types": [
     {
@@ -6233,7 +6233,7 @@
             "type": "UniTextFont",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the primary font from the font collection.",
+            "summary": "Gets the effective primary font: the explicit [[Font]] if set, otherwise [[PrimaryFont]] from [[FontStack]].",
             "seeAlso": []
           },
           {
@@ -6301,6 +6301,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the text highlighter for visual feedback on interactions.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.Font",
+            "name": "Font",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniTextFont",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Optional explicit primary font. When non-null, this font is the primary \u2014 it provides strut metrics and the default face; every family in [[FontStack]] participates as fallback. When null, the primary is derived from [[FontStack]] as before.",
             "seeAlso": []
           },
           {
@@ -11673,7 +11684,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "interfaces": [],
+      "interfaces": [
+        "IDisposable"
+      ],
       "summary": "Manages font assets and provides font lookup services for text rendering.",
       "remarks": "The font provider handles: Primary font and fallback font resolution Font scaling based on requested font size Glyph caching in texture atlases Font data access (glyph lookup, font data bytes) Font family lookup for variant/variable font resolution Uses [[SharedFontCache]] for fast codepoint-to-font mapping.",
       "seeAlso": [
@@ -11719,12 +11732,17 @@
             "isOverride": false,
             "isConstructor": true,
             "returnType": "UniTextFontProvider",
-            "summary": "Initializes the font provider with the specified fonts.",
+            "summary": "Initializes the font provider.",
             "params": [
+              {
+                "name": "primary",
+                "type": "UniTextFont",
+                "description": "Optional explicit primary font. When non-null, it becomes the primary \u2014 providing strut metrics, the default face, and the head of the codepoint search; fontStack participates only as fallback. Internally a transient synthetic [[UniTextFontStack]] is built so the standard stack resolution pipeline (emoji preference, language preference, fallback chain) flows through a single code path. The synthetic asset is owned by this provider and destroyed by [[Dispose]]."
+              },
               {
                 "name": "fontStack",
                 "type": "UniTextFontStack",
-                "description": "Font collection containing main and fallback fonts."
+                "description": "Font collection. Required when primary is null. When primary is set, chained as the fallback of the synthetic stack (may be null for a Font-only setup with no fallback)."
               },
               {
                 "name": "fontSize",
@@ -11733,6 +11751,7 @@
               }
             ],
             "paramTypes": [
+              "UniTextFont",
               "UniTextFontStack",
               "float"
             ],
@@ -12012,6 +12031,23 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.Dispose",
+            "name": "Dispose",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Releases the transient synthetic [[UniTextFontStack]] built when an explicit primary font was supplied. Safe to call multiple times.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [
@@ -12038,8 +12074,8 @@
             "seeAlso": []
           },
           {
-            "id": "UniTextFontProvider.PrinaryFontId",
-            "name": "PrinaryFontId",
+            "id": "UniTextFontProvider.PrimaryFontId",
+            "name": "PrimaryFontId",
             "accessModifier": "public",
             "isStatic": false,
             "type": "int",
