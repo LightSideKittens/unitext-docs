@@ -1,6 +1,6 @@
 {
-  "version": "2.2.12",
-  "generatedAt": "2026-05-19T23:20:56.2069208Z",
+  "version": "2.2.13",
+  "generatedAt": "2026-05-20T10:22:28.1823100Z",
   "namespaces": [],
   "types": [
     {
@@ -5297,6 +5297,32 @@
             ],
             "paramTypes": [
               "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetText",
+            "name": "SetText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Sets the text to render from a [[StringBuilder]] without writing to the serialized text field and without allocating a [[string]]. The contents are copied into a pooled internal buffer, so the supplied [[StringBuilder]] may be mutated freely after the call.",
+            "remarks": "Allocation-free per call once the internal scratch buffer has grown to the required capacity. If you already keep your text in a [[char]] array, prefer [[SetText]] to skip the copy.",
+            "params": [
+              {
+                "name": "source",
+                "type": "StringBuilder",
+                "description": "The text source. is treated as empty."
+              }
+            ],
+            "paramTypes": [
+              "StringBuilder"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -28103,6 +28129,7 @@
     "ScriptableObject": "https://docs.unity3d.com/ScriptReference/ScriptableObject.html",
     "Span": "https://learn.microsoft.com/en-us/dotnet/api/system.span-1",
     "Sprite": "https://docs.unity3d.com/ScriptReference/Sprite.html",
+    "StringBuilder": "https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder",
     "Transform": "https://docs.unity3d.com/ScriptReference/Transform.html",
     "Type": "https://learn.microsoft.com/en-us/dotnet/api/system.type",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
