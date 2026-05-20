@@ -1,6 +1,6 @@
 {
-  "version": "2.2.13",
-  "generatedAt": "2026-05-20T10:22:28.1823100Z",
+  "version": "2.1.14",
+  "generatedAt": "2026-05-20T19:28:15.4448370Z",
   "namespaces": [],
   "types": [
     {
@@ -7767,7 +7767,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Queues the 6 triangle indices for an effect duplicate quad starting at destBaseIdx into the shared pre- or post-face buffer.",
-            "remarks": "Called by [[AppendSharedEffectQuad]] after writing the quad\u0027s vertices. The buffers are flushed once at the end of [[GenerateMeshDataOnly]], producing the final painter order [pre-face 1..N, face, post-face 1..N, line] regardless of how many [[EffectModifier]] instances are active.",
+            "remarks": "Called by [[ReserveQuad]] when reserving the duplicate\u0027s vertex slot. The buffers are flushed once at the end of [[GenerateMeshDataOnly]], producing the final painter order [pre-face 1..N, face, post-face 1..N, line] regardless of how many [[EffectModifier]] instances are active.",
             "params": [],
             "paramTypes": [
               "EffectPass",
@@ -8070,8 +8070,8 @@
             "type": "Vector4[]",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the UV2 buffer containing layer 2 (underlay/shadow) parameters.",
-            "remarks": "Layout: x = dilate, y = color (packed Color32), z = (free), w = softness. Shadow offset is applied via mesh vertex displacement, not UV. Not allocated by default. Call [[EnsureUvBuffer]] to allocate before writing.",
+            "summary": "Gets the UV2 buffer containing effect-quad parameters (outline/shadow/extrude).",
+            "remarks": "Layout: x = dilate, y = effectMode flag (0 = face quad, 1 = effect quad), z = (free), w = softness. Effect colour lives in the standard vertex [[Colors]] attribute with alpha pre-multiplied by the source face vertex alpha; offsets are applied via mesh vertex displacement, not UV. Not allocated by default. Call [[EnsureUvBuffer]] to allocate before writing.",
             "seeAlso": []
           },
           {
@@ -8082,8 +8082,8 @@
             "type": "Vector4[]",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the UV3 buffer containing layer 3 (underlay/shadow) parameters.",
-            "remarks": "Layout: x = dilate, y = color (packed Color32), z = (free), w = softness. Shadow offset is applied via mesh vertex displacement, not UV. Not allocated by default. Call [[EnsureUvBuffer]] to allocate before writing.",
+            "summary": "Gets the UV3 buffer (reserved for future per-vertex effect data).",
+            "remarks": "Layout currently unused by built-in modifiers. Not allocated by default. Call [[EnsureUvBuffer]] to allocate before writing.",
             "seeAlso": []
           }
         ],
@@ -9651,6 +9651,17 @@
             "type": "string",
             "hasGetter": true,
             "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "ParameterFieldAttribute.VisibleWhen",
+            "name": "VisibleWhen",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Optional visibility predicate. Format: \u0022slotIndex:label\u0022 \u2014 this field is shown in the inspector only when the token at slotIndex resolves to the matching variant option label (or, for non-variant slots, when the token equals label verbatim). When hidden, the slot\u0027s value is dropped from the tag parameter on serialization.",
             "seeAlso": []
           }
         ],
@@ -13461,8 +13472,8 @@
       "isStatic": false,
       "baseType": "BaseModifier",
       "interfaces": [],
-      "summary": "Base class for modifiers that render an additional effect pass behind the face (outline, shadow, glow).",
-      "remarks": "Lifecycle per frame: onGlyph \u2014 subclass [[OnGlyphEffect]] calls [[EnqueueEffectQuad]] to record a per-glyph request into its own instance buffer. The current value of [[currentEffectPass]] is captured into the request, deciding whether the duplicate eventually lands before or after the face. No mesh is written yet. onMainPassFinalize \u2014 each [[EffectModifier]] applies its queued requests in registration order, appending duplicate quads to the mesh generator\u0027s vertex buffer and queueing their triangle indices into the generator\u0027s shared pre- or post-face buffer ([[QueueEffectTriangle]]) according to the captured pass. After onMainPassFinalize \u2014 the generator flushes both shared buffers in one shot: pre-face tris are prepended, post-face tris are inserted at [[postFaceInsertPoint]], producing the final order [pre-face 1..N, face, post-face 1..N, line]. Grouping per modifier (not per glyph) is what gives a consistent painter order when multiple effects overlap across glyph boundaries \u2014 outline of glyph N\u002B1 never covers shadow of glyph N, because all outline tris precede all shadow tris.",
+      "summary": "Base class for modifiers that append duplicate glyph geometry behind or in front of the face (outline, shadow, extrude, glow, custom effects).",
+      "remarks": "Contract: During onGlyph, the subclass\u0027s [[OnGlyphEffect]] decides whether the current glyph needs an effect quad and, if so, calls [[EnqueueDuplicate]] with an arbitrary payload integer \u2014 typically an index into the modifier\u0027s own per-emit data table. The [[currentEffectPass]] in effect at enqueue time is captured and decides whether the duplicate lands before or after the face block. At onMainPassFinalize, the per-modifier emit queue is flushed via [[OnFlush]]. The default implementation reserves 4 vertices and 6 indices for each pending emit (copying source geometry, queueing triangles) and then calls [[OnEmitQuad]] so the subclass can fill colour, UV2, offsets \u2014 anything the effect needs. Multi-layer effects override [[OnFlush]] to flush per-layer buffers in layer-major order. Painter order is preserved by per-modifier grouping: onMainPassFinalize flushes each modifier in registration order, so all of one modifier\u0027s quads land contiguously in the index buffer ahead of the next modifier\u0027s quads, ahead of the face block (or after, when [[PostFace]] was active). The base class deliberately knows nothing about colour, dilate, softness, offsets, gradients, or any effect-specific parameter. Those live entirely inside the subclass. Common write patterns (solid colour \u002B UV2, per-vertex gradient, offset, expand) are exposed via the static [[EffectQuadOps]] helpers so subclasses share the implementation without sharing the data layout.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -13478,9 +13489,46 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Called for each glyph during mesh generation. Subclass checks cluster ranges and calls [[EnqueueEffectQuad]] for matching glyphs. Emoji glyphs must be skipped (uniText.MeshGenerator.font.IsColor).",
+            "summary": "Called once per glyph during mesh generation. The subclass decides whether the current glyph ([[currentCluster]]) needs an effect quad and invokes [[EnqueueDuplicate]] if so. Emoji glyphs must be skipped (uniText.MeshGenerator.font.IsColor).",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.OnEmitQuad",
+            "name": "OnEmitQuad",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Writes the actual per-vertex data into a reserved effect-quad slot. The base has already copied geometry (positions, UV0, UV1) from the source face quad and queued the triangle indices; destBaseIdx points at the first of the four duplicate vertices. The subclass writes [[Colors]], [[Uvs2]], and (if needed) re-positions [[Vertices]] through [[EffectQuadOps]] helpers.",
+            "params": [
+              {
+                "name": "sourceBaseIdx",
+                "type": "int",
+                "description": "First vertex of the source face quad \u2014 read-only reference for alpha modulation, gradient evaluation, etc."
+              },
+              {
+                "name": "destBaseIdx",
+                "type": "int",
+                "description": "First vertex of the reserved effect quad \u2014 destination of all writes."
+              },
+              {
+                "name": "payload",
+                "type": "int",
+                "description": "Arbitrary subclass-defined tag captured at [[EnqueueDuplicate]] time."
+              }
+            ],
+            "paramTypes": [
+              "int",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13534,57 +13582,8 @@
             "typeParameters": []
           },
           {
-            "id": "EffectModifier.EnqueueEffectQuad",
-            "name": "EnqueueEffectQuad",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Queues an effect duplicate for the current glyph. The actual quad append happens later in onMainPassFinalize, grouped per modifier so that all duplicates of this effect are contiguous in the final index buffer. The current value of [[currentEffectPass]] is captured into the request and determines whether the duplicate eventually lands before or after the face.",
-            "params": [
-              {
-                "name": "sourceBaseIdx",
-                "type": "int",
-                "description": "Index of the source face quad\u0027s first vertex (use gen.faceBaseIdx)."
-              },
-              {
-                "name": "effectUv",
-                "type": "Vector4",
-                "description": "UV2 written to all 4 new vertices."
-              },
-              {
-                "name": "offsetX",
-                "type": "float",
-                "description": "X displacement applied to the duplicate."
-              },
-              {
-                "name": "offsetY",
-                "type": "float",
-                "description": "Y displacement applied to the duplicate."
-              },
-              {
-                "name": "expandDelta",
-                "type": "float",
-                "description": "Optional quad expansion on all sides (UV-space), applied after copy."
-              }
-            ],
-            "paramTypes": [
-              "int",
-              "Vector4",
-              "float",
-              "float",
-              "float"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "EffectModifier.ApplyOwnRequests",
-            "name": "ApplyOwnRequests",
+            "id": "EffectModifier.ResetOwnRequests",
+            "name": "ResetOwnRequests",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": true,
@@ -13592,7 +13591,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Default per-frame application of queued requests. Subclasses with multi-layer effects (e.g. extrude) may override to flush their own per-layer buffers in render-order rather than the per-glyph order that [[EnqueueEffectQuad]] implies.",
+            "summary": "Resets per-cycle emit state. Subclasses with extra buffers (e.g. multi-layer effects) override and chain to clear their own storage.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -13600,8 +13599,56 @@
             "typeParameters": []
           },
           {
-            "id": "EffectModifier.AppendSharedEffectQuad",
-            "name": "AppendSharedEffectQuad",
+            "id": "EffectModifier.EnqueueDuplicate",
+            "name": "EnqueueDuplicate",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Queues a duplicate of the given face quad for emission at onMainPassFinalize. The duplicate will land in the index buffer according to the current [[currentEffectPass]].",
+            "params": [
+              {
+                "name": "sourceBaseIdx",
+                "type": "int",
+                "description": "First vertex of the source face quad (use gen.faceBaseIdx)."
+              },
+              {
+                "name": "payload",
+                "type": "int",
+                "description": "Arbitrary integer carried verbatim into [[OnEmitQuad]]. Typically an index into a per-emit table the subclass maintains alongside its per-range data."
+              }
+            ],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.OnFlush",
+            "name": "OnFlush",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Flushes the pending emit queue. Default implementation processes [[emits]] in the order they were enqueued \u2014 correct for single-layer effects. Multi-layer effects (e.g. extrude) override and iterate their own per-layer buffers in layer-major order, calling [[ReserveQuad]] \u002B [[OnEmitQuad]] directly.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.ReserveQuad",
+            "name": "ReserveQuad",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -13609,58 +13656,14 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Appends one duplicate quad to the generator\u0027s vertex buffer and queues its triangle indices into the thread-static shared buffer matching pass. Returns the destination vertex index of the new quad\u0027s first vertex (use it with [[ExpandQuad]]).",
+            "summary": "Reserves a 4-vertex / 6-index effect-quad slot: copies positions, UV0 and UV1 from the source quad, queues a triangle pair into the shared pre/post-face buffer matching pass, and advances [[vertexCount]].",
+            "remarks": "[[Colors]] and [[Uvs2]] are not initialised here \u2014 the subclass writes both in [[OnEmitQuad]] via the [[EffectQuadOps]] helpers. Leaving them untouched keeps the base ignorant of per-effect data layout.",
+            "returns": "First vertex index of the new quad.",
             "params": [],
             "paramTypes": [
               "UniTextMeshGenerator",
               "int",
-              "Vector4",
-              "float",
-              "float",
               "EffectPass"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [],
-        "fields": [],
-        "events": []
-      }
-    },
-    {
-      "id": "EffectPacking",
-      "name": "EffectPacking",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": false,
-      "isStatic": true,
-      "interfaces": [],
-      "summary": "Utility methods for packing effect layer parameters into vertex UV channels.",
-      "remarks": "Used by effect modifiers to encode per-glyph layer parameters (color, offsets) into float UV values that are unpacked in the shader.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "modifiers",
-      "members": {
-        "methods": [
-          {
-            "id": "EffectPacking.PackColor",
-            "name": "PackColor",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": true,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "Vector2",
-            "summary": "Packs a Color32 into two floats safe for hardware interpolation: x = R*256 \u002B G, y = B*256 \u002B A. The two floats are stored in UV2.y and UV2.z of every effect-quad vertex and decoded in the shader by UnpackEffectColor (or UniTextUnpackEffectColor in custom shaders that include UniText_Custom.cginc).",
-            "remarks": "Color space contract: the input Color32 is treated as sRGB (gamma) and copied into the UV channel verbatim. UV channels are not converted by the Canvas vertex pipeline, so the unpack helper applies gamma\u2192linear unconditionally in linear color space. Authors of custom shaders that read this packing must use UniTextUnpackEffectColor rather than rolling their own decode. Both packed values lie in [0, 65535], well inside the 24-bit integer range that single-precision float represents exactly. The previous bit-reinterpret packing produced NaN/Inf bit patterns for many color values; some GPUs canonicalize quiet-NaN at the vertex\u2013fragment interpolator boundary, which forced bit 22 of the mantissa (the high bit of the green channel) on, randomly tinting effect layers as their channels crossed bit-6 thresholds.",
-            "params": [],
-            "paramTypes": [
-              "Color32"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -13711,6 +13714,143 @@
             "defaultValue": "1"
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "EffectQuadOps",
+      "name": "EffectQuadOps",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "interfaces": [],
+      "summary": "Static helpers for writing per-vertex effect data into a reserved effect-quad slot. Used from [[OnEmitQuad]] implementations; covers the common solid-colour \u002B UV2 path and the per-vertex gradient path. Modifiers with bespoke requirements can skip these helpers and write the vertex arrays directly.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "EffectQuadOps.ModulateAlpha",
+            "name": "ModulateAlpha",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Color32",
+            "summary": "Modulates an effect colour\u0027s alpha by the source face vertex alpha \u2014 the canonical formula keeping outline / shadow / extrude fades synchronised with face fades (Graphic.color.a, per-character \u003Calpha\u003E, ColorModifier alpha).",
+            "params": [],
+            "paramTypes": [
+              "Color32",
+              "byte"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectQuadOps.WriteSolidEffect",
+            "name": "WriteSolidEffect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Writes a single effect colour (per-vertex alpha-modulated by the source face vertex alpha) into the four destination vertex colours and stamps UV2 with the effect-mode flag plus dilate / softness. Covers outline / shadow / extrude-layer \u0022solid colour\u0022 use cases.",
+            "params": [],
+            "paramTypes": [
+              "UniTextMeshGenerator",
+              "int",
+              "int",
+              "Color32",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectQuadOps.WriteGradientEffect",
+            "name": "WriteGradientEffect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Evaluates a gradient at each of the four destination vertex positions and writes the per-vertex colours (alpha-modulated by the corresponding source face vertex alpha) plus the effect-mode UV2 stamp. Vertex positions are read from [[Vertices]] at destBaseIdx, so the caller controls whether the gradient sees pre-offset positions (write before [[ApplyOffset]]) or post-offset positions (write after).",
+            "params": [],
+            "paramTypes": [
+              "UniTextMeshGenerator",
+              "int",
+              "int",
+              "Gradient",
+              "GradientShape",
+              "float",
+              "GradientGeometry",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectQuadOps.WriteEffectUV2",
+            "name": "WriteEffectUV2",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Stamps the effect-mode UV2 layout into all four destination vertices: x = dilate, y = 1 (per-quad effect-mode flag the shader branches on), z = 0 (reserved), w = softness.",
+            "params": [],
+            "paramTypes": [
+              "Vector4[]",
+              "int",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectQuadOps.ApplyOffset",
+            "name": "ApplyOffset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Displaces all four destination vertices in the X/Y plane. Z is left untouched.",
+            "params": [],
+            "paramTypes": [
+              "UniTextMeshGenerator",
+              "int",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -13887,22 +14027,6 @@
             "typeParameters": []
           },
           {
-            "id": "ExtrudeModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "ExtrudeModifier.PrepareForParallel",
             "name": "PrepareForParallel",
             "accessModifier": "public",
@@ -13921,6 +14045,22 @@
           {
             "id": "ExtrudeModifier.OnDestroy",
             "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.ResetOwnRequests",
+            "name": "ResetOwnRequests",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -13971,8 +14111,8 @@
             "typeParameters": []
           },
           {
-            "id": "ExtrudeModifier.ApplyOwnRequests",
-            "name": "ApplyOwnRequests",
+            "id": "ExtrudeModifier.OnFlush",
+            "name": "OnFlush",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -13980,8 +14120,30 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Layer-major flush: every glyph\u0027s deepest slice first, then every glyph\u0027s next slice, \u2026, then the face. Each layer maintains its own emit buffer, so painter order survives inter-glyph overlap when the cumulative extrusion offset exceeds glyph advance.",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ExtrudeModifier.OnEmitQuad",
+            "name": "OnEmitQuad",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Not used \u2014 [[ExtrudeModifier]] bypasses the base emit-queue indirection and writes all per-layer slots directly inside its [[OnFlush]] override.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "int"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -13997,7 +14159,6 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Number of extrude layers stacked behind the face (minimum 1). More layers produce a smoother depth gradient and a longer apparent extrusion at the cost of additional duplicate-quad geometry per glyph.",
-            "remarks": "Changing this re-allocates the layer ring buffers and requeues a mesh rebuild ([[Color]]). Parse / shape / layout caches are reused.",
             "seeAlso": []
           },
           {
@@ -14008,8 +14169,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "When, layers alternate between the near and far face colors rather than blending across, producing a faceted bevel highlight. The layer count effectively doubles ([[Steps]] \u00D7 2) because each step contributes a near face and a side face.",
-            "remarks": "Changing this re-allocates the layer ring buffers and requeues a mesh rebuild ([[Color]]).",
+            "summary": "When, layers alternate between the near and far face colours rather than blending across, producing a faceted bevel highlight. The layer count effectively doubles ([[Steps]] \u00D7 2) because each step contributes a near face and a side face.",
             "seeAlso": []
           },
           {
@@ -14021,7 +14181,6 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "When, the per-range offsetX / offsetY / dilate / softness values are interpreted in fixed pixels and compensated by the glyph metric factor so the extrusion has constant on-screen geometry independent of font size.",
-            "remarks": "Read on the mesh-generation hot path (onGlyphEffect); changing it requeues a mesh rebuild via [[Color]].",
             "seeAlso": []
           }
         ],
@@ -14379,6 +14538,92 @@
       }
     },
     {
+      "id": "GradientGeometry",
+      "name": "GradientGeometry",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Per-text-range precomputed gradient geometry consumed by gradient-aware modifiers ([[GradientModifier]], [[OutlineModifier]]).",
+      "remarks": "Filled once per layout cycle by [[Precompute]] from the range\u0027s glyph bounding boxes; queried per glyph by [[EvaluateColor]] to map a vertex position to a gradient t and the resulting [[Color32]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "GradientGeometry.minProj",
+            "name": "minProj",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.maxProj",
+            "name": "maxProj",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.cosAngle",
+            "name": "cosAngle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.sinAngle",
+            "name": "sinAngle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.centerX",
+            "name": "centerX",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.centerY",
+            "name": "centerY",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GradientGeometry.radius",
+            "name": "radius",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "GradientModifier",
       "name": "GradientModifier",
       "namespace": "LightSide",
@@ -14388,7 +14633,9 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "BaseModifier",
-      "interfaces": [],
+      "interfaces": [
+        "IHasGradientProvider"
+      ],
       "summary": "Applies gradient coloring to text ranges using named gradients.",
       "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). The set of named gradients available to \u003Cgradient=name\u003E tags is supplied by an [[IGradientProvider]]. The default provider resolves names through the project-wide [[Gradients]] asset; alternative providers allow per-component asset references or inline catalogs edited on the modifier itself.",
       "seeAlso": [
@@ -14472,6 +14719,98 @@
       }
     },
     {
+      "id": "GradientUtil",
+      "name": "GradientUtil",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "interfaces": [],
+      "summary": "Helpers for precomputing and evaluating gradient geometry. Shared between [[GradientModifier]] (face colour) and effect modifiers that support gradients (currently [[OutlineModifier]]); custom modifiers can use them too.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "GradientUtil.Precompute",
+            "name": "Precompute",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Precomputes the projection / centre / radius for a single gradient range from its glyph bounding boxes. Call once per layout cycle.",
+            "params": [],
+            "paramTypes": [
+              "GradientShape",
+              "float",
+              "IList\u003CRect\u003E",
+              "GradientGeometry"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GradientUtil.EvaluateT",
+            "name": "EvaluateT",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Maps a vertex position to a gradient t in [0, 1] using precomputed geometry.",
+            "params": [],
+            "paramTypes": [
+              "GradientShape",
+              "float",
+              "GradientGeometry",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "GradientUtil.EvaluateColor",
+            "name": "EvaluateColor",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Color32",
+            "summary": "Evaluates the gradient at a vertex position and returns a [[Color32]] whose alpha has been multiplied by alphaModulator (typically the source vertex\u0027s alpha byte, so the gradient inherits face fades).",
+            "params": [],
+            "paramTypes": [
+              "Gradient",
+              "GradientShape",
+              "float",
+              "GradientGeometry",
+              "float",
+              "float",
+              "byte"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "IAttributeData",
       "name": "IAttributeData",
       "namespace": "LightSide",
@@ -14536,6 +14875,39 @@
       "members": {
         "methods": [],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "IHasGradientProvider",
+      "name": "IHasGradientProvider",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Implemented by modifiers that own an [[IGradientProvider]] the editor can surface as the source of the enum:@gradients dropdown. Lets the dropdown content follow the per-modifier provider regardless of which modifier type carries the parameter ([[GradientModifier]], [[OutlineModifier]], or any future modifier that opts into gradient-coloured output).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "IHasGradientProvider.GradientProvider",
+            "name": "GradientProvider",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IGradientProvider",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The gradient provider whose entries should populate the enum:@gradients dropdown when this modifier is selected in the inspector. falls back to the project-wide [[Gradients]] asset.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -17514,9 +17886,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "EffectModifier",
-      "interfaces": [],
-      "summary": "Applies an outline effect by appending duplicate glyph geometry behind the face.",
-      "remarks": "All parameters come from the tag/rule parameter string. Format: \u003Coutline=dilate\u003E, \u003Coutline=#color\u003E, or \u003Coutline=dilate,#color\u003E. Defaults: dilate = 0.2, color = black (#000000FF).",
+      "interfaces": [
+        "IHasGradientProvider"
+      ],
+      "summary": "Applies an outline effect by appending duplicate glyph geometry behind the face. Supports both solid colour and per-vertex gradient outlines via an optional [[IGradientProvider]].",
+      "remarks": "Tag format (strictly positional \u2014 empty slots fall back to defaults, matching [[GradientModifier]]): \u003Coutline=color-or-gradient,dilate,shape,angle\u003E. \u003Coutline\u003E \u2014 defaults: colour = #000000FF, dilate = 0.2. \u003Coutline=#ff0000\u003E \u2014 red, default dilate. \u003Coutline=,0.3\u003E \u2014 default colour, custom dilate (note the leading comma). \u003Coutline=#ff0000,0.3\u003E \u2014 both. \u003Coutline=rainbow\u003E \u2014 gradient (when [[Provider]] is set). \u003Coutline=rainbow,0.3,radial,45\u003E \u2014 gradient \u002B dilate \u002B shape \u002B angle. \u003Coutline=rainbow,,radial,45\u003E \u2014 gradient, default dilate, radial, 45\u00B0. Slot 0 resolves as a gradient name first (when [[Provider]] is set and the token matches a known gradient) and falls back to colour parsing otherwise \u2014 so existing colour tags keep working unchanged when a provider happens to be attached.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -17539,8 +17913,40 @@
             "typeParameters": []
           },
           {
+            "id": "OutlineModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "OutlineModifier.OnDestroy",
             "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "OutlineModifier.ResetOwnRequests",
+            "name": "ResetOwnRequests",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -17589,6 +17995,26 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "OutlineModifier.OnEmitQuad",
+            "name": "OnEmitQuad",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [
@@ -17601,7 +18027,18 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "When, dilate is interpreted in fixed pixels and compensated by the glyph\u0027s gradientScale so the outline has a constant on-screen thickness independent of font size. Default \u2014 dilate scales with the glyph SDF padding.",
-            "remarks": "Read on the mesh-generation hot path (onGlyph); changing it requeues a mesh rebuild via [[Color]] \u2014 the parsed attribute buffer and glyph positions are reused.",
+            "remarks": "Read on the mesh-generation hot path; changing it requeues a mesh rebuild via [[Color]].",
+            "seeAlso": []
+          },
+          {
+            "id": "OutlineModifier.Provider",
+            "name": "Provider",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IGradientProvider",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Optional source of named gradients. When non-, a tag-parameter token that resolves to a known gradient renders this outline range as a per-vertex gradient; otherwise the token is parsed as a colour. disables gradient resolution and the modifier behaves purely as a solid-colour outline.",
             "seeAlso": []
           }
         ],
@@ -18265,7 +18702,7 @@
       "baseType": "EffectModifier",
       "interfaces": [],
       "summary": "Applies a shadow effect by appending displaced duplicate glyph geometry behind the face.",
-      "remarks": "The shadow is rendered via a duplicate quad offset from the face and tagged with effect UV data. All shadow modifiers render in the same CanvasRenderer as the face (back-first in the index buffer), enabling unlimited stacking with no extra submeshes. All parameters come from the tag/rule parameter string. Format: \u003Cshadow=#color\u003E, \u003Cshadow=dilate,#color\u003E, or \u003Cshadow=dilate,#color,offsetX,offsetY,softness\u003E. Defaults: dilate = 0, color = black 50% (#00000080), offset = (0.1,-0.1), softness = 0.1.",
+      "remarks": "The shadow is rendered via a duplicate quad offset from the face and tagged with effect UV2 data. All shadow modifiers render in the same CanvasRenderer as the face (back-first in the index buffer), enabling unlimited stacking with no extra submeshes. All parameters come from the tag/rule parameter string. Format: \u003Cshadow=#color\u003E, \u003Cshadow=dilate,#color\u003E, or \u003Cshadow=dilate,#color,offsetX,offsetY,softness\u003E. Defaults: dilate = 0.1, color = black 50% (#00000080), offset = (0.1,-0.1), softness = 0.1.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -18320,6 +18757,22 @@
             "typeParameters": []
           },
           {
+            "id": "ShadowModifier.ResetOwnRequests",
+            "name": "ResetOwnRequests",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "ShadowModifier.OnApply",
             "name": "OnApply",
             "accessModifier": "protected",
@@ -18354,6 +18807,26 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "ShadowModifier.OnEmitQuad",
+            "name": "OnEmitQuad",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [
@@ -18366,7 +18839,6 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "When, dilate, offset, and softness are interpreted in fixed pixels and compensated by the glyph\u0027s gradientScale so the shadow has constant on-screen geometry independent of font size. Default \u2014 values scale with the glyph SDF padding and font metric factor.",
-            "remarks": "Read on the mesh-generation hot path (onGlyphEffect); changing it requeues a mesh rebuild via [[Color]].",
             "seeAlso": []
           }
         ],
@@ -21357,6 +21829,57 @@
             "isReadonly": false,
             "isConst": false,
             "type": "string"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "GradientShape",
+      "name": "GradientShape",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Gradient projection mode. [[Linear]] projects vertex positions onto an axis, [[Radial]] uses distance from the range\u0027s centre, [[Angular]] sweeps a conic from the centre.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "shaping",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "GradientShape.Linear",
+            "name": "Linear",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GradientShape",
+            "defaultValue": "0"
+          },
+          {
+            "id": "GradientShape.Radial",
+            "name": "Radial",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GradientShape",
+            "defaultValue": "1"
+          },
+          {
+            "id": "GradientShape.Angular",
+            "name": "Angular",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "GradientShape",
+            "defaultValue": "2"
           }
         ],
         "events": []
@@ -27705,11 +28228,11 @@
         "priority": 100
       },
       {
-        "name": "EffectPacking",
+        "name": "EffectPass",
         "priority": 100
       },
       {
-        "name": "EffectPass",
+        "name": "EffectQuadOps",
         "priority": 100
       },
       {
@@ -27737,7 +28260,15 @@
         "priority": 100
       },
       {
+        "name": "GradientGeometry",
+        "priority": 100
+      },
+      {
         "name": "GradientModifier",
+        "priority": 100
+      },
+      {
+        "name": "GradientUtil",
         "priority": 100
       },
       {
@@ -27746,6 +28277,10 @@
       },
       {
         "name": "IGradientProvider",
+        "priority": 100
+      },
+      {
+        "name": "IHasGradientProvider",
         "priority": 100
       },
       {
@@ -28007,6 +28542,10 @@
       {
         "name": "Shaper",
         "priority": 1
+      },
+      {
+        "name": "GradientShape",
+        "priority": 100
       },
       {
         "name": "ShapedGlyph",
