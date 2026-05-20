@@ -1,6 +1,6 @@
 {
-  "version": "2.2.15",
-  "generatedAt": "2026-05-20T20:17:01.9633762Z",
+  "version": "2.2.16",
+  "generatedAt": "2026-05-20T22:32:16.6795502Z",
   "namespaces": [],
   "types": [
     {
@@ -356,7 +356,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "Rect",
-            "summary": "The RectTransform rect."
+            "summary": "The padded inner rect \u2014 [[rect]] shrunk by the component\u0027s [[Padding]] on each side. Every layout / positioning / mesh / range-bound step in the pipeline keys off this value, so worker threads see the same rect the main-thread layout pass computed."
           }
         ],
         "events": []
@@ -5329,6 +5329,23 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.GetPaddedRect",
+            "name": "GetPaddedRect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rect",
+            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop) and clamped to non-negative. This is the rect every layout / positioning / hit-test / range-bound computation in the pipeline operates on. Main-thread only \u2014 reads [[rect]] live; worker threads consume the cached copy in [[cachedTransformData]].",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.SetDirty",
             "name": "SetDirty",
             "accessModifier": "public",
@@ -6105,7 +6122,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the computed preferred height for the current rect (accounts for auto-sizing).",
+            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
             "seeAlso": []
           },
           {
@@ -6394,6 +6411,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets whether word wrapping is enabled.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.Padding",
+            "name": "Padding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Vector4",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Inner inset between the [[RectTransform]] edge and the text layout area, in RectTransform units. Components: x = Left, y = Bottom, z = Right, w = Top (matches [[raycastPadding]] convention). Increasing a side shrinks the text area on that side; the hit-test/raycast area stays the full RectTransform. Mirrors CSS padding / UIKit textContainerInset / WPF TextBlock.Padding semantics \u2014 use it for SDF outline/shadow bleed, caret/IME insets, or container breathing space without nesting another transform.",
             "seeAlso": []
           },
           {
