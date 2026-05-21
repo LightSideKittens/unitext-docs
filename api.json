@@ -1,6 +1,6 @@
 {
-  "version": "2.3.0",
-  "generatedAt": "2026-05-21T22:09:30.0659992Z",
+  "version": "2.3.1",
+  "generatedAt": "2026-05-21T22:10:20.7411729Z",
   "namespaces": [],
   "types": [
     {
@@ -14,8 +14,12 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "AnimationHandlerBase\u003CUniText\u003E",
+      "baseTypeChain": [
+        "AnimationHandlerBase\u003CUniText\u003E"
+      ],
       "interfaces": [],
-      "summary": "Animation handler for [[UniText]]. Diffs the base [[UniTextBase]] fields only \u2014 [[UniText]] has no Canvas-specific animatable serialized fields of its own.",
+      "derivedTypes": [],
+      "summary": "Animation handler for [[UniText]]. Diffs base fields only.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -56,8 +60,12 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "AnimationHandlerBase\u003CUniTextWorld\u003E",
+      "baseTypeChain": [
+        "AnimationHandlerBase\u003CUniTextWorld\u003E"
+      ],
       "interfaces": [],
-      "summary": "Animation handler for [[UniTextWorld]]. Adds diff coverage for [[SortingOrder]] and [[SortingLayerID]] on top of the base text fields, and re-fires [[SortingChanged]] so observers (e.g. [[UniTextWorldBatcher]]) react to animated sorting just as they would to a setter call.",
+      "derivedTypes": [],
+      "summary": "Animation handler for [[UniTextWorld]]. Covers [[SortingOrder]] and [[SortingLayerID]] on top of the base text fields and re-fires [[SortingChanged]] when sorting is animated.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -129,7 +137,9 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Bridges Unity\u0027s OnDidApplyAnimationProperties callback to [[SetDirty]]. Animator writes directly into serialized fields, bypassing property setters that normally raise dirty flags \u2014 this handler diffs cached values against the post-animation field state and aggregates the appropriate [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
       "remarks": "Composed (not inherited) into a [[UniTextBase]] subclass. Nested inside [[UniTextBase]] so it can read the private/protected serialized fields directly. Subclass handlers extend the diff for their own fields by overriding [[DiffSubclassFields]] and [[CaptureSubclassBaseline]]; nest them inside their owning component to retain direct field access.",
       "seeAlso": [],
@@ -253,7 +263,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Physics systems consulted for occlusion between the camera and a text hit.",
       "seeAlso": [],
       "typeParameters": [],
@@ -320,8 +332,10 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
-      "summary": "Cached transform data for parallel processing (avoids Unity API calls from worker threads).",
+      "derivedTypes": [],
+      "summary": "Snapshot of main-thread state captured before parallel processing \u2014 Unity APIs ([[rect]], etc.) cannot be touched from worker threads.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -345,8 +359,7 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "RectTransform",
-            "summary": "The RectTransform."
+            "type": "RectTransform"
           },
           {
             "id": "CachedTransformData.rect",
@@ -356,7 +369,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "Rect",
-            "summary": "The padded inner rect \u2014 [[rect]] shrunk by the component\u0027s [[Padding]] on each side. Every layout / positioning / mesh / range-bound step in the pipeline keys off this value, so worker threads see the same rect the main-thread layout pass computed."
+            "summary": "The padded inner rect ([[GetPaddedRect]]) snapshotted on the main thread."
           }
         ],
         "events": []
@@ -372,7 +385,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "TextHighlightRenderer",
+      "baseTypeChain": [
+        "TextHighlightRenderer"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Canvas-backed [[TextHighlightRenderer]] \u2014 wraps a child GameObject with [[RangeHighlightGraphic]] anchored to the owning [[UniText]]. Z-order is managed via sibling index (above = last, behind = first).",
       "seeAlso": [],
       "typeParameters": [],
@@ -476,7 +493,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "TextHighlighter",
+      "baseTypeChain": [
+        "TextHighlighter"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Default highlighting logic \u2014 click flash with fade-out, hover tint, programmatic selection \u2014 wired to the built-in renderers ([[CanvasHighlightRenderer]] for [[UniText]], [[WorldHighlightRenderer]] for [[UniTextWorld]]). Subclass and override either [[CreateHighlightRenderer]] or [[CreateHighlightRenderer]] to plug a custom visual on the chosen backend while keeping this logic.",
       "seeAlso": [],
       "typeParameters": [],
@@ -718,7 +739,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Relative render order of a highlight surface versus its owning text.",
       "seeAlso": [],
       "typeParameters": [],
@@ -761,7 +784,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies horizontal text alignment within the layout bounds.",
       "remarks": "Edges are physical (Left/Right), not logical (Start/End). For RTL paragraphs, the renderer auto-flips so that [[Left]] still produces the natural \u0022start\u0022 edge of the RTL line \u2014 matching CSS legacy text-align: left | right | center | justify semantics and the Web Selection API direction model.",
       "seeAlso": [],
@@ -828,8 +853,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IInteractiveRangeProvider"
+      ],
+      "derivedTypes": [
+        "InteractiveModifier"
       ],
       "summary": "Interface for modifiers that provide interactive ranges AND handle their own interactions.",
       "remarks": "Extends [[IInteractiveRangeProvider]] with callbacks for click and hover events. Implement this when the modifier needs to respond directly to user interactions (e.g., LinkModifier opening URLs, custom modifiers showing tooltips). For simple providers that only define ranges but don\u0027t handle events, implement [[IInteractiveRangeProvider]] instead.",
@@ -943,7 +972,11 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "IInteractiveRangeHandler"
+      ],
       "summary": "Interface for modifiers that provide interactive text ranges.",
       "remarks": "Implement this interface to register clickable/hoverable regions in text. The [[InteractiveRangeRegistry]] queries all providers to find which range (if any) contains a given cluster position. For modifiers that also want to handle click/hover events directly, implement [[IInteractiveRangeHandler]] instead.",
       "seeAlso": [
@@ -1024,7 +1057,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a clickable/hoverable range within text.",
       "remarks": "Used by [[IInteractiveRangeProvider]] implementations to define interactive regions like links, hashtags, mentions, or custom clickable areas.",
       "seeAlso": [],
@@ -1189,7 +1224,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Result of a hit test on an interactive range.",
       "remarks": "Combines [[InteractiveRange]] with [[TextHitResult]] to provide complete information about a click/hover on interactive text.",
       "seeAlso": [],
@@ -1285,7 +1322,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IAttributeData",
+      "baseTypeChain": [
+        "IAttributeData"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Central registry for interactive text ranges.",
       "remarks": "Stores references to all [[IInteractiveRangeProvider]] instances for a UniText component. Used by [[UniText]] to perform hit testing against interactive ranges. Stored in [[UniTextBuffers]] as [[IAttributeData]].",
       "seeAlso": [
@@ -1540,7 +1581,9 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Hook that can override the source text of a [[UniTextBase]] before it is parsed, shaped and laid out \u2014 without touching the serialized text field.",
       "remarks": "Typical use cases: editor-time localization preview (swap keys for translated strings without dirtying scenes or prefabs), runtime localization bound to a language signal, or any derived-text scenario where the authored text is a template or key. Assign via [[TextResolver]]. When a resolver is attached and [[TryResolve]] returns, the component renders the override; the serialized text remains untouched, so scenes and prefabs are not marked dirty. Threading \u2014 same two-phase contract as [[BaseModifier]]: [[PrepareForParallel]] always runs on the main thread. Override to cache values from Unity APIs that are main-thread-only (localization tables, ScriptableObject lookups, AssetDatabase in editor). [[TryResolve]] may run on a worker thread when batched parallel processing is active. Do not call Unity APIs directly from it \u2014 read from caches populated in [[PrepareForParallel]]. To trigger a rebuild when your external source changes (language switch, scriptable object edit, etc.) call owner.SetDirty(UniTextDirtyFlags.Text) \u2014 the owner is supplied to [[OnAttached]].",
       "seeAlso": [],
@@ -1663,7 +1706,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Process-wide registry mapping BCP 47 language tags to HarfBuzz language handles and compact byte indices suitable for per-codepoint attribute storage.",
       "remarks": "HarfBuzz language handles (hb_language_t) are opaque pointers cached internally by HarfBuzz, so equal BCP 47 strings resolve to the same pointer. HarfBuzz maps BCP 47 to OpenType language tags (e.g. zh-Hans \u2192 ZHS, ja \u2192 JAN) automatically, which drives the locl GSUB feature in pan-CJK fonts. The registry is additive: once a tag is registered, its index stays stable for the lifetime of the process. Index 0 is reserved for \u0022unset\u0022 and maps to HB_LANGUAGE_INVALID.",
       "seeAlso": [],
@@ -1759,7 +1804,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies how the final line of a justified paragraph (and lines preceding a mandatory break) is aligned. Mirrors CSS Text Module Level 3 text-align-last.",
       "remarks": "The \u0022last line\u0022 of a paragraph is the line ended by a mandatory break (CR / LF / etc.) or the very last line in the document. [[Auto]] matches the CSS default behaviour: when [[Justify]] is active, the last line is aligned to the paragraph start.",
       "seeAlso": [],
@@ -1837,7 +1884,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Configuration for text layout and positioning.",
       "remarks": "Used by [[TextLayout]] to control how text is positioned within the available bounds. Includes settings for maximum dimensions, spacing, and alignment.",
       "seeAlso": [],
@@ -1981,7 +2030,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Controls how extra leading from line-height is distributed relative to the content area.",
       "remarks": "Different platforms use different models: [[HalfLeading]] \u2014 CSS standard: split equally above and below. [[LeadingAbove]] \u2014 Figma / iOS: all extra space above the line. [[LeadingBelow]] \u2014 Android View / legacy: all extra space below the line.",
       "seeAlso": [],
@@ -2038,7 +2089,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A named gradient entry.",
       "seeAlso": [],
       "typeParameters": [],
@@ -2080,7 +2133,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a glyph with final position coordinates ready for rendering.",
       "remarks": "This is the final output of the text processing pipeline, containing all information needed to render a glyph to a mesh or texture.",
       "seeAlso": [],
@@ -2202,7 +2257,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Controls the rendering order of a sub-mesh relative to the base text pass.",
       "remarks": "Canvas renders children in sibling order: later siblings appear visually on top. [[CollectRenderData]] sorts [[UniTextRenderData]] segments by ([[order]], [[sortIndex]]) so that base text always sits between underlay and overlay passes.",
       "seeAlso": [],
@@ -2258,7 +2315,11 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "DefaultTextHighlighter"
+      ],
       "summary": "Base class for text highlighting and selection visualization.",
       "remarks": "Inherit from this class to create custom highlight effects for interactive ranges, text selection, or any other visual feedback. Assign to [[Highlighter]] to enable highlighting. The two CreateHighlightRenderer overloads (one per backend) are dispatched type-safely from the owner\u0027s actual type \u2014 subclass to plug a custom visual on either or both backends without runtime cast risk. Set to null to disable.",
       "seeAlso": [],
@@ -2582,7 +2643,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "CanvasHighlightRenderer",
+        "WorldHighlightRenderer"
+      ],
       "summary": "Backend-agnostic view surface for [[TextHighlighter]] visuals.",
       "remarks": "Built-in implementations: [[CanvasHighlightRenderer]] wraps [[RangeHighlightGraphic]] for [[UniText]], while [[WorldHighlightRenderer]] wraps a [[MeshRenderer]]-based quad mesh for [[UniTextWorld]]. A [[TextHighlighter]] subclass picks one of these (or a custom subclass) per backend via its CreateHighlightRenderer(UniText,...) / CreateHighlightRenderer(UniTextWorld,...) overloads and drives the result with the same lifecycle regardless of backend.",
       "seeAlso": [],
@@ -2670,7 +2736,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Result of a text hit test operation.",
       "remarks": "Returned by [[HitTest]] and [[HitTestScreen]] to identify which glyph/cluster was hit by a pointer.",
       "seeAlso": [],
@@ -2774,7 +2842,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies how extra horizontal space is distributed when [[Justify]] is active. Mirrors the CSS Text Module Level 3 text-justify property values.",
       "remarks": "[[Auto]] \u2014 distribute at word separators; if a line contains no word separators (typical for pure CJK content), fall back to [[InterCharacter]]. Default; matches CSS text-justify: auto behaviour. [[InterWord]] \u2014 distribute only at word-separator characters (UAX category Zs, excluding NBSP / narrow NBSP). Appropriate for scripts that separate words with spaces (Latin, Cyrillic, Greek, Korean). [[InterCharacter]] \u2014 distribute at every cluster boundary on the line. Appropriate for scripts without word separators (Japanese, Chinese, Thai). [[None]] \u2014 no expansion. Justified lines render as start-aligned.",
       "seeAlso": [],
@@ -2841,7 +2911,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Positions glyphs within the layout bounds based on line breaking results and alignment settings.",
       "remarks": "This is the final positioning stage of the text processing pipeline. It takes the output from [[LineBreaker]] (lines and runs) and produces [[PositionedGlyph]] data with final X/Y coordinates. Handles: Horizontal alignment (left, center, right) with RTL awareness Vertical alignment (top, middle, bottom) Line spacing and margins Glyph scaling based on font size",
       "seeAlso": [
@@ -3132,7 +3204,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a line of text after line breaking.",
       "seeAlso": [],
       "typeParameters": [],
@@ -3275,7 +3349,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies which metric defines the top edge of the text box.",
       "remarks": "Controls how the first line is positioned relative to the container top. Matches CSS text-box-edge over-edge values and Figma Vertical Trim.",
       "seeAlso": [],
@@ -3330,7 +3406,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Possible sources of a runtime override on top of the serialized [[Text]] \u2014 i.e. reasons the rendered text may diverge from what is stored in the scene or prefab. Flags may combine (e.g. [[SetText]] | [[Resolver]] when SetText assigned a runtime buffer and a resolver further substitutes that buffer\u0027s content).",
       "seeAlso": [],
       "typeParameters": [],
@@ -3385,7 +3463,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Processes Unicode text through script analysis, BiDi reordering, shaping, and layout.",
       "remarks": "[[TextProcessor]] is the main entry point for the text processing pipeline. It orchestrates multiple Unicode algorithms to produce correctly shaped and positioned glyphs. Processing pipeline: Parsing \u2014 converts UTF-16 to codepoints Script analysis (UAX #24) \u2014 identifies script per codepoint BiDi algorithm (UAX #9) \u2014 determines text direction and reordering Itemization \u2014 splits text into runs by script, direction, and font Shaping \u2014 converts codepoints to positioned glyphs via HarfBuzz Line breaking (UAX #14) \u2014 determines line break opportunities Layout \u2014 positions glyphs according to alignment settings Performance: The processor caches intermediate results. Use invalidation methods only when necessary to avoid redundant processing.",
       "example": "var buffers = new UniTextBuffers();\nvar processor = new TextProcessor(buffers);\nprocessor.SetFontProvider(fontProvider);\n\nvar settings = new TextProcessSettings\n{\n    fontSize = 24f,\n    MaxWidth = 400f,\n    enableWordWrap = true\n};\n\nprocessor.EnsureFirstPass(text, settings);\nprocessor.EnsureLines(settings.MaxWidth, settings.fontSize, settings.enableWordWrap);\nprocessor.EnsurePositions(settings);\n\n// Access results\nvar glyphs = processor.PositionedGlyphs;",
@@ -3685,6 +3765,50 @@
             "typeParameters": []
           },
           {
+            "id": "TextProcessor.ForceRelayout",
+            "name": "ForceRelayout",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Forces a complete relayout using custom codepoint widths.",
+            "remarks": "Use this method when codepoint widths have been modified externally (e.g., by modifiers) and the layout needs to be recalculated. Preserves shaping data but recalculates line breaks and positions.",
+            "params": [
+              {
+                "name": "cpWidths",
+                "type": "ReadOnlySpan\u003Cfloat\u003E",
+                "description": "Custom widths for each codepoint, used for layout calculations."
+              }
+            ],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cfloat\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextProcessor.ForceReposition",
+            "name": "ForceReposition",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Forces recalculation of glyph positions while preserving line breaks.",
+            "remarks": "Use this method when run widths have changed but line breaks remain valid. Updates line widths and recalculates glyph positions without re-breaking lines.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "TextProcessor.GetUnwrappedWidth",
             "name": "GetUnwrappedWidth",
             "accessModifier": "public",
@@ -3834,50 +3958,6 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
-          },
-          {
-            "id": "TextProcessor.ForceRelayout",
-            "name": "ForceRelayout",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Forces a complete relayout using custom codepoint widths.",
-            "remarks": "Use this method when codepoint widths have been modified externally (e.g., by modifiers) and the layout needs to be recalculated. Preserves shaping data but recalculates line breaks and positions.",
-            "params": [
-              {
-                "name": "cpWidths",
-                "type": "ReadOnlySpan\u003Cfloat\u003E",
-                "description": "Custom widths for each codepoint, used for layout calculations."
-              }
-            ],
-            "paramTypes": [
-              "ReadOnlySpan\u003Cfloat\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "TextProcessor.ForceReposition",
-            "name": "ForceReposition",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Forces recalculation of glyph positions while preserving line breaks.",
-            "remarks": "Use this method when run widths have changed but line breaks remain valid. Updates line widths and recalculates glyph positions without re-breaking lines.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
           }
         ],
         "properties": [
@@ -4002,7 +4082,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Configuration settings for text processing operations.",
       "remarks": "This struct encapsulates all parameters needed by [[TextProcessor]] to process, shape, and lay out Unicode text. It combines layout settings with text-specific options like font size and base direction.",
       "seeAlso": [
@@ -4192,9 +4274,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IEquatable\u003CTextRange\u003E"
       ],
+      "derivedTypes": [],
       "summary": "Represents a range of indices in a text buffer.",
       "seeAlso": [],
       "typeParameters": [],
@@ -4384,7 +4468,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a segment of text with uniform script, direction, and font before shaping.",
       "remarks": "Created during itemization to split text into homogeneous segments that can be shaped independently.",
       "seeAlso": [],
@@ -4468,7 +4554,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies which metric defines the bottom edge of the text box.",
       "remarks": "Controls how the last line contributes to the total text height. Matches CSS text-box-edge under-edge values and Figma Vertical Trim.",
       "seeAlso": [],
@@ -4525,11 +4613,15 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "UniTextBase",
+      "baseTypeChain": [
+        "UniTextBase"
+      ],
       "interfaces": [
         "ILayoutController"
       ],
-      "summary": "Canvas text rendering component with full Unicode support. Uses CanvasRenderer for rendering within Unity UI Canvas.",
-      "remarks": "UniText is a drop-in replacement for Unity\u0027s Text/TextMeshPro with proper support for: Bidirectional text (Arabic, Hebrew) via UAX #9 Complex script shaping (Devanagari, Thai, etc.) via HarfBuzz Proper line breaking via UAX #14 Color emoji rendering Extensible markup system via [[IParseRule]] (HTML tags, Markdown, custom markers) For world-space text without Canvas, use [[UniTextWorld]] instead.",
+      "derivedTypes": [],
+      "summary": "Canvas-space text component. Renders into a [[Canvas]] via [[CanvasRenderer]] with full Unicode support \u2014 bidirectional scripts (Arabic, Hebrew), complex shaping (Devanagari, Thai), proper line breaking, color emoji, and a markup system via [[IParseRule]].",
+      "remarks": "For world-space text (no Canvas), use [[UniTextWorld]].",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -4755,7 +4847,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Visibility culling against the actual rendered mesh bounds rather than the [[RectTransform]]. The rendered glyphs can extend beyond the rect (long words without word wrap, overflow, outline/glow expansion, modifier transforms), so the default [[Cull]] \u2014 which tests the rect corners \u2014 would cull a still-visible mesh once the rect leaves the clip.",
+            "summary": "Culls against the actual rendered mesh bounds rather than the [[RectTransform]]. Glyphs can extend beyond the rect (long words, overflow, outline/glow, modifier transforms), so the default rect-corner test would hide still-visible meshes.",
             "params": [],
             "paramTypes": [
               "Rect",
@@ -4843,7 +4935,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "High-performance array pool with thread-local caching and shared overflow storage.",
       "remarks": "This pool uses a two-tier caching strategy: Thread-local cache: One array per bucket per thread for instant access Shared buckets: Concurrent queues for cross-thread array sharing Arrays are organized into buckets by size (powers of 2 starting at 32). Supported sizes: 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536. Arrays larger than 65536 are allocated directly without pooling. Usage pattern: var array = UniTextArrayPool\u003Cint\u003E.Rent(100); // Gets array of size 128 try { // Use array... } finally { UniTextArrayPool\u003Cint\u003E.Return(array); }",
       "seeAlso": [
@@ -5019,6 +5113,10 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseType": "MaskableGraphic",
+      "baseTypeChain": [
+        "MaskableGraphic"
+      ],
       "interfaces": [
         "IPointerDownHandler",
         "IPointerUpHandler",
@@ -5026,420 +5124,16 @@
         "IPointerExitHandler",
         "IPointerMoveHandler"
       ],
-      "summary": "UniTextBase partial class implementing auto-size and layout computation.",
-      "remarks": "Shared between Canvas ([[UniText]]) and world-space ([[UniTextWorld]]) variants. Canvas integrates through [[ILayoutElement]] and [[ILayoutController]] so Unity\u0027s LayoutRebuilder drives the two phases; world-space has the render pipeline invoke [[EnsureLayoutFit]] directly. Two-phase design. The phases have independent caches because they key on different inputs and are driven by different UI rebuild points: [[EnsureLayoutComputed]] \u2014 the main pass. Computes the \u0022preferred\u0022 state ([[cachedPreferredHeight]] and initial [[cachedEffectiveFontSize]]) at the unconstrained ideal font size. Cached by rect.width; independent of rect.height. Invoked from CalcLayoutInputVertical and returns what the parent layout group reads as \u0022what this text wants\u0022. [[EnsureLayoutFit]] \u2014 the second pass. When auto-size is on and the actual rect.height is smaller than the preferred, shrinks [[cachedEffectiveFontSize]] to fit. Cached by rect.height. Deliberately does not update [[cachedPreferredHeight]] \u2014 \u0022preferred\u0022 stays what the text wants, not what the rect gives it. Without this separation, shrinking preferred on one frame would make parents (e.g. ContentSizeFitter \u002B VerticalLayoutGroup) assign an even smaller rect next frame, causing a feedback shrink loop.",
-      "seeAlso": [
-        "InteractiveRangeRegistry",
-        "IInteractiveRangeHandler"
+      "derivedTypes": [
+        "UniText",
+        "UniTextWorld"
       ],
+      "summary": "Shared base for UniText components \u2014 handles text processing (Unicode, BiDi, shaping, line breaking, modifiers, emoji, font fallback, variable fonts). Concrete subclasses supply the rendering backend: [[UniText]] (Canvas) and [[UniTextWorld]] (world-space).",
+      "seeAlso": [],
       "typeParameters": [],
       "category": "core",
       "members": {
         "methods": [
-          {
-            "id": "UniTextBase.EnsureLayoutComputed",
-            "name": "EnsureLayoutComputed",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureLayoutFit",
-            "name": "EnsureLayoutFit",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HasModifier",
-            "name": "HasModifier",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Returns true if any style on this component has a modifier of type T.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.HasModifier",
-            "name": "HasModifier",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Returns true if any style on this component has a modifier assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.TryGetStyle",
-            "name": "TryGetStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first style whose modifier is of type T.",
-            "params": [],
-            "paramTypes": [
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.TryGetStyle",
-            "name": "TryGetStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.TryGetWholeTextStyle",
-            "name": "TryGetWholeTextStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first whole-text style (range..) whose modifier is of type T.",
-            "params": [],
-            "paramTypes": [
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.TryGetWholeTextStyle",
-            "name": "TryGetWholeTextStyle",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Finds the first whole-text style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "Style"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.GetStylesOfType",
-            "name": "GetStylesOfType",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CStyle\u003E",
-            "summary": "Enumerates every style whose modifier is of type T, local first.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.GetStylesOfType",
-            "name": "GetStylesOfType",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IEnumerable\u003CStyle\u003E",
-            "summary": "Enumerates every style whose modifier is assignable to modifierType, local first.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.SetWholeText",
-            "name": "SetWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Adds or updates a whole-text style of modifier type T. If an existing local whole-text style exists, its parameter is updated in place; otherwise a new style is added via [[AddStyle]].",
-            "params": [],
-            "paramTypes": [
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.SetWholeText",
-            "name": "SetWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Adds or updates a whole-text style for modifierType, creating a new modifier via factory when none is found locally.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "string",
-              "Func\u003CBaseModifier\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ClearWholeText",
-            "name": "ClearWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Removes the first local whole-text style whose modifier is of type T. Returns true if a style was removed.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.ClearWholeText",
-            "name": "ClearWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Removes the first local whole-text style whose modifier is assignable to modifierType.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ToggleWholeText",
-            "name": "ToggleWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Inverts the presence of a whole-text style of type T. Adds the style with parameter when absent, removes it when present. Returns true if the style is present after the call.",
-            "params": [],
-            "paramTypes": [
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.ToggleWholeText",
-            "name": "ToggleWholeText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Inverts the presence of a whole-text style for modifierType, creating a new modifier via factory when adding.",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "string",
-              "Func\u003CBaseModifier\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.GetWholeTextParameter",
-            "name": "GetWholeTextParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "string",
-            "summary": "Returns the parameter of the first whole-text style of type T, or null.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextBase.GetWholeTextParameter",
-            "name": "GetWholeTextParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "string",
-            "summary": "Returns the parameter of the first whole-text style of modifierType, or null.",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
           {
             "id": "UniTextBase.SetText",
             "name": "SetText",
@@ -5548,7 +5242,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Rect",
-            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop) and clamped to non-negative. This is the rect every layout / positioning / hit-test / range-bound computation in the pipeline operates on. Main-thread only \u2014 reads [[rect]] live; worker threads consume the cached copy in [[cachedTransformData]].",
+            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop), clamped to non-negative. Main-thread only.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6092,6 +5786,410 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.HasModifier",
+            "name": "HasModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if any style on this component has a modifier of type T.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.HasModifier",
+            "name": "HasModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if any style on this component has a modifier assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TryGetStyle",
+            "name": "TryGetStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first style whose modifier is of type T.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetStyle",
+            "name": "TryGetStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TryGetWholeTextStyle",
+            "name": "TryGetWholeTextStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first whole-text style (range..) whose modifier is of type T.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetWholeTextStyle",
+            "name": "TryGetWholeTextStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Finds the first whole-text style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetStylesOfType",
+            "name": "GetStylesOfType",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CStyle\u003E",
+            "summary": "Enumerates every style whose modifier is of type T, local first.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.GetStylesOfType",
+            "name": "GetStylesOfType",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IEnumerable\u003CStyle\u003E",
+            "summary": "Enumerates every style whose modifier is assignable to modifierType, local first.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetWholeText",
+            "name": "SetWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds or updates a whole-text style of modifier type T. If an existing local whole-text style exists, its parameter is updated in place; otherwise a new style is added via [[AddStyle]].",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.SetWholeText",
+            "name": "SetWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds or updates a whole-text style for modifierType, creating a new modifier via factory when none is found locally.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "string",
+              "Func\u003CBaseModifier\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ClearWholeText",
+            "name": "ClearWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first local whole-text style whose modifier is of type T. Returns true if a style was removed.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.ClearWholeText",
+            "name": "ClearWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Removes the first local whole-text style whose modifier is assignable to modifierType.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ToggleWholeText",
+            "name": "ToggleWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Inverts the presence of a whole-text style of type T. Adds the style with parameter when absent, removes it when present. Returns true if the style is present after the call.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.ToggleWholeText",
+            "name": "ToggleWholeText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Inverts the presence of a whole-text style for modifierType, creating a new modifier via factory when adding.",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "string",
+              "Func\u003CBaseModifier\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetWholeTextParameter",
+            "name": "GetWholeTextParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Returns the parameter of the first whole-text style of type T, or null.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.GetWholeTextParameter",
+            "name": "GetWholeTextParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Returns the parameter of the first whole-text style of modifierType, or null.",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureLayoutComputed",
+            "name": "EnsureLayoutComputed",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureLayoutFit",
+            "name": "EnsureLayoutFit",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.PrepareForParallel",
             "name": "PrepareForParallel",
             "accessModifier": "protected",
@@ -6325,17 +6423,6 @@
         ],
         "properties": [
           {
-            "id": "UniTextBase.PreferredHeight",
-            "name": "PreferredHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
-            "seeAlso": []
-          },
-          {
             "id": "UniTextBase.CurrentDirtyFlags",
             "name": "CurrentDirtyFlags",
             "accessModifier": "public",
@@ -6398,7 +6485,7 @@
             "type": "ReadOnlyMemory\u003Cchar\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the runtime source text \u2014 the last value assigned via [[Text]] or any SetText overload, before any resolver substitution. Zero-alloc. Backing is either a [[string]] or a [[char]] buffer supplied to [[SetText]].",
+            "summary": "The runtime source text \u2014 the last value assigned via [[Text]] or any SetText overload, before any resolver substitution. Zero-alloc.",
             "seeAlso": []
           },
           {
@@ -6508,7 +6595,7 @@
             "type": "IReadOnlyList\u003CStyle\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the list of registered modifiers.",
+            "summary": "Local styles (modifier \u002B parse rule pairs) registered on this component.",
             "seeAlso": []
           },
           {
@@ -6519,7 +6606,7 @@
             "type": "IReadOnlyList\u003CStylePreset\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the list of modifier configuration assets.",
+            "summary": "Shared [[StylePreset]] assets applied in addition to local [[Styles]].",
             "seeAlso": []
           },
           {
@@ -6530,7 +6617,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "When (default), [[GlobalStylePreset]] is applied to this component as an extra preset registered after the local [[StylePresets]] list. Disable to opt this component out of project-wide rules \u2014 local [[Styles]] and local [[StylePresets]] still apply. Toggling the value invalidates the parser so the next pipeline pass picks up the new effective preset set.",
+            "summary": "Apply the project-wide [[GlobalStylePreset]] on top of local [[Styles]] and [[StylePresets]]. Disable to opt this component out of project-wide rules; local styles are unaffected.",
             "seeAlso": []
           },
           {
@@ -6564,7 +6651,7 @@
             "type": "UniTextFont",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Optional explicit primary font. When non-null, this font is the primary \u2014 it provides strut metrics and the default face; every family in [[FontStack]] participates as fallback. When null, the primary is derived from [[FontStack]] as before.",
+            "summary": "Optional explicit primary font. When set, overrides the primary picked from [[FontStack]]; the families in [[FontStack]] still serve as fallback for characters this font doesn\u0027t have.",
             "seeAlso": []
           },
           {
@@ -6597,8 +6684,7 @@
             "type": "string",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets the default BCP 47 language tag for this text (e.g. zh-Hans, zh-Hant, ja, ko, en-US). Activates the OpenType locl feature and drives [[preferredLanguage]] font selection. Per-range overrides via \u003Clang=...\u003E...\u003C/lang\u003E take priority.",
-            "remarks": "Runtime convenience on top of [[LanguageModifier]]. The setter uses [[SetWholeText{T}]] / [[ClearWholeText{T}]] \u2014 shared presets are never modified; only the local [[Styles]] list is touched.",
+            "summary": "BCP 47 language tag for this text (e.g. zh-Hans, ja, en-US). Picks the correct font variant for the script and enables the OpenType locl feature. Per-range overrides via \u003Clang=...\u003E...\u003C/lang\u003E take priority.",
             "seeAlso": []
           },
           {
@@ -6631,7 +6717,7 @@
             "type": "Vector4",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Inner inset between the [[RectTransform]] edge and the text layout area, in RectTransform units. Components: x = Left, y = Bottom, z = Right, w = Top (matches [[raycastPadding]] convention). Increasing a side shrinks the text area on that side; the hit-test/raycast area stays the full RectTransform. Mirrors CSS padding / UIKit textContainerInset / WPF TextBlock.Padding semantics \u2014 use it for SDF outline/shadow bleed, caret/IME insets, or container breathing space without nesting another transform.",
+            "summary": "Inner inset between the [[RectTransform]] edge and the text layout area. Components: x = Left, y = Bottom, z = Right, w = Top (same convention as [[raycastPadding]]). Increasing a side shrinks the text area on that side; the hit-test/raycast area is not affected.",
             "seeAlso": []
           },
           {
@@ -6777,6 +6863,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.PreferredHeight",
+            "name": "PreferredHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.UseParallel",
             "name": "UseParallel",
             "accessModifier": "public",
@@ -6822,26 +6919,6 @@
           }
         ],
         "fields": [
-          {
-            "id": "UniTextBase.cachedEffectiveFontSize",
-            "name": "cachedEffectiveFontSize",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Cached effective font size after auto-sizing. Zero means layout has not been computed; consumers fall back to maxFontSize/fontSize as appropriate."
-          },
-          {
-            "id": "UniTextBase.cachedPreferredHeight",
-            "name": "cachedPreferredHeight",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Cached preferred height \u2014 what the text wants at its unconstrained (main-pass) size. Not updated by the second pass: parent layout groups read this as \u0022desired height\u0022, which must stay stable even when the rect is smaller than desired."
-          },
           {
             "id": "UniTextBase.sourceText",
             "name": "sourceText",
@@ -6969,6 +7046,26 @@
             "type": "List\u003CUniTextRenderData\u003E"
           },
           {
+            "id": "UniTextBase.cachedEffectiveFontSize",
+            "name": "cachedEffectiveFontSize",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Cached effective font size after auto-sizing. Zero means layout has not been computed; consumers fall back to maxFontSize/fontSize as appropriate."
+          },
+          {
+            "id": "UniTextBase.cachedPreferredHeight",
+            "name": "cachedPreferredHeight",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Cached preferred height \u2014 what the text wants at its unconstrained (main-pass) size. Not updated by the second pass: parent layout groups read this as \u0022desired height\u0022, which must stay stable even when the rect is smaller than desired."
+          },
+          {
             "id": "UniTextBase.cachedTransformData",
             "name": "cachedTransformData",
             "accessModifier": "public",
@@ -6980,14 +7077,6 @@
           }
         ],
         "events": [
-          {
-            "id": "UniTextBase.Animated",
-            "name": "Animated",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "Action",
-            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
-          },
           {
             "id": "UniTextBase.Rebuilding",
             "name": "Rebuilding",
@@ -7002,7 +7091,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action",
-            "summary": "Raised after glyph positioning but before mesh generation. Modifiers inject virtual PositionedGlyphs here."
+            "summary": "Raised after glyph positioning, before mesh generation. Last chance to inspect or inject positioned glyphs (used by per-glyph modifiers)."
           },
           {
             "id": "UniTextBase.RectHeightChanged",
@@ -7019,6 +7108,14 @@
             "isStatic": false,
             "type": "Action\u003CUniTextDirtyFlags\u003E",
             "summary": "Raised when dirty flags change, indicating what needs rebuilding."
+          },
+          {
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           },
           {
             "id": "UniTextBase.BeforeProcess",
@@ -7082,7 +7179,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action\u003CTextHitResult\u003E",
-            "summary": "Raised when hover position changes, providing hit test details (for InputField)."
+            "summary": "Raised when the hovered glyph/cluster changes (desktop only)."
           }
         ]
       }
@@ -7096,7 +7193,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Container for all intermediate and final buffers used during text processing.",
       "remarks": "[[UniTextBuffers]] holds all data produced during the text processing pipeline: codepoints, BiDi levels, text runs, shaped glyphs, line breaks, and positioned glyphs. Performance: All buffers use [[PooledBuffer{T}]] for zero-allocation operation in steady state. Call [[EnsureRentBuffers]] before processing and [[EnsureReturnBuffers]] when done.",
       "seeAlso": [
@@ -7565,7 +7664,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Flags indicating which parts of the text need rebuilding.",
       "seeAlso": [],
       "typeParameters": [],
@@ -7731,7 +7832,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "NamedCatalogAsset\u003CNamedGradient\u003E",
+      "baseTypeChain": [
+        "NamedCatalogAsset\u003CNamedGradient\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "ScriptableObject containing named gradients for use with \u003Cgradient=name\u003E tags.",
       "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Gradients. Reference in UniTextSettings to make gradients available to all UniText components.",
       "seeAlso": [
@@ -7827,7 +7932,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Converts positioned glyphs into Unity mesh data for text rendering.",
       "remarks": "This is the final stage of the text processing pipeline. It takes [[PositionedGlyph]] data from [[TextProcessor]] and generates vertex, UV, color, and triangle data suitable for Unity\u0027s mesh system. Key features: Groups glyphs by rendering target to minimize draw calls: one segment per font (Texture2DArray atlas) Uses pooled buffers from [[UniTextArrayPool{T}]] for zero allocations Provides callbacks for text modifiers to inject custom processing Typical usage: generator.SetRectOffset(rect); generator.GenerateMeshDataOnly(positionedGlyphs); var renderData = generator.CollectRenderData(); // Use renderData to render each segment generator.ReturnInstanceBuffers();",
       "seeAlso": [
@@ -8642,7 +8749,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "NamedCatalogAsset\u003CInlineObject\u003E",
+      "baseTypeChain": [
+        "NamedCatalogAsset\u003CInlineObject\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "ScriptableObject containing named inline objects (UI prefabs) for use with \u003Cobj=name\u003E tags.",
       "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Objects. Reference from an [[AssetObjProvider]] on an [[ObjModifier]] to share a catalog of inline prefabs across multiple components.",
       "seeAlso": [
@@ -8686,7 +8797,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Raw geometry slice describing a single text/emoji/sub-mesh render segment.",
       "remarks": "Holds references to pooled vertex/UV/color/index arrays plus offset\u002Bcount into them. The consumer (canvas: [[UpdateSubMeshes]]; world: [[UniTextWorldBatcher]]) does whatever it needs with this data \u2014 either uploads into a reusable [[Mesh]] for CanvasRenderer, or copies into its combined-mesh buffers for world-space batching. Array references are valid only until the next collect cycle on the same generator \u2014 pooled buffers can be returned or regrown. Consumers must read/copy immediately and not retain references across frames.",
       "seeAlso": [],
@@ -8900,7 +9013,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Global settings ScriptableObject for UniText configuration.",
       "remarks": "Access via Edit \u2192 Project Settings \u2192 UniText. Contains editor-only default configurations for new UniText components.",
       "seeAlso": [],
@@ -9058,7 +9175,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "NamedCatalogAsset\u003CInlineSprite\u003E",
+      "baseTypeChain": [
+        "NamedCatalogAsset\u003CInlineSprite\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "ScriptableObject containing named inline sprites for use with \u003Csprite=name\u003E tags.",
       "remarks": "Create via Assets \u2192 Create \u2192 UniText \u2192 Sprites. Reference from an [[AssetSpriteProvider]] on a [[SpriteModifier]] to share a catalog across multiple components without prefabbing each icon.",
       "seeAlso": [
@@ -9103,9 +9224,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "UniTextBase",
+      "baseTypeChain": [
+        "UniTextBase"
+      ],
       "interfaces": [],
-      "summary": "World-space text rendering component with full Unicode support.",
-      "remarks": "The component is self-contained \u2014 it publishes its state through events and does not know about any specific renderer. An invisible batcher ([[UniTextWorldBatcher]]) subscribes to the [[Activated]] / [[Deactivated]] static events and to per-instance events ([[RenderDataAvailable]], [[RenderDataCleared]], [[SortingChanged]], [[ParentChanged]]) to assemble combined meshes. Conceptual analogy: UniTextWorld is to [[UniTextWorldBatcher]] what CanvasRenderer is to Canvas \u2014 a data provider; the batcher observes and draws.",
+      "derivedTypes": [],
+      "summary": "World-space text component. Renders via [[UniTextWorldBatcher]] with full Unicode support \u2014 bidirectional scripts, complex shaping, color emoji, markup.",
+      "remarks": "For Canvas-space (UI) text, use [[UniText]].",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -9331,7 +9456,7 @@
             "type": "IReadOnlyList\u003CUniTextWorld\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets all currently enabled [[UniTextWorld]] instances. Populated by OnEnable/OnDisable. Used by [[UniTextWorldRaycaster]] to iterate hit-testable components without Unity scene scans.",
+            "summary": "All currently enabled [[UniTextWorld]] instances, maintained by OnEnable / OnDisable. Iterate this instead of FindObjectsOfType.",
             "seeAlso": []
           },
           {
@@ -9364,7 +9489,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "When true, this text receives pointer events from [[UniTextWorldRaycaster]] (clicks, hover, interactive ranges). Set to false for purely decorative text \u2014 the raycaster will skip it entirely. Default: true.",
+            "summary": "When, this text receives pointer events (clicks, hover, interactive ranges) from [[UniTextWorldRaycaster]]. Disable for purely decorative text \u2014 the raycaster will skip it.",
             "seeAlso": []
           }
         ],
@@ -9431,7 +9556,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "MonoBehaviour",
+      "baseTypeChain": [
+        "MonoBehaviour"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Invisible singleton that batches [[UniTextWorld]] components into combined meshes while honoring Unity\u0027s sorting model (SortingLayer, OrderInLayer, SortingGroup) so batched text interleaves correctly with SpriteRenderer and other renderers.",
       "remarks": "Two-level hierarchy: [[BatchGroup]] is a logical grouping by [[BatchKey]] = (materialInstanceId, sortingLayerID, sortingOrder, sortingGroupID). Conceptually \u0022one draw call worth of text\u0022. [[BatchShard]] is a physical mesh. A group holds one shard normally; when a group grows past [[WorldBatcherShardTargetVertexCount]] vertices, new shards are added so that structural rebuilds of one shard do not touch unrelated components. Dirty classification: Structural \u2014 vertex count changed, entry added/removed, sorting/material changed. Triggers a full rebuild of the affected shard (not the whole group). Positional \u2014 transform moved. Writes Position\u002BNormal only, for exactly this entry\u0027s slice of the shard\u0027s vertex buffer. Attributive \u2014 text rebuild without vertex count change (colors/UVs only). Writes the affected attribute streams for this entry\u0027s slice. Vertex buffer layout \u2014 fixed four streams: Stream 0: Position (float3) \u002B Normal (float3) = 24 bytes/vertex Stream 1: Color (UNorm8\u00D74) = 4 bytes/vertex Stream 2: UV0 (float4) = 16 bytes/vertex Stream 3: UV1 \u002B UV2 \u002B UV3 (float4\u00D73) = 48 bytes/vertex Separate streams let partial updates write only the affected attribute without rewriting unrelated data.",
       "seeAlso": [],
@@ -9454,7 +9583,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "BaseRaycaster",
+      "baseTypeChain": [
+        "BaseRaycaster"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "World-space pointer raycaster for [[UniTextWorld]] components.",
       "remarks": "Attach to a [[Camera]] to route pointer events (clicks, hover) to all active [[UniTextWorld]] components visible from that camera. Analogous to [[GraphicRaycaster]] for Canvas, but uses direct ray/plane/rect math instead of colliders \u2014 no physics dependency at the text level. Hit detection: rect containment in each component\u0027s local [[RectTransform]] rect. The full rect is the clickable area (like Canvas raycastTarget); finer-grained glyph-accurate hit testing happens inside UniTextBase.OnPointerClick via [[HitTestScreen]]. Occlusion: results carry distance, so Unity\u0027s [[EventSystem]] sorts them against any other raycaster ([[GraphicRaycaster]], PhysicsRaycaster, Physics2DRaycaster) automatically. For scenes without a PhysicsRaycaster but with physical geometry that should block clicks, set [[BlockingObjects]] to TwoD/ThreeD/All \u2014 the raycaster will test for blocking colliders between the camera and the hit point before accepting the hit.",
       "seeAlso": [],
@@ -9548,7 +9681,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies vertical text alignment within the layout bounds.",
       "seeAlso": [],
       "typeParameters": [],
@@ -9604,7 +9739,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "TextHighlightRenderer",
+      "baseTypeChain": [
+        "TextHighlightRenderer"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "World-space [[TextHighlightRenderer]] \u2014 wraps a child GameObject with [[MeshFilter]] \u002B [[MeshRenderer]] and builds quads from rects directly into a dynamic [[Mesh]]. One shared material ([[Highlight]]) serves every instance; color travels through vertex colors.",
       "remarks": "Z-ordering against the owning text and other world renderers uses the sorting system (sortingLayerID \u002B sortingOrder) so highlights interleave correctly with [[SpriteRenderer]], other [[UniTextWorld]] instances and the [[UniTextWorldBatcher]] meshes on the same layer.",
       "seeAlso": [],
@@ -9709,7 +9848,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "PropertyAttribute",
+      "baseTypeChain": [
+        "PropertyAttribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Marks a string field as a default parameter for a parse rule. Draws a toggle \u002B rich parameter fields based on the paired modifier\u0027s ParameterFieldAttribute.",
       "seeAlso": [],
       "typeParameters": [],
@@ -9731,7 +9874,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "PropertyAttribute",
+      "baseTypeChain": [
+        "PropertyAttribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "editor",
@@ -9822,7 +9969,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "Attribute",
+      "baseTypeChain": [
+        "Attribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Hides a type from the TypeSelector dropdown while keeping it deserializable.",
       "seeAlso": [],
       "typeParameters": [],
@@ -9844,7 +9995,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "Attribute",
+      "baseTypeChain": [
+        "Attribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "editor",
@@ -9939,7 +10094,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "Attribute",
+      "baseTypeChain": [
+        "Attribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "editor",
@@ -9990,7 +10149,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "Attribute",
+      "baseTypeChain": [
+        "Attribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "editor",
@@ -10052,7 +10215,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "PropertyAttribute",
+      "baseTypeChain": [
+        "PropertyAttribute"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "editor",
@@ -10073,7 +10240,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "UniTextFont",
+      "baseTypeChain": [
+        "UniTextFont"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Font asset specialized for color emoji rendering using FreeType or browser APIs.",
       "remarks": "EmojiFont extends [[UniTextFont]] to provide native color emoji support across all platforms. It uses FreeType for desktop/mobile and browser Canvas API for WebGL. The class provides a singleton [[Instance]] that automatically loads the system emoji font. Custom emoji fonts can be created via factory methods. Key features: Automatic system emoji font detection on Windows, macOS, iOS, Android, Linux Dynamic atlas population with shelf-based packing Parallel glyph rendering using FreeType face pool WebGL support via browser Canvas 2D rendering",
       "seeAlso": [
@@ -10422,7 +10593,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Utility for locating system emoji fonts across platforms.",
       "remarks": "Provides automatic detection of color emoji fonts on: Windows: Segoe UI Emoji (seguiemj.ttf) macOS: Apple Color Emoji (.ttc) iOS: Apple Color Emoji Android: NotoColorEmoji, Samsung/Huawei vendor fonts (via fonts.xml or API) Linux: Noto Color Emoji, Symbola In the Unity Editor, also searches for emoji fonts in the EmojiCore/Editor folder.",
       "seeAlso": [
@@ -10466,7 +10639,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Font face metrics from OpenType/TrueType tables. All metric values are in font design units unless noted otherwise.",
       "seeAlso": [],
       "typeParameters": [],
@@ -10688,7 +10863,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A font family: a primary font plus optional variant faces (Bold, Italic, Variable, etc.).",
       "seeAlso": [],
       "typeParameters": [],
@@ -10750,7 +10927,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A glyph: visual representation of a character in a font atlas.",
       "seeAlso": [],
       "typeParameters": [],
@@ -10834,9 +11013,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IDisposable"
       ],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -11035,7 +11216,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -11103,7 +11286,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Metrics that define size, position and spacing of a glyph for text layout. Values are in font design units.",
       "seeAlso": [],
       "typeParameters": [],
@@ -11199,7 +11384,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Per-glyph tile size override. 0 = auto (use ClassifyTileSize), 64/128/256 = forced size.",
       "seeAlso": [],
       "typeParameters": [],
@@ -11239,9 +11426,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IEquatable\u003CGlyphRect\u003E"
       ],
+      "derivedTypes": [],
       "summary": "Position and size of a glyph within an atlas texture.",
       "seeAlso": [],
       "typeParameters": [],
@@ -11386,7 +11575,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "BCP 47 language tag matching helpers. Follows a simplified RFC 4647 \u0022lookup\u0022 algorithm where a shorter tag is considered to match a longer tag sharing the same prefix (e.g. zh matches zh-Hans, and vice versa).",
       "seeAlso": [],
       "typeParameters": [],
@@ -11429,7 +11620,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "EmojiFont"
+      ],
       "summary": "Font asset containing glyph data, metrics, and texture atlases for text rendering.",
       "remarks": "UniTextFont is a ScriptableObject that stores: Font file data (TTF/OTF bytes) for FreeType rendering Face information (metrics, ascender, descender) Glyph table with metrics for text layout Glyph curve cache for SDF rendering Glyph curves are extracted at runtime when first needed and stored in a shared curve atlas.",
       "seeAlso": [
@@ -11931,7 +12128,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Error codes for font loading operations.",
       "seeAlso": [],
       "typeParameters": [],
@@ -11993,9 +12192,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IDisposable"
       ],
+      "derivedTypes": [],
       "summary": "Manages font assets and provides font lookup services for text rendering.",
       "remarks": "The font provider handles: Primary font and fallback font resolution Font scaling based on requested font size Glyph caching in texture atlases Font data access (glyph lookup, font data bytes) Font family lookup for variant/variable font resolution Uses [[SharedFontCache]] for fast codepoint-to-font mapping.",
       "seeAlso": [
@@ -12419,7 +12620,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "ScriptableObject container for font families with fallback chain support.",
       "remarks": "Ordered list of font families. The first family\u0027s primary font is the primary font and provides strut metrics (line height, ascent, descent). Each family contains a primary font and optional faces (Bold, Italic, Variable, etc.). Face matching uses pre-computed lookup tables with CSS Fonts Level 4 \u00A75.2 weight matching. Create via Assets menu: Create \u2192 UniText \u2192 Fonts",
       "seeAlso": [
@@ -12590,7 +12795,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Text rendering mode: SDF (rounded corners on effects) or MSDF (sharp corners).",
       "seeAlso": [],
       "typeParameters": [],
@@ -12635,9 +12842,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "AssetNamedCatalog\u003CNamedGradient, UniTextGradients\u003E",
+      "baseTypeChain": [
+        "AssetNamedCatalog\u003CNamedGradient, UniTextGradients\u003E"
+      ],
       "interfaces": [
         "IGradientProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[IGradientProvider]] backed by an explicit [[UniTextGradients]] asset referenced on the modifier. Use this when a single component should resolve gradients from a different catalog than the project-wide one.",
       "seeAlso": [],
       "typeParameters": [],
@@ -12659,9 +12870,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "AssetNamedCatalog\u003CInlineObject, UniTextObjects\u003E",
+      "baseTypeChain": [
+        "AssetNamedCatalog\u003CInlineObject, UniTextObjects\u003E"
+      ],
       "interfaces": [
         "IObjProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[IObjProvider]] backed by an explicit [[UniTextObjects]] asset referenced on the modifier. Use this when multiple components should share the same inline-object catalog managed as a project asset.",
       "seeAlso": [],
       "typeParameters": [],
@@ -12683,9 +12898,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "AssetNamedCatalog\u003CInlineSprite, UniTextSprites\u003E",
+      "baseTypeChain": [
+        "AssetNamedCatalog\u003CInlineSprite, UniTextSprites\u003E"
+      ],
       "interfaces": [
         "ISpriteProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[ISpriteProvider]] backed by an explicit [[UniTextSprites]] asset referenced on the modifier. Use this when multiple components should share the same sprite catalog managed as a project asset.",
       "seeAlso": [],
       "typeParameters": [],
@@ -12706,7 +12925,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -12726,6 +12947,15 @@
           {
             "id": "AttributeKeys.Bold",
             "name": "Bold",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string"
+          },
+          {
+            "id": "AttributeKeys.BoldFake",
+            "name": "BoldFake",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -12863,7 +13093,14 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "StrikethroughModifier",
+        "UnderlineModifier"
+      ],
       "summary": "Base class for modifiers that render horizontal lines across text (underline, strikethrough).",
       "remarks": "Subclasses define the vertical offset of the line relative to the baseline. Lines break across wrapped text lines automatically. Decoration quads run through the standard [[onGlyph]] pipeline with [[isVirtualGlyph]] set, so per-glyph modifiers (color, gradient, outline, shadow) apply uniformly to face glyphs and decoration lines.",
       "seeAlso": [
@@ -13006,7 +13243,34 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "BaseLineModifier",
+        "BoldModifier",
+        "CompositeModifier",
+        "EffectModifier",
+        "EllipsisModifier",
+        "EmptyModifier",
+        "FontModifier",
+        "GlyphModifier\u003CT\u003E",
+        "GradientModifier",
+        "IndentModifier",
+        "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+        "InteractiveModifier",
+        "LanguageModifier",
+        "LetterSpacingModifier",
+        "LineHeightModifier",
+        "ListModifier",
+        "LowercaseModifier",
+        "ScriptPositionModifier",
+        "SizeModifier",
+        "SmallCapsModifier",
+        "SubMeshModifier",
+        "UppercaseModifier",
+        "VariationModifier",
+        "WobbleAnimationModifier"
+      ],
       "summary": "Base class for all text modifiers that alter text appearance or behavior.",
       "remarks": "Modifiers are applied to text ranges via markup tags parsed by [[IParseRule]] implementations and can modify glyph rendering, colors, animations, or other properties. Lifecycle: [[SetOwner]] is called when the modifier is attached to UniText (sets references only) [[Apply]] is called for each text range - lazy initialization on first call [[Disable]] is called when text changes [[Destroy]] is called when the modifier is removed",
       "seeAlso": [
@@ -13283,9 +13547,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies bold styling to text using CSS font-weight scale (100-900).",
-      "remarks": "Parameter: optional CSS font-weight (100-900). Without parameter, computes max(700, baseWeight \u002B 300). When used with font variants (static or variable), ResolveVariants selects the appropriate real font and clears the bold buffer. When no variant is available, BoldModifier applies fake bold via SDF shader dilate (UV1.y) and advance correction. Encoding: byte buffer per codepoint. 0 = not bold, 1-255 = CSS weight mapped to byte range.",
+      "remarks": "First parameter: optional CSS font-weight (100-900). Without parameter, computes max(700, baseWeight \u002B 300). Second parameter: optional f flag (e.g. \u003Cb=700,f\u003E) that forces synthetic bold via SDF dilate (UV1.y) \u002B advance correction, ignoring real bold faces in the Font Family and the wght axis on variable fonts. Without the flag, the pipeline picks the matching real font (variable axis or static face) when available and clears the bold buffer; otherwise the modifier falls back to synthetic bold.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -13375,7 +13643,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "GlyphModifier\u003Cuint\u003E",
+      "baseTypeChain": [
+        "GlyphModifier\u003Cuint\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies color to text ranges using hex codes or named colors.",
       "remarks": "Parameter: a color value in hex or by name. Supported formats: - Hex: #RGB, #RRGGBB, #RRGGBBAA - Named colors: white, black, red, green, blue, yellow, cyan, magenta, orange, purple, gray, lime, brown, pink, navy, teal, olive, maroon, silver, gold The alpha channel of the color parameter is multiplied with the component\u0027s base alpha (per W3C alpha compositing). A fully opaque parameter inherits the component alpha; a semi-transparent parameter scales it further.",
       "seeAlso": [
@@ -13485,7 +13757,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Shared color parsing utilities for modifiers that accept color parameters. Supports hex (#RGB, #RRGGBB, #RRGGBBAA) and named colors.",
       "seeAlso": [],
       "typeParameters": [],
@@ -13565,7 +13839,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Combines multiple modifiers into a single modifier.",
       "remarks": "Splits the tag parameter by; and passes each segment to the corresponding child modifier. For example, \u003Cwobble-color=3,10,1;#FF0000\u003E passes \u00223,10,1\u0022 to the first modifier and \u0022#FF0000\u0022 to the second. Child modifiers with no corresponding segment (fewer; groups than modifiers) receive a null parameter and fall back to their defaults.",
       "seeAlso": [],
@@ -13743,7 +14021,15 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "ExtrudeModifier",
+        "OutlineModifier",
+        "ShadowModifier"
+      ],
       "summary": "Base class for modifiers that append duplicate glyph geometry behind or in front of the face (outline, shadow, extrude, glow, custom effects).",
       "remarks": "Contract: During onGlyph, the subclass\u0027s [[OnGlyphEffect]] decides whether the current glyph needs an effect quad and, if so, calls [[EnqueueDuplicate]] with an arbitrary payload integer \u2014 typically an index into the modifier\u0027s own per-emit data table. The [[currentEffectPass]] in effect at enqueue time is captured and decides whether the duplicate lands before or after the face block. At onMainPassFinalize, the per-modifier emit queue is flushed via [[OnFlush]]. The default implementation reserves 4 vertices and 6 indices for each pending emit (copying source geometry, queueing triangles) and then calls [[OnEmitQuad]] so the subclass can fill colour, UV2, offsets \u2014 anything the effect needs. Multi-layer effects override [[OnFlush]] to flush per-layer buffers in layer-major order. Painter order is preserved by per-modifier grouping: onMainPassFinalize flushes each modifier in registration order, so all of one modifier\u0027s quads land contiguously in the index buffer ahead of the next modifier\u0027s quads, ahead of the face block (or after, when [[PostFace]] was active). The base class deliberately knows nothing about colour, dilate, softness, offsets, gradients, or any effect-specific parameter. Those live entirely inside the subclass. Common write patterns (solid colour \u002B UV2, per-vertex gradient, offset, expand) are exposed via the static [[EffectQuadOps]] helpers so subclasses share the implementation without sharing the data layout.",
       "seeAlso": [],
@@ -13955,7 +14241,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Layering of an [[EffectModifier]] duplicate quad relative to the face within the SDF mesh. Effect modifiers read [[currentEffectPass]] when a quad is enqueued and route its triangles into the matching pass buffer.",
       "remarks": "[[PreFace]] \u2014 triangles are prepended to the index buffer so the face draws on top of the duplicate (standard outline / shadow / extrude behavior under glyphs). [[PostFace]] \u2014 triangles are appended after the face so the duplicate draws on top of the face (used by overlay decoration lines whose effects must sit above text).",
       "seeAlso": [],
@@ -13998,7 +14286,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Static helpers for writing per-vertex effect data into a reserved effect-quad slot. Used from [[OnEmitQuad]] implementations; covers the common solid-colour \u002B UV2 path and the per-vertex gradient path. Modifiers with bespoke requirements can skip these helpers and write the vertex arrays directly.",
       "seeAlso": [],
       "typeParameters": [],
@@ -14136,7 +14426,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Truncates text that overflows its container and appends an ellipsis (...).",
       "remarks": "Parameter: optional position (0-1) controlling where the ellipsis appears: - 0: Truncates from the start, ellipsis at the beginning - 0.5: Truncates from the middle, ellipsis in the center - 1 (default): Truncates from the end, ellipsis at the end The modifier automatically detects overflow based on container height (with word wrap) or width (without word wrap) and uses binary search to find the optimal truncation point.",
       "seeAlso": [
@@ -14230,7 +14524,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A no-op modifier that performs no action.",
       "remarks": "Used as a placeholder or for tags that should be parsed but have no visual effect. Can be associated with custom parse rules to extract data without modifying rendering.",
       "seeAlso": [],
@@ -14274,7 +14572,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "EffectModifier",
+      "baseTypeChain": [
+        "EffectModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Adds a 3D extrude/bevel effect by appending a stack of progressively offset duplicate quads behind the face.",
       "remarks": "Layers are flushed back-to-front in layer-major order across all glyphs (every glyph\u0027s deepest slice first, then every glyph\u0027s next-deeper slice, \u2026, then face). Na\u00EFve per-glyph fanout would invert that order at glyph boundaries when the cumulative offset exceeds glyph advance, leaving farther slices of glyph N\u002B1 covering closer slices of glyph N. Per-layer buffers preserve the painter order regardless of overlap. Format: \u003Cextrude=offsetX,offsetY,#nearColor,#farColor,dilate,softness\u003E. Defaults: offset = (3,-3), near = white, far = black, dilate = 0, softness = 0.",
       "seeAlso": [],
@@ -14470,7 +14772,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Overrides the font used for a text range by selecting a [[FontFamily]] from the component\u0027s [[UniTextFontStack]] by its [[name]].",
       "remarks": "Parameter: the target family name (case-sensitive). Example: \u003Cfont=pixel\u003EScore\u003C/font\u003E. Priority: a matched font wins over [[preferredLanguage]] selection and over the regular FontStack fallback chain. If the chosen family\u0027s primary lacks a glyph for a codepoint, the normal fallback chain still kicks in for that codepoint. If the name is not found in the FontStack, a warning is logged once per unresolved name and affected codepoints render with the default fallback behavior.",
       "seeAlso": [],
@@ -14562,7 +14868,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IGradientProvider",
+      "baseTypeChain": [
+        "IGradientProvider"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "[[IGradientProvider]] backed by the project-wide [[Gradients]] asset. Use this when the same gradient catalog is shared across all UniText components in the project.",
       "remarks": "Listens to both [[Changed]] (in case the project-wide asset pointer is reassigned) and the bound asset\u0027s own [[Changed]] event (in case its entries are edited). Both subscriptions are lazy and tied to this provider\u0027s own [[Changed]] subscriber count, so an unused provider doesn\u0027t keep itself alive through the settings/asset delegate lists.",
       "seeAlso": [],
@@ -14629,7 +14939,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Base class for modifiers that store per-glyph attribute data.",
       "remarks": "GlyphModifier provides automatic buffer management for per-glyph attributes. Derived classes implement [[GetOnGlyphCallback]] to receive callbacks during mesh generation, where they can modify vertex data based on attribute values. Optionally override [[GetOnShapedCallback]] to also receive a callback after shaping completes, for modifying glyph advances or run widths.",
       "seeAlso": [
@@ -14818,7 +15132,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Per-text-range precomputed gradient geometry consumed by gradient-aware modifiers ([[GradientModifier]], [[OutlineModifier]]).",
       "remarks": "Filled once per layout cycle by [[Precompute]] from the range\u0027s glyph bounding boxes; queried per glyph by [[EvaluateColor]] to map a vertex position to a gradient t and the resulting [[Color32]].",
       "seeAlso": [],
@@ -14905,9 +15221,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [
         "IHasGradientProvider"
       ],
+      "derivedTypes": [],
       "summary": "Applies gradient coloring to text ranges using named gradients.",
       "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). The set of named gradients available to \u003Cgradient=name\u003E tags is supplied by an [[IGradientProvider]]. The default provider resolves names through the project-wide [[Gradients]] asset; alternative providers allow per-component asset references or inline catalogs edited on the modifier itself.",
       "seeAlso": [
@@ -14999,7 +15319,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Helpers for precomputing and evaluating gradient geometry. Shared between [[GradientModifier]] (face colour) and effect modifiers that support gradients (currently [[OutlineModifier]]); custom modifiers can use them too.",
       "seeAlso": [],
       "typeParameters": [],
@@ -15091,7 +15413,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "InteractiveRangeRegistry",
+        "PooledArrayAttribute\u003CT\u003E"
+      ],
       "summary": "Interface for custom attribute data stored in [[UniTextBuffers]].",
       "remarks": "Implement this interface to create custom per-text attribute storage for modifiers. Use [[GetOrCreateAttributeData{T}]] to retrieve instances.",
       "seeAlso": [
@@ -15134,8 +15461,14 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "INamedCatalog\u003CNamedGradient\u003E"
+      ],
+      "derivedTypes": [
+        "AssetGradientProvider",
+        "GlobalSettingsGradientProvider",
+        "InlineGradientProvider"
       ],
       "summary": "Resolves named [[NamedGradient]] entries for [[GradientModifier]].",
       "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineGradientProvider]], [[AssetGradientProvider]], [[GlobalSettingsGradientProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
@@ -15160,7 +15493,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "GradientModifier",
+        "OutlineModifier"
+      ],
       "summary": "Implemented by modifiers that own an [[IGradientProvider]] the editor can surface as the source of the enum:@gradients dropdown. Lets the dropdown content follow the per-modifier provider regardless of which modifier type carries the parameter ([[GradientModifier]], [[OutlineModifier]], or any future modifier that opts into gradient-coloured output).",
       "seeAlso": [],
       "typeParameters": [],
@@ -15194,7 +15532,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Adds left indentation that begins where the tag opens and persists across wrapped lines until the tag closes.",
       "remarks": "Two complementary mechanisms produce a continuous visual indent: Every line whose first codepoint falls inside the tagged range is pushed right by the resolved value (line-start margin). If the tag opens in the middle of a line (i.e. the codepoint preceding the tag is not a mandatory line break), the advance of that previous codepoint is widened by the indent so that content following the open boundary visibly shifts right within the current line. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20 or 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text. 1.5em \u2014 multiplied by the current shaping font size. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5 / -5 \u2014 explicit delta. Functionally identical to the unsigned form because indents always compose additively.",
       "seeAlso": [],
@@ -15286,9 +15628,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "InlineNamedCatalog\u003CNamedGradient\u003E",
+      "baseTypeChain": [
+        "InlineNamedCatalog\u003CNamedGradient\u003E"
+      ],
       "interfaces": [
         "IGradientProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[IGradientProvider]] with an inline list of named gradients edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
       "seeAlso": [],
       "typeParameters": [],
@@ -15328,7 +15674,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "InlineObject",
+        "InlineSprite"
+      ],
       "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearing) and rendering (width, height) need; the renderable payload is added by the concrete subclass.",
       "remarks": "All metrics are in em units (relative to fontSize): width=1, height=1 means the media is fontSize x fontSize pixels advance=1 means the cursor moves by fontSize pixels after this media bearingX/bearingY are offsets relative to fontSize",
       "seeAlso": [],
@@ -15440,7 +15791,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Shared base for modifiers that embed inline-flowed media (prefab instances, sprite quads, future GPU mesh subitems) into text. Subclasses pick the entry type and wrapper type, supply a typed provider field, and translate entries into wrapper state \u2014 the base owns the cluster mapping, shape/render passes, lifecycle of wrapper instances, and provider event subscription.",
       "seeAlso": [],
       "typeParameters": [
@@ -15633,7 +15988,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "InlineMedia",
+      "baseTypeChain": [
+        "InlineMedia"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Defines an inline object (UI prefab) that can be embedded within text flow.",
       "remarks": "Pure data: the host [[ObjModifier]] owns lifecycle state (instance count, instantiated prefab clones), so the same [[InlineObject]] instance can safely be referenced by multiple modifiers.",
       "seeAlso": [],
@@ -15667,9 +16026,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "InlineNamedCatalog\u003CInlineObject\u003E",
+      "baseTypeChain": [
+        "InlineNamedCatalog\u003CInlineObject\u003E"
+      ],
       "interfaces": [
         "IObjProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[IObjProvider]] with an inline list of [[InlineObject]] entries edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
       "seeAlso": [],
       "typeParameters": [],
@@ -15710,7 +16073,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "InlineMedia",
+      "baseTypeChain": [
+        "InlineMedia"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Defines an inline sprite that can be embedded within text flow.",
       "remarks": "Pure data: the host [[SpriteModifier]] owns lifecycle state (instance count, generated GameObjects), so the same [[InlineSprite]] instance can safely be referenced by multiple modifiers.",
       "seeAlso": [],
@@ -15764,9 +16131,13 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "InlineNamedCatalog\u003CInlineSprite\u003E",
+      "baseTypeChain": [
+        "InlineNamedCatalog\u003CInlineSprite\u003E"
+      ],
       "interfaces": [
         "ISpriteProvider"
       ],
+      "derivedTypes": [],
       "summary": "[[ISpriteProvider]] with an inline list of [[InlineSprite]] entries edited directly on the modifier. Use this for one-off catalogs that don\u0027t deserve a dedicated asset and aren\u0027t shared across components.",
       "seeAlso": [],
       "typeParameters": [],
@@ -15807,8 +16178,14 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [
         "IInteractiveRangeHandler"
+      ],
+      "derivedTypes": [
+        "LinkModifier"
       ],
       "summary": "Base class for modifiers that create interactive (clickable/hoverable) text ranges.",
       "remarks": "Inherit from this class to create custom interactive modifiers like links, hashtags, mentions, or any other clickable text elements. This class automatically: Registers/unregisters with [[InteractiveRangeRegistry]] Stores ranges in a [[PooledArrayAttribute{T}]] Delegates click/hover events to subclass implementations",
@@ -16072,8 +16449,13 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "INamedCatalog\u003CInlineObject\u003E"
+      ],
+      "derivedTypes": [
+        "AssetObjProvider",
+        "InlineObjProvider"
       ],
       "summary": "Resolves named [[InlineObject]] entries for [[ObjModifier]].",
       "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineObjProvider]], [[AssetObjProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
@@ -16098,8 +16480,13 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "INamedCatalog\u003CInlineSprite\u003E"
+      ],
+      "derivedTypes": [
+        "AssetSpriteProvider",
+        "InlineSpriteProvider"
       ],
       "summary": "Resolves named [[InlineSprite]] entries for [[SpriteModifier]].",
       "remarks": "Marker interface over [[INamedCatalog{TEntry}]] \u2014 exists to scope the [SerializeReference, TypeSelector] dropdown and to give a domain-specific name. Built-in implementations: [[InlineSpriteProvider]], [[AssetSpriteProvider]]. Custom providers should raise their [[Changed]] event whenever their resolution result changes.",
@@ -16125,7 +16512,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "GlyphModifier\u003Cbyte\u003E",
+      "baseTypeChain": [
+        "GlyphModifier\u003Cbyte\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies italic styling to text by shearing glyph vertices.",
       "remarks": "No parameter. The italic effect is achieved by horizontally shearing the glyph vertices. The shear angle is determined by the font\u0027s ItalicStyle property (default 12 degrees).",
       "seeAlso": [],
@@ -16196,7 +16587,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies a BCP 47 language tag to a text range for OpenType-aware shaping.",
       "remarks": "The language tag is forwarded to HarfBuzz as hb_language_t, which drives the OpenType locl (Localized Forms) GSUB feature. This is essential for pan-CJK fonts such as Noto Sans CJK and Source Han Sans, where a single code point renders with different region-specific glyphs (Simplified Chinese, Traditional Chinese, Japanese, Korean) depending on the language tag. Common tags: zh-Hans, zh-Hant, zh-HK, ja, ko, en, ar, he. HarfBuzz converts BCP 47 to OpenType language tags automatically (zh-Hans \u2192 ZHS, ja \u2192 JAN, etc.). Apply to the entire text via RangeRule (\u0022..\u0022) for a global default, or per-range via the rich-text tag \u003Clang=zh-Hans\u003E...\u003C/lang\u003E for mixed-language content.",
       "seeAlso": [],
@@ -16288,7 +16683,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies character spacing (tracking) adjustments to text ranges.",
       "remarks": "Parameter: spacing value with unit. 10 \u2014 add 10 pixels between characters -5 \u2014 reduce spacing by 5 pixels 0.5em \u2014 add 0.5 em (relative to font size) For cursive joining scripts (Arabic, Syriac, N\u0027Ko, Adlam, etc.), visual kashida (tatweel) bars are rendered between connected letter pairs using 9-slice SDF rendering, preserving the appearance of cursive connections at any spacing value.",
       "seeAlso": [],
@@ -16380,7 +16779,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Adjusts line height for text ranges.",
       "remarks": "Parameter: line height value with optional unit. 1.5 or 150% \u2014 150% of default line height 40 \u2014 absolute 40 pixels (replaces default) \u002B10 \u2014 add 10 pixels to base (default or absolute) -5 \u2014 reduce by 5 pixels When multiple overlapping ranges set an absolute height, the largest absolute wins and serves as the base for any delta or multiplier on the same line.",
       "seeAlso": [],
@@ -16471,7 +16874,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -16551,7 +16956,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Visual style of decoration lines (CSS Text Decoration Module Level 4: text-decoration-style).",
       "seeAlso": [],
       "typeParameters": [],
@@ -16624,7 +17031,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "InteractiveModifier",
+      "baseTypeChain": [
+        "InteractiveModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Modifier that creates clickable hyperlinks in text.",
       "remarks": "Applies link styling (color and optional underline) to text ranges and handles click events. Parameter: URL string. Subscribe to [[LinkClicked]] to handle link clicks, or let the modifier open URLs automatically via [[OpenURL]].",
       "example": "var linkMod = uniText.GetModifier\u003CLinkModifier\u003E();\nlinkMod.LinkClicked \u002B= url =\u003E Debug.Log($\u0022Link clicked: {url}\u0022);",
@@ -16856,7 +17267,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Contains information about a single list item for rendering.",
       "seeAlso": [],
       "typeParameters": [],
@@ -16913,7 +17326,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Controls how the list marker is placed relative to the content.",
       "seeAlso": [],
       "typeParameters": [],
@@ -16958,7 +17373,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Renders list markers (bullets or numbers) for text items with automatic indentation.",
       "remarks": "Parameter: optional level:number for numbered lists. Without parameter, renders a bullet. Features: - Supports nested lists with configurable indentation per level - Bullet markers are customizable per nesting level - Ordered lists support decimal, alphabetic, and Roman numeral styles - Automatically handles RTL text direction",
       "seeAlso": [
@@ -17140,7 +17559,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Transforms text to lowercase within marked ranges.",
       "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for lowercase characters. Uses the bundled UCD case mapping table rather than char.ToLowerInvariant to avoid runtime gaps in Mono/IL2CPP.",
       "seeAlso": [],
@@ -17184,7 +17607,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Per-glyph context passed to [[glyphDataWriter]] and [[OnWriteGlyphUV]].",
       "seeAlso": [],
       "typeParameters": [],
@@ -17286,7 +17711,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "SubMeshModifier",
+      "baseTypeChain": [
+        "SubMeshModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies a user-authored [[Material]] to a text range by emitting a dedicated sub-mesh with its own CanvasRenderer.",
       "remarks": "The custom shader must include UniText_Custom.cginc and declare _MainTex as a 2DArray \u2014 see Assets/Create/UniText/Custom Material Shader for a working template. The atlas Texture2DArray is bound automatically; per-glyph user data is written into TEXCOORD2 / TEXCOORD3 (see [[constantUv2]], [[constantUv3]], [[glyphDataWriter]] and [[OnWriteGlyphUV]]). Default [[renderOrder]] is [[Replace]]: the base SDF pass is suppressed on the range (face alpha zeroed in the main mesh, which also hides EffectModifier contributions for those glyphs). Use [[Over]] / [[Under]] to keep the base pass and layer the custom material on top/behind. Parameter: optional tint color. Format: \u003Cmat=#RRGGBBAA\u003E or \u003Cmat=red\u003E. The tint multiplies the vertex color that the shader receives. Ordering note (Replace mode): Replace works by zeroing the face-alpha of affected glyphs in the base mesh during the onGlyph callback. UniText invokes onGlyph subscribers in the order the corresponding [[Style]]s appear in the component\u0027s Styles list. If a [[ColorModifier]] / [[GradientModifier]] entry comes after [[MaterialModifier]], it will overwrite the zeroed alpha and the base face will become visible again, defeating Replace. Place [[MaterialModifier]] after any color-writing modifiers in the Styles list.",
       "seeAlso": [],
@@ -17616,7 +18045,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Controls how the custom material composes with the base text pass on the range.",
       "seeAlso": [],
       "typeParameters": [],
@@ -17671,7 +18102,12 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "PrefabMediaWrapper",
+        "SpriteImageWrapper"
+      ],
       "summary": "Owns a single inline-flowed RectTransform created by [[InlineMediaModifier{TEntry, TWrapper}]]. Subclasses decide how the instance is created (prefab clone vs fresh GameObject) and how per-frame visual state is applied (sprite/color, prefab-internal rebuild).",
       "seeAlso": [],
       "typeParameters": [],
@@ -17849,7 +18285,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Extension methods for working with modifier attribute buffers.",
       "seeAlso": [],
       "typeParameters": [],
@@ -17994,7 +18432,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "InlineMediaModifier\u003CInlineObject, PrefabMediaWrapper\u003E",
+      "baseTypeChain": [
+        "InlineMediaModifier\u003CInlineObject, PrefabMediaWrapper\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Embeds UI prefabs (images, icons, custom elements) inline with text. The set of named inline objects available to \u003Cobj=name\u003E tags is supplied by an [[IObjProvider]].",
       "remarks": "Parameter: the name of the object to embed \u2014 resolved through [[Provider]]. Built-in providers: [[InlineObjProvider]] (default \u2014 inline list on the modifier), [[AssetObjProvider]] (shared [[UniTextObjects]] asset). For dynamic catalogs, implement [[IObjProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
@@ -18080,7 +18522,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies the numbering style for ordered list markers.",
       "seeAlso": [],
       "typeParameters": [],
@@ -18158,9 +18602,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "EffectModifier",
+      "baseTypeChain": [
+        "EffectModifier"
+      ],
       "interfaces": [
         "IHasGradientProvider"
       ],
+      "derivedTypes": [],
       "summary": "Applies an outline effect by appending duplicate glyph geometry behind the face. Supports both solid colour and per-vertex gradient outlines via an optional [[IGradientProvider]].",
       "remarks": "Tag format (strictly positional \u2014 empty slots fall back to defaults, matching [[GradientModifier]]): \u003Coutline=color-or-gradient,dilate,shape,angle\u003E. \u003Coutline\u003E \u2014 defaults: colour = #000000FF, dilate = 0.2. \u003Coutline=#ff0000\u003E \u2014 red, default dilate. \u003Coutline=,0.3\u003E \u2014 default colour, custom dilate (note the leading comma). \u003Coutline=#ff0000,0.3\u003E \u2014 both. \u003Coutline=rainbow\u003E \u2014 gradient (when [[Provider]] is set). \u003Coutline=rainbow,0.3,radial,45\u003E \u2014 gradient \u002B dilate \u002B shape \u002B angle. \u003Coutline=rainbow,,radial,45\u003E \u2014 gradient, default dilate, radial, 45\u00B0. Slot 0 resolves as a gradient name first (when [[Provider]] is set and the token matches a known gradient) and falls back to colour parsing otherwise \u2014 so existing colour tags keep working unchanged when a provider happens to be attached.",
       "seeAlso": [],
@@ -18327,7 +18775,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Zero-allocation tokenizer for comma-separated modifier parameters. Eliminates manual IndexOf/Slice/Trim boilerplate in modifier parsers.",
       "example": "var reader = new ParameterReader(parameter);\nreader.NextString(out var name);\nreader.NextFloat(out var angle);\nreader.NextColor(out var color);",
       "seeAlso": [],
@@ -18536,7 +18986,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a parsed text range with associated tag information.",
       "remarks": "Used by [[IParseRule]] implementations to communicate which text regions should be affected by modifiers and where tags should be stripped.",
       "seeAlso": [],
@@ -18730,7 +19182,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "MediaWrapper",
+      "baseTypeChain": [
+        "MediaWrapper"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Wrapper that clones a UI prefab into the host UniText.",
       "seeAlso": [],
       "typeParameters": [],
@@ -18795,7 +19251,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -18880,7 +19338,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies superscript or subscript formatting to text ranges.",
       "remarks": "Two-tier approach: Native: activates OpenType \u0027sups\u0027/\u0027subs\u0027 feature via HarfBuzz (proper glyphs). Synthesis: scales down and shifts vertically using OS/2 metrics (fallback). Attribute sbyte encoding: 0 = unchanged, \u002B1 = native super, -1 = native sub, \u002B2 = synth super, -2 = synth sub. Create two styles to support both tags: Style 1: ScriptPositionModifier \u002B TagRule(\u0022sup\u0022) with defaultParameter = \u0022super\u0022 Style 2: ScriptPositionModifier \u002B TagRule(\u0022sub\u0022) with defaultParameter = \u0022sub\u0022",
       "seeAlso": [],
@@ -18972,7 +19434,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "EffectModifier",
+      "baseTypeChain": [
+        "EffectModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies a shadow effect by appending displaced duplicate glyph geometry behind the face.",
       "remarks": "The shadow is rendered via a duplicate quad offset from the face and tagged with effect UV2 data. All shadow modifiers render in the same CanvasRenderer as the face (back-first in the index buffer), enabling unlimited stacking with no extra submeshes. All parameters come from the tag/rule parameter string. Format: \u003Cshadow=#color\u003E, \u003Cshadow=dilate,#color\u003E, or \u003Cshadow=dilate,#color,offsetX,offsetY,softness\u003E. Defaults: dilate = 0.1, color = black 50% (#00000080), offset = (0.1,-0.1), softness = 0.1.",
       "seeAlso": [],
@@ -19128,7 +19594,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies font size changes to text ranges.",
       "remarks": "Parameter: size value with optional unit. 24 \u2014 absolute size in pixels 150% \u2014 percentage of base font size \u002B10 \u2014 relative increase in pixels -5 \u2014 relative decrease in pixels",
       "seeAlso": [],
@@ -19220,7 +19690,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Renders lowercase letters as small capitals.",
       "remarks": "Two-tier approach: Native: activates OpenType \u0027smcp\u0027 feature via HarfBuzz (proper small cap glyphs). Synthesis: converts lowercase to uppercase and scales down (fallback for fonts without smcp). Attribute byte encoding: 0 = unchanged, 1 = native smcp, 2 = synthesis.",
       "seeAlso": [],
@@ -19312,7 +19786,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "MediaWrapper",
+      "baseTypeChain": [
+        "MediaWrapper"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Wrapper that creates a single-Image GameObject on demand.",
       "seeAlso": [],
       "typeParameters": [],
@@ -19411,7 +19889,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper\u003E",
+      "baseTypeChain": [
+        "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper\u003E"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Embeds [[Sprite]] assets inline with text. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
       "remarks": "Tag syntax: \u003Csprite=name[,colorArg]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the entry\u0027s own [[color]] (the default; keeps atlas/asset colors, matching how raster images are embedded in HTML, iOS NSTextAttachment, Android ImageSpan). i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. The sprite name is resolved through [[Provider]]. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
@@ -19534,7 +20016,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseLineModifier",
+      "baseTypeChain": [
+        "BaseLineModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Renders a horizontal line through the middle of the text (strikethrough effect).",
       "remarks": "No parameter. The line position is determined by the font\u0027s strikethroughOffset property, or calculated from the x-height if not available. Supports line breaks and color inheritance from the text.",
       "seeAlso": [],
@@ -19587,7 +20073,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Serializable container that links a modifier with its parse rule. Tracks registration state and ownership to prevent bugs.",
       "remarks": "Note: \u0022Initialized\u0022 state (buffers created, events subscribed) is tracked by BaseModifier.IsInitialized and happens lazily on first Apply(). Ownership rules: - Style tracks its owner UniText - Registration fails if already registered to different owner - State resets on deserialization",
       "seeAlso": [
@@ -19781,9 +20269,11 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IReadOnlyList\u003CT\u003E"
       ],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -19991,7 +20481,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Shareable, project-asset container of [[Style]] entries that components apply in bulk via [[AddStylePreset]] or via [[GlobalStylePreset]].",
       "remarks": "Mutating the preset at runtime through [[AddStyle]] / [[RemoveStyle]] / [[ClearStyles]] raises [[Changed]]; every [[UniTextBase]] that has this preset attached (locally or as the global preset) discards its runtime preset copies and re-instantiates from the new contents on the next frame.",
       "seeAlso": [],
@@ -20110,7 +20604,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "MaterialModifier"
+      ],
       "summary": "Base class for modifiers that emit a separate, owner-controlled sub-mesh rendered by its own CanvasRenderer with a user-supplied material (see [[MaterialModifier]]).",
       "remarks": "Lifecycle per frame: onRebuildStart \u2014 own buffers are cleared; any persistent state (e.g. Replace-mode alpha zero\u0027d into base mesh) will be re-applied in the next onGlyph pass. onGlyph \u2014 subclass overrides [[ShouldIncludeCurrentGlyph]] and, when true, the base class copies the face quad (4 verts) from the generator into its own per-atlas buffer (SDF atlas vs emoji atlas are kept separate). onCollectSubMeshes \u2014 the base class uploads owned buffers into private [[Mesh]] instances and appends up to two entries (text \u002B emoji) to the render-data list, with the material, atlas, order and sort index chosen by the subclass. Compared to [[EffectModifier]], which bakes its duplicates into the same mesh as the face pass, [[SubMeshModifier]] keeps its vertices in isolated local buffers because each sub-mesh is bound to a distinct material and CanvasRenderer.",
       "seeAlso": [],
@@ -20488,7 +20988,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseLineModifier",
+      "baseTypeChain": [
+        "BaseLineModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Renders an underline below text using the font\u0027s underline metrics.",
       "remarks": "No parameter. The underline position is determined by the font\u0027s underlineOffset property. Supports line breaks and color inheritance from the text.",
       "seeAlso": [],
@@ -20541,7 +21045,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Unit type for values parsed by [[NextUnitFloat]].",
       "seeAlso": [],
       "typeParameters": [],
@@ -20604,7 +21110,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Transforms text to uppercase within marked ranges.",
       "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for uppercase characters. Uses the bundled UCD case mapping table rather than char.ToUpperInvariant to avoid runtime gaps in Mono/IL2CPP (e.g. Greek final sigma U\u002B03C2 \u2192 \u03A3).",
       "seeAlso": [],
@@ -20648,7 +21158,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Controls variable font axis values per text range.",
       "remarks": "Parameter: positional axis values in order wght, wdth, ital, slnt, opsz. Use ~ to skip an axis. Each value supports absolute, percentage, or delta: 700 \u2014 absolute axis value 150% \u2014 percentage of font\u0027s default \u002B200 \u2014 delta from font\u0027s default Examples: 700, ~,80, 700,~,~,-12",
       "seeAlso": [],
@@ -20740,7 +21254,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Applies a sine-wave wobble animation to text by oscillating glyph vertices vertically.",
       "remarks": "Each glyph moves up and down based on sin(time * speed \u002B cluster * spread) * amplitude. The modifier continuously triggers mesh rebuilds while active.",
       "seeAlso": [],
@@ -20848,7 +21366,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Escapes a single ASCII punctuation character preceded by \\. Example: \\* becomes a literal * and is protected from any other parse rule.",
       "remarks": "Standalone rule \u2014 register via [[AddRule]] without a modifier. The escapable set follows CommonMark \u00A72.4 \u2014 all ASCII punctuation: !\u0022#$%\u0026\u0027()*\u002B,-./:;\u003C=\u003E?@[\\]^_\u0060{|}~ Only isolated occurrences are protected. A paired inline matcher (e.g. **bold**) that started scanning before an inner \\* will not respect the escape \u2014 that case requires matchers themselves to skip escaped characters when seeking their closing marker.",
       "seeAlso": [
@@ -20915,7 +21437,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Protects content inside backtick-delimited code spans (e.g. \u0060x\u0060, \u0060\u0060x\u0060\u0060, \u0060\u0060\u0060x\u0060\u0060\u0060) from being processed by other parse rules. Follows CommonMark \u00A76.1 balanced-run semantics: an N-backtick run is closed by the next N-backtick run of the same length.",
       "remarks": "Standalone rule \u2014 register via [[AddRule]] without a modifier. If no matching closing run is found, the rule does not consume the input (the backticks are treated as literal text). This matches CommonMark\u0027s non-forgiving close behavior.",
       "seeAlso": [
@@ -20982,7 +21508,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Combines multiple parse rules into a single rule.",
       "remarks": "Tries each child rule in order until one matches. Useful for grouping related rules or creating reusable rule sets.",
       "seeAlso": [],
@@ -21091,7 +21621,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "parseRules",
@@ -21131,7 +21663,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "TagRule",
+      "baseTypeChain": [
+        "TagRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "[[TagRule]] with HTML void-element semantics: every \u003Ctag\u003E or \u003Ctag=value\u003E behaves as a single self-closing placeholder, the /\u003E shorthand is no longer required, and any stray \u003C/tag\u003E is silently stripped.",
       "remarks": "Use for inline-media tags (obj, sprite) where range semantics don\u0027t apply \u2014 the tag is always a single inline insertion, not a wrapper around following text.",
       "seeAlso": [],
@@ -21199,7 +21735,22 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "BackslashEscapeRule",
+        "CodeSpanRule",
+        "CompositeParseRule",
+        "LineBreakParseRule",
+        "MarkdownLinkParseRule",
+        "MarkdownListParseRule",
+        "MarkdownWrapRule",
+        "NoparseTagRule",
+        "RangeRule",
+        "RawUrlParseRule",
+        "StringParseRule",
+        "TagParseRule"
+      ],
       "summary": "Interface for custom text parsing rules that identify modifier application ranges.",
       "remarks": "Parse rules scan text for markup (XML tags, Markdown, custom markers) and produce [[ParsedRange]] entries that specify where modifiers should be applied. Rules are matched in priority order (highest first). Use higher priority for explicit markup rules (tags, Markdown) and lower priority for auto-detection rules (raw URLs).",
       "seeAlso": [
@@ -21344,7 +21895,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Replaces every occurrence of the void \u003Cbr\u003E tag with a hard line break.",
       "remarks": "Matches \u003Cbr\u003E, \u003Cbr/\u003E, and \u003Cbr /\u003E case-insensitively, mirroring the HTML void-element contract: there is no closing tag, no nested content, and the element renders nothing of its own. The tag is stripped and a single line-feed (U\u002B000A) is written into the parsed text in its place. Once inserted, the line-feed is consumed by the regular UAX #14 mandatory-break path, so the new line keeps the surrounding paragraph\u0027s direction, alignment, and styling \u2014 the tag forces a line wrap, not a paragraph reset. Because the rule does not pair with a modifier, it is registered as a standalone rule.",
       "seeAlso": [
@@ -21411,7 +21966,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Parses Markdown-style links: [link text](https://example.com).",
       "seeAlso": [
         "LinkModifier",
@@ -21457,7 +22016,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Parses Markdown-style lists (bulleted and numbered).",
       "remarks": "Supports unordered lists with -, *, \u002B markers and ordered lists with 1., 2), etc. Nested lists are detected by indentation level. An item ends at the first line break unless the following line is indented deeper than the item\u0027s own indent (which extends the item to cover an indented continuation or a nested list). CommonMark-style lazy continuation across non-indented lines is not supported \u2014 a non-indented line after an item is treated as a separate paragraph.",
       "seeAlso": [
@@ -21514,7 +22077,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Parses symmetric open/close markers in text (e.g., **text**, ~~text~~).",
       "remarks": "The marker string is configurable \u2014 any string can be used as a marker with any modifier. When [[defaultParameter]] is set, matched ranges use it as the parameter value.",
       "seeAlso": [],
@@ -21624,7 +22191,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Protects content inside \u003Cnoparse\u003E...\u003C/noparse\u003E from being processed by any other parse rule. The markers themselves are stripped; the content between them appears verbatim in the output.",
       "remarks": "Standalone rule \u2014 register via [[AddRule]] without a modifier. If the closing \u003C/noparse\u003E is missing, the remainder of the text is treated as protected (CommonMark-style forgiving close).",
       "seeAlso": [
@@ -21691,7 +22262,11 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "parseRules",
@@ -21762,7 +22337,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Auto-detects URLs in plain text and converts them to clickable links.",
       "remarks": "Recognizes schemes: http://, https://, ftp://, ftps://, file://, mailto:, tel:, and www. prefixes. Uses negative priority (-100) to run after explicit markup rules (tags, Markdown), so URLs inside other markup are not detected.",
       "seeAlso": [
@@ -21820,7 +22399,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Matches literal string patterns and optionally replaces them.",
       "remarks": "Useful for custom shortcodes, emoji aliases, or text substitutions. Example: pattern \u0022:)\u0022 with replacement \u0022\uD83D\uDE0A\u0022.",
       "seeAlso": [],
@@ -21895,7 +22478,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "TagRule"
+      ],
       "summary": "Base class for parsing XML-style markup tags (e.g., \u003Cb\u003E, \u003Ccolor=#FF0000\u003E).",
       "remarks": "Derived classes override [[TagName]] to specify the tag name to match. Parameters are always optional: \u003Ctag\u003E, \u003Ctag=value\u003E, \u003Ctag/\u003E, \u003Ctag=value/\u003E. Self-closing is purely syntax-driven via /\u003E.",
       "seeAlso": [
@@ -21998,7 +22587,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "TagParseRule",
+      "baseTypeChain": [
+        "TagParseRule"
+      ],
       "interfaces": [],
+      "derivedTypes": [
+        "InlineTagRule"
+      ],
       "summary": "Universal tag parse rule configured via a serialized tag name. Replaces all individual tag parse rule classes (BoldParseRule, ColorParseRule, etc.).",
       "remarks": "Parameters are always optional. Self-closing is syntax-driven via /\u003E. \u003Ctag\u003Etext\u003C/tag\u003E \u2014 range with no parameter \u003Ctag=value\u003Etext\u003C/tag\u003E \u2014 range with parameter \u003Ctag/\u003E \u2014 self-closing, no parameter \u003Ctag=value/\u003E \u2014 self-closing with parameter When [[defaultParameter]] is set, tags without parameters use it as a fallback. Tags with partial parameters merge with the default (tag values take priority).",
       "seeAlso": [],
@@ -22130,7 +22725,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Gradient projection mode. [[Linear]] projects vertex positions onto an axis, [[Radial]] uses distance from the range\u0027s centre, [[Angular]] sweeps a conic from the centre.",
       "seeAlso": [],
       "typeParameters": [],
@@ -22182,7 +22779,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a shaped glyph with positioning information from the shaping engine.",
       "remarks": "Produced by [[Shaper]] after OpenType shaping. Contains the glyph ID, cluster mapping back to codepoints, and advance/offset values.",
       "seeAlso": [],
@@ -22265,7 +22864,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Represents a text run after shaping, with glyph information and metrics.",
       "seeAlso": [],
       "typeParameters": [],
@@ -22367,7 +22968,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Text shaper that converts codepoints to positioned glyphs via HarfBuzz. Performs full OpenType shaping (GSUB/GPOS) including kerning, ligatures and mark positioning.",
       "seeAlso": [],
       "typeParameters": [],
@@ -22611,7 +23214,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Result of a shaping operation containing glyphs and metrics.",
       "remarks": "This is a ref struct to allow returning a span without allocation.",
       "seeAlso": [],
@@ -22685,7 +23290,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Unicode General Category property values.",
       "remarks": "Each codepoint belongs to exactly one general category. Use with [[GetGeneralCategory]] for character classification \u2014 for example to apply a modifier only to letters, only to punctuation, or to skip combining marks. Values follow the Unicode Character Database short aliases.",
       "seeAlso": [],
@@ -23038,7 +23645,9 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Interface for script-specific word segmenters that inject break opportunities into SA-class (Complex Context Dependent) text runs.",
       "remarks": "Implementations segment a contiguous run of codepoints belonging to a single script and write [[Optional]] at word boundaries. Register via [[Register]]. Registering a segmenter for a script that already has one replaces it.",
       "seeAlso": [],
@@ -23115,7 +23724,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies the type of line break opportunity according to UAX #14.",
       "seeAlso": [],
       "typeParameters": [],
@@ -23170,7 +23781,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A contiguous run of positioned glyphs within a single line whose clusters fall inside a queried range. Bounds are in local mesh coordinates (relative to the text origin), with X clamped to the line\u0027s visible content extent (trailing whitespace excluded per CSS Text \u00A74.1.3 via [[width]]).",
       "seeAlso": [],
       "typeParameters": [],
@@ -23261,7 +23874,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Specifies the base text direction for bidirectional text processing.",
       "seeAlso": [],
       "typeParameters": [],
@@ -23316,7 +23931,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Provides access to Unicode character properties and the global data provider.",
       "remarks": "Contains common Unicode codepoint constants (whitespace, control characters, BiDi marks) and helper methods for character classification. The static [[Provider]] property gives access to the full Unicode property database for script, line break, and grapheme cluster information.",
       "seeAlso": [
@@ -24479,7 +25096,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Unicode Script property values (UAX #24).",
       "remarks": "Each codepoint belongs to exactly one script. Used by [[ScriptAnalyzer]] to segment text into runs of uniform script for shaping. Some scripts like [[Common]] (punctuation) and [[Inherited]] (combining marks) can appear in text of any script.",
       "seeAlso": [],
@@ -26257,7 +26876,11 @@
       "isSealed": true,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Self-contained dictionary asset for word segmentation of a specific script.",
       "remarks": "Each asset holds a binary double-array trie and the target Unicode script. Add to UniText Settings to enable word segmentation for that script. Create via Tools \u2192 UniText \u2192 Tools \u2192 Dictionary Builder tab.",
       "seeAlso": [],
@@ -26303,9 +26926,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "INamedCatalog\u003CTEntry\u003E",
+      "baseTypeChain": [
+        "INamedCatalog\u003CTEntry\u003E"
+      ],
       "interfaces": [
         "ISerializationCallbackReceiver"
       ],
+      "derivedTypes": [],
       "summary": "Serializable base for [[INamedCatalog{TEntry}]] implementations that delegate resolution to an explicit ScriptableObject asset reference \u2014 useful when multiple components should share the same catalog managed as a project asset.",
       "remarks": "Subscription to the underlying asset\u0027s [[Changed]] event is lazy: this provider attaches only while it has at least one subscriber and detaches when the last unsubscribes, so an unused provider doesn\u0027t keep itself alive through the asset\u0027s delegate list. The provider also re-binds on inspector edits that change the asset reference ([[OnAfterDeserialize]]).",
       "seeAlso": [],
@@ -26402,7 +27029,13 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [
+        "AssetNamedCatalog\u003CTEntry, TAsset\u003E",
+        "InlineNamedCatalog\u003CTEntry\u003E",
+        "NamedCatalogAsset\u003CTEntry\u003E"
+      ],
       "summary": "Resolves named entries by case-insensitive name. Used by every \u0022named catalog\u0022 feature in UniText (gradients, inline sprites, inline-object prefabs) so the same set of providers \u2014 inline list, shared asset, custom code \u2014 composes across all of them.",
       "remarks": "Concrete implementations decide where the catalog lives \u2014 an explicit asset reference, an inline list edited per-modifier, or a custom runtime resolver \u2014 and raise [[Changed]] whenever their resolution result changes. The modifier that consults the provider subscribes during its active lifecycle and rebuilds when the event fires. Per-domain marker interfaces ([[IGradientProvider]], [[ISpriteProvider]], [[IObjProvider]]) extend this with no additional members \u2014 they exist purely to scope [SerializeReference, TypeSelector] dropdowns and to give domain-specific reading.",
       "seeAlso": [],
@@ -26488,7 +27121,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Extension methods for parsing [[Index]] from string representation.",
       "remarks": "Supports C# index syntax: \u00220\u0022 for start-based, \u0022^1\u0022 for end-based indices. Used internally for markup parameter parsing.",
       "seeAlso": [
@@ -26546,9 +27181,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "INamedCatalog\u003CTEntry\u003E",
+      "baseTypeChain": [
+        "INamedCatalog\u003CTEntry\u003E"
+      ],
       "interfaces": [
         "ISerializationCallbackReceiver"
       ],
+      "derivedTypes": [],
       "summary": "Serializable base for [[INamedCatalog{TEntry}]] implementations that keep their entries inline on the owning modifier \u2014 edited in the inspector or mutated at runtime via [[SetEntries]], [[Add]], [[Remove]].",
       "remarks": "Concrete subclasses supply [[GetEntryName]]. The [[Changed]] event fires automatically on every mutation; subscribers stay alive only through their own delegate, no static channels.",
       "seeAlso": [],
@@ -26735,9 +27374,13 @@
       "isSealed": false,
       "isStatic": false,
       "baseType": "ScriptableObject",
+      "baseTypeChain": [
+        "ScriptableObject"
+      ],
       "interfaces": [
         "INamedCatalog\u003CTEntry\u003E"
       ],
+      "derivedTypes": [],
       "summary": "Abstract ScriptableObject base for named-entry catalogs. Subclasses give the catalog a concrete entry type, a CreateAssetMenu path, and (optionally) a payload validity filter for editor enumeration.",
       "seeAlso": [],
       "typeParameters": [
@@ -26906,9 +27549,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IAttributeData"
       ],
+      "derivedTypes": [],
       "summary": "A pooled array-based implementation of [[IAttributeData]].",
       "remarks": "Use this class to store per-codepoint or per-glyph attribute data in modifiers. The underlying array is rented from [[UniTextArrayPool{T}]] for zero-allocation operation.",
       "example": "var colors = buffers.GetOrCreateAttributeData\u003CPooledArrayAttribute\u003CColor32\u003E\u003E(\u0022colors\u0022);\ncolors.EnsureCount(codepointCount);\ncolors[0] = Color.red;",
@@ -27042,7 +27687,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "A value-type wrapper for managing a pooled array with count tracking.",
       "remarks": "Provides a List-like interface over a pooled array without heap allocations for the container itself. Use [[Rent]] to acquire an array and [[Return]] to release it back to the pool. The [[count]] field tracks how many elements are in use, while [[Capacity]] reflects the actual array length. Operations like [[Add]] automatically grow the buffer.",
       "seeAlso": [
@@ -27479,9 +28126,11 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IList\u003CT\u003E"
       ],
+      "derivedTypes": [],
       "summary": "A reference-type wrapper around [[PooledBuffer{T}]] for scenarios requiring heap allocation.",
       "remarks": "Use this when you need to store a pooled collection in a field or pass it by reference without boxing. The underlying [[buffer]] is a struct, so modifications are in-place. Provides the same API as [[PooledBuffer{T}]] but as a class for scenarios where value-type semantics are not suitable.",
       "seeAlso": [
@@ -27889,7 +28538,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": true,
+      "baseTypeChain": [],
       "interfaces": [],
+      "derivedTypes": [],
       "summary": "Extension methods for parsing [[Range]] from string representation.",
       "remarks": "Supports C# range syntax: \u00220..5\u0022, \u0022..5\u0022, \u00222..\u0022, \u0022^3..^1\u0022. Used internally for markup parameter parsing.",
       "seeAlso": [
@@ -28027,9 +28678,11 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
+      "baseTypeChain": [],
       "interfaces": [
         "IReadOnlyList\u003CT\u003E"
       ],
+      "derivedTypes": [],
       "seeAlso": [],
       "typeParameters": [],
       "category": "utilities",
@@ -28209,24 +28862,32 @@
         "priority": 1
       },
       {
-        "name": "TextProcessor",
+        "name": "UniTextWorld",
         "priority": 2
       },
       {
-        "name": "TextLayout",
+        "name": "UniTextBase",
         "priority": 3
       },
       {
-        "name": "UniTextBuffers",
+        "name": "TextProcessor",
         "priority": 4
       },
       {
-        "name": "UniTextMeshGenerator",
+        "name": "TextLayout",
         "priority": 5
       },
       {
-        "name": "UniTextSettings",
+        "name": "UniTextBuffers",
         "priority": 6
+      },
+      {
+        "name": "UniTextMeshGenerator",
+        "priority": 7
+      },
+      {
+        "name": "UniTextSettings",
+        "priority": 8
       },
       {
         "name": "LayoutSettings",
@@ -28235,6 +28896,14 @@
       {
         "name": "TextProcessSettings",
         "priority": 11
+      },
+      {
+        "name": "TextJustify",
+        "priority": 12
+      },
+      {
+        "name": "LastLineAlignment",
+        "priority": 13
       },
       {
         "name": "TextRun",
@@ -28325,10 +28994,6 @@
         "priority": 100
       },
       {
-        "name": "LastLineAlignment",
-        "priority": 100
-      },
-      {
         "name": "LeadingDistribution",
         "priority": 100
       },
@@ -28349,10 +29014,6 @@
         "priority": 100
       },
       {
-        "name": "TextJustify",
-        "priority": 100
-      },
-      {
         "name": "TextOverEdge",
         "priority": 100
       },
@@ -28366,10 +29027,6 @@
       },
       {
         "name": "UniTextArrayPool\u003CT\u003E",
-        "priority": 100
-      },
-      {
-        "name": "UniTextBase",
         "priority": 100
       },
       {
@@ -28390,10 +29047,6 @@
       },
       {
         "name": "UniTextSprites",
-        "priority": 100
-      },
-      {
-        "name": "UniTextWorld",
         "priority": 100
       },
       {
@@ -28455,15 +29108,19 @@
         "priority": 1
       },
       {
-        "name": "UniTextFontProvider",
-        "priority": 5
-      },
-      {
-        "name": "FaceInfo",
-        "priority": 100
+        "name": "UniTextFontStack",
+        "priority": 2
       },
       {
         "name": "FontFamily",
+        "priority": 3
+      },
+      {
+        "name": "UniTextFontProvider",
+        "priority": 7
+      },
+      {
+        "name": "FaceInfo",
         "priority": 100
       },
       {
@@ -28499,10 +29156,6 @@
         "priority": 100
       },
       {
-        "name": "UniTextFontStack",
-        "priority": 100
-      },
-      {
         "name": "UniTextRenderMode",
         "priority": 100
       }
@@ -28513,12 +29166,16 @@
         "priority": 1
       },
       {
-        "name": "ParsedRange",
-        "priority": 5
+        "name": "Style",
+        "priority": 2
       },
       {
-        "name": "Style",
-        "priority": 6
+        "name": "StylePreset",
+        "priority": 3
+      },
+      {
+        "name": "ParsedRange",
+        "priority": 7
       },
       {
         "name": "InlineObject",
@@ -28781,10 +29438,6 @@
         "priority": 100
       },
       {
-        "name": "StylePreset",
-        "priority": 100
-      },
-      {
         "name": "SubMeshModifier",
         "priority": 100
       },
@@ -28815,16 +29468,20 @@
         "priority": 1
       },
       {
-        "name": "TagParseRule",
+        "name": "TagRule",
         "priority": 2
       },
       {
-        "name": "CompositeParseRule",
+        "name": "TagParseRule",
         "priority": 3
       },
       {
-        "name": "StringParseRule",
+        "name": "CompositeParseRule",
         "priority": 4
+      },
+      {
+        "name": "StringParseRule",
+        "priority": 5
       },
       {
         "name": "BackslashEscapeRule",
@@ -28868,10 +29525,6 @@
       },
       {
         "name": "RawUrlParseRule",
-        "priority": 100
-      },
-      {
-        "name": "TagRule",
         "priority": 100
       }
     ],
@@ -28995,6 +29648,7 @@
     "IReadOnlyList": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ireadonlylist-1",
     "LayerMask": "https://docs.unity3d.com/ScriptReference/LayerMask.html",
     "List": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1",
+    "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
     "Material": "https://docs.unity3d.com/ScriptReference/Material.html",
     "MonoBehaviour": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.html",
     "PointerEventData": "https://docs.unity3d.com/ScriptReference/EventSystems.PointerEventData.html",
