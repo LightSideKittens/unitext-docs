@@ -1,6 +1,6 @@
 {
-  "version": "2.2.17",
-  "generatedAt": "2026-05-21T11:26:32.4923259Z",
+  "version": "2.3.0",
+  "generatedAt": "2026-05-21T18:27:25.8210119Z",
   "namespaces": [],
   "types": [
     {
@@ -763,6 +763,7 @@
       "isStatic": false,
       "interfaces": [],
       "summary": "Specifies horizontal text alignment within the layout bounds.",
+      "remarks": "Edges are physical (Left/Right), not logical (Start/End). For RTL paragraphs, the renderer auto-flips so that [[Left]] still produces the natural \u0022start\u0022 edge of the RTL line \u2014 matching CSS legacy text-align: left | right | center | justify semantics and the Web Selection API direction model.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "core",
@@ -802,6 +803,17 @@
             "type": "HorizontalAlignment",
             "defaultValue": "2",
             "summary": "Align text to the right edge."
+          },
+          {
+            "id": "HorizontalAlignment.Justify",
+            "name": "Justify",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "HorizontalAlignment",
+            "defaultValue": "3",
+            "summary": "Stretch each line to fill the full available width by distributing extra space according to [[TextJustify]]. The final line of each paragraph is aligned per [[LastLineAlignment]] (defaults to start, matching CSS text-align-last: auto)."
           }
         ],
         "events": []
@@ -1740,6 +1752,83 @@
       }
     },
     {
+      "id": "LastLineAlignment",
+      "name": "LastLineAlignment",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Specifies how the final line of a justified paragraph (and lines preceding a mandatory break) is aligned. Mirrors CSS Text Module Level 3 text-align-last.",
+      "remarks": "The \u0022last line\u0022 of a paragraph is the line ended by a mandatory break (CR / LF / etc.) or the very last line in the document. [[Auto]] matches the CSS default behaviour: when [[Justify]] is active, the last line is aligned to the paragraph start.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LastLineAlignment.Auto",
+            "name": "Auto",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "defaultValue": "0",
+            "summary": "CSS default: equivalent to [[Start]] when justification is active."
+          },
+          {
+            "id": "LastLineAlignment.Start",
+            "name": "Start",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "defaultValue": "1",
+            "summary": "Align to the paragraph start edge (left in LTR, right in RTL)."
+          },
+          {
+            "id": "LastLineAlignment.End",
+            "name": "End",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "defaultValue": "2",
+            "summary": "Align to the paragraph end edge (right in LTR, left in RTL)."
+          },
+          {
+            "id": "LastLineAlignment.Center",
+            "name": "Center",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "defaultValue": "3",
+            "summary": "Center the last line horizontally."
+          },
+          {
+            "id": "LastLineAlignment.Justify",
+            "name": "Justify",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "defaultValue": "4",
+            "summary": "Justify the last line as well, stretching it to fill the available width."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "LayoutSettings",
       "name": "LayoutSettings",
       "namespace": "LightSide",
@@ -1829,6 +1918,26 @@
             "isConst": false,
             "type": "VerticalAlignment",
             "summary": "Vertical text alignment within the layout bounds."
+          },
+          {
+            "id": "LayoutSettings.textJustify",
+            "name": "textJustify",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "TextJustify",
+            "summary": "How extra space is distributed when [[horizontalAlignment]] is [[Justify]]. Ignored otherwise."
+          },
+          {
+            "id": "LayoutSettings.lastLineAlignment",
+            "name": "lastLineAlignment",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "LastLineAlignment",
+            "summary": "How the paragraph-terminating line is aligned when [[horizontalAlignment]] is [[Justify]]. Ignored otherwise."
           },
           {
             "id": "LayoutSettings.overEdge",
@@ -2658,6 +2767,72 @@
       }
     },
     {
+      "id": "TextJustify",
+      "name": "TextJustify",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "interfaces": [],
+      "summary": "Specifies how extra horizontal space is distributed when [[Justify]] is active. Mirrors the CSS Text Module Level 3 text-justify property values.",
+      "remarks": "[[Auto]] \u2014 distribute at word separators; if a line contains no word separators (typical for pure CJK content), fall back to [[InterCharacter]]. Default; matches CSS text-justify: auto behaviour. [[InterWord]] \u2014 distribute only at word-separator characters (UAX category Zs, excluding NBSP / narrow NBSP). Appropriate for scripts that separate words with spaces (Latin, Cyrillic, Greek, Korean). [[InterCharacter]] \u2014 distribute at every cluster boundary on the line. Appropriate for scripts without word separators (Japanese, Chinese, Thai). [[None]] \u2014 no expansion. Justified lines render as start-aligned.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextJustify.Auto",
+            "name": "Auto",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextJustify",
+            "defaultValue": "0",
+            "summary": "Distribute at word separators; fall back to cluster boundaries when no separators exist on the line."
+          },
+          {
+            "id": "TextJustify.InterWord",
+            "name": "InterWord",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextJustify",
+            "defaultValue": "1",
+            "summary": "Distribute only at word-separator characters (UAX Zs, excluding NBSP)."
+          },
+          {
+            "id": "TextJustify.InterCharacter",
+            "name": "InterCharacter",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextJustify",
+            "defaultValue": "2",
+            "summary": "Distribute at every grapheme cluster boundary on the line."
+          },
+          {
+            "id": "TextJustify.None",
+            "name": "None",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextJustify",
+            "defaultValue": "3",
+            "summary": "Do not expand. Justified lines render as start-aligned."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "TextLayout",
       "name": "TextLayout",
       "namespace": "LightSide",
@@ -2862,6 +3037,7 @@
               "Span\u003CTextLine\u003E",
               "ReadOnlySpan\u003CShapedRun\u003E",
               "ReadOnlySpan\u003CShapedGlyph\u003E",
+              "ReadOnlySpan\u003Cint\u003E",
               "ReadOnlySpan\u003Cfloat\u003E",
               "float",
               "PositionedGlyph[]",
@@ -3076,6 +3252,16 @@
             "isConst": false,
             "type": "float",
             "summary": "Left margin for this line (e.g., for list indentation)."
+          },
+          {
+            "id": "TextLine.endedByMandatoryBreak",
+            "name": "endedByMandatoryBreak",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool",
+            "summary": "True when this line was terminated by a UAX #14 mandatory break (CR / LF / NEL / LS / PS / etc.) \u2014 i.e. the next line starts a new paragraph for justification purposes."
           }
         ],
         "events": []
@@ -3426,7 +3612,9 @@
             "paramTypes": [
               "float",
               "HorizontalAlignment",
-              "VerticalAlignment"
+              "VerticalAlignment",
+              "TextJustify",
+              "LastLineAlignment"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -3870,6 +4058,28 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the vertical text alignment.",
+            "seeAlso": []
+          },
+          {
+            "id": "TextProcessSettings.TextJustify",
+            "name": "TextJustify",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextJustify",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets how extra horizontal space is distributed when [[HorizontalAlignment]] is [[Justify]].",
+            "seeAlso": []
+          },
+          {
+            "id": "TextProcessSettings.LastLineAlignment",
+            "name": "LastLineAlignment",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "LastLineAlignment",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets how paragraph-terminating lines are aligned when [[HorizontalAlignment]] is [[Justify]].",
             "seeAlso": []
           },
           {
@@ -6444,6 +6654,28 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the vertical text alignment.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.TextJustify",
+            "name": "TextJustify",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextJustify",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets how extra horizontal space is distributed under [[Justify]]. Ignored for other alignments.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.LastLineAlignment",
+            "name": "LastLineAlignment",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "LastLineAlignment",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets how paragraph-terminating lines are aligned under [[Justify]]. Ignored for other alignments.",
             "seeAlso": []
           },
           {
@@ -11546,6 +11778,18 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the italic slant angle in degrees.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.SpacingOffset",
+            "name": "SpacingOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Baseline spacing added to every glyph\u0027s advance during shaping, in font design units (relative to [[UnitsPerEm]]).",
+            "remarks": "Use to normalize fonts that render too tight or too loose by design. Applied uniformly to every glyph with non-zero advance (mark glyphs are unaffected) and scales with font size like any other glyph metric. Layered additively with the style-level letter-spacing modifier; positive values increase spacing, negative values reduce it. Has no effect on synthetic glyphs drawn outside the shaping pipeline (ellipsis dots, list bullets, kashida bars). The convention matches Adobe InDesign tracking (1/1000 em on upem=1000 fonts).",
             "seeAlso": []
           },
           {
@@ -21797,6 +22041,22 @@
             "typeParameters": []
           },
           {
+            "id": "TagRule.ToString",
+            "name": "ToString",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "TagRule.TryMatch",
             "name": "TryMatch",
             "accessModifier": "public",
@@ -22297,6 +22557,27 @@
             "params": [],
             "paramTypes": [
               "UniTextFontProvider",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Shaper.ComputeShapeParams",
+            "name": "ComputeShapeParams",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Computes per-font shaping parameters in a single font lookup: the design-unit-to-pixel spacingOffsetUnits baseline (from [[SpacingOffset]]) alongside the returned design-unit-to-pixel scale (incorporates [[FontScale]]). Callers cache both per run-fontId change.",
+            "params": [],
+            "paramTypes": [
+              "UniTextFontProvider",
+              "int",
               "int"
             ],
             "exceptions": [],
@@ -23074,6 +23355,26 @@
             "isConstructor": false,
             "returnType": "bool",
             "summary": "Returns true if the codepoint is a line or paragraph separator that produces a mandatory break (UAX #14 classes BK, CR, LF, NL) and should not be shaped.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsJustifiableWordSeparator",
+            "name": "IsJustifiableWordSeparator",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if the codepoint is a word-separator character eligible for stretching under CSS-style inter-word justification (CSS Text Module Level 3 \u00A76.4.1).",
+            "remarks": "Modelled on Blink/WebKit/Gecko behaviour: includes ASCII space (U\u002B0020), TAB (U\u002B0009, treated as space for justification), the CJK ideographic space (U\u002B3000), and other Unicode general-category Zs space separators. Explicitly excludes the non-breaking variants \u2014 NBSP (U\u002B00A0), NARROW NBSP (U\u002B202F), FIGURE SPACE (U\u002B2007) \u2014 which carry \u0022do not break / do not stretch\u0022 semantics.",
             "params": [],
             "paramTypes": [
               "int"
@@ -28024,6 +28325,10 @@
         "priority": 100
       },
       {
+        "name": "LastLineAlignment",
+        "priority": 100
+      },
+      {
         "name": "LeadingDistribution",
         "priority": 100
       },
@@ -28041,6 +28346,10 @@
       },
       {
         "name": "TextHighlightRenderer",
+        "priority": 100
+      },
+      {
+        "name": "TextJustify",
         "priority": 100
       },
       {
