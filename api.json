@@ -1,6 +1,6 @@
 {
-  "version": "2.3.2",
-  "generatedAt": "2026-05-23T06:54:59.3560736Z",
+  "version": "2.4.0",
+  "generatedAt": "2026-05-24T16:56:37.8748177Z",
   "namespaces": [],
   "types": [
     {
@@ -5952,6 +5952,44 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.IsWholeTextStyle",
+            "name": "IsWholeTextStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when the style targets the entire text \u2014 either it has no rule (the canonical no-constraint form created by [[WholeText]]) or it carries a [[RangeRule]] whose single entry resolves to the full range.",
+            "params": [],
+            "paramTypes": [
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.IsWholeTextRule",
+            "name": "IsWholeTextRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True only for a [[RangeRule]] instance that covers the full text. Use [[IsWholeTextStyle]] when checking a style \u2014 that variant also accepts the canonical rule-less form.",
+            "params": [],
+            "paramTypes": [
+              "IParseRule"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.SetWholeText",
             "name": "SetWholeText",
             "accessModifier": "public",
@@ -7216,8 +7254,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "T",
-            "summary": "Gets or creates typed attribute data for the specified key.",
-            "remarks": "Use this method in modifiers to store per-text custom data that persists across processing passes but is reset when text changes.",
+            "summary": "Gets or creates typed attribute data for the specified key, incrementing its reference count. The matching [[ReleaseAttributeData]] call decrements; the underlying data is freed only when the count reaches zero. This lets multiple modifier instances safely share one keyed channel \u2014 destroying one no longer pulls the buffer out from under the rest.",
             "returns": "The existing or newly created attribute data instance.",
             "params": [
               {
@@ -7303,7 +7340,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Releases and removes attribute data for the specified key.",
+            "summary": "Decrements the reference count for key\u0027s attribute data and releases the underlying buffer only when the count drops to zero. Pairs one-to-one with [[GetOrCreateAttributeData{T}]].",
             "params": [
               {
                 "name": "key",
@@ -13271,146 +13308,17 @@
         "VariationModifier",
         "WobbleAnimationModifier"
       ],
-      "summary": "Base class for all text modifiers that alter text appearance or behavior.",
-      "remarks": "Modifiers are applied to text ranges via markup tags parsed by [[IParseRule]] implementations and can modify glyph rendering, colors, animations, or other properties. Lifecycle: [[SetOwner]] is called when the modifier is attached to UniText (sets references only) [[Apply]] is called for each text range - lazy initialization on first call [[Disable]] is called when text changes [[Destroy]] is called when the modifier is removed",
+      "summary": "Base class for text modifiers \u2014 pieces of logic that alter appearance, layout, or behavior of a text range matched by an [[IParseRule]].",
+      "remarks": "Subclass and override the protected hooks ([[OnEnable]], [[OnDisable]], [[OnDestroy]], [[OnApply]], optionally [[PrepareForParallel]]). Lifecycle dispatching is driven by the framework ([[Style]], the parse pipeline, [[CompositeModifier]]) \u2014 user code instantiates modifiers and hands them to [[Style]]; it should not invoke the lifecycle itself. Cycle (per parse pass on a UniText component): [[OnEnable]] runs once when the modifier first participates in a cycle \u2014 allocate pooled buffers and subscribe to UniText events here. [[OnApply]] runs for every tag/range matched in the current text. [[OnDisable]] runs at the start of the next cycle to unsubscribe event handlers; allocated buffers should stay alive so the next [[OnEnable]] can reuse them. [[OnDestroy]] runs when the modifier is removed from the component (style changed, font reload, component destroyed) \u2014 release pooled buffers and any other resources [[OnEnable]] acquired. Guaranteed to run exactly once per [[OnEnable]]-initiated resource acquisition, even when an intervening [[OnDisable]] has already cleared the subscription state.",
       "seeAlso": [
         "GlyphModifier{T}",
+        "InteractiveModifier",
         "Style"
       ],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
-          {
-            "id": "BaseModifier.Prepare",
-            "name": "Prepare",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Prepares the modifier for a new text cycle. Creates buffers and clears them. Called once before Apply pass.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "BaseModifier.Apply",
-            "name": "Apply",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Applies the modifier to a text range. Requires Prepare() to be called first.",
-            "params": [
-              {
-                "name": "start",
-                "type": "int",
-                "description": "Start codepoint index."
-              },
-              {
-                "name": "end",
-                "type": "int",
-                "description": "End codepoint index (exclusive)."
-              },
-              {
-                "name": "parameter",
-                "type": "string",
-                "description": "Parameter from the tag (e.g., color value)."
-              }
-            ],
-            "paramTypes": [
-              "int",
-              "int",
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "BaseModifier.SetOwner",
-            "name": "SetOwner",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Sets the owner UniText reference. Does NOT initialize buffers or subscribe to events.",
-            "params": [
-              {
-                "name": "uniText",
-                "type": "UniTextBase",
-                "description": "The UniText component to attach to."
-              }
-            ],
-            "paramTypes": [
-              "UniTextBase"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "BaseModifier.Destroy",
-            "name": "Destroy",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Deinitializes the modifier and releases resources.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "BaseModifier.Disable",
-            "name": "Disable",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Resets the modifier state for new text. Unsubscribes from events - will re-subscribe on next Apply().",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "BaseModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Called on the main thread before parallel processing begins. Override to cache values from Unity APIs that are main-thread-only (e.g., Material.GetFloat).",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
           {
             "id": "BaseModifier.OnEnable",
             "name": "OnEnable",
@@ -13421,7 +13329,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Subscribes to UniText events. Override to set up buffers and event handlers.",
+            "summary": "Allocate buffers, subscribe to UniText events, and bring the modifier into the active state. Pairs one-to-one with [[OnDisable]] and [[OnDestroy]].",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -13438,7 +13346,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Unsubscribes from UniText events. Override to remove event handlers.",
+            "summary": "Unsubscribe from UniText events. Buffers and persistent state should remain allocated \u2014 [[OnDestroy]] is responsible for releasing them. Runs once per active cycle (at the start of the next parse pass).",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -13455,7 +13363,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Releases buffers when the modifier is removed. Override to clean up resources.",
+            "summary": "Release resources allocated by [[OnEnable]] (pooled buffers, attribute data, registry subscriptions). Always runs after [[OnEnable]] ran at least once, even when the most recent cycle already drained subscriptions via [[OnDisable]].",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -13472,22 +13380,22 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Implements the modifier\u0027s effect on the specified range.",
+            "summary": "Implement the modifier\u0027s effect on a codepoint range. Called by the framework for every tag/range matched in the current text after [[OnEnable]].",
             "params": [
               {
                 "name": "start",
                 "type": "int",
-                "description": "Start codepoint index."
+                "description": "Inclusive start codepoint index."
               },
               {
                 "name": "end",
                 "type": "int",
-                "description": "End codepoint index (exclusive)."
+                "description": "Exclusive end codepoint index."
               },
               {
                 "name": "parameter",
                 "type": "string",
-                "description": "Parameter from the tag."
+                "description": "Parameter forwarded from the tag (e.g. color value); may be when the tag carries no parameter or a composite delivered an absent segment."
               }
             ],
             "paramTypes": [
@@ -13509,7 +13417,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Returns true if this modifier has been initialized (Apply called at least once).",
+            "summary": "between [[OnEnable]] and the next [[OnDisable]]/[[OnDestroy]]: event handlers are currently subscribed. Useful for diagnostics and for nested composites that mirror the child lifecycle.",
             "seeAlso": []
           }
         ],
@@ -13517,12 +13425,12 @@
           {
             "id": "BaseModifier.uniText",
             "name": "uniText",
-            "accessModifier": "public",
+            "accessModifier": "protected",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
             "type": "UniTextBase",
-            "summary": "Reference to the UniText component this modifier is attached to."
+            "summary": "The UniText component this modifier is bound to. Assigned by the framework via SetOwner; available to subclasses from [[OnEnable]] onward."
           },
           {
             "id": "BaseModifier.buffers",
@@ -13531,7 +13439,8 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "UniTextBuffers"
+            "type": "UniTextBuffers",
+            "summary": "Shared text-processing buffers (codepoints, runs, shaped glyphs, attribute storage). Assigned by the framework alongside [[uniText]]."
           }
         ],
         "events": []
@@ -13904,22 +13813,6 @@
             "paramTypes": [
               "int"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "CompositeModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -14588,22 +14481,6 @@
             "id": "ExtrudeModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "ExtrudeModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
@@ -17864,22 +17741,6 @@
             "typeParameters": []
           },
           {
-            "id": "MaterialModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "MaterialModifier.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
@@ -19463,22 +19324,6 @@
             "typeParameters": []
           },
           {
-            "id": "ShadowModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "ShadowModifier.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
@@ -20097,7 +19942,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Style",
-            "summary": "Builds a style that applies modifier to the entire text via a whole-text [[RangeRule]].",
+            "summary": "Builds a style that applies modifier to the entire text. No [[Rule]] is created \u2014 the absence of a rule is interpreted as \u0022no constraint, apply everywhere\u0022, and parameter is forwarded to the modifier on every cycle via [[defaultParameter]].",
             "params": [
               {
                 "name": "modifier",
@@ -20223,6 +20068,17 @@
             "seeAlso": []
           },
           {
+            "id": "Style.DefaultParameter",
+            "name": "DefaultParameter",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Parameter forwarded to [[Modifier]] when this style has no [[Rule]] (whole-text application). Ignored when [[Rule]] is set \u2014 the rule then supplies its own parameter(s) per matched range. The setter auto-dirties the owning component when the style is registered and rule-less.",
+            "seeAlso": []
+          },
+          {
             "id": "Style.Owner",
             "name": "Owner",
             "accessModifier": "public",
@@ -20241,7 +20097,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Returns true if the style is ready for registration. Requires a rule; modifier is required unless [[IsStandalone]] is true.",
+            "summary": "Returns true if the style is ready for registration. A modifier with no rule is treated as a whole-text application (no constraint = no limit); a rule with no modifier is valid only when the rule is [[IsStandalone]] (protection rules).",
             "seeAlso": []
           },
           {
@@ -21266,22 +21122,6 @@
       "category": "modifiers",
       "members": {
         "methods": [
-          {
-            "id": "WobbleAnimationModifier.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
           {
             "id": "WobbleAnimationModifier.OnEnable",
             "name": "OnEnable",
@@ -22312,7 +22152,18 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "RangeRule.IsWholeText",
+            "name": "IsWholeText",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [
           {
             "id": "RangeRule.data",
