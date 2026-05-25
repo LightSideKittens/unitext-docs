@@ -1,6 +1,6 @@
 {
   "version": "2.4.0",
-  "generatedAt": "2026-05-24T21:16:29.2823021Z",
+  "generatedAt": "2026-05-25T01:02:01.3755699Z",
   "namespaces": [],
   "types": [
     {
@@ -15106,7 +15106,7 @@
       ],
       "derivedTypes": [],
       "summary": "Applies gradient coloring to text ranges using named gradients.",
-      "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear (projection onto an axis), radial (distance from center), or angular (conic sweep). The set of named gradients available to \u003Cgradient=name\u003E tags is supplied by an [[IGradientProvider]]. The default provider resolves names through the project-wide [[Gradients]] asset; alternative providers allow per-component asset references or inline catalogs edited on the modifier itself.",
+      "remarks": "Parameter format: name[,shape][,angle] rainbow \u2014 linear gradient, angle 0 rainbow,linear,45 \u2014 linear at 45\u00B0 rainbow,radial \u2014 radial gradient from center rainbow,angular \u2014 angular (conic) sweep from top rainbow,angular,90 \u2014 angular sweep rotated 90\u00B0 Shape controls the gradient form: linear/l (projection onto an axis), radial/r (distance from center), or angular/a (conic sweep). The set of named gradients available to \u003Cgradient=name\u003E tags is supplied by an [[IGradientProvider]]. The default provider resolves names through the project-wide [[Gradients]] asset; alternative providers allow per-component asset references or inline catalogs edited on the modifier itself.",
       "seeAlso": [
         "IGradientProvider",
         "UniTextGradients",
@@ -18471,7 +18471,7 @@
       ],
       "derivedTypes": [],
       "summary": "Applies an outline effect by appending duplicate glyph geometry behind the face. Supports both solid colour and per-vertex gradient outlines via an optional [[IGradientProvider]].",
-      "remarks": "Tag format (strictly positional \u2014 empty slots fall back to defaults, matching [[GradientModifier]]): \u003Coutline=color-or-gradient,dilate,shape,angle\u003E. \u003Coutline\u003E \u2014 defaults: colour = #000000FF, dilate = 0.2. \u003Coutline=#ff0000\u003E \u2014 red, default dilate. \u003Coutline=,0.3\u003E \u2014 default colour, custom dilate (note the leading comma). \u003Coutline=#ff0000,0.3\u003E \u2014 both. \u003Coutline=rainbow\u003E \u2014 gradient (when [[Provider]] is set). \u003Coutline=rainbow,0.3,radial,45\u003E \u2014 gradient \u002B dilate \u002B shape \u002B angle. \u003Coutline=rainbow,,radial,45\u003E \u2014 gradient, default dilate, radial, 45\u00B0. Slot 0 resolves as a gradient name first (when [[Provider]] is set and the token matches a known gradient) and falls back to colour parsing otherwise \u2014 so existing colour tags keep working unchanged when a provider happens to be attached.",
+      "remarks": "Tag format (strictly positional \u2014 empty slots fall back to defaults, matching [[GradientModifier]]): \u003Coutline=color-or-gradient,dilate,shape,angle\u003E. \u003Coutline\u003E \u2014 defaults: colour = #000000FF, dilate = 0.2. \u003Coutline=#ff0000\u003E \u2014 red, default dilate. \u003Coutline=,0.3\u003E \u2014 default colour, custom dilate (note the leading comma). \u003Coutline=#ff0000,0.3\u003E \u2014 both. \u003Coutline=rainbow\u003E \u2014 gradient (when [[Provider]] is set). \u003Coutline=rainbow,0.3,radial,45\u003E \u2014 gradient \u002B dilate \u002B shape \u002B angle. \u003Coutline=rainbow,,radial,45\u003E \u2014 gradient, default dilate, radial, 45\u00B0. Slot 0 resolves as a gradient name first (when [[Provider]] is set and the token matches a known gradient) and falls back to colour parsing otherwise \u2014 so existing colour tags keep working unchanged when a provider happens to be attached. Shape accepts linear/l, radial/r, angular/a.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -18731,7 +18731,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Reads the next token as a float. Returns false if missing or unparseable.",
+            "summary": "Reads the next token as a float. Returns false if missing or unparseable; on failure value is left at defaultValue.",
             "params": [],
             "paramTypes": [
               "float",
@@ -18751,7 +18751,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Reads the next token as an int. Returns false if missing or unparseable.",
+            "summary": "Reads the next token as an int. Returns false if missing or unparseable; on failure value is left at defaultValue.",
             "params": [],
             "paramTypes": [
               "int",
@@ -18771,14 +18771,39 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Reads the next token as a Color32 via [[ColorParsing]]. Returns false if missing or unparseable.",
+            "summary": "Reads the next token as a Color32 via [[ColorParsing]]. Returns false if missing or unparseable; on failure value is left at defaultValue.",
             "params": [],
             "paramTypes": [
+              "Color32",
               "Color32"
             ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "ParameterReader.NextEnum",
+            "name": "NextEnum",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Reads the next token as a value of enum T. Matches the full enum-member name case-insensitively; for single-character tokens, also matches against the first letter of any member whose initial is unique within the enum (e.g. r \u2192 Radial when no other member starts with R). Members whose initial collides with another member\u0027s keep working under their full name but lose the short alias. Returns false if missing or unmatched; on failure value is left at defaultValue.",
+            "params": [],
+            "paramTypes": [
+              "T",
+              "T"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
           },
           {
             "id": "ParameterReader.NextUnitFloat",
