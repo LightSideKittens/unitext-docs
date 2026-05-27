@@ -1,6 +1,6 @@
 {
-  "version": "2.4.0",
-  "generatedAt": "2026-05-25T04:17:43.5970051Z",
+  "version": "2.4.1",
+  "generatedAt": "2026-05-27T20:34:23.2679967Z",
   "namespaces": [],
   "types": [
     {
@@ -3521,12 +3521,12 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets the font provider used for font lookup and glyph metrics.",
+            "summary": "Sets the font provider used for font lookup and glyph metrics. Must be called with a non-null provider before [[EnsureFirstPass]].",
             "params": [
               {
                 "name": "provider",
                 "type": "UniTextFontProvider",
-                "description": "The font provider to use, or to clear."
+                "description": "The font provider to use."
               }
             ],
             "paramTypes": [
@@ -3661,46 +3661,6 @@
             "typeParameters": []
           },
           {
-            "id": "TextProcessor.CanReusePositions",
-            "name": "CanReusePositions",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Determines whether cached glyph positions can be reused for the specified parameters.",
-            "returns": "if cached positions match the parameters; otherwise,.",
-            "params": [
-              {
-                "name": "maxHeight",
-                "type": "float",
-                "description": "The maximum height for layout."
-              },
-              {
-                "name": "hAlign",
-                "type": "HorizontalAlignment",
-                "description": "The horizontal alignment."
-              },
-              {
-                "name": "vAlign",
-                "type": "VerticalAlignment",
-                "description": "The vertical alignment."
-              }
-            ],
-            "paramTypes": [
-              "float",
-              "HorizontalAlignment",
-              "VerticalAlignment",
-              "TextJustify",
-              "LastLineAlignment"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "TextProcessor.EnsureLines",
             "name": "EnsureLines",
             "accessModifier": "public",
@@ -3733,6 +3693,56 @@
               "float",
               "float",
               "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextProcessor.CanReusePositions",
+            "name": "CanReusePositions",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Determines whether cached glyph positions can be reused for the specified parameters.",
+            "returns": "if cached positions match the parameters; otherwise,.",
+            "params": [
+              {
+                "name": "maxHeight",
+                "type": "float",
+                "description": "The maximum height for layout."
+              },
+              {
+                "name": "hAlign",
+                "type": "HorizontalAlignment",
+                "description": "The horizontal alignment."
+              },
+              {
+                "name": "vAlign",
+                "type": "VerticalAlignment",
+                "description": "The vertical alignment."
+              },
+              {
+                "name": "textJustify",
+                "type": "TextJustify",
+                "description": "The justification mode."
+              },
+              {
+                "name": "lastLineAlignment",
+                "type": "LastLineAlignment",
+                "description": "The last-line alignment when justifying."
+              }
+            ],
+            "paramTypes": [
+              "float",
+              "HorizontalAlignment",
+              "VerticalAlignment",
+              "TextJustify",
+              "LastLineAlignment"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -3901,6 +3911,7 @@
             "isConstructor": false,
             "returnType": "float",
             "summary": "Gets the maximum width among all lines, considering explicit line breaks.",
+            "remarks": "Measurement-only \u2014 does not mutate [[EnsureLines]] / [[EnsurePositions]] caches. Layout queries fired by Unity\u0027s ILayoutElement contract (and any other host that calls this on a frame between mesh-build and consumption) must not invalidate the rendered glyph state, otherwise [[PositionedGlyphs]] consumers \u2014 hit-test, caret rendering, link click \u2014 observe an empty span until the next mesh rebuild. Result is computed by scanning [[cpWidths]] between mandatory line-break opportunities (UAX #14 BK / CR / LF / NL), matching the no-wrap output of [[LineBreaker]] exactly.",
             "returns": "The maximum line width at the shaping font size, or 0 if no valid data.",
             "params": [],
             "paramTypes": [],
@@ -4061,6 +4072,14 @@
             "isStatic": false,
             "type": "Action",
             "summary": "Occurs after text shaping completes."
+          },
+          {
+            "id": "TextProcessor.LinesBroken",
+            "name": "LinesBroken",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Occurs after line breaking completes, before glyph positioning. Use to adjust [[lines]] widths or run widths in a line-aware way (e.g. strip trailing letter-spacing at line edges so centered/justified output remains symmetric). Fires after both the initial wrap pass and re-wrap caused by [[ForceReposition]]."
           },
           {
             "id": "TextProcessor.LayoutComplete",
@@ -8218,20 +8237,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Expands a 4-vertex glyph quad outward on all sides by delta (UV-space). Updates both positions and UV0 consistently so the atlas sample stays aligned.",
-            "remarks": "The position delta is computed as delta * glyphH * fontMetricFactor, using the glyph height stored in Uvs0[baseIdx].w. Caller is responsible for deciding whether expansion is needed.",
-            "params": [
-              {
-                "name": "baseIdx",
-                "type": "int",
-                "description": "Index of the first vertex of the quad."
-              },
-              {
-                "name": "delta",
-                "type": "float",
-                "description": "UV-space padding to add on each side (normalized by glyph height)."
-              }
-            ],
+            "params": [],
             "paramTypes": [
               "int",
               "float"
@@ -12024,6 +12030,18 @@
             "hasSetter": true,
             "summary": "Baseline spacing added to every glyph\u0027s advance during shaping, in font design units (relative to [[UnitsPerEm]]).",
             "remarks": "Use to normalize fonts that render too tight or too loose by design. Applied uniformly to every glyph with non-zero advance (mark glyphs are unaffected) and scales with font size like any other glyph metric. Layered additively with the style-level letter-spacing modifier; positive values increase spacing, negative values reduce it. Has no effect on synthetic glyphs drawn outside the shaping pipeline (ellipsis dots, list bullets, kashida bars). The convention matches Adobe InDesign tracking (1/1000 em on upem=1000 fonts).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.FakeBoldWeight",
+            "name": "FakeBoldWeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Baseline synthetic bold applied to every glyph of this font, in CSS weight steps from the font\u0027s own weight (1 \u2248 Regular \u2192 Bold).",
+            "remarks": "Renders thicker via SDF dilate (face quad expanded, atlas band upgraded on demand) and compensates glyph advance during shaping so layout stays consistent. Has no effect on color glyph (emoji) fonts. Stacks additively with the advance contribution of an explicit \u003Cb\u003E tag; the tag\u0027s dilate fully overrides this baseline.",
             "seeAlso": []
           },
           {
@@ -23052,12 +23070,13 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "Computes per-font shaping parameters in a single font lookup: the design-unit-to-pixel spacingOffsetUnits baseline (from [[SpacingOffset]]) alongside the returned design-unit-to-pixel scale (incorporates [[FontScale]]). Callers cache both per run-fontId change.",
+            "summary": "Computes per-font shaping parameters in a single font lookup: the spacingOffsetUnits baseline (from [[SpacingOffset]]) and per-glyph fakeBoldAdvancePx bonus (from [[FakeBoldWeight]]) alongside the returned design-unit-to-pixel scale (incorporates [[FontScale]]). Callers cache all three per run-fontId change.",
             "params": [],
             "paramTypes": [
               "UniTextFontProvider",
               "int",
-              "int"
+              "int",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
