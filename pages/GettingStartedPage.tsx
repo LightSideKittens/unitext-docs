@@ -24,6 +24,8 @@ import {
   Globe,
   Palette,
   FileText,
+  ScanSearch,
+  Copy,
 } from 'lucide-react';
 import { useDocs, CodeBlock, Notice, AutoLink } from '@lightside/docs-system';
 
@@ -172,9 +174,10 @@ export default function GettingStartedPage() {
               </Notice>
 
               <p className="text-white/70 mb-4">
-                Canvas and EventSystem are created automatically if not present. Default font stack
-                from <strong>Project Settings &rarr; UniText</strong> is applied to all created
-                components.
+                Canvas and EventSystem are created automatically if not present. No font assignment
+                is required on desktop or mobile — a component with no <code>FontStack</code> renders
+                with the OS default font and fills coverage gaps from OS fonts (see §2.6). WebGL has
+                no OS font access, so assign a regular <code>UniTextFont</code> for WebGL builds.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -186,13 +189,14 @@ export default function GettingStartedPage() {
               <CodeBlock
                 code={`// Via code:
 var uniText = gameObject.AddComponent<UniText>();
-uniText.FontStack = myFontStack;
-uniText.Text = "Hello, World!";`}
+uniText.Text = "Hello, World!";            // renders with the OS default font (§2.6)
+uniText.FontStack = myFontStack;           // optional — assign only when you want a specific typeface`}
               />
 
               <Notice type="info" className="mt-4">
-                Editor defaults (from Project Settings &rarr; UniText) are only applied when adding
-                the component via the menu or Inspector.
+                Prefab defaults (Text / Button prefab from Project Settings &rarr; UniText) are only
+                applied when adding the component via the menu or Inspector. On WebGL there is no OS
+                font, so assign a <code>FontStack</code>.
               </Notice>
             </div>
 
@@ -319,11 +323,87 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
             </table>
           </div>
 
-          <p className="text-white/70 mb-8">
+          <p className="text-white/70 mb-4">
             Both modes use Burst-compiled curve-based rasterization (no bitmap rendering). Glyphs
             are stored in a shared <code>Texture2DArray</code> atlas with adaptive tile sizes
             (64/128/256), reference counting, and LRU eviction. Set the mode per component via{' '}
             <code>RenderMode</code>.
+          </p>
+
+          <p className="text-white/70 mb-8">
+            <strong>Fonts work out of the box on desktop and mobile.</strong> A component with no
+            font assigned renders with the operating system's default sans-serif, and any codepoint
+            your assigned fonts don't cover is resolved automatically from the OS's installed fonts
+            (see §2.6). Create and assign your own fonts when you want a specific typeface —
+            everything below — but you don't have to set anything up just to see text.{' '}
+            <strong>
+              WebGL is the exception: it has no OS font access, so a WebGL build must be given a
+              regular <code>UniTextFont</code>.
+            </strong>
+          </p>
+
+          <p className="text-white/70 mb-4">
+            <strong>
+              Two properties assign a font — <code>Font</code> and <code>FontStack</code> — and you
+              can set either, both, or neither:
+            </strong>
+          </p>
+
+          <div className="overflow-x-auto mb-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2 pr-4 text-white/60">
+                    <code>Font</code>
+                  </th>
+                  <th className="text-left py-2 pr-4 text-white/60">
+                    <code>FontStack</code>
+                  </th>
+                  <th className="text-left py-2 pr-4 text-white/60">Primary font</th>
+                  <th className="text-left py-2 text-white/60">Fallback for uncovered glyphs</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/70">
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">set</td>
+                  <td className="py-2 pr-4">set</td>
+                  <td className="py-2 pr-4">
+                    <code>Font</code>
+                  </td>
+                  <td className="py-2">
+                    families in <code>FontStack</code>, then OS fonts
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">set</td>
+                  <td className="py-2 pr-4">—</td>
+                  <td className="py-2 pr-4">
+                    <code>Font</code>
+                  </td>
+                  <td className="py-2">OS fonts</td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4">—</td>
+                  <td className="py-2 pr-4">set</td>
+                  <td className="py-2 pr-4">the stack's primary</td>
+                  <td className="py-2">rest of the stack, then OS fonts</td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4">—</td>
+                  <td className="py-2 pr-4">—</td>
+                  <td className="py-2 pr-4">OS default font</td>
+                  <td className="py-2">OS fonts</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-white/70 mb-8">
+            <code>Font</code> is a single <code>UniTextFont</code>; <code>FontStack</code> is a
+            multi-family collection with its own fallback chain (§2.3). Use <code>Font</code> for a
+            quick single typeface, <code>FontStack</code> for multilingual or bold/italic-rich text —
+            and set both to put one explicit primary in front of a shared fallback stack. The
+            always-on OS fallback (§2.6) is always the last link.
           </p>
 
           <div className="space-y-6">
@@ -665,7 +745,10 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
               </div>
 
               <p className="text-white/70">
-                All stacks get full language support through one shared reference.
+                All stacks get full language support through one shared reference. After the whole
+                chain is exhausted, anything still uncovered falls back to the OS's installed fonts
+                (see §2.6) — so you only need to add families for the fonts you want explicit control
+                over.
               </p>
             </div>
 
@@ -900,6 +983,80 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
               <p className="text-white/70">
                 If you want to apply a <strong>custom material / shader</strong> to a text range,
                 see §6.
+              </p>
+            </div>
+
+            {/* 2.6 System Fonts */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-[var(--color-accent)]" />
+                2.6 System Fonts
+              </h3>
+
+              <p className="text-white/70 mb-6">
+                Two independent mechanisms let UniText draw text with fonts installed on the
+                player's OS — no font files bundled, no assignment required. Supported on Windows,
+                macOS, Linux, iOS, and Android. <strong>WebGL has no OS font access</strong> —
+                assign a regular <code>UniTextFont</code> for WebGL builds.
+              </p>
+
+              <h4 className="font-semibold text-white/90 mb-3">
+                Automatic OS fallback (always on)
+              </h4>
+              <p className="text-white/70 mb-4">
+                Any codepoint none of your assigned fonts cover is resolved from the OS's installed
+                fonts through the platform's native font-matching API, then cached. It is the last
+                link in the fallback chain, after every family and <code>fallbackStack</code>. A
+                component with no <code>FontStack</code> at all uses the OS default sans-serif as its
+                primary font, so freshly created text renders immediately.
+              </p>
+
+              <CodeBlock
+                code={`SystemFont.Disabled = true;   // turn OS fallback off — uncovered codepoints render as missing-glyph boxes`}
+              />
+
+              <h4 className="font-semibold text-white/90 mt-6 mb-3">
+                UniTextSystemFont asset (explicit)
+              </h4>
+              <p className="text-white/70 mb-4">
+                A font asset whose bytes load from the OS at runtime instead of being embedded.
+                Create via{' '}
+                <strong>Assets &rarr; Create &rarr; UniText &rarr; System Font Asset</strong>, then
+                add it to a font stack like any other font.
+              </p>
+              <p className="text-white/70 mb-4">
+                The inspector has a tab per platform (
+                <strong>Common / Win / macOS / Linux / iOS / Android</strong>). On each platform tab
+                you pick a font guaranteed to ship with that platform. The <strong>Common</strong>{' '}
+                tab maps an abstract choice (System Sans-Serif / Serif / Monospace) to the right
+                family per platform — Segoe UI on Windows, Helvetica Neue on macOS, Roboto on
+                Android, and so on — and is used as the fallback when a platform tab is left unset.
+                Face metrics and SDF/tile settings can be overridden per platform; unset fields use
+                values read from the resolved font. If the requested font isn't found at runtime,
+                UniText falls back to a guaranteed platform font and logs a warning.
+              </p>
+              <p className="text-white/70">
+                Use it to match the host UI's native font, or to ship a small build that leans on OS
+                fonts instead of bundling typefaces.
+              </p>
+            </div>
+
+            {/* 2.7 Font Variants */}
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Copy className="w-5 h-5 text-[var(--color-accent)]" />
+                2.7 Font Variants
+              </h3>
+
+              <p className="text-white/70">
+                A <code>UniTextFontVariant</code> reuses another font's raw bytes but owns all of its
+                own face metrics, render settings, and glyph overrides. Create via{' '}
+                <strong>Assets &rarr; Create &rarr; UniText &rarr; Font Variant</strong> and assign
+                a <strong>Source</strong> font. Use it to render one TTF/OTF two different ways —
+                different scale, spacing, fake-bold weight, or line metrics — without duplicating
+                the font bytes. Each variant keeps its own atlas, so a variant and its source
+                coexist without overwriting each other's glyphs. Face metrics are seeded from the
+                source on first assignment, then owned by the variant.
               </p>
             </div>
           </div>
@@ -3208,12 +3365,58 @@ uniText.SetText("Hello");   // convenience overload (null → empty)`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 10. Common Properties                                               */}
+        {/* 10. Inspecting Text                                                 */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <ScanSearch className="w-6 h-6 text-[var(--color-accent)]" />
+            10. Inspecting Text
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            UniText ships an in-scene inspection overlay that draws per-glyph, per-run, per-line,
+            and per-modifier data over live text — for debugging shaping, BiDi, fallback, and
+            layout. It works in the editor, in play mode, and in player builds (debug builds).
+          </p>
+
+          <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+            <p className="text-white/70 mb-4">
+              <strong>Editor:</strong> toggle{' '}
+              <strong>Tools &rarr; UniText &rarr; Inspection Mode</strong> (
+              <code>Ctrl+Shift+I</code>). Hover any <code>UniText</code> / <code>UniTextWorld</code>{' '}
+              to inspect it; press <strong>P</strong> to pin the current card so you can move the
+              cursor freely.
+            </p>
+            <p className="text-white/70 mb-4">
+              <strong>Play mode / player builds:</strong> press <strong>F8</strong> to toggle,{' '}
+              <strong>P</strong> to pin. Everything is also driven from code via the static{' '}
+              <code>UniTextInspector</code>:
+            </p>
+
+            <CodeBlock
+              code={`UniTextInspector.Enable();              // also Toggle() / Disable()
+UniTextInspector.Layers = InspectionLayers.GlyphBox | InspectionLayers.RunBounds;  // [Flags]
+UniTextInspector.Filter = InspectionFilter.Fallback;   // mark fallback glyphs (also Notdef, Rtl)
+UniTextInspector.ShowBiDi = true;       // direction arrows on each visual run
+UniTextInspector.ShowStats = true;      // whole-component card: chars, glyphs, runs, fonts, scripts
+UniTextInspector.Target = myText;       // pin to one component; null = whatever is under the cursor`}
+            />
+
+            <p className="text-white/70 mt-4">
+              Available layers: <code>GlyphBox</code>, <code>Baseline</code>, <code>Advance</code>,{' '}
+              <code>RunBounds</code>, <code>LineBounds</code>, <code>ModifierRanges</code>.{' '}
+              <code>ToggleKey</code> and <code>PinKey</code> are configurable.
+            </p>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 11. Common Properties                                               */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <List className="w-6 h-6 text-[var(--color-accent)]" />
-            10. Common Properties
+            11. Common Properties
           </h2>
 
           <div className="overflow-x-auto mb-8">
@@ -3239,13 +3442,29 @@ uniText.SetText("Hello");   // convenience overload (null → empty)`}
                 </tr>
                 <tr className="border-b border-white/5">
                   <td className="py-3 pr-4">
+                    <code>Font</code>
+                  </td>
+                  <td className="py-3 pr-4">
+                    <code>UniTextFont</code>
+                  </td>
+                  <td className="py-3 pr-4">—</td>
+                  <td className="py-3">
+                    Optional single primary font; overrides the stack's primary,{' '}
+                    <code>FontStack</code> still serves as fallback (see §2 font table)
+                  </td>
+                </tr>
+                <tr className="border-b border-white/5">
+                  <td className="py-3 pr-4">
                     <code>FontStack</code>
                   </td>
                   <td className="py-3 pr-4">
                     <code>UniTextFontStack</code>
                   </td>
                   <td className="py-3 pr-4">—</td>
-                  <td className="py-3">Font collection with font families and fallback chain</td>
+                  <td className="py-3">
+                    Font families + fallback chain. With no <code>Font</code> and no stack, the OS
+                    default font is used (except WebGL)
+                  </td>
                 </tr>
                 <tr className="border-b border-white/5">
                   <td className="py-3 pr-4">
@@ -3557,12 +3776,12 @@ uniText.SetText("Hello");   // convenience overload (null → empty)`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 11. Code Examples                                                   */}
+        {/* 12. Code Examples                                                   */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <FileCode className="w-6 h-6 text-[var(--color-accent)]" />
-            11. Code Examples
+            12. Code Examples
           </h2>
 
           <div className="space-y-6">
@@ -3742,6 +3961,32 @@ void Update()
 {
     mat.ConstantUv2 = new Vector4(Mathf.PingPong(Time.time, 1f), 0, 0, 0);
 }`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-white/40" />
+                System fonts (no bundled font)
+              </h3>
+              <CodeBlock
+                code={`// No FontStack assigned — renders with the OS default font, gaps fill from OS fonts (§2.6).
+// Works on desktop and mobile; on WebGL assign a regular UniTextFont instead.
+uniText.Text = "Uses the operating system font 你好 مرحبا";
+
+SystemFont.Disabled = true;   // opt out of OS fallback — uncovered codepoints show missing-glyph boxes`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <ScanSearch className="w-4 h-4 text-white/40" />
+                Text inspection (debug overlay)
+              </h3>
+              <CodeBlock
+                code={`UniTextInspector.Filter = InspectionFilter.Fallback;   // mark glyphs drawn from a fallback font
+UniTextInspector.ShowStats = true;
+UniTextInspector.Enable(uniText);                      // F8 / Tools > UniText > Inspection Mode also toggle it`}
               />
             </div>
           </div>
