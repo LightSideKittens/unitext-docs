@@ -29,6 +29,332 @@ import {
 } from 'lucide-react';
 import { useDocs, CodeBlock, Notice, AutoLink } from '@lightside/docs-system';
 
+const FONT_FALLBACK = [
+  {
+    name: 'Inter',
+    note: 'primary + Bold / Italic faces',
+    glyphs: 'Hello',
+    dir: 'ltr',
+    text: 'text-sky-300',
+    ring: 'border-sky-400/40 bg-sky-400/10',
+    dot: 'bg-sky-400/20 text-sky-300',
+  },
+  {
+    name: 'Noto Sans Arabic',
+    note: 'primary',
+    glyphs: 'مرحبا',
+    dir: 'rtl',
+    text: 'text-emerald-300',
+    ring: 'border-emerald-400/40 bg-emerald-400/10',
+    dot: 'bg-emerald-400/20 text-emerald-300',
+  },
+  {
+    name: 'Noto Sans Hebrew',
+    note: 'primary',
+    glyphs: 'עולם',
+    dir: 'rtl',
+    text: 'text-violet-300',
+    ring: 'border-violet-400/40 bg-violet-400/10',
+    dot: 'bg-violet-400/20 text-violet-300',
+  },
+] as const;
+
+/**
+ * Visual replacement for the §2.3 ASCII font-stack tree: shows the example
+ * string resolving down the fallback chain, each run color-matched to the
+ * family that covers it. Pure CSS — SSR-safe, themeable, translatable.
+ */
+function FontFallbackDiagram() {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4">
+      <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">Rendering</div>
+      <div className="text-2xl flex flex-wrap gap-x-3 gap-y-1 mb-6">
+        {FONT_FALLBACK.map((f) => (
+          <span key={f.name} dir={f.dir} className={f.text}>
+            {f.glyphs}
+          </span>
+        ))}
+      </div>
+
+      <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
+        Fallback chain — searched top to bottom
+      </div>
+      <div className="space-y-2">
+        {FONT_FALLBACK.map((f, i) => (
+          <div
+            key={f.name}
+            className={`flex items-center gap-3 rounded-lg border px-3 py-2 ${f.ring}`}
+          >
+            <span
+              className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-xs font-bold ${f.dot}`}
+            >
+              {i + 1}
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold leading-tight">{f.name}</div>
+              <div className="text-xs text-white/40">{f.note}</div>
+            </div>
+            <span dir={f.dir} className={`text-lg shrink-0 ${f.text}`}>
+              {f.glyphs}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-4 text-sm text-white/50">
+        Families are searched top to bottom; each run uses the first family that covers it. Anything
+        still uncovered falls through to the OS fonts, then the emoji atlas (§2.6).
+      </p>
+    </div>
+  );
+}
+
+/** Visual replacement for the §2.3 variable-font ASCII tree. */
+function VariableFontDiagram() {
+  const weights = ['Thin', 'Light', 'Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold', 'Black'];
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="shrink-0 rounded-lg border border-sky-400/40 bg-sky-400/10 px-4 py-3 sm:w-56">
+          <div className="text-[11px] uppercase tracking-wider text-sky-300/70 mb-1">one file</div>
+          <div className="font-semibold mb-2">Inter-Variable</div>
+          <div className="flex flex-wrap gap-1.5">
+            <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-white/70">
+              wght 100–900
+            </span>
+            <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-white/70">
+              wdth 75–100
+            </span>
+          </div>
+        </div>
+
+        <ArrowRight className="w-5 h-5 shrink-0 self-center rotate-90 text-[var(--color-accent)] sm:rotate-0" />
+
+        <div className="flex-1">
+          <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
+            replaces these static files
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {weights.map((w) => (
+              <span
+                key={w}
+                className="text-xs px-2 py-1 rounded border border-white/10 text-white/50 line-through decoration-white/20"
+              >
+                Inter-{w}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Visual replacement for the §2.3 fallbackStack-chaining ASCII tree. */
+function FallbackChainDiagram() {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4">
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+        <div className="space-y-3">
+          <div className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-3">
+            <div className="text-[11px] uppercase tracking-wider text-amber-300/70 mb-1">
+              for headings
+            </div>
+            <div className="font-semibold">HeadingStack</div>
+            <div className="text-sm text-white/60">Montserrat (+ bold / italic faces)</div>
+          </div>
+          <div className="rounded-lg border border-sky-400/40 bg-sky-400/10 px-4 py-3">
+            <div className="text-[11px] uppercase tracking-wider text-sky-300/70 mb-1">
+              for body text
+            </div>
+            <div className="font-semibold">BodyStack</div>
+            <div className="text-sm text-white/60">Inter (+ faces)</div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-1.5 text-white/40">
+          <span className="text-xs font-mono">fallbackStack</span>
+          <ArrowRight className="w-4 h-4 rotate-90 sm:rotate-0" />
+        </div>
+
+        <div className="self-center rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-4 py-3">
+          <div className="text-[11px] uppercase tracking-wider text-emerald-300/70 mb-1">
+            create once · shared
+          </div>
+          <div className="font-semibold mb-2">LanguageSupportStack</div>
+          <div className="space-y-1 text-sm text-white/70">
+            <div>Noto Sans Arabic</div>
+            <div>Noto Sans Hebrew</div>
+            <div>Noto Sans Devanagari</div>
+            <div>Noto Sans CJK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** SVG bipartite "patch panel" for §3.1: any parse rule can drive any modifier. */
+function RuleModifierCrossbar() {
+  const rules = [
+    { label: 'TagRule "b"', y: 34 },
+    { label: 'TagRule "strong"', y: 90 },
+    { label: 'MarkdownWrapRule "**"', y: 146 },
+    { label: 'RangeRule ".."', y: 202 },
+  ];
+  const mods = [
+    { label: 'BoldModifier', y: 62 },
+    { label: 'ColorModifier', y: 138 },
+    { label: 'OutlineModifier', y: 214 },
+  ];
+  const wire = (y1: number, y2: number) => `M188 ${y1} C280 ${y1} 280 ${y2} 372 ${y2}`;
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4 overflow-x-auto">
+      <svg
+        viewBox="0 0 560 244"
+        className="w-full min-w-[480px] h-auto"
+        role="img"
+        aria-label="Any parse rule can drive any modifier"
+      >
+        <text x="8" y="12" fill="rgba(255,255,255,0.4)" fontSize="11" letterSpacing="1">
+          PARSE RULES
+        </text>
+        <text
+          x="552"
+          y="12"
+          textAnchor="end"
+          fill="rgba(255,255,255,0.4)"
+          fontSize="11"
+          letterSpacing="1"
+        >
+          MODIFIERS
+        </text>
+
+        <path d={wire(90, 62)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        <path d={wire(146, 62)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        <path d={wire(202, 62)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        <path d={wire(146, 214)} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="2" />
+        <path d={wire(34, 62)} fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+        <path d={wire(34, 138)} fill="none" stroke="#fbbf24" strokeWidth="2.5" />
+
+        {rules.map((r) => (
+          <g key={r.label}>
+            <rect
+              x="8"
+              y={r.y - 18}
+              width="180"
+              height="36"
+              rx="8"
+              fill="rgba(255,255,255,0.05)"
+              stroke="rgba(255,255,255,0.12)"
+            />
+            <text
+              x="20"
+              y={r.y + 4}
+              fill="rgba(255,255,255,0.85)"
+              fontSize="13"
+              fontFamily="ui-monospace, monospace"
+            >
+              {r.label}
+            </text>
+          </g>
+        ))}
+        {mods.map((m) => (
+          <g key={m.label}>
+            <rect
+              x="372"
+              y={m.y - 18}
+              width="180"
+              height="36"
+              rx="8"
+              fill="rgba(255,255,255,0.05)"
+              stroke="rgba(255,255,255,0.12)"
+            />
+            <text
+              x="540"
+              y={m.y + 4}
+              textAnchor="end"
+              fill="rgba(255,255,255,0.85)"
+              fontSize="13"
+              fontFamily="ui-monospace, monospace"
+            >
+              {m.label}
+            </text>
+          </g>
+        ))}
+      </svg>
+      <p className="mt-3 text-sm text-white/50">
+        Highlighted: the same <code>&lt;b&gt;</code> tag driving two different effects —{' '}
+        <span className="text-sky-300">BoldModifier</span> and{' '}
+        <span className="text-amber-300">ColorModifier</span>. There is no fixed coupling: any rule
+        can drive any modifier.
+      </p>
+    </div>
+  );
+}
+
+/** §9 text-model flow: one value mutating through the pipeline stages. */
+function TextPipeline() {
+  const stages = [
+    { name: 'Text', value: '"greeting.hello"', note: 'serialized · on disk' },
+    { name: 'RawText', value: '"greeting.hello"', note: 'runtime source' },
+    { name: 'RenderedText', value: '"Hello <b>!</b>"', note: 'goes to shaping', accent: true },
+    { name: 'CleanText', value: '"Hello !"', note: 'markup stripped' },
+  ];
+  const items = [];
+  stages.forEach((st, i) => {
+    if (i > 0) {
+      items.push(
+        <div
+          key={`arrow-${i}`}
+          className="flex flex-col items-center justify-center shrink-0 px-1.5"
+        >
+          {i === 2 && (
+            <span className="text-[10px] font-mono text-emerald-300 mb-1 whitespace-nowrap">
+              Resolver
+            </span>
+          )}
+          <ArrowRight className="w-4 h-4 text-white/30" />
+        </div>
+      );
+    }
+    items.push(
+      <div
+        key={st.name}
+        className={`flex-1 rounded-lg border px-3 py-2.5 ${
+          st.accent ? 'border-emerald-400/40 bg-emerald-400/10' : 'border-white/10 bg-white/[0.03]'
+        }`}
+      >
+        <div className="text-[11px] font-mono text-white/40 mb-1">{st.name}</div>
+        <div className="font-mono text-sm text-white/90 break-all">{st.value}</div>
+        <div className="text-[11px] text-white/40 mt-1.5">{st.note}</div>
+      </div>
+    );
+  });
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-6 overflow-x-auto">
+      <div className="flex items-stretch min-w-[640px]">{items}</div>
+      <p className="mt-3 text-sm text-white/50">
+        What you read back from <code>Text</code> is the serialized value; what actually renders can
+        differ. A resolver (if set) substitutes the source before shaping — everything except{' '}
+        <code>Text</code> is zero-allocation.
+      </p>
+    </div>
+  );
+}
+
+/** Small "this is engine-internals, optional" marker under a heading. */
+function AdvancedBadge() {
+  return (
+    <div className="flex items-center gap-2 mb-4 -mt-1">
+      <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+        Advanced
+      </span>
+      <span className="text-xs text-white/40">engine internals — skip on first read</span>
+    </div>
+  );
+}
+
 export default function GettingStartedPage() {
   const { versionedBasePath, version } = useDocs();
   const basePath = versionedBasePath;
@@ -175,9 +501,10 @@ export default function GettingStartedPage() {
 
               <p className="text-white/70 mb-4">
                 Canvas and EventSystem are created automatically if not present. No font assignment
-                is required on desktop or mobile — a component with no <code>FontStack</code> renders
-                with the OS default font and fills coverage gaps from OS fonts (see §2.6). WebGL has
-                no OS font access, so assign a regular <code>UniTextFont</code> for WebGL builds.
+                is required on desktop or mobile — a component with no <code>FontStack</code> (a font
+                plus its fallback chain, see §2.3) renders with the OS default font and fills
+                coverage gaps from OS fonts (see §2.6). WebGL has no OS font access, so assign a
+                regular <code>UniTextFont</code> for WebGL builds.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -242,42 +569,20 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">1.3 How world-space rendering works</h3>
 
-              <p className="text-white/70 mb-4">
+              <p className="text-white/70">
                 You never attach a <code>MeshRenderer</code> to a <code>UniTextWorld</code>. An
-                invisible <code>UniTextWorldBatcher</code> in the scene subscribes to{' '}
-                <code>UniTextWorld</code> events and assembles combined meshes:
+                invisible <code>UniTextWorldBatcher</code> assembles all world-space text into
+                combined meshes automatically — grouping compatible components into single draw
+                calls and respecting Unity's sorting model, so text interleaves correctly with{' '}
+                <code>SpriteRenderer</code> and other renderers. It is fully transparent: you never
+                configure it.
               </p>
 
-              <ul className="space-y-2 text-white/70 mb-4 list-disc list-inside">
-                <li>
-                  All active <code>UniTextWorld</code> components sharing the same{' '}
-                  <code>(material, SortingLayer, OrderInLayer, SortingGroup)</code> are batched into
-                  one draw call.
-                </li>
-                <li>
-                  Large groups are split into multiple shards automatically (target shard size
-                  configured via <code>UniTextSettings.WorldBatcherShardTargetVertexCount</code>,
-                  default 8192 vertices).
-                </li>
-                <li>
-                  Each batched group respects Unity's sorting model, so world-space text
-                  interleaves correctly with <code>SpriteRenderer</code> and other renderers
-                  per-instance.
-                </li>
-                <li>
-                  When a component moves, only its slice of the shard's vertex buffer is rewritten
-                  (no full rebuild for transform-only changes).
-                </li>
-              </ul>
-
-              <p className="text-white/70">
-                The batcher is fully transparent — you don't configure it. If you need to observe
-                the render pipeline from outside (custom batchers, debug overlays),{' '}
-                <code>UniTextWorld</code> exposes public events: static <code>Activated</code> /{' '}
-                <code>Deactivated</code>, per-instance <code>RenderDataAvailable</code> /{' '}
-                <code>RenderDataCleared</code> / <code>SortingChanged</code> /{' '}
-                <code>ParentChanged</code>, and a <code>UniTextWorld.Active</code> list of
-                currently enabled instances.
+              <p className="mt-3 text-sm text-white/50">
+                Advanced: <code>UniTextWorld</code> also exposes batching and lifecycle events (
+                <code>Activated</code>, <code>RenderDataAvailable</code>, <code>SortingChanged</code>
+                , …) plus a tunable batch-shard size, for custom render tooling — see the API
+                reference.
               </p>
             </div>
           </div>
@@ -291,44 +596,6 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
             <Type className="w-6 h-6 text-[var(--color-accent)]" />
             2. Working with Fonts
           </h2>
-
-          <p className="text-white/70 mb-6">
-            UniText uses its own font format with two rendering modes:
-          </p>
-
-          {/* Render modes table */}
-          <div className="overflow-x-auto mb-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-2 pr-4 text-white/60">Mode</th>
-                  <th className="text-left py-2 pr-4 text-white/60">Description</th>
-                  <th className="text-left py-2 text-white/60">Use Case</th>
-                </tr>
-              </thead>
-              <tbody className="text-white/70">
-                <tr className="border-b border-white/5">
-                  <td className="py-2 pr-4 font-semibold">SDF</td>
-                  <td className="py-2 pr-4">Single-channel Signed Distance Field</td>
-                  <td className="py-2">
-                    Default. Resolution-independent, supports outlines and shadows
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-2 pr-4 font-semibold">MSDF</td>
-                  <td className="py-2 pr-4">Multi-channel Signed Distance Field</td>
-                  <td className="py-2">Sharper corners on geometric/display fonts</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p className="text-white/70 mb-4">
-            Both modes use Burst-compiled curve-based rasterization (no bitmap rendering). Glyphs
-            are stored in a shared <code>Texture2DArray</code> atlas with adaptive tile sizes
-            (64/128/256), reference counting, and LRU eviction. Set the mode per component via{' '}
-            <code>RenderMode</code>.
-          </p>
 
           <p className="text-white/70 mb-8">
             <strong>Fonts work out of the box on desktop and mobile.</strong> A component with no
@@ -404,6 +671,44 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
             quick single typeface, <code>FontStack</code> for multilingual or bold/italic-rich text —
             and set both to put one explicit primary in front of a shared fallback stack. The
             always-on OS fallback (§2.6) is always the last link.
+          </p>
+
+          <p className="text-white/70 mb-4">
+            Under the hood, UniText renders glyphs with its own font format in two modes:
+          </p>
+
+          {/* Render modes table */}
+          <div className="overflow-x-auto mb-4">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-2 pr-4 text-white/60">Mode</th>
+                  <th className="text-left py-2 pr-4 text-white/60">Description</th>
+                  <th className="text-left py-2 text-white/60">Use Case</th>
+                </tr>
+              </thead>
+              <tbody className="text-white/70">
+                <tr className="border-b border-white/5">
+                  <td className="py-2 pr-4 font-semibold">SDF</td>
+                  <td className="py-2 pr-4">Single-channel Signed Distance Field</td>
+                  <td className="py-2">
+                    Default. Resolution-independent, supports outlines and shadows
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4 font-semibold">MSDF</td>
+                  <td className="py-2 pr-4">Multi-channel Signed Distance Field</td>
+                  <td className="py-2">Sharper corners on geometric/display fonts</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="text-white/70 mb-8">
+            Both modes use Burst-compiled curve-based rasterization (no bitmap rendering). Glyphs
+            are stored in a shared <code>Texture2DArray</code> atlas with adaptive tile sizes
+            (64/128/256), reference counting, and LRU eviction. Set the mode per component via{' '}
+            <code>RenderMode</code>.
           </p>
 
           <div className="space-y-6">
@@ -593,36 +898,7 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
                 </li>
               </ol>
 
-              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
-                <div>Inter+Noto-Sans-Variable.asset</div>
-                <div className="ml-4">├── Family: Inter</div>
-                <div className="ml-8">
-                  ├── primary: Inter-Regular &nbsp;&nbsp;&nbsp;&nbsp;(weight 400)
-                </div>
-                <div className="ml-8">
-                  ├── face: Inter-Bold
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(weight
-                  700)
-                </div>
-                <div className="ml-8">
-                  └── face: Inter-Italic
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(weight 400,
-                  italic)
-                </div>
-                <div className="ml-4">├── Family: NotoSansArabic</div>
-                <div className="ml-8">└── primary: NotoSansArabic-Regular</div>
-                <div className="ml-4">└── Family: NotoSansHebrew</div>
-                <div className="ml-8">
-                  &nbsp;&nbsp;&nbsp;&nbsp;└── primary: NotoSansHebrew-Regular
-                </div>
-              </div>
-
-              <p className="text-white/70 mb-2">When rendering "Hello مرحبا עולם":</p>
-              <ul className="space-y-1 text-white/70 list-disc list-inside mb-4">
-                <li>"Hello" — Inter family has Latin glyphs, used directly</li>
-                <li>"مرحبا" — Inter has no Arabic glyphs, falls back to NotoSansArabic family</li>
-                <li>"עולם" — Falls back to NotoSansHebrew family</li>
-              </ul>
+              <FontFallbackDiagram />
 
               <p className="text-white/70 mb-6">
                 When <code>&lt;b&gt;</code> is applied, the system uses CSS §5.2 weight matching to
@@ -665,21 +941,7 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
                 font file replaces dozens of static weights/widths:
               </p>
 
-              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
-                <div>
-                  Inter-Variable.asset
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&larr;
-                  one file
-                </div>
-                <div className="ml-4">├── wght axis: 100–900 (weight)</div>
-                <div className="ml-4">├── wdth axis: 75–100 (width)</div>
-                <div className="ml-4">
-                  └── replaces: Inter-Thin, Inter-Light, Inter-Regular, Inter-Medium,
-                </div>
-                <div className="ml-16">
-                  Inter-SemiBold, Inter-Bold, Inter-ExtraBold, Inter-Black
-                </div>
-              </div>
+              <VariableFontDiagram />
 
               <p className="text-white/70 mb-6">
                 Variable font axes are controlled via modifiers. <code>&lt;b&gt;</code> and{' '}
@@ -718,31 +980,7 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
                 handled automatically.
               </p>
 
-              <div className="p-4 rounded-lg bg-black/30 font-mono text-sm text-white/80 mb-4">
-                <div>
-                  LanguageSupportStack
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&larr;
-                  create once
-                </div>
-                <div className="ml-4">├── Family: NotoSansArabic</div>
-                <div className="ml-4">├── Family: NotoSansHebrew</div>
-                <div className="ml-4">├── Family: NotoSansDevanagari</div>
-                <div className="ml-4">└── Family: NotoSansCJK</div>
-                <div className="mt-3">
-                  HeadingStack
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&larr;
-                  for headings
-                </div>
-                <div className="ml-4">├── Family: Montserrat (primary + bold/italic faces)</div>
-                <div className="ml-4">└── fallbackStack &rarr; LanguageSupportStack</div>
-                <div className="mt-2">
-                  BodyStack
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&larr;
-                  for body text
-                </div>
-                <div className="ml-4">├── Family: Inter (primary + faces)</div>
-                <div className="ml-4">└── fallbackStack &rarr; LanguageSupportStack</div>
-              </div>
+              <FallbackChainDiagram />
 
               <p className="text-white/70">
                 All stacks get full language support through one shared reference. After the whole
@@ -1107,63 +1345,7 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
                 <strong>Example:</strong> The same <code>BoldModifier</code> works with completely
                 different syntaxes:
               </p>
-              <div className="overflow-x-auto mb-4">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="text-left py-2 pr-4 text-white/60">Parse Rule</th>
-                      <th className="text-left py-2 pr-4 text-white/60">Syntax</th>
-                      <th className="text-left py-2 text-white/60">Modifier</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-white/70">
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>TagRule</code> (tagName=&quot;b&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <code>&lt;b&gt;bold&lt;/b&gt;</code>
-                      </td>
-                      <td className="py-2">
-                        <code>BoldModifier</code>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>TagRule</code> (tagName=&quot;strong&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <code>&lt;strong&gt;bold&lt;/strong&gt;</code>
-                      </td>
-                      <td className="py-2">
-                        <code>BoldModifier</code>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule</code> (marker=&quot;**&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <code>**bold**</code>
-                      </td>
-                      <td className="py-2">
-                        <code>BoldModifier</code>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-2 pr-4">
-                        <code>RangeRule</code> (range=&quot;..&quot;)
-                      </td>
-                      <td className="py-2 pr-4">
-                        <em>(entire text, no markup)</em>
-                      </td>
-                      <td className="py-2">
-                        <code>BoldModifier</code>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <RuleModifierCrossbar />
 
               <p className="text-white/70">
                 And the same <code>TagRule</code> (tagName=&quot;b&quot;) can be paired with any
@@ -1219,7 +1401,7 @@ world.SortingLayerID = SortingLayer.NameToID("Gameplay");`}
                       [
                         '<outline>',
                         'OutlineModifier',
-                        '<outline=#000>text</outline> or <outline=0.3,#FF0000>',
+                        '<outline=#FF0000>text</outline> or <outline=#FF0000,0.3> (color, dilate)',
                       ],
                       [
                         '<shadow>',
@@ -1649,13 +1831,26 @@ uniText.RemoveRule(myRule);`}
                   <code>&lt;outline&gt;</code> — default (dilate=0.2, black)
                 </li>
                 <li>
-                  <code>&lt;outline=0.3&gt;</code> — custom dilate
-                </li>
-                <li>
                   <code>&lt;outline=#FF0000&gt;</code> — custom color
                 </li>
                 <li>
-                  <code>&lt;outline=0.3,#FF0000&gt;</code> — both
+                  <code>&lt;outline=,0.3&gt;</code> — custom dilate (empty leading slot keeps color
+                  at default)
+                </li>
+                <li>
+                  <code>&lt;outline=#FF0000,0.3&gt;</code> — both (color, dilate)
+                </li>
+                <li>
+                  <code>&lt;outline=rainbow&gt;</code> — gradient outline (requires an{' '}
+                  <code>IGradientProvider</code> on the modifier)
+                </li>
+                <li>
+                  <code>&lt;outline=rainbow,0.3,radial,45&gt;</code> — gradient + dilate + shape +
+                  angle
+                </li>
+                <li>
+                  <code>&lt;outline=rainbow,,radial,45&gt;</code> — gradient, default dilate, custom
+                  shape + angle
                 </li>
               </ul>
 
@@ -2205,7 +2400,8 @@ uniText.AddStyle(new Style
 
             {/* 3.12 Creating Custom Parse Rules */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.12 Creating Custom Parse Rules</h3>
+              <h3 className="font-semibold mb-2">3.12 Creating Custom Parse Rules</h3>
+              <AdvancedBadge />
               <p className="text-white/70 mb-4">
                 Implement <code>IParseRule</code> to create your own markup syntax:
               </p>
@@ -2239,7 +2435,8 @@ uniText.AddStyle(new Style
 
             {/* 3.13 Creating Custom Modifiers */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">3.13 Creating Custom Modifiers</h3>
+              <h3 className="font-semibold mb-2">3.13 Creating Custom Modifiers</h3>
+              <AdvancedBadge />
               <p className="text-white/70 mb-6">
                 UniText has several modifier base classes for different use cases:
               </p>
@@ -2648,9 +2845,10 @@ camera.gameObject.AddComponent<UniTextWorldRaycaster>();`}
 
             {/* 4.5 Text Resolver */}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">
+              <h3 className="font-semibold mb-2">
                 4.5 Text Resolver (<code>IUniTextResolver</code>)
               </h3>
+              <AdvancedBadge />
               <p className="text-white/70 mb-4">
                 The resolver hook substitutes a component's source text <em>before</em> parsing /
                 shaping / layout, <strong>without writing to the serialized <code>text</code> field</strong>
@@ -3249,6 +3447,8 @@ uniText.Text = "مرحبا بالعالم"; // Renders right-to-left`}
             stored on disk. What's actually drawn can be different. Five properties cover the full
             pipeline from authoring to rendering:
           </p>
+
+          <TextPipeline />
 
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm">
