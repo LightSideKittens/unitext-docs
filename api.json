@@ -1,6 +1,6 @@
 {
-  "version": "2.5.0",
-  "generatedAt": "2026-06-02T12:34:22.0481979Z",
+  "version": "2.5.1",
+  "generatedAt": "2026-06-02T17:52:22.3934593Z",
   "namespaces": [],
   "types": [
     {
@@ -4854,6 +4854,22 @@
             "id": "UniText.OnDeInit",
             "name": "OnDeInit",
             "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.SetMaterialDirty",
+            "name": "SetMaterialDirty",
+            "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
@@ -28398,6 +28414,127 @@
       }
     },
     {
+      "id": "InputUtils",
+      "name": "InputUtils",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Backend-agnostic input reads. Calling [[Input]] directly throws an [[InvalidOperationException]] every frame when the project\u0027s active input handling is set to the Input System package only; these route to Keyboard.current / Mouse.current in that configuration, to legacy Input otherwise.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "utilities",
+      "members": {
+        "methods": [
+          {
+            "id": "InputUtils.GetKey",
+            "name": "GetKey",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether key is currently held. Backend-safe equivalent of [[GetKey]].",
+            "params": [],
+            "paramTypes": [
+              "KeyCode"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InputUtils.GetKeyDown",
+            "name": "GetKeyDown",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether key went down this frame. Backend-safe equivalent of [[GetKeyDown]].",
+            "params": [],
+            "paramTypes": [
+              "KeyCode"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InputUtils.GetMouseButtonDown",
+            "name": "GetMouseButtonDown",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether mouse button (0 = left, 1 = right, 2 = middle) went down this frame. Backend-safe equivalent of [[GetMouseButtonDown]].",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InputUtils.GetTouchBegan",
+            "name": "GetTouchBegan",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether a primary touch began this frame.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "InputUtils.MousePosition",
+            "name": "MousePosition",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Vector2",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Pointer position in screen pixels, origin bottom-left (as [[mousePosition]]).",
+            "seeAlso": []
+          },
+          {
+            "id": "InputUtils.InputString",
+            "name": "InputString",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Characters typed this frame. Backend-safe equivalent of [[inputString]].",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "NamedCatalogAsset\u003CTEntry\u003E",
       "name": "NamedCatalogAsset\u003CTEntry\u003E",
       "namespace": "LightSide",
@@ -30667,6 +30804,10 @@
         "priority": 100
       },
       {
+        "name": "InputUtils",
+        "priority": 100
+      },
+      {
         "name": "NamedCatalogAsset\u003CTEntry\u003E",
         "priority": 100
       },
@@ -30710,6 +30851,7 @@
     "IList": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ilist-1",
     "IntPtr": "https://learn.microsoft.com/en-us/dotnet/api/system.intptr",
     "IReadOnlyList": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ireadonlylist-1",
+    "KeyCode": "https://docs.unity3d.com/ScriptReference/KeyCode.html",
     "LayerMask": "https://docs.unity3d.com/ScriptReference/LayerMask.html",
     "List": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1",
     "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
