@@ -1,54 +1,8 @@
 {
-  "version": "2.4.2",
-  "generatedAt": "2026-05-27T21:40:54.1471023Z",
+  "version": "2.5.0",
+  "generatedAt": "2026-06-02T12:34:22.0481979Z",
   "namespaces": [],
   "types": [
-    {
-      "id": "UniText.AnimationHandler",
-      "name": "AnimationHandler",
-      "namespace": "LightSide",
-      "declaringType": "UniText",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseType": "AnimationHandlerBase\u003CUniText\u003E",
-      "baseTypeChain": [
-        "AnimationHandlerBase\u003CUniText\u003E"
-      ],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Animation handler for [[UniText]]. Diffs base fields only.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "core",
-      "members": {
-        "methods": [
-          {
-            "id": "AnimationHandler.ctor",
-            "name": "AnimationHandler",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": true,
-            "returnType": "AnimationHandler",
-            "params": [],
-            "paramTypes": [
-              "UniText"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [],
-        "fields": [],
-        "events": []
-      }
-    },
     {
       "id": "UniTextWorld.AnimationHandler",
       "name": "AnimationHandler",
@@ -117,6 +71,52 @@
             "returnType": "UniTextDirtyFlags",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniText.AnimationHandler",
+      "name": "AnimationHandler",
+      "namespace": "LightSide",
+      "declaringType": "UniText",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "AnimationHandlerBase\u003CUniText\u003E",
+      "baseTypeChain": [
+        "AnimationHandlerBase\u003CUniText\u003E"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Animation handler for [[UniText]]. Diffs base fields only.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "AnimationHandler.ctor",
+            "name": "AnimationHandler",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "AnimationHandler",
+            "params": [],
+            "paramTypes": [
+              "UniText"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -728,6 +728,89 @@
           }
         ],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextSystemFont.FontPlatform",
+      "name": "FontPlatform",
+      "declaringType": "UniTextSystemFont",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "UniTextSystemFont.FontPlatform.Common",
+            "name": "Common",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "0"
+          },
+          {
+            "id": "UniTextSystemFont.FontPlatform.Windows",
+            "name": "Windows",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "1"
+          },
+          {
+            "id": "UniTextSystemFont.FontPlatform.MacOS",
+            "name": "MacOS",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "2"
+          },
+          {
+            "id": "UniTextSystemFont.FontPlatform.Linux",
+            "name": "Linux",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "3"
+          },
+          {
+            "id": "UniTextSystemFont.FontPlatform.iOS",
+            "name": "iOS",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "4"
+          },
+          {
+            "id": "UniTextSystemFont.FontPlatform.Android",
+            "name": "Android",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontPlatform",
+            "defaultValue": "5"
+          }
+        ],
         "events": []
       }
     },
@@ -2119,6 +2202,77 @@
             "isConst": false,
             "type": "Gradient",
             "summary": "The Unity Gradient with color stops."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextSystemFont.PlatformConfig",
+      "name": "PlatformConfig",
+      "namespace": "LightSide",
+      "declaringType": "UniTextSystemFont",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "PlatformConfig.Unset",
+            "name": "Unset",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "PlatformConfig",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "PlatformConfig.fontName",
+            "name": "fontName",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string"
+          },
+          {
+            "id": "PlatformConfig.faceInfo",
+            "name": "faceInfo",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "FaceInfoOverride"
+          },
+          {
+            "id": "PlatformConfig.sdfDetailMultiplier",
+            "name": "sdfDetailMultiplier",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "PlatformConfig.tileSizeOffsetOverride",
+            "name": "tileSizeOffsetOverride",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
           }
         ],
         "events": []
@@ -5805,6 +5959,238 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerDown",
+            "name": "OnPointerDown",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerUp",
+            "name": "OnPointerUp",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerClick",
+            "name": "OnPointerClick",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerEnter",
+            "name": "OnPointerEnter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerExit",
+            "name": "OnPointerExit",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnPointerMove",
+            "name": "OnPointerMove",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HitTest",
+            "name": "HitTest",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextHitResult",
+            "summary": "Performs hit testing in local coordinates.",
+            "returns": "Hit test result with glyph/cluster information.",
+            "params": [
+              {
+                "name": "localPosition",
+                "type": "Vector2",
+                "description": "Position in local RectTransform space."
+              },
+              {
+                "name": "maxDistance",
+                "type": "float",
+                "description": "Maximum distance from glyph center to count as a hit."
+              }
+            ],
+            "paramTypes": [
+              "Vector2",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HitTestScreen",
+            "name": "HitTestScreen",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextHitResult",
+            "summary": "Performs hit testing from screen coordinates.",
+            "returns": "Hit test result with glyph/cluster information.",
+            "params": [
+              {
+                "name": "screenPosition",
+                "type": "Vector2",
+                "description": "Position in screen space."
+              },
+              {
+                "name": "eventCamera",
+                "type": "Camera",
+                "description": "Camera for coordinate conversion (null for overlay canvases)."
+              },
+              {
+                "name": "maxDistance",
+                "type": "float",
+                "description": "Maximum distance from glyph center to count as a hit."
+              }
+            ],
+            "paramTypes": [
+              "Vector2",
+              "Camera",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ResolveEventCamera",
+            "name": "ResolveEventCamera",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Camera",
+            "summary": "Resolves the camera to use for screen-to-local conversion based on the event source.",
+            "remarks": "Canvas variant returns null for ScreenSpaceOverlay and canvas.worldCamera otherwise; world-space variant returns the raycaster camera from the event data.",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.HasModifier",
             "name": "HasModifier",
             "accessModifier": "public",
@@ -6177,76 +6563,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.EnsureLayoutComputed",
-            "name": "EnsureLayoutComputed",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureLayoutFit",
-            "name": "EnsureLayoutFit",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniTextBase.PrepareForParallel",
             "name": "PrepareForParallel",
             "accessModifier": "protected",
@@ -6280,199 +6596,37 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.OnPointerDown",
-            "name": "OnPointerDown",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnPointerUp",
-            "name": "OnPointerUp",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnPointerClick",
-            "name": "OnPointerClick",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnPointerEnter",
-            "name": "OnPointerEnter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnPointerExit",
-            "name": "OnPointerExit",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnPointerMove",
-            "name": "OnPointerMove",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HitTest",
-            "name": "HitTest",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "TextHitResult",
-            "summary": "Performs hit testing in local coordinates.",
-            "returns": "Hit test result with glyph/cluster information.",
-            "params": [
-              {
-                "name": "localPosition",
-                "type": "Vector2",
-                "description": "Position in local RectTransform space."
-              },
-              {
-                "name": "maxDistance",
-                "type": "float",
-                "description": "Maximum distance from glyph center to count as a hit."
-              }
-            ],
-            "paramTypes": [
-              "Vector2",
-              "float"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HitTestScreen",
-            "name": "HitTestScreen",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "TextHitResult",
-            "summary": "Performs hit testing from screen coordinates.",
-            "returns": "Hit test result with glyph/cluster information.",
-            "params": [
-              {
-                "name": "screenPosition",
-                "type": "Vector2",
-                "description": "Position in screen space."
-              },
-              {
-                "name": "eventCamera",
-                "type": "Camera",
-                "description": "Camera for coordinate conversion (null for overlay canvases)."
-              },
-              {
-                "name": "maxDistance",
-                "type": "float",
-                "description": "Maximum distance from glyph center to count as a hit."
-              }
-            ],
-            "paramTypes": [
-              "Vector2",
-              "Camera",
-              "float"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ResolveEventCamera",
-            "name": "ResolveEventCamera",
+            "id": "UniTextBase.EnsureLayoutComputed",
+            "name": "EnsureLayoutComputed",
             "accessModifier": "protected",
-            "isAbstract": true,
+            "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "Camera",
-            "summary": "Resolves the camera to use for screen-to-local conversion based on the event source.",
-            "remarks": "Canvas variant returns null for ScreenSpaceOverlay and canvas.worldCamera otherwise; world-space variant returns the raycaster camera from the event data.",
+            "returnType": "void",
+            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
             "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureLayoutFit",
+            "name": "EnsureLayoutFit",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6920,28 +7074,6 @@
             "seeAlso": []
           },
           {
-            "id": "UniTextBase.PreferredHeight",
-            "name": "PreferredHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.UseParallel",
-            "name": "UseParallel",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
-            "seeAlso": []
-          },
-          {
             "id": "UniTextBase.LastHoverResult",
             "name": "LastHoverResult",
             "accessModifier": "public",
@@ -6972,6 +7104,28 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the interactive range currently being hovered, if any.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.UseParallel",
+            "name": "UseParallel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.PreferredHeight",
+            "name": "PreferredHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
             "seeAlso": []
           }
         ],
@@ -7103,6 +7257,16 @@
             "type": "List\u003CUniTextRenderData\u003E"
           },
           {
+            "id": "UniTextBase.cachedTransformData",
+            "name": "cachedTransformData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "CachedTransformData",
+            "summary": "Cached transform data captured before parallel processing."
+          },
+          {
             "id": "UniTextBase.cachedEffectiveFontSize",
             "name": "cachedEffectiveFontSize",
             "accessModifier": "protected",
@@ -7121,16 +7285,6 @@
             "isConst": false,
             "type": "float",
             "summary": "Cached preferred height \u2014 what the text wants at its unconstrained (main-pass) size. Not updated by the second pass: parent layout groups read this as \u0022desired height\u0022, which must stay stable even when the rect is smaller than desired."
-          },
-          {
-            "id": "UniTextBase.cachedTransformData",
-            "name": "cachedTransformData",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "CachedTransformData",
-            "summary": "Cached transform data captured before parallel processing."
           }
         ],
         "events": [
@@ -7175,30 +7329,6 @@
             "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           },
           {
-            "id": "UniTextBase.BeforeProcess",
-            "name": "BeforeProcess",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised before any text processing in the current canvas update cycle."
-          },
-          {
-            "id": "UniTextBase.MeshApplied",
-            "name": "MeshApplied",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
-          },
-          {
-            "id": "UniTextBase.AfterProcess",
-            "name": "AfterProcess",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
-          },
-          {
             "id": "UniTextBase.TextClicked",
             "name": "TextClicked",
             "accessModifier": "public",
@@ -7237,6 +7367,30 @@
             "isStatic": false,
             "type": "Action\u003CTextHitResult\u003E",
             "summary": "Raised when the hovered glyph/cluster changes (desktop only)."
+          },
+          {
+            "id": "UniTextBase.BeforeProcess",
+            "name": "BeforeProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised before any text processing in the current canvas update cycle."
+          },
+          {
+            "id": "UniTextBase.MeshApplied",
+            "name": "MeshApplied",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
+          },
+          {
+            "id": "UniTextBase.AfterProcess",
+            "name": "AfterProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
           }
         ]
       }
@@ -8217,7 +8371,7 @@
               "long",
               "uint",
               "GlyphEntry",
-              "UniTextFont",
+              "Core",
               "long",
               "int[]",
               "float",
@@ -8625,7 +8779,7 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "UniTextFont",
+            "type": "Core",
             "summary": "Current font being processed."
           },
           {
@@ -9139,6 +9293,39 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextSettings.SystemFont",
+            "name": "SystemFont",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "UniTextSystemFont",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Project-wide system font. Serves two roles, both via [[Default]]: the always-on final fallback that fills coverage gaps after the assigned fonts, and the primary for components with no Font and no Font Stack. When null, the OS default sans-serif fills both.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.SystemFontDisabled",
+            "name": "SystemFontDisabled",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Persisted mirror of [[Disabled]]. The setter pushes the value to the runtime flag; the saved value is pushed back on editor load (static constructor).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.EmojiDisabled",
+            "name": "EmojiDisabled",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Persisted mirror of [[Disabled]]. The setter pushes the value to the runtime flag; the saved value is pushed back on editor load (static constructor).",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextSettings.Instance",
             "name": "Instance",
             "accessModifier": "public",
@@ -9254,6 +9441,186 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextSystemFont",
+      "name": "UniTextSystemFont",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "UniTextFont",
+      "baseTypeChain": [
+        "UniTextFont"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "UniTextFont that resolves its font bytes from the host OS at runtime from a per-platform pick (Common / Windows / macOS / Linux / iOS / Android). WebGL is unsupported.",
+      "remarks": "A regular font: it participates only when added to a font stack. Automatic gap-filling for codepoints no font covers is a separate, always-on mechanism \u2014 [[SystemFont]] \u2014 independent of this asset. FaceInfo, SDF detail multiplier and tile-size offset can be overridden per platform. Each field defaults to an \u0022unset\u0022 sentinel; unset fields use values extracted from the loaded font. Glyph overrides are not supported \u2014 they reference indices specific to a particular font file, which a system font does not pin.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextSystemFont.GetConfig",
+            "name": "GetConfig",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "PlatformConfig",
+            "summary": "Returns a mutable reference to the platform tab\u0027s config (Common/Windows/macOS/Linux/iOS/Android).",
+            "params": [],
+            "paramTypes": [
+              "FontPlatform"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSystemFont.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSystemFont.CreateRuntime",
+            "name": "CreateRuntime",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Core",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSystemFont.Invalidate",
+            "name": "Invalidate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Forces re-resolution on the next access. Call after changing config at runtime.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "UniTextSystemFont.ResolvedPath",
+            "name": "ResolvedPath",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Path of the file the bytes were read from (or descriptor on iOS). Null if unresolved.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSystemFont.ResolvedFontName",
+            "name": "ResolvedFontName",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Catalog display name actually used at runtime. Null if unresolved.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSystemFont.ResolvedPlatform",
+            "name": "ResolvedPlatform",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "FontPlatform",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Platform tab whose configuration drove the resolution.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSystemFont.ResolveFailed",
+            "name": "ResolveFailed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True if resolution ran and produced no bytes.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSystemFont.FontData",
+            "name": "FontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "byte[]",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSystemFont.HasFontData",
+            "name": "HasFontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "UniTextSystemFont.UnsetInt",
+            "name": "UnsetInt",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UniTextSystemFont.UnsetFloat",
+            "name": "UnsetFloat",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "float"
+          }
+        ],
         "events": []
       }
     },
@@ -9456,22 +9823,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextWorld.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniTextWorld.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -9485,6 +9836,22 @@
             "paramTypes": [
               "PointerEventData"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextWorld.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10282,19 +10649,14 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "UniTextFont",
+      "baseType": "Core",
       "baseTypeChain": [
-        "UniTextFont"
+        "Core"
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Font asset specialized for color emoji rendering using FreeType or browser APIs.",
-      "remarks": "EmojiFont extends [[UniTextFont]] to provide native color emoji support across all platforms. It uses FreeType for desktop/mobile and browser Canvas API for WebGL. The class provides a singleton [[Instance]] that automatically loads the system emoji font. Custom emoji fonts can be created via factory methods. Key features: Automatic system emoji font detection on Windows, macOS, iOS, Android, Linux Dynamic atlas population with shelf-based packing Parallel glyph rendering using FreeType face pool WebGL support via browser Canvas 2D rendering",
-      "seeAlso": [
-        "UniTextFont",
-        "SystemEmojiFont",
-        "FreeType"
-      ],
+      "summary": "Color emoji runtime. Plain [[Core]] subclass \u2014 not a ScriptableObject. Singleton; auto-loads the platform\u0027s system emoji font on first [[Instance]] access.",
+      "seeAlso": [],
       "typeParameters": [],
       "category": "emoji",
       "members": {
@@ -10309,7 +10671,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Ensures the singleton instance and material are initialized.",
+            "summary": "Forces eager creation of [[Instance]] and [[Material]].",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -10326,25 +10688,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "EmojiFont",
-            "summary": "Creates an emoji font from a file path.",
-            "returns": "The created EmojiFont or null on failure.",
-            "params": [
-              {
-                "name": "fontPath",
-                "type": "string",
-                "description": "Path to the font file (.ttf,.ttc)."
-              },
-              {
-                "name": "faceIndex",
-                "type": "int",
-                "description": "Face index for TTC collections."
-              },
-              {
-                "name": "pixelSize",
-                "type": "int",
-                "description": "Desired emoji pixel size."
-              }
-            ],
+            "summary": "Creates an emoji runtime from a font file path (.ttf,.ttc).",
+            "params": [],
             "paramTypes": [
               "string",
               "int",
@@ -10364,30 +10709,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "EmojiFont",
-            "summary": "Creates an emoji font from raw font data bytes.",
-            "returns": "The created EmojiFont or null on failure.",
-            "params": [
-              {
-                "name": "fontData",
-                "type": "byte[]",
-                "description": "Font file content as byte array."
-              },
-              {
-                "name": "faceIndex",
-                "type": "int",
-                "description": "Face index for TTC collections."
-              },
-              {
-                "name": "pixelSize",
-                "type": "int",
-                "description": "Desired emoji pixel size."
-              },
-              {
-                "name": "sourceName",
-                "type": "string",
-                "description": "Optional name for logging purposes."
-              }
-            ],
+            "summary": "Creates an emoji runtime from raw font file bytes. Detects the colour format (sbix, CBDT, COLRv1) and picks the closest bitmap strike to pixelSize.",
+            "params": [],
             "paramTypes": [
               "byte[]",
               "int",
@@ -10474,7 +10797,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Disposes the FreeType face pool and COLRv1 renderer pool used for parallel glyph rendering.",
+            "summary": "Releases the FreeType face pool and COLRv1 renderer pool used for parallel glyph rendering. Call when the singleton is being torn down.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -10491,8 +10814,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets whether emoji rendering is globally disabled.",
-            "remarks": "When changed, invalidates all font caches and raises [[DisableChanged]].",
+            "summary": "Global toggle for emoji rendering. Setting invalidates the codepoint cache and raises [[DisableChanged]].",
             "seeAlso": []
           },
           {
@@ -10503,7 +10825,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the atlas texture size in pixels (square).",
+            "summary": "Emoji atlas page side in pixels (square).",
             "seeAlso": []
           },
           {
@@ -10514,7 +10836,16 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Atlas padding for emoji glyph UV sampling (gutter inside tile prevents bilinear bleeding).",
+            "seeAlso": []
+          },
+          {
+            "id": "EmojiFont.IsColor",
+            "name": "IsColor",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
             "seeAlso": []
           },
           {
@@ -10525,7 +10856,7 @@
             "type": "Material",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the shared material for emoji rendering (Texture2DArray shader).",
+            "summary": "Gets the shared material for emoji rendering.",
             "seeAlso": []
           },
           {
@@ -10536,8 +10867,7 @@
             "type": "EmojiFont",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the singleton emoji font instance, creating it if necessary.",
-            "remarks": "Returns null if [[Disabled]] is true.",
+            "summary": "Singleton emoji runtime. Auto-creates from the platform\u0027s system emoji font on first access. Returns null when [[Disabled]] is true.",
             "seeAlso": []
           },
           {
@@ -10548,7 +10878,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Returns true if emoji rendering is available on this platform.",
+            "summary": "True if emoji rendering is available on this platform.",
             "seeAlso": []
           },
           {
@@ -10559,7 +10889,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the pixel size used for rendering emoji glyphs.",
+            "summary": "Pixel size at which emoji glyphs are rasterised.",
             "seeAlso": []
           },
           {
@@ -10575,6 +10905,16 @@
           {
             "id": "EmojiFont.FontDataHash",
             "name": "FontDataHash",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "EmojiFont.RawFontDataHash",
+            "name": "RawFontDataHash",
             "accessModifier": "public",
             "isStatic": false,
             "type": "int",
@@ -10612,7 +10952,7 @@
             "isReadonly": false,
             "isConst": true,
             "type": "int",
-            "summary": "Default emoji pixel size (128 on desktop/mobile, 64 on WebGL)."
+            "summary": "Default emoji pixel size \u2014 128 on desktop/mobile, 64 on WebGL."
           }
         ],
         "events": [
@@ -10670,6 +11010,492 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextFont.AxisDefault",
+      "name": "AxisDefault",
+      "namespace": "LightSide",
+      "declaringType": "UniTextFont",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "One variable-font axis pinned to a custom default value, keyed by its OpenType tag (4-char tag packed big-endian, same bits as the HarfBuzz uint tag).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "AxisDefault.tag",
+            "name": "tag",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "AxisDefault.value",
+            "name": "value",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextFont.Core",
+      "name": "Core",
+      "namespace": "LightSide",
+      "declaringType": "UniTextFont",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [
+        "EmojiFont"
+      ],
+      "summary": "Plain runtime for a font: holds FT face, glyph table, lookup dictionaries, curve cache, atlas pipeline. Constructable on worker threads (no Unity object lifecycle).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [
+          {
+            "id": "Core.ctor",
+            "name": "Core",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "Core",
+            "summary": "Constructs a runtime from font bytes and the rendering settings normally supplied by the [[UniTextFont]] wrapper. Safe to call from worker threads.",
+            "params": [],
+            "paramTypes": [
+              "byte[]",
+              "FaceInfo",
+              "int",
+              "float",
+              "float",
+              "int",
+              "float",
+              "int",
+              "float",
+              "List\u003CGlyphOverride\u003E",
+              "string",
+              "List\u003CAxisDefault\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.GetCachedInstanceId",
+            "name": "GetCachedInstanceId",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.EnsureFTFace",
+            "name": "EnsureFTFace",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IntPtr",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.ReleaseFTFace",
+            "name": "ReleaseFTFace",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.LoadFontFace",
+            "name": "LoadFontFace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "UniTextFontError",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.ReadFontAssetDefinition",
+            "name": "ReadFontAssetDefinition",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.GetGlyphIndexForUnicode",
+            "name": "GetGlyphIndexForUnicode",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "uint",
+            "params": [],
+            "paramTypes": [
+              "uint"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.RegisterCharacterEntries",
+            "name": "RegisterCharacterEntries",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "List\u003CValueTuple\u003Cuint, uint\u003E\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.HasGlyphInAtlas",
+            "name": "HasGlyphInAtlas",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "uint"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.FilterNewGlyphs",
+            "name": "FilterNewGlyphs",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "List\u003Cuint\u003E",
+            "params": [],
+            "paramTypes": [
+              "List\u003Cuint\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.EstimateTileArea",
+            "name": "EstimateTileArea",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "long",
+            "summary": "Total pixel area of all tiles in a rendered batch, used by the atlas to budget for atlas growth.",
+            "params": [],
+            "paramTypes": [
+              "object"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.ClearDynamicData",
+            "name": "ClearDynamicData",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.InvokeChanged",
+            "name": "InvokeChanged",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Core.Dispose",
+            "name": "Dispose",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Releases FT face, curve cache, batch buffers, atlas entries and styled fallback clones, and unregisters from the live registry. Idempotent.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "Core.FontData",
+            "name": "FontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "byte[]",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Raw font file bytes (already Zstd-decompressed).",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.HasFontData",
+            "name": "HasFontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.FontDataHash",
+            "name": "FontDataHash",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Per-instance hash mixed with the runtime identity, so two Cores over the same bytes get independent atlas keys.",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.RawFontDataHash",
+            "name": "RawFontDataHash",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Raw bytes-derived hash, before identity mixing. Subclasses override to forward to their bytes source.",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.FaceInfo",
+            "name": "FaceInfo",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "FaceInfo",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.UnitsPerEm",
+            "name": "UnitsPerEm",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.FontScale",
+            "name": "FontScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.ItalicStyle",
+            "name": "ItalicStyle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.SpacingOffset",
+            "name": "SpacingOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.FakeBoldWeight",
+            "name": "FakeBoldWeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.Name",
+            "name": "Name",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Worker-thread-safe display name (mirrors [[CachedName]]).",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.AtlasPadding",
+            "name": "AtlasPadding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.IsColor",
+            "name": "IsColor",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.IsVariable",
+            "name": "IsVariable",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.GlyphLookupTable",
+            "name": "GlyphLookupTable",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Dictionary\u003Clong, Glyph\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "(varHash48, glyphIndex) \u2192 atlas-resident glyph. Lazy-built on first access.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "Core.batchProtectedKeys",
+            "name": "batchProtectedKeys",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "List\u003Clong\u003E"
+          }
+        ],
         "events": []
       }
     },
@@ -10898,6 +11724,214 @@
       }
     },
     {
+      "id": "UniTextSystemFont.FaceInfoOverride",
+      "name": "FaceInfoOverride",
+      "namespace": "LightSide",
+      "declaringType": "UniTextSystemFont",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Optional FaceInfo override. Every field defaults to the unset sentinel.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "FaceInfoOverride.Unset",
+            "name": "Unset",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "FaceInfoOverride",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "FaceInfoOverride.familyName",
+            "name": "familyName",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string"
+          },
+          {
+            "id": "FaceInfoOverride.styleName",
+            "name": "styleName",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string"
+          },
+          {
+            "id": "FaceInfoOverride.italicTriState",
+            "name": "italicTriState",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Tri-state italic: -1 unset, 0 false, 1 true."
+          },
+          {
+            "id": "FaceInfoOverride.weightClass",
+            "name": "weightClass",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.unitsPerEm",
+            "name": "unitsPerEm",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.lineHeight",
+            "name": "lineHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.ascentLine",
+            "name": "ascentLine",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.capLine",
+            "name": "capLine",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.meanLine",
+            "name": "meanLine",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.descentLine",
+            "name": "descentLine",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.superscriptOffset",
+            "name": "superscriptOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.superscriptSize",
+            "name": "superscriptSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.subscriptOffset",
+            "name": "subscriptOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.subscriptSize",
+            "name": "subscriptSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.underlineOffset",
+            "name": "underlineOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.underlineThickness",
+            "name": "underlineThickness",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.strikethroughOffset",
+            "name": "strikethroughOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.strikethroughThickness",
+            "name": "strikethroughThickness",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "FaceInfoOverride.tabWidth",
+            "name": "tabWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "FontFamily",
       "name": "FontFamily",
       "namespace": "LightSide",
@@ -10909,7 +11943,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "A font family: a primary font plus optional variant faces (Bold, Italic, Variable, etc.).",
+      "summary": "A font family: primary font plus optional variant faces (Bold, Italic, Variable, etc.).",
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -10925,7 +11959,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "string",
-            "summary": "Optional user-facing identifier referenced by \u003Cfont=...\u003E rich-text tags. Case-sensitive, unique across the stack (duplicates trigger a warning and first-wins lookup). Leave empty for families that should not be addressable by name."
+            "summary": "Optional identifier referenced by \u003Cfont=...\u003E rich-text tags. Case-sensitive; duplicates across a stack trigger a warning and first-wins lookup. Leave empty for families that should not be addressable by name."
           },
           {
             "id": "FontFamily.primary",
@@ -10935,7 +11969,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "UniTextFont",
-            "summary": "Primary font. Provides strut metrics (if first family) and codepoint lookup."
+            "summary": "Primary font asset. Provides strut metrics (if first family) and codepoint lookup."
           },
           {
             "id": "FontFamily.faces",
@@ -10955,7 +11989,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "string",
-            "summary": "Optional BCP 47 language hint (e.g. zh-Hans, zh-Hant, ja, ko, en-US, en-GB). When a text run carries a matching language tag, this family is preferred during codepoint-to-font resolution. Use for single-stack multi-locale setups (e.g. Noto Sans SC/TC/JP/KR in one stack, or en-US print vs en-GB calligraphic). Leave empty for locale-agnostic families."
+            "summary": "Optional BCP 47 language hint (e.g. zh-Hans, ja, en-GB). When a text run carries a matching language tag, this family is preferred during codepoint-to-font resolution. Use for single-stack multi-locale setups; leave empty for locale-agnostic families."
           }
         ],
         "events": []
@@ -11621,7 +12655,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "BCP 47 language tag matching helpers. Follows a simplified RFC 4647 \u0022lookup\u0022 algorithm where a shorter tag is considered to match a longer tag sharing the same prefix (e.g. zh matches zh-Hans, and vice versa).",
+      "summary": "BCP 47 language tag matching: shorter tag matches longer tag sharing the same prefix (e.g. zh \u2194 zh-Hans).",
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -11637,7 +12671,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Returns true if the two BCP 47 tags are equal or one is a prefix of the other.",
+            "summary": "True if the two BCP 47 tags are equal or one is a prefix of the other.",
             "params": [],
             "paramTypes": [
               "string",
@@ -11651,6 +12685,143 @@
         "properties": [],
         "fields": [],
         "events": []
+      }
+    },
+    {
+      "id": "SystemFont",
+      "name": "SystemFont",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Always-on global fallback to OS-installed fonts. Resolves codepoints no assigned font covers via the platform\u0027s native cascade API and caches matches as bare [[Core]] companions; these are plain runtimes (no ScriptableObject), so they can be constructed on worker threads. Consulted by [[UniTextFontStack]] as the last fallback. Turn off with [[Disabled]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [
+          {
+            "id": "SystemFont.TryResolve",
+            "name": "TryResolve",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Core",
+            "summary": "Returns a companion runtime that covers codepoint, or null if no OS font does (or fallback is [[Disabled]]). When stylePrimary is given, the companion inherits its custom render settings (scale, SDF detail, tile size, italic, spacing, fake-bold) via a per-primary clone over the shared font bytes, so different primaries don\u0027t share styled state. Hot path is lockless via thread-local L1 cache; cache misses take a reader lock; new companions take a writer lock.",
+            "params": [],
+            "paramTypes": [
+              "uint",
+              "Core"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SystemFont.TryResolveStyled",
+            "name": "TryResolveStyled",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Core",
+            "summary": "Returns an OS companion covering codepoint with a real cut matching weight (CSS 1-1000) and italic, or null when no styled cut covers it (the caller then keeps the regular companion and synthesizes bold/italic). stylePrimary re-skins it with that font\u0027s render settings. The styled result lives in its own generation, so styled and upright fallbacks coexist.",
+            "params": [],
+            "paramTypes": [
+              "uint",
+              "int",
+              "bool",
+              "Core"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SystemFont.TryResolveStyledFamily",
+            "name": "TryResolveStyledFamily",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Core",
+            "summary": "Resolves the real weight/italic cut of family from the OS font system (e.g. Times New Roman \u2192 Times New Roman Bold) and confirms it covers codepoint. Unlike [[TryResolveStyled]], the family is pinned by name via the platform\u0027s own matcher (DirectWrite FindFamilyName, CoreText/\u200Bfontconfig family match), so the styled cut stays in the same typeface rather than whatever family happens to cover the codepoint. Returns null when the family has no covering styled cut installed \u2014 the caller then falls back to the codepoint cascade. Re-skinned with stylePrimary\u0027s render settings.",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "uint",
+              "int",
+              "bool",
+              "Core"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SystemFont.Reset",
+            "name": "Reset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Discards all companion runtimes and codepoint lookups, and shuts down the platform backend on Windows. Call when fonts on disk may have changed.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "SystemFont.Disabled",
+            "name": "Disabled",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Turns off the automatic, implicit OS fallback \u2014 the gap-filler appended after a component\u0027s assigned fonts, and the OS-default primary used when nothing is assigned. An explicitly assigned [[UniTextSystemFont]] (in the Font field or a Font Stack) is unaffected: its primary, its OS gap-fill for codepoints it doesn\u0027t cover, and its real Bold/Italic cuts all keep working. When true, components with no system font assigned render uncovered codepoints as missing-glyph boxes. Setting it invalidates resolved text so resolution re-runs.",
+            "seeAlso": []
+          },
+          {
+            "id": "SystemFont.Default",
+            "name": "Default",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Core",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The project-wide system font: the configured [[SystemFont]] when set, otherwise the OS default sans-serif (resolved once). Used as the final fallback in every font chain and as the primary for a component with no assigned font or stack. Null where neither is available (e.g. WebGL). Main-thread only.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": [
+          {
+            "id": "SystemFont.DisableChanged",
+            "name": "DisableChanged",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action"
+          }
+        ]
       }
     },
     {
@@ -11668,18 +12839,68 @@
       ],
       "interfaces": [],
       "derivedTypes": [
-        "EmojiFont"
+        "UniTextFontVariant",
+        "UniTextSystemFont"
       ],
-      "summary": "Font asset containing glyph data, metrics, and texture atlases for text rendering.",
-      "remarks": "UniTextFont is a ScriptableObject that stores: Font file data (TTF/OTF bytes) for FreeType rendering Face information (metrics, ascender, descender) Glyph table with metrics for text layout Glyph curve cache for SDF rendering Glyph curves are extracted at runtime when first needed and stored in a shared curve atlas.",
-      "seeAlso": [
-        "UniTextFontProvider",
-        "UniTextFontStack"
-      ],
+      "summary": "Serialized ScriptableObject wrapper around a runtime font [[Core]]. Stores font bytes, faceInfo and editor-tweakable settings; instantiates a Core on first [[Runtime]] access. The Core does all glyph work and is the type consumed by shaping/atlas code paths.",
+      "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
       "members": {
         "methods": [
+          {
+            "id": "UniTextFont.CreateRuntime",
+            "name": "CreateRuntime",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Core",
+            "summary": "Subclass hook: produce the Core, or null if bytes unavailable.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.InvalidateRuntime",
+            "name": "InvalidateRuntime",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Tears down the current runtime; next [[Runtime]] access rebuilds.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.BuildRuntime",
+            "name": "BuildRuntime",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Core",
+            "summary": "Subclass hook: instantiate a Core from bytes. Default uses serialized config.",
+            "params": [],
+            "paramTypes": [
+              "byte[]"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "UniTextFont.GetCachedInstanceId",
             "name": "GetCachedInstanceId",
@@ -11690,83 +12911,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Gets the cached Unity instance ID, initializing on first access.",
-            "returns": "The font asset\u0027s instance ID for use as a dictionary key.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.ComputeFontDataHash",
-            "name": "ComputeFontDataHash",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": true,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "int",
-            "summary": "Computes a hash of font file data for identification.",
-            "returns": "Hash value, or 0 if data is null/empty.",
-            "params": [
-              {
-                "name": "data",
-                "type": "byte[]",
-                "description": "Font file bytes."
-              }
-            ],
-            "paramTypes": [
-              "byte[]"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.ReadFontAssetDefinition",
-            "name": "ReadFontAssetDefinition",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Initializes lookup dictionaries from serialized glyph and character tables.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.EnsureFTFace",
-            "name": "EnsureFTFace",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "IntPtr",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.ReleaseFTFace",
-            "name": "ReleaseFTFace",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
+            "summary": "Cached Unity instance id, suitable for use as a dictionary key.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -11783,8 +12928,24 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "UniTextFontError",
-            "summary": "Loads the font face for glyph operations.",
-            "returns": "Success if the font was loaded, error code otherwise.",
+            "summary": "Loads the underlying FreeType face. Returns the resulting error code, or [[Success]] if already loaded.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.ReadFontAssetDefinition",
+            "name": "ReadFontAssetDefinition",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Builds glyph and character lookup dictionaries and synthesizes invisible control characters (tab, line separators, BOM marks).",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -11801,15 +12962,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "uint",
-            "summary": "Gets the glyph index for a Unicode codepoint.",
-            "returns": "Glyph index, or 0 if the glyph is not available.",
-            "params": [
-              {
-                "name": "unicode",
-                "type": "uint",
-                "description": "Unicode codepoint."
-              }
-            ],
+            "summary": "Resolves a codepoint to a glyph index via HarfBuzz, with controlled fallbacks for NBSP/soft-hyphen.",
+            "params": [],
             "paramTypes": [
               "uint"
             ],
@@ -11827,35 +12981,10 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Registers character-to-glyph mappings for later lookup.",
-            "params": [
-              {
-                "name": "entries",
-                "type": "List\u003CValueTuple\u003Cuint, uint\u003E\u003E",
-                "description": "List of (unicode, glyphIndex) pairs."
-              }
-            ],
-            "paramTypes": [
-              "List\u003CValueTuple\u003Cuint, uint\u003E\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.FilterNewGlyphs",
-            "name": "FilterNewGlyphs",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "List\u003Cuint\u003E",
-            "summary": "Filters glyph indices, removing zeros and already-known glyphs. Returns a reusable list of unique indices to add, or null if nothing to add.",
+            "summary": "Adds (unicode, glyphIndex) pairs to the character table for entries discovered after the initial font load (e.g. variation selectors, emoji sequences).",
             "params": [],
             "paramTypes": [
-              "List\u003Cuint\u003E"
+              "List\u003CValueTuple\u003Cuint, uint\u003E\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -11871,54 +13000,10 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Checks if a glyph is already cached (curve data extracted or bitmap rendered).",
+            "summary": "True if the glyph is already rasterised in the atlas for this font\u0027s default variation hash.",
             "params": [],
             "paramTypes": [
               "uint"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.EstimateTileArea",
-            "name": "EstimateTileArea",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "long",
-            "params": [],
-            "paramTypes": [
-              "object"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFont.CreateFontAsset",
-            "name": "CreateFontAsset",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": true,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "UniTextFont",
-            "summary": "Creates a new font asset from raw font file bytes.",
-            "returns": "New font asset, or null if creation failed.",
-            "params": [
-              {
-                "name": "fontBytes",
-                "type": "byte[]",
-                "description": "TTF or OTF font file data."
-              }
-            ],
-            "paramTypes": [
-              "byte[]"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -11934,8 +13019,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Clears all dynamically generated glyph data and resets atlas textures.",
-            "remarks": "Call this to force re-rendering of all glyphs. Useful when changing atlas parameters or for reducing memory usage.",
+            "summary": "Drops the FT face, glyph caches and atlas entries owned by this font. Next access rebuilds on demand.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -11948,6 +13032,55 @@
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Manually fires the [[Changed]] event. Use after editor edits that affect rendering but not atlas residency.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
@@ -11968,9 +13101,63 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Clears dynamic data for all loaded font assets and invalidates shared caches.",
+            "summary": "Disposes runtimes for all live Cores and invalidates shared caches.",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.ComputeFontDataHash",
+            "name": "ComputeFontDataHash",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Cheap content hash of font bytes (FNV-1a variant, sampling step on large files). Stable across runs and matches the value stored in [[FontDataHash]] before instance-id mixing.",
+            "params": [],
+            "paramTypes": [
+              "byte[]"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.ResetInstanceFontDataHash",
+            "name": "ResetInstanceFontDataHash",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFont.CreateFontAsset",
+            "name": "CreateFontAsset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "UniTextFont",
+            "summary": "Builds a runtime [[UniTextFont]] from font file bytes. Compresses bytes in editor, stores raw at runtime; FT face is loaded once to populate [[FaceInfo]] and units-per-em.",
+            "params": [],
+            "paramTypes": [
+              "byte[]"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11978,24 +13165,25 @@
         ],
         "properties": [
           {
-            "id": "UniTextFont.IsVariable",
-            "name": "IsVariable",
+            "id": "UniTextFont.Runtime",
+            "name": "Runtime",
             "accessModifier": "public",
+            "isStatic": false,
+            "type": "Core",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Lazy-built runtime that owns the FT face, glyph tables and atlas pipeline. All glyph work flows through this. Subclasses override [[CreateRuntime]] to supply bytes from non-serialized sources.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.HasRuntime",
+            "name": "HasRuntime",
+            "accessModifier": "protected",
             "isStatic": false,
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "True if this font has any variable font axes.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextFont.CachedName",
-            "name": "CachedName",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "string",
-            "hasGetter": true,
-            "hasSetter": true,
+            "summary": "True if Runtime is already materialized. Avoids triggering lazy build.",
             "seeAlso": []
           },
           {
@@ -12006,53 +13194,7 @@
             "type": "byte[]",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the raw font file data (TTF/OTF bytes). Decompresses from Zstd on first access.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextFont.ItalicStyle",
-            "name": "ItalicStyle",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets the italic slant angle in degrees.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextFont.SpacingOffset",
-            "name": "SpacingOffset",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "int",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Baseline spacing added to every glyph\u0027s advance during shaping, in font design units (relative to [[UnitsPerEm]]).",
-            "remarks": "Use to normalize fonts that render too tight or too loose by design. Applied uniformly to every glyph with non-zero advance (mark glyphs are unaffected) and scales with font size like any other glyph metric. Layered additively with the style-level letter-spacing modifier; positive values increase spacing, negative values reduce it. Has no effect on synthetic glyphs drawn outside the shaping pipeline (ellipsis dots, list bullets, kashida bars). The convention matches Adobe InDesign tracking (1/1000 em on upem=1000 fonts).",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextFont.FakeBoldWeight",
-            "name": "FakeBoldWeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Baseline synthetic bold applied to every glyph of this font, in CSS weight steps from the font\u0027s own weight (1 \u2248 Regular \u2192 Bold).",
-            "remarks": "Renders thicker via SDF dilate (face quad expanded, atlas band upgraded on demand) and compensates glyph advance during shaping so layout stays consistent. Has no effect on color glyph (emoji) fonts. Stacks additively with the advance contribution of an explicit \u003Cb\u003E tag; the tag\u0027s dilate fully overrides this baseline.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextFont.FontDataHash",
-            "name": "FontDataHash",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "int",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets the hash of the font data for identification.",
+            "summary": "Raw font file bytes (TTF/OTF). Decompressed on first access; may be null before [[Runtime]] resolves.",
             "seeAlso": []
           },
           {
@@ -12063,7 +13205,18 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Returns true if font file data is available.",
+            "summary": "True when font bytes are available (either serialized or supplied by a subclass).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.FontDataHash",
+            "name": "FontDataHash",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Per-instance hash used as the high bits of every atlas/shaper key. Mixes the raw bytes hash with the asset instance id so duplicates and variants get independent atlas/shaper state.",
             "seeAlso": []
           },
           {
@@ -12074,7 +13227,7 @@
             "type": "FaceInfo",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets the font face information (metrics, ascender, descender, etc.).",
+            "summary": "Font face metrics (ascender, descender, line height, etc.).",
             "seeAlso": []
           },
           {
@@ -12085,8 +13238,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets the font design units per em (typically 1000 or 2048).",
-            "remarks": "This is the fundamental scaling unit for font metrics. All glyph measurements are expressed relative to this value. Industry standard values are 1000 (CFF/OTF) or 2048 (TrueType). Used for correct scaling: scale = fontSize / unitsPerEm.",
+            "summary": "Font design units per em (typically 1000 or 2048). Fundamental scaling unit: scale = fontSize / unitsPerEm.",
             "seeAlso": []
           },
           {
@@ -12097,8 +13249,40 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Visual scale multiplier for this font asset.",
-            "remarks": "Use to normalize fonts that appear too small or too large by design. For example, Dongle font renders visually smaller than other fonts at the same size \u2014 setting FontScale to 1.5 compensates for this. Applied as a post-conversion multiplier in all fontSize/UnitsPerEm scaling calculations.",
+            "summary": "Visual scale multiplier. Compensates for fonts that render visually smaller/larger than peers at the same size (e.g. Dongle).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.ItalicStyle",
+            "name": "ItalicStyle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Synthetic italic slant in degrees, applied as a horizontal skew when an italic tag is set. 0 falls back to [[DefaultItalicStyle]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.SpacingOffset",
+            "name": "SpacingOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Baseline spacing added to every glyph\u0027s advance during shaping, in font design units. Layered additively with style-level letter-spacing.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.FakeBoldWeight",
+            "name": "FakeBoldWeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Baseline synthetic bold in CSS weight steps from the font\u0027s own weight (1 \u2248 Regular \u2192 Bold). Renders thicker via SDF dilate and compensates advance to keep layout stable. No effect on color emoji fonts.",
             "seeAlso": []
           },
           {
@@ -12109,18 +13293,18 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the padding between glyphs in the atlas (EmojiFont only).",
+            "summary": "Atlas gutter in pixels around each glyph tile, prevents bilinear bleeding.",
             "seeAlso": []
           },
           {
-            "id": "UniTextFont.GlyphLookupTable",
-            "name": "GlyphLookupTable",
+            "id": "UniTextFont.IsVariable",
+            "name": "IsVariable",
             "accessModifier": "public",
             "isStatic": false,
-            "type": "Dictionary\u003Clong, Glyph\u003E",
+            "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the glyph lookup table (glyph key \u2192 Glyph).",
+            "summary": "True if this font defines OpenType variable axes.",
             "seeAlso": []
           },
           {
@@ -12131,6 +13315,29 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
+            "summary": "True for color (emoji/COLR) fonts \u2014 they bypass the SDF pipeline.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.CachedName",
+            "name": "CachedName",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Cached name string usable on worker threads (Unity\u0027s name getter is main-thread-only).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.GlyphLookupTable",
+            "name": "GlyphLookupTable",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Dictionary\u003Clong, Glyph\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "(varHash48, glyphIndex) \u2192 atlas-resident [[Glyph]]. Null until the font\u0027s lookup tables are built.",
             "seeAlso": []
           }
         ],
@@ -12154,22 +13361,14 @@
             "type": "int"
           },
           {
-            "id": "UniTextFont.glyphIndexList",
-            "name": "glyphIndexList",
-            "accessModifier": "protected",
-            "isStatic": false,
+            "id": "UniTextFont.DefaultItalicStyle",
+            "name": "DefaultItalicStyle",
+            "accessModifier": "public",
+            "isStatic": true,
             "isReadonly": false,
-            "isConst": false,
-            "type": "List\u003Cuint\u003E"
-          },
-          {
-            "id": "UniTextFont.batchProtectedKeys",
-            "name": "batchProtectedKeys",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "List\u003Clong\u003E"
+            "isConst": true,
+            "type": "float",
+            "summary": "Synthetic-italic slant used when a font stores none (value 0), notably OS system-font fallbacks built at runtime. The italic modifier reads it as a horizontal shear factor."
           }
         ],
         "events": []
@@ -12248,16 +13447,10 @@
       "isSealed": true,
       "isStatic": false,
       "baseTypeChain": [],
-      "interfaces": [
-        "IDisposable"
-      ],
+      "interfaces": [],
       "derivedTypes": [],
-      "summary": "Manages font assets and provides font lookup services for text rendering.",
-      "remarks": "The font provider handles: Primary font and fallback font resolution Font scaling based on requested font size Glyph caching in texture atlases Font data access (glyph lookup, font data bytes) Font family lookup for variant/variable font resolution Uses [[SharedFontCache]] for fast codepoint-to-font mapping.",
-      "seeAlso": [
-        "UniTextFont",
-        "UniTextFontStack"
-      ],
+      "summary": "Owns codepoint\u2192font resolution for a text object: composes the family chain from the assigned font and font stack, walks it (plus emoji and the always-on [[SystemFont]] fallback) to pick a runtime per codepoint, and stores [[Core]] instances so worker-thread companions and the emoji singleton (both plain Core, no Unity asset) flow through the same code path.",
+      "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
       "members": {
@@ -12272,14 +13465,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets the font size in points.",
-            "params": [
-              {
-                "name": "size",
-                "type": "float",
-                "description": "Font size in points."
-              }
-            ],
+            "summary": "Equivalent to setting [[FontSize]].",
+            "params": [],
             "paramTypes": [
               "float"
             ],
@@ -12297,24 +13484,8 @@
             "isOverride": false,
             "isConstructor": true,
             "returnType": "UniTextFontProvider",
-            "summary": "Initializes the font provider.",
-            "params": [
-              {
-                "name": "primary",
-                "type": "UniTextFont",
-                "description": "Optional explicit primary font. When non-null, it becomes the primary \u2014 providing strut metrics, the default face, and the head of the codepoint search; fontStack participates only as fallback. Internally a transient synthetic [[UniTextFontStack]] is built so the standard stack resolution pipeline (emoji preference, language preference, fallback chain) flows through a single code path. The synthetic asset is owned by this provider and destroyed by [[Dispose]]."
-              },
-              {
-                "name": "fontStack",
-                "type": "UniTextFontStack",
-                "description": "Font collection. Required when primary is null. When primary is set, chained as the fallback of the synthetic stack (may be null for a Font-only setup with no fallback)."
-              },
-              {
-                "name": "fontSize",
-                "type": "float",
-                "description": "Initial font size in points."
-              }
-            ],
+            "summary": "Initializes the provider. The resolution chain is primary (if set), then fontStack\u0027s families, then [[Default]] (the configured [[SystemFont]] or the OS default) as the always-on final fallback. With nothing assigned, [[Default]] becomes the primary. Main-thread only.",
+            "params": [],
             "paramTypes": [
               "UniTextFont",
               "UniTextFontStack",
@@ -12334,15 +13505,27 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Gets the unique font identifier for a font asset.",
-            "returns": "Font ID based on font data hash, or 0 if null.",
-            "params": [
-              {
-                "name": "font",
-                "type": "UniTextFont",
-                "description": "The font asset."
-              }
+            "summary": "Stable font identifier. Equals [[FontId]] for emoji, [[FontDataHash]] otherwise. Returns 0 for null.",
+            "params": [],
+            "paramTypes": [
+              "Core"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.GetFontId",
+            "name": "GetFontId",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Stable font identifier from a [[UniTextFont]] asset.",
+            "params": [],
             "paramTypes": [
               "UniTextFont"
             ],
@@ -12360,22 +13543,11 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Registers a font asset with the provider.",
-            "params": [
-              {
-                "name": "fontId",
-                "type": "int",
-                "description": "Unique font identifier."
-              },
-              {
-                "name": "font",
-                "type": "UniTextFont",
-                "description": "Font asset to register."
-              }
-            ],
+            "summary": "Registers a font runtime under fontId so subsequent [[GetFontAsset]] lookups resolve to it. Required for fallback fonts discovered at runtime.",
+            "params": [],
             "paramTypes": [
               "int",
-              "UniTextFont"
+              "Core"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -12390,16 +13562,9 @@
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "UniTextFont",
-            "summary": "Gets a font asset by its identifier.",
-            "returns": "The font asset, or primary font if not found.",
-            "params": [
-              {
-                "name": "fontId",
-                "type": "int",
-                "description": "The font identifier."
-              }
-            ],
+            "returnType": "Core",
+            "summary": "Resolves a font id to its registered runtime. Falls back to [[PrimaryFont]] if unknown.",
+            "params": [],
             "paramTypes": [
               "int"
             ],
@@ -12417,29 +13582,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Gets line metrics scaled to the specified font size.",
-            "params": [
-              {
-                "name": "size",
-                "type": "float",
-                "description": "Target font size in points."
-              },
-              {
-                "name": "ascender",
-                "type": "float",
-                "description": "Output: distance from baseline to top of tallest glyph."
-              },
-              {
-                "name": "descender",
-                "type": "float",
-                "description": "Output: distance from baseline to bottom (typically negative)."
-              },
-              {
-                "name": "lineHeight",
-                "type": "float",
-                "description": "Output: total line height."
-              }
-            ],
+            "summary": "Strut metrics from the primary font, scaled to size points. descender is negative; lineHeight falls back to 1.2 \u00D7 extent when the font omits it.",
+            "params": [],
             "paramTypes": [
               "float",
               "float",
@@ -12460,15 +13604,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "Gets the cap height (top of capital letters) scaled to the specified font size.",
-            "returns": "Scaled cap height, or 0 if unavailable.",
-            "params": [
-              {
-                "name": "size",
-                "type": "float",
-                "description": "Target font size in points."
-              }
-            ],
+            "summary": "Cap height (top of capital letters) of the primary font, scaled to size points. Returns 0 when unavailable.",
+            "params": [],
             "paramTypes": [
               "float"
             ],
@@ -12486,7 +13623,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Resolves a [[name]] to its primary font\u0027s fontId, registering the font with this provider if needed. Returns 0 when the name is empty or unknown.",
+            "summary": "Resolves a [[name]] to its primary font id, registering the runtime with this provider if needed. Returns 0 when the name is empty or unknown. Case-sensitive, first-wins across the family chain.",
             "params": [],
             "paramTypes": [
               "string"
@@ -12505,15 +13642,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Finds the best font to render a codepoint, using fallback chain if needed.",
-            "returns": "Font ID of the font that can render this codepoint.",
-            "params": [
-              {
-                "name": "codepoint",
-                "type": "int",
-                "description": "Unicode codepoint to find a font for."
-              }
-            ],
+            "summary": "Finds the best font id to render codepoint via the fallback chain; result is cached in [[SharedFontCache]].",
+            "params": [],
             "paramTypes": [
               "int"
             ],
@@ -12531,19 +13661,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Finds the best font to render a codepoint given a language tag registry index. Prefers families whose [[preferredLanguage]] matches the tag.",
-            "params": [
-              {
-                "name": "codepoint",
-                "type": "int",
-                "description": "Unicode codepoint to find a font for."
-              },
-              {
-                "name": "language",
-                "type": "byte",
-                "description": "Language registry index, or 0 for unset."
-              }
-            ],
+            "summary": "Same as [[FindFontForCodepoint]] but prefers families whose [[preferredLanguage]] matches the given language registry index.",
+            "params": [],
             "paramTypes": [
               "int",
               "byte"
@@ -12562,7 +13681,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "ushort",
-            "summary": "Gets the family index for a font ID. Returns 0 (first family) if not found.",
+            "summary": "Family index for a font id (used for face-matching lookups). Returns 0 if not found.",
             "params": [],
             "paramTypes": [
               "int"
@@ -12581,35 +13700,11 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "byte[]",
-            "summary": "Gets the raw font data (TTF/OTF bytes) for a font.",
-            "returns": "Font file data, or null if not available.",
-            "params": [
-              {
-                "name": "fontId",
-                "type": "int",
-                "description": "Font identifier."
-              }
-            ],
+            "summary": "Raw font file bytes for a font id, or null if not available.",
+            "params": [],
             "paramTypes": [
               "int"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFontProvider.Dispose",
-            "name": "Dispose",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Releases the transient synthetic [[UniTextFontStack]] built when an explicit primary font was supplied. Safe to call multiple times.",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -12624,7 +13719,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gets or sets the current font size in points.",
+            "summary": "Current font size in points. Setter recomputes the cached font scale.",
             "seeAlso": []
           },
           {
@@ -12632,10 +13727,10 @@
             "name": "PrimaryFont",
             "accessModifier": "public",
             "isStatic": false,
-            "type": "UniTextFont",
+            "type": "Core",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the main (primary) font asset.",
+            "summary": "Resolved primary font runtime. Provides strut metrics and serves as the head of codepoint resolution.",
             "seeAlso": []
           },
           {
@@ -12646,7 +13741,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the unique identifier for the primary font.",
+            "summary": "Stable id of [[PrimaryFont]].",
             "seeAlso": []
           },
           {
@@ -12657,7 +13752,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Whether any family in the resolved chain has faces (variants or variable fonts).",
+            "summary": "True if the resolved family chain carries variant faces (Bold/Italic) or a variable font.",
             "seeAlso": []
           }
         ],
@@ -12680,12 +13775,8 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "ScriptableObject container for font families with fallback chain support.",
-      "remarks": "Ordered list of font families. The first family\u0027s primary font is the primary font and provides strut metrics (line height, ascent, descent). Each family contains a primary font and optional faces (Bold, Italic, Variable, etc.). Face matching uses pre-computed lookup tables with CSS Fonts Level 4 \u00A75.2 weight matching. Create via Assets menu: Create \u2192 UniText \u2192 Fonts",
-      "seeAlso": [
-        "UniTextFont",
-        "UniTextFontProvider"
-      ],
+      "summary": "Ordered list of font families plus an optional fallback stack. The first family\u0027s primary provides strut metrics (line height, ascent, descent). Face matching uses pre-computed lookup tables with CSS Fonts Level 4 \u00A75.2 weight matching.",
+      "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
       "members": {
@@ -12701,92 +13792,10 @@
             "isConstructor": false,
             "returnType": "bool",
             "summary": "Looks up a family by its [[name]] across this stack and its fallback chain. Case-sensitive, first-wins.",
-            "returns": "True if a family with the given name was found.",
-            "params": [
-              {
-                "name": "name",
-                "type": "string",
-                "description": "The family name to find."
-              },
-              {
-                "name": "family",
-                "type": "FontFamily",
-                "description": "The matched family on success."
-              }
-            ],
+            "params": [],
             "paramTypes": [
               "string",
               "FontFamily"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFontStack.FindFontForCodepoint",
-            "name": "FindFontForCodepoint",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "UniTextFont",
-            "summary": "Finds a font that can render the specified Unicode codepoint.",
-            "returns": "Font that can render the codepoint, or null if none found.",
-            "params": [
-              {
-                "name": "unicode",
-                "type": "uint",
-                "description": "Unicode codepoint to find a font for."
-              },
-              {
-                "name": "searched",
-                "type": "HashSet\u003Cint\u003E",
-                "description": "Set of already-searched font IDs (to prevent loops)."
-              }
-            ],
-            "paramTypes": [
-              "uint",
-              "HashSet\u003Cint\u003E"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextFontStack.FindFontForCodepoint",
-            "name": "FindFontForCodepoint",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "UniTextFont",
-            "summary": "Finds a font that can render the specified Unicode codepoint, preferring families whose [[preferredLanguage]] matches preferredLanguage.",
-            "returns": "Font that can render the codepoint, or null if none found.",
-            "params": [
-              {
-                "name": "unicode",
-                "type": "uint",
-                "description": "Unicode codepoint to find a font for."
-              },
-              {
-                "name": "preferredLanguage",
-                "type": "string",
-                "description": "BCP 47 language tag of the text (e.g. \u0022zh-Hans\u0022), or null."
-              },
-              {
-                "name": "searched",
-                "type": "HashSet\u003Cint\u003E",
-                "description": "Set of already-searched font IDs (to prevent loops)."
-              }
-            ],
-            "paramTypes": [
-              "uint",
-              "string",
-              "HashSet\u003Cint\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -12802,7 +13811,7 @@
             "type": "UniTextFont",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the main (primary) font, or null if empty.",
+            "summary": "Primary font asset of the first family.",
             "seeAlso": []
           },
           {
@@ -12813,7 +13822,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Whether any family in this stack has faces (variants or variable fonts).",
+            "summary": "True if any family in the resolved chain carries variant faces or a variable font.",
             "seeAlso": []
           }
         ],
@@ -12826,7 +13835,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "FontFamily[]",
-            "summary": "Ordered list of font families. First family\u0027s primary = MainFont (strut metrics)."
+            "summary": "Ordered list of font families. The first family\u0027s primary is the head of codepoint resolution and supplies strut metrics."
           },
           {
             "id": "UniTextFontStack.fallbackStack",
@@ -12836,9 +13845,127 @@
             "isReadonly": false,
             "isConst": false,
             "type": "UniTextFontStack",
-            "summary": "Optional fallback stack. Searched after this stack\u0027s own families."
+            "summary": "Optional fallback stack searched after this stack\u0027s own families."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextFontVariant",
+      "name": "UniTextFontVariant",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "UniTextFont",
+      "baseTypeChain": [
+        "UniTextFont"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "A [[UniTextFont]] that takes only the raw font bytes from a [[Source]] font and defines everything else itself \u2014 face metrics, units-per-em, render settings and glyph overrides are fully independent and overridable. Use to render the same TTF/OTF with a different look or metrics without duplicating the bytes. Each variant has its own atlas and shaper cache (the base mixes the asset instance id into [[FontDataHash]]), so variants and their source coexist without overwriting each other\u0027s glyphs. On first assignment the face metrics are seeded from the source font; after that they are owned by the variant.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextFontVariant.CreateRuntime",
+            "name": "CreateRuntime",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Core",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontVariant.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontVariant.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "UniTextFontVariant.Source",
+            "name": "Source",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniTextFont",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Source font this variant takes its raw bytes from. Assigning a source seeds the variant\u0027s face metrics from the selected [[FaceIndex]], then rebuilds the runtime.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFontVariant.FaceIndex",
+            "name": "FaceIndex",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Which face of the source\u0027s font file this variant renders. 0 is the first face; collections (.ttc) expose their other cuts at 1..N-1. Changing it re-reads that face\u0027s metrics and rebuilds.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFontVariant.FontData",
+            "name": "FontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "byte[]",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFontVariant.HasFontData",
+            "name": "HasFontData",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
         "events": []
       }
     },
@@ -13002,15 +14129,6 @@
           {
             "id": "AttributeKeys.Bold",
             "name": "Bold",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": false,
-            "isConst": true,
-            "type": "string"
-          },
-          {
-            "id": "AttributeKeys.BoldFake",
-            "name": "BoldFake",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -13313,6 +14431,7 @@
         "IndentModifier",
         "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
         "InteractiveModifier",
+        "ItalicModifier",
         "LanguageModifier",
         "LetterSpacingModifier",
         "LineHeightModifier",
@@ -13480,7 +14599,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Applies bold styling to text using CSS font-weight scale (100-900).",
-      "remarks": "First parameter: optional CSS font-weight (100-900). Without parameter, computes max(700, baseWeight \u002B 300). Second parameter: optional f flag (e.g. \u003Cb=700,f\u003E) that forces synthetic bold via SDF dilate (UV1.y) \u002B advance correction, ignoring real bold faces in the Font Family and the wght axis on variable fonts. Without the flag, the pipeline picks the matching real font (variable axis or static face) when available and clears the bold buffer; otherwise the modifier falls back to synthetic bold.",
+      "remarks": "First parameter: CSS font-weight 100-900 (default: max(700, baseWeight\u002B300)). Second parameter \u2014 mode: f (\u003Cb=700,f\u003E) forces synthetic bold (SDF dilate \u002B advance correction); r (\u003Cb=700,r\u003E) uses a real bold face only, staying at the natural weight when none matches. Default (no mode) prefers a real face \u2014 Font Family static cut or variable wght axis \u2014 and synthesizes only as a fallback. One buffer carries both: the top 2 bits select the mode, the low 6 bits the weight.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -16406,29 +17525,28 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "GlyphModifier\u003Cbyte\u003E",
+      "baseType": "BaseModifier",
       "baseTypeChain": [
-        "GlyphModifier\u003Cbyte\u003E"
+        "BaseModifier"
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Applies italic styling to text by shearing glyph vertices.",
-      "remarks": "No parameter. The italic effect is achieved by horizontally shearing the glyph vertices. The shear angle is determined by the font\u0027s ItalicStyle property (default 12 degrees).",
+      "summary": "Renders italic by slanting glyphs. Without a parameter (auto) the pipeline prefers a real italic face (family cut, variable ital/slnt axis, or OS fallback) and shears synthetically only when none exists. Parameters override that: a number sets an explicit synthetic slant (\u003Ci=20\u003E), f (\u003Ci=f\u003E) synthesizes from the run font\u0027s own [[ItalicStyle]], and r (\u003Ci=r\u003E) uses a real italic face only \u2014 never synthesizes, leaving the text upright when none is available.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
           {
-            "id": "ItalicModifier.GetOnGlyphCallback",
-            "name": "GetOnGlyphCallback",
+            "id": "ItalicModifier.OnEnable",
+            "name": "OnEnable",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "Action",
+            "returnType": "void",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -16436,8 +17554,40 @@
             "typeParameters": []
           },
           {
-            "id": "ItalicModifier.DoApply",
-            "name": "DoApply",
+            "id": "ItalicModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ItalicModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ItalicModifier.OnApply",
+            "name": "OnApply",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -16456,18 +17606,7 @@
             "typeParameters": []
           }
         ],
-        "properties": [
-          {
-            "id": "ItalicModifier.AttributeKey",
-            "name": "AttributeKey",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "type": "string",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          }
-        ],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -22886,7 +24025,7 @@
             "params": [
               {
                 "name": "font",
-                "type": "UniTextFont",
+                "type": "Core",
                 "description": "The font asset."
               },
               {
@@ -22896,7 +24035,7 @@
               }
             ],
             "paramTypes": [
-              "UniTextFont",
+              "Core",
               "uint"
             ],
             "exceptions": [],
@@ -22918,7 +24057,7 @@
             "params": [
               {
                 "name": "font",
-                "type": "UniTextFont",
+                "type": "Core",
                 "description": "The font asset."
               },
               {
@@ -22943,7 +24082,7 @@
               }
             ],
             "paramTypes": [
-              "UniTextFont",
+              "Core",
               "uint",
               "float",
               "uint",
@@ -22968,12 +24107,12 @@
             "params": [
               {
                 "name": "font",
-                "type": "UniTextFont",
+                "type": "Core",
                 "description": "The font asset."
               }
             ],
             "paramTypes": [
-              "UniTextFont"
+              "Core"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -23070,7 +24209,6 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "Computes per-font shaping parameters in a single font lookup: the spacingOffsetUnits baseline (from [[SpacingOffset]]) and per-glyph fakeBoldAdvancePx bonus (from [[FakeBoldWeight]]) alongside the returned design-unit-to-pixel scale (incorporates [[FontScale]]). Callers cache all three per run-fontId change.",
             "params": [],
             "paramTypes": [
               "UniTextFontProvider",
@@ -28857,6 +29995,10 @@
         "priority": 100
       },
       {
+        "name": "FontPlatform",
+        "priority": 100
+      },
+      {
         "name": "HighlightOrder",
         "priority": 100
       },
@@ -28894,6 +30036,10 @@
       },
       {
         "name": "NamedGradient",
+        "priority": 100
+      },
+      {
+        "name": "PlatformConfig",
         "priority": 100
       },
       {
@@ -28942,6 +30088,10 @@
       },
       {
         "name": "UniTextSprites",
+        "priority": 100
+      },
+      {
+        "name": "UniTextSystemFont",
         "priority": 100
       },
       {
@@ -29015,7 +30165,19 @@
         "priority": 7
       },
       {
+        "name": "AxisDefault",
+        "priority": 100
+      },
+      {
+        "name": "Core",
+        "priority": 100
+      },
+      {
         "name": "FaceInfo",
+        "priority": 100
+      },
+      {
+        "name": "FaceInfoOverride",
         "priority": 100
       },
       {
@@ -29047,7 +30209,15 @@
         "priority": 100
       },
       {
+        "name": "SystemFont",
+        "priority": 100
+      },
+      {
         "name": "UniTextFontError",
+        "priority": 100
+      },
+      {
+        "name": "UniTextFontVariant",
         "priority": 100
       },
       {
@@ -29532,7 +30702,6 @@
     "Dictionary": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2",
     "Func": "https://learn.microsoft.com/en-us/dotnet/api/system.func-1",
     "Gradient": "https://docs.unity3d.com/ScriptReference/Gradient.html",
-    "HashSet": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1",
     "IComparer": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.icomparer-1",
     "IDisposable": "https://learn.microsoft.com/en-us/dotnet/api/system.idisposable",
     "IEnumerable": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1",
