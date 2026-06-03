@@ -1,6 +1,6 @@
 {
   "version": "2.6.0",
-  "generatedAt": "2026-06-03T08:49:06.0974733Z",
+  "generatedAt": "2026-06-03T09:06:57.6490009Z",
   "namespaces": [],
   "types": [
     {
@@ -18290,8 +18290,8 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Adjusts line height for text ranges.",
-      "remarks": "Parameter: line height value with optional unit. 1.5 or 150% \u2014 150% of default line height 40 \u2014 absolute 40 pixels (replaces default) \u002B10 \u2014 add 10 pixels to base (default or absolute) -5 \u2014 reduce by 5 pixels When multiple overlapping ranges set an absolute height, the largest absolute wins and serves as the base for any delta or multiplier on the same line.",
+      "summary": "Sets each line\u0027s height, per paragraph.",
+      "remarks": "Parameters (comma-separated): Value, Mode, Scale, Leading \u2014 all optional. Mode: content (grow to the tallest font on the line \u2014 default), primary (primary font only, so fallback glyphs never enlarge the line), or scaled (exactly Scale \u00D7 fontSize). Value: optional nudge on top of the mode \u2014 150% or 1.5em (multiplier), 40 (absolute pixels), \u002B10 / -5 (delta pixels). A bare number is pixels, not a multiplier; 0 or empty means no nudge. Scale: the multiplier for scaled mode; ignored otherwise. Leading: how extra spacing is split \u2014 halfLeading (CSS), leadingAbove (Figma), leadingBelow (Android). To set a later parameter without the earlier ones, leave them empty: \u003Clh=,primary\u003E, \u003Clh=,scaled,2\u003E. When several ranges set an absolute height on a line, the largest wins.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
