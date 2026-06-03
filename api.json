@@ -1,6 +1,6 @@
 {
-  "version": "2.6.0",
-  "generatedAt": "2026-06-03T09:06:57.6490009Z",
+  "version": "2.6.1",
+  "generatedAt": "2026-06-03T14:09:19.5593443Z",
   "namespaces": [],
   "types": [
     {
@@ -2120,6 +2120,26 @@
             "isConst": false,
             "type": "float",
             "summary": "Line height as a multiple of font size when [[lineHeightMode]] is [[Scaled]]. Ignored otherwise."
+          },
+          {
+            "id": "LayoutSettings.DefaultLineHeightMode",
+            "name": "DefaultLineHeightMode",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "LineHeightMode",
+            "summary": "Project-wide default line-height mode seeded into [[Default]]. Mirrored from [[DefaultLineHeightMode]] and pushed from the main thread, so worker-thread layout reads it without touching Resources."
+          },
+          {
+            "id": "LayoutSettings.DefaultLineHeightScale",
+            "name": "DefaultLineHeightScale",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Project-wide default line-height scale seeded into [[Default]]. Mirrored from [[LineHeightScale]]."
           }
         ],
         "events": []
@@ -9411,6 +9431,50 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the project-wide BCP 47 language tag. Applied to any codepoint that has no component-level UniText.Language and no per-range \u003Clang\u003E override.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.DefaultLineHeightMode",
+            "name": "DefaultLineHeightMode",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "LineHeightMode",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Project-wide default line-height mode applied to every component without a per-range override. Mirrored to [[DefaultLineHeightMode]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.LineHeightScale",
+            "name": "LineHeightScale",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Line height as a multiple of font size when [[DefaultLineHeightMode]] is [[Scaled]]. Mirrored to [[DefaultLineHeightScale]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.FontNormalizeMetric",
+            "name": "FontNormalizeMetric",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "FontNormalizeMetric",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Project-wide default font normalization metric (CSS font-size-adjust), applied to each component\u0027s font provider on init. [[None]] matches platform defaults.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.FontNormalizeTarget",
+            "name": "FontNormalizeTarget",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Target aspect for [[FontNormalizeMetric]] (metric \u00F7 font size); 0 matches the primary font.",
             "seeAlso": []
           },
           {
