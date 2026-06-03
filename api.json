@@ -1,6 +1,6 @@
 {
-  "version": "2.5.1",
-  "generatedAt": "2026-06-02T17:52:22.3934593Z",
+  "version": "2.6.0",
+  "generatedAt": "2026-06-03T08:49:06.0974733Z",
   "namespaces": [],
   "types": [
     {
@@ -2100,6 +2100,26 @@
             "isConst": false,
             "type": "LeadingDistribution",
             "summary": "How extra leading from line-height is distributed relative to the content area."
+          },
+          {
+            "id": "LayoutSettings.lineHeightMode",
+            "name": "lineHeightMode",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "LineHeightMode",
+            "summary": "How each line\u0027s height is determined relative to the fonts it contains."
+          },
+          {
+            "id": "LayoutSettings.lineHeightScale",
+            "name": "lineHeightScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Line height as a multiple of font size when [[lineHeightMode]] is [[Scaled]]. Ignored otherwise."
           }
         ],
         "events": []
@@ -2157,6 +2177,62 @@
             "type": "LeadingDistribution",
             "defaultValue": "2",
             "summary": "All extra leading placed below the line (Android View model)."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "LineHeightMode",
+      "name": "LineHeightMode",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "How a line\u0027s height is determined relative to the fonts it contains.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LineHeightMode.Content",
+            "name": "Content",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineHeightMode",
+            "defaultValue": "0",
+            "summary": "Line grows to fit the tallest font on it, including fallback fonts (CSS line-height: normal)."
+          },
+          {
+            "id": "LineHeightMode.Primary",
+            "name": "Primary",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineHeightMode",
+            "defaultValue": "1",
+            "summary": "Height comes from the primary font only; fallback glyphs never enlarge the line (Android fallbackLineSpacing=false)."
+          },
+          {
+            "id": "LineHeightMode.Scaled",
+            "name": "Scaled",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "LineHeightMode",
+            "defaultValue": "2",
+            "summary": "Every line is exactly scale \u00D7 fontSize regardless of content; tall glyphs may overlap (CSS fixed line-height, Flutter forceStrutHeight)."
           }
         ],
         "events": []
@@ -3078,6 +3154,24 @@
       "category": "core",
       "members": {
         "methods": [
+          {
+            "id": "TextLayout.SetLineStyleResolver",
+            "name": "SetLineStyleResolver",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "ResolveLineStyleDelegate"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "TextLayout.ctor",
             "name": "TextLayout",
@@ -4045,10 +4139,7 @@
             ],
             "paramTypes": [
               "float",
-              "float",
-              "TextOverEdge",
-              "TextUnderEdge",
-              "LeadingDistribution"
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -4198,6 +4289,34 @@
             "isConst": false,
             "type": "UniTextBuffers",
             "summary": "The buffer container holding all intermediate and final processing results."
+          },
+          {
+            "id": "TextProcessor.ConfigureSettings",
+            "name": "ConfigureSettings",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "ConfigureSettingsDelegate"
+          },
+          {
+            "id": "TextProcessor.OnResolveLineStyle",
+            "name": "OnResolveLineStyle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "ResolveLineStyleDelegate",
+            "summary": "Per-line hook for modifiers to override paragraph-scoped alignment. Fired during layout without the engine knowing which modifiers listen."
+          },
+          {
+            "id": "TextProcessor.OnResolveLineHeight",
+            "name": "OnResolveLineHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "ResolveLineHeightDelegate"
           },
           {
             "id": "TextProcessor.OnCalculateLineHeight",
@@ -4380,6 +4499,28 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets how extra leading from line-height is distributed.",
+            "seeAlso": []
+          },
+          {
+            "id": "TextProcessSettings.LineHeightMode",
+            "name": "LineHeightMode",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "LineHeightMode",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets how each line\u0027s height is determined relative to the fonts it contains.",
+            "seeAlso": []
+          },
+          {
+            "id": "TextProcessSettings.LineHeightScale",
+            "name": "LineHeightScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets the line height as a multiple of font size, used when [[LineHeightMode]] is [[Scaled]].",
             "seeAlso": []
           }
         ],
@@ -6915,17 +7056,6 @@
             "seeAlso": []
           },
           {
-            "id": "UniTextBase.BaseDirection",
-            "name": "BaseDirection",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "TextDirection",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets the base text direction (LTR, RTL, or Auto-detect).",
-            "seeAlso": []
-          },
-          {
             "id": "UniTextBase.WordWrap",
             "name": "WordWrap",
             "accessModifier": "public",
@@ -6967,61 +7097,6 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the vertical text alignment.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.TextJustify",
-            "name": "TextJustify",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "TextJustify",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets how extra horizontal space is distributed under [[Justify]]. Ignored for other alignments.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.LastLineAlignment",
-            "name": "LastLineAlignment",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "LastLineAlignment",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets how paragraph-terminating lines are aligned under [[Justify]]. Ignored for other alignments.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.OverEdge",
-            "name": "OverEdge",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "TextOverEdge",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets the top edge metric for text box trimming.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.UnderEdge",
-            "name": "UnderEdge",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "TextUnderEdge",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets the bottom edge metric for text box trimming.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.LeadingDistribution",
-            "name": "LeadingDistribution",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "LeadingDistribution",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets how extra leading from line-height is distributed.",
             "seeAlso": []
           },
           {
@@ -7165,15 +7240,6 @@
             "type": "float"
           },
           {
-            "id": "UniTextBase.baseDirection",
-            "name": "baseDirection",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "TextDirection"
-          },
-          {
             "id": "UniTextBase.wordWrap",
             "name": "wordWrap",
             "accessModifier": "protected",
@@ -7181,33 +7247,6 @@
             "isReadonly": false,
             "isConst": false,
             "type": "bool"
-          },
-          {
-            "id": "UniTextBase.overEdge",
-            "name": "overEdge",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "TextOverEdge"
-          },
-          {
-            "id": "UniTextBase.underEdge",
-            "name": "underEdge",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "TextUnderEdge"
-          },
-          {
-            "id": "UniTextBase.leadingDistribution",
-            "name": "leadingDistribution",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "LeadingDistribution"
           },
           {
             "id": "UniTextBase.autoSize",
@@ -8726,7 +8765,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Current font scale factor (FontSize / font.UnitsPerEm)."
+            "summary": "Design-units \u2192 pixels for the current glyph\u0027s font."
           },
           {
             "id": "UniTextMeshGenerator.fontMetricFactor",
@@ -11419,6 +11458,16 @@
             "seeAlso": []
           },
           {
+            "id": "Core.ParticipatesInNormalization",
+            "name": "ParticipatesInNormalization",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
             "id": "Core.ItalicStyle",
             "name": "ItalicStyle",
             "accessModifier": "public",
@@ -12006,6 +12055,62 @@
             "isConst": false,
             "type": "string",
             "summary": "Optional BCP 47 language hint (e.g. zh-Hans, ja, en-GB). When a text run carries a matching language tag, this family is preferred during codepoint-to-font resolution. Use for single-stack multi-locale setups; leave empty for locale-agnostic families."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "FontNormalizeMetric",
+      "name": "FontNormalizeMetric",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Reference metric for matching each font\u0027s visual size to the primary font (CSS font-size-adjust).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "fonts",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "FontNormalizeMetric.None",
+            "name": "None",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontNormalizeMetric",
+            "defaultValue": "0",
+            "summary": "No normalization; each font renders at its own design size."
+          },
+          {
+            "id": "FontNormalizeMetric.XHeight",
+            "name": "XHeight",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontNormalizeMetric",
+            "defaultValue": "1",
+            "summary": "Match lowercase x-height to the primary font. Best for body text."
+          },
+          {
+            "id": "FontNormalizeMetric.CapHeight",
+            "name": "CapHeight",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FontNormalizeMetric",
+            "defaultValue": "2",
+            "summary": "Match capital cap-height to the primary font. Best for all-caps or symbol fonts."
           }
         ],
         "events": []
@@ -13269,6 +13374,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextFont.ParticipatesInNormalization",
+            "name": "ParticipatesInNormalization",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether font-size normalization may scale this font to match the primary font. Disable to keep a decorative font\u0027s intrinsic proportions.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextFont.ItalicStyle",
             "name": "ItalicStyle",
             "accessModifier": "public",
@@ -13505,6 +13621,105 @@
             "paramTypes": [
               "UniTextFont",
               "UniTextFontStack",
+              "float",
+              "FontNormalizeMetric",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.GetNormalizationScale",
+            "name": "GetNormalizationScale",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Per-font multiplier matching a fallback/secondary font to the primary font\u0027s reference metric (CSS font-size-adjust). Returns 1 when normalization is off, the font is the primary, the font opts out, or a metric is unavailable.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.GetNormalizationScale",
+            "name": "GetNormalizationScale",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Convenience overload resolving the font id from a runtime instance.",
+            "params": [],
+            "paramTypes": [
+              "Core"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.MetricScale",
+            "name": "MetricScale",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Design-units \u2192 pixels for fontId at fontSize: folds in the font\u0027s [[FontScale]] and the active normalization (CSS font-size-adjust). Multiply any design-unit metric (advance, bearing, line height) by the result. Returns 0 when the font is unavailable.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.MetricScale",
+            "name": "MetricScale",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "params": [],
+            "paramTypes": [
+              "Core",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.SetNormalization",
+            "name": "SetNormalization",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Sets the active normalization metric and target, recomputing the primary reference ratio. Called by a font-size-match modifier so the provider stays modifier-agnostic.",
+            "params": [],
+            "paramTypes": [
+              "FontNormalizeMetric",
               "float"
             ],
             "exceptions": [],
@@ -14031,6 +14246,101 @@
       }
     },
     {
+      "id": "AlignmentModifier",
+      "name": "AlignmentModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Sets horizontal alignment, justify mode, and last-line alignment for the paragraphs it covers. Apply whole-text or per range/tag \u2014 each paragraph can differ.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "AlignmentModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AlignmentModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AlignmentModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "AlignmentModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "AssetGradientProvider",
       "name": "AssetGradientProvider",
       "namespace": "LightSide",
@@ -14435,13 +14745,16 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [
+        "AlignmentModifier",
         "BaseLineModifier",
         "BoldModifier",
         "CompositeModifier",
+        "DirectionModifier",
         "EffectModifier",
         "EllipsisModifier",
         "EmptyModifier",
         "FontModifier",
+        "FontSizeMatchModifier",
         "GlyphModifier\u003CT\u003E",
         "GradientModifier",
         "IndentModifier",
@@ -14457,6 +14770,7 @@
         "SizeModifier",
         "SmallCapsModifier",
         "SubMeshModifier",
+        "TextBoxTrimModifier",
         "UppercaseModifier",
         "VariationModifier",
         "WobbleAnimationModifier"
@@ -15053,6 +15367,85 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "DirectionModifier",
+      "name": "DirectionModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Sets the paragraph base writing direction (UAX #9). Apply whole-text.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "DirectionModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "DirectionModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "DirectionModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -15878,6 +16271,69 @@
               "int",
               "string"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "FontSizeMatchModifier",
+      "name": "FontSizeMatchModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Normalizes mixed fonts to a common visual size by matching x-height or cap-height (CSS font-size-adjust). Target 0 = match the primary font; \u003E0 = match that aspect value (metric \u00F7 font size) for every font. Apply whole-text.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "FontSizeMatchModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FontSizeMatchModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -22033,6 +22489,85 @@
       }
     },
     {
+      "id": "TextBoxTrimModifier",
+      "name": "TextBoxTrimModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Trims vertical space above/below text to chosen metrics (CSS text-box-trim/text-box-edge): e.g. cap-height \u002B baseline for optically centered UI labels. Apply whole-text.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "TextBoxTrimModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextBoxTrimModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextBoxTrimModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "UnderlineModifier",
       "name": "UnderlineModifier",
       "namespace": "LightSide",
@@ -24102,6 +24637,7 @@
               "uint",
               "float",
               "uint",
+              "float",
               "float"
             ],
             "exceptions": [],
@@ -30172,6 +30708,10 @@
         "priority": 100
       },
       {
+        "name": "LineHeightMode",
+        "priority": 100
+      },
+      {
         "name": "NamedGradient",
         "priority": 100
       },
@@ -30318,6 +30858,10 @@
         "priority": 100
       },
       {
+        "name": "FontNormalizeMetric",
+        "priority": 100
+      },
+      {
         "name": "Glyph",
         "priority": 100
       },
@@ -30384,6 +30928,10 @@
         "priority": 26
       },
       {
+        "name": "AlignmentModifier",
+        "priority": 100
+      },
+      {
         "name": "AssetGradientProvider",
         "priority": 100
       },
@@ -30420,6 +30968,10 @@
         "priority": 100
       },
       {
+        "name": "DirectionModifier",
+        "priority": 100
+      },
+      {
         "name": "EffectModifier",
         "priority": 100
       },
@@ -30445,6 +30997,10 @@
       },
       {
         "name": "FontModifier",
+        "priority": 100
+      },
+      {
+        "name": "FontSizeMatchModifier",
         "priority": 100
       },
       {
@@ -30641,6 +31197,10 @@
       },
       {
         "name": "SubMeshModifier",
+        "priority": 100
+      },
+      {
+        "name": "TextBoxTrimModifier",
         "priority": 100
       },
       {
