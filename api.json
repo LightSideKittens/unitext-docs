@@ -1,6 +1,6 @@
 {
-  "version": "2.6.2",
-  "generatedAt": "2026-06-04T09:45:32.8547051Z",
+  "version": "2.6.3",
+  "generatedAt": "2026-06-06T13:21:20.6141782Z",
   "namespaces": [],
   "types": [
     {
@@ -3245,9 +3245,27 @@
                 "name": "capHeight",
                 "type": "float",
                 "description": "Cap height for visual vertical centering (0 to skip correction)."
+              },
+              {
+                "name": "typoAscent",
+                "type": "float",
+                "description": "Typographic ascent for the Text over-edge (0 falls back to ascender)."
+              },
+              {
+                "name": "typoDescent",
+                "type": "float",
+                "description": "Typographic descent, negative, for the Text under-edge (0 falls back to descender)."
+              },
+              {
+                "name": "xHeight",
+                "type": "float",
+                "description": "x-height for the XHeight over-edge (0 falls back to ascender)."
               }
             ],
             "paramTypes": [
+              "float",
+              "float",
+              "float",
               "float",
               "float",
               "float",
@@ -3307,6 +3325,8 @@
               }
             ],
             "paramTypes": [
+              "float",
+              "float",
               "float",
               "float"
             ],
@@ -3441,6 +3461,21 @@
                 "name": "effectiveLastLineHeight",
                 "type": "float",
                 "description": "Effective height of the last line (including modifier adjustments)."
+              },
+              {
+                "name": "typoAscent",
+                "type": "float",
+                "description": "Typographic ascent for the Text over-edge (0 to skip)."
+              },
+              {
+                "name": "typoDescent",
+                "type": "float",
+                "description": "Typographic descent, negative, for the Text under-edge (0 to skip)."
+              },
+              {
+                "name": "xHeight",
+                "type": "float",
+                "description": "x-height for the XHeight over-edge (0 to skip)."
               }
             ],
             "paramTypes": [
@@ -3450,6 +3485,9 @@
               "TextOverEdge",
               "TextUnderEdge",
               "LeadingDistribution",
+              "float",
+              "float",
+              "float",
               "float",
               "float"
             ],
@@ -3661,6 +3699,28 @@
             "type": "TextOverEdge",
             "defaultValue": "2",
             "summary": "Top edge includes half-leading \u2014 matches CSS and Figma Standard mode."
+          },
+          {
+            "id": "TextOverEdge.Text",
+            "name": "Text",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextOverEdge",
+            "defaultValue": "3",
+            "summary": "Top edge at the typographic ascent (OS/2 sTypo, CSS text-box-edge: text) \u2014 the designer\u0027s content-box top; the tight, browser-matched fit. Falls back to the ascent line when the font has no typo metrics."
+          },
+          {
+            "id": "TextOverEdge.XHeight",
+            "name": "XHeight",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextOverEdge",
+            "defaultValue": "4",
+            "summary": "Top edge at x-height (CSS text-box-edge: ex) \u2014 trims to the top of lowercase letters."
           }
         ],
         "events": []
@@ -4230,6 +4290,27 @@
               "float",
               "float",
               "TextProcessSettings"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextProcessor.ReserveLineSpace",
+            "name": "ReserveLineSpace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Reserves extra leading on one side of a specific line for boundary decorations (over/under ruby, etc.): over above the line, under below it. Added to that line\u0027s outer gap, or to the block edge for the first/last line. Largest request per side wins. Called from a modifier\u0027s line-height callback.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "float",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -4932,6 +5013,17 @@
             "type": "TextUnderEdge",
             "defaultValue": "2",
             "summary": "Bottom edge includes half-leading \u2014 matches CSS and Figma Standard mode."
+          },
+          {
+            "id": "TextUnderEdge.Text",
+            "name": "Text",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextUnderEdge",
+            "defaultValue": "3",
+            "summary": "Bottom edge at the typographic descent (OS/2 sTypo, CSS text-box-edge: text). Falls back to the descent line when the font has no typo metrics."
           }
         ],
         "events": []
@@ -7848,6 +7940,16 @@
             "summary": "Virtual codepoints for synthesized glyphs (e.g., modifiers)."
           },
           {
+            "id": "UniTextBuffers.virtualGlyphs",
+            "name": "virtualGlyphs",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003CVirtualGlyph\u003E",
+            "summary": "Pre-shaped glyph ids (with font) modifiers request for atlas rasterization when the id comes from OpenType shaping (GSUB), not a 1:1 codepoint lookup. Used by shaped ruby."
+          },
+          {
             "id": "UniTextBuffers.virtualPositionedGlyphs",
             "name": "virtualPositionedGlyphs",
             "accessModifier": "public",
@@ -7896,6 +7998,26 @@
             "isConst": false,
             "type": "PooledBuffer\u003Cfloat\u003E",
             "summary": "Advance width per line for alignment calculations."
+          },
+          {
+            "id": "UniTextBuffers.perLineOver",
+            "name": "perLineOver",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003Cfloat\u003E",
+            "summary": "Extra leading reserved on each line\u0027s over (above) / under (below) side for tall boundary content such as over/under ruby; index 0 and the last entry double as the block\u0027s top / bottom reserve."
+          },
+          {
+            "id": "UniTextBuffers.perLineUnder",
+            "name": "perLineUnder",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003Cfloat\u003E",
+            "summary": "Extra leading reserved on each line\u0027s over (above) / under (below) side for tall boundary content such as over/under ruby; index 0 and the last entry double as the block\u0027s top / bottom reserve."
           },
           {
             "id": "UniTextBuffers.baseDirection",
@@ -10259,6 +10381,50 @@
       }
     },
     {
+      "id": "VirtualGlyph",
+      "name": "VirtualGlyph",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "A pre-shaped glyph a modifier hands to the rasterizer when its glyph id comes from OpenType shaping (GSUB) rather than a 1:1 codepoint lookup \u2014 e.g. shaped ruby, where Arabic joining forms and ligatures differ from the cmap glyph. Registered for atlas rasterization alongside virtual codepoints.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "VirtualGlyph.fontId",
+            "name": "fontId",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Font the glyph id belongs to."
+          },
+          {
+            "id": "VirtualGlyph.glyphId",
+            "name": "glyphId",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "uint",
+            "summary": "Shaped glyph id to rasterize."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "WorldHighlightRenderer",
       "name": "WorldHighlightRenderer",
       "namespace": "LightSide",
@@ -11716,7 +11882,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Distance between consecutive baselines (hhea table)."
+            "summary": "Distance between consecutive baselines, from the metric pair FreeType selects: typo when the font sets USE_TYPO_METRICS ([[useTypoMetrics]]), otherwise hhea."
           },
           {
             "id": "FaceInfo.ascentLine",
@@ -11726,7 +11892,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Top of the tallest glyph, positive above baseline (hhea ascender)."
+            "summary": "Baseline to top of the tallest glyph, positive. Typo ascender when the font sets USE_TYPO_METRICS, otherwise hhea ascender."
           },
           {
             "id": "FaceInfo.capLine",
@@ -11756,7 +11922,67 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Bottom of the deepest descender, negative below baseline (hhea descender)."
+            "summary": "Baseline to bottom of the lowest glyph, negative. Typo descender when the font sets USE_TYPO_METRICS, otherwise hhea descender."
+          },
+          {
+            "id": "FaceInfo.typoAscent",
+            "name": "typoAscent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Typographic ascent (OS/2 sTypoAscender): the designer\u0027s intended content-box top, tighter than [[ascentLine]] for fonts that pad hhea. 0 when the font has no OS/2 table."
+          },
+          {
+            "id": "FaceInfo.typoDescent",
+            "name": "typoDescent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Typographic descent (OS/2 sTypoDescender), negative below baseline. 0 when unavailable."
+          },
+          {
+            "id": "FaceInfo.typoLineGap",
+            "name": "typoLineGap",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Typographic line gap (OS/2 sTypoLineGap): leading the designer suggests between lines."
+          },
+          {
+            "id": "FaceInfo.winAscent",
+            "name": "winAscent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Windows clip-box ascent (OS/2 usWinAscent), positive: the extent Windows GDI/DirectWrite will not clip. 0 when unavailable."
+          },
+          {
+            "id": "FaceInfo.winDescent",
+            "name": "winDescent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Windows clip-box descent (OS/2 usWinDescent), stored negative below baseline. 0 when unavailable."
+          },
+          {
+            "id": "FaceInfo.useTypoMetrics",
+            "name": "useTypoMetrics",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool",
+            "summary": "Font sets OS/2 USE_TYPO_METRICS (fsSelection bit 7): consumers should prefer the typo metrics for line layout."
           },
           {
             "id": "FaceInfo.superscriptOffset",
@@ -13909,6 +14135,46 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextFontProvider.GetXHeight",
+            "name": "GetXHeight",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "x-height (top of lowercase letters) of the primary font, scaled to size points. Returns 0 when unavailable.",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextFontProvider.GetTypoMetrics",
+            "name": "GetTypoMetrics",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Typographic ascent/descent (OS/2 sTypo) of the primary font, scaled to size points \u2014 the designer\u0027s tight content box. Falls back to the selected ascent/descent line when the font omits typo metrics. descent is negative.",
+            "params": [],
+            "paramTypes": [
+              "float",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextFontProvider.TryGetFontIdByFamilyName",
             "name": "TryGetFontIdByFamilyName",
             "accessModifier": "public",
@@ -14830,6 +15096,7 @@
         "LineHeightModifier",
         "ListModifier",
         "LowercaseModifier",
+        "RubyModifier",
         "ScriptPositionModifier",
         "SizeModifier",
         "SmallCapsModifier",
@@ -20908,6 +21175,252 @@
       }
     },
     {
+      "id": "RubyModifier.RubyAlign",
+      "name": "RubyAlign",
+      "declaringType": "RubyModifier",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "How the annotation is positioned within its base column when it is narrower than the base.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "RubyModifier.RubyAlign.SpaceAround",
+            "name": "SpaceAround",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyAlign",
+            "defaultValue": "0",
+            "summary": "Half a unit of space at each edge and a full unit between glyphs (CSS space-around / JIS X 4051 mono-ruby 1:2:1). The default."
+          },
+          {
+            "id": "RubyModifier.RubyAlign.Center",
+            "name": "Center",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyAlign",
+            "defaultValue": "1",
+            "summary": "Centered as a solid block, no internal spacing (CSS center)."
+          },
+          {
+            "id": "RubyModifier.RubyAlign.SpaceBetween",
+            "name": "SpaceBetween",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyAlign",
+            "defaultValue": "2",
+            "summary": "Flush to both edges, extra space only between glyphs (CSS space-between); falls back to centered for a single glyph."
+          },
+          {
+            "id": "RubyModifier.RubyAlign.Start",
+            "name": "Start",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyAlign",
+            "defaultValue": "3",
+            "summary": "Flush to the start of the base, extra space trails at the end (CSS start)."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "RubyModifier",
+      "name": "RubyModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Sets ruby (furigana) \u2014 small annotation text placed above a base run to show its reading or meaning, as used in Japanese and other East-Asian typography.",
+      "remarks": "Pair it with [[RubyParseRule]] for standard markup \u003Cruby\u003E\u6F22\u5B57\u003Crt\u003E\u304B\u3093\u3058\u003C/rt\u003E\u003C/ruby\u003E and the shorthand \u003Cruby=\u304B\u3093\u3058\u003E\u6F22\u5B57\u003C/ruby\u003E: uniText.AddStyle(new RubyModifier(), new RubyParseRule()). The reading reaches the modifier as the range parameter, so any rule that supplies one works. A single base\u002Breading is group-ruby; several \u003Crt\u003E segments give mono-ruby (one reading per character): \u003Cruby\u003E\u6771\u003Crt\u003E\u3068\u3046\u003C/rt\u003E\u4EAC\u003Crt\u003E\u304D\u3087\u3046\u003C/rt\u003E\u003C/ruby\u003E. Layout follows CSS Ruby / JIS X 4051: the annotation is half the base size by default and is centered over the base. When the annotation is narrower than the base it is distributed by [[Align]] (default [[SpaceAround]] \u2014 the JIS 1:2:1 rule); when it is wider, the base columns are spread to fit it. The annotation raises the line height of the rows it sits on, so allow clearance above the first line (top padding or vertical centering). Horizontal, line-over annotations on left-to-right base text.",
+      "seeAlso": [
+        "ScriptPositionModifier"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "RubyModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RubyModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RubyModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RubyModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "RubyModifier.RubyScale",
+            "name": "RubyScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Annotation font size as a fraction of the base size. Default 0.5 (the typographic norm). Clamped to [0.1, 1].",
+            "seeAlso": []
+          },
+          {
+            "id": "RubyModifier.Align",
+            "name": "Align",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RubyAlign",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "How a narrower annotation is distributed over its base column.",
+            "seeAlso": []
+          },
+          {
+            "id": "RubyModifier.Position",
+            "name": "Position",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RubyPosition",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Annotation side relative to the base: above (over) or below (under).",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "RubyModifier.RubyPosition",
+      "name": "RubyPosition",
+      "declaringType": "RubyModifier",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Annotation side relative to the base.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "RubyModifier.RubyPosition.Over",
+            "name": "Over",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyPosition",
+            "defaultValue": "0",
+            "summary": "Above the base (CSS over); the default for horizontal text."
+          },
+          {
+            "id": "RubyModifier.RubyPosition.Under",
+            "name": "Under",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "RubyPosition",
+            "defaultValue": "1",
+            "summary": "Below the base (CSS under)."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "ScriptPositionModifier",
       "name": "ScriptPositionModifier",
       "namespace": "LightSide",
@@ -23385,6 +23898,7 @@
         "NoparseTagRule",
         "RangeRule",
         "RawUrlParseRule",
+        "RubyParseRule",
         "StringParseRule",
         "TagParseRule"
       ],
@@ -24033,6 +24547,56 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "RubyParseRule",
+      "name": "RubyParseRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Parses ruby (furigana) markup into base \u002B reading ranges for [[RubyModifier]].",
+      "remarks": "Two equivalent forms: Standard HTML \u2014 \u003Cruby\u003E\u6F22\u5B57\u003Crt\u003E\u304B\u3093\u3058\u003C/rt\u003E\u003C/ruby\u003E: base is the element content, the reading is in \u003Crt\u003E. Several \u003Crt\u003E give mono-ruby (one reading per base segment): \u003Cruby\u003E\u6771\u003Crt\u003E\u3068\u3046\u003C/rt\u003E\u4EAC\u003Crt\u003E\u304D\u3087\u3046\u003C/rt\u003E\u003C/ruby\u003E. \u003Crp\u003E fallback parentheses are stripped. Shorthand \u2014 \u003Cruby=\u304B\u3093\u3058\u003E\u6F22\u5B57\u003C/ruby\u003E: the reading is the tag value. Other inline tags around a ruby work; tags inside the base text are not parsed (the base is plain text).",
+      "seeAlso": [
+        "RubyModifier"
+      ],
+      "typeParameters": [],
+      "category": "parseRules",
+      "members": {
+        "methods": [
+          {
+            "id": "RubyParseRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -25905,6 +26469,47 @@
             "summary": "Returns when the codepoint has the Default_Ignorable_Code_Point property (formatting characters, variation selectors, ZWJ/ZWNJ, etc.). Custom modifiers that walk codepoints to compute statistics or apply effects should typically skip these.",
             "params": [],
             "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.DecodeAt",
+            "name": "DecodeAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "uint",
+            "summary": "Decodes the Unicode scalar starting at index in a UTF-16 sequence and reports how many code units it spans via size (2 for a surrogate pair, otherwise 1). An unpaired surrogate decodes to its own value with size 1, so iterating with i \u002B= size never throws on malformed input. Use this to walk scalars in custom parse rules instead of hand-rolling surrogate checks.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.SizeAt",
+            "name": "SizeAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Number of UTF-16 code units the scalar at index occupies: 2 for a valid surrogate pair, otherwise 1. Advances an index past one scalar without decoding its value.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
               "int"
             ],
             "exceptions": [],
@@ -29638,6 +30243,25 @@
             "typeParameters": []
           },
           {
+            "id": "PooledBuffer.SetCount",
+            "name": "SetCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Sets [[count]] to exactly n, growing capacity if needed. Unlike [[EnsureCount]] this also shrinks, dropping stale trailing entries from a prior pass.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "PooledBuffer.Add",
             "name": "Add",
             "accessModifier": "public",
@@ -30844,6 +31468,10 @@
         "priority": 100
       },
       {
+        "name": "VirtualGlyph",
+        "priority": 100
+      },
+      {
         "name": "WorldHighlightRenderer",
         "priority": 100
       }
@@ -31228,6 +31856,18 @@
         "priority": 100
       },
       {
+        "name": "RubyAlign",
+        "priority": 100
+      },
+      {
+        "name": "RubyModifier",
+        "priority": 100
+      },
+      {
+        "name": "RubyPosition",
+        "priority": 100
+      },
+      {
         "name": "ScriptPositionModifier",
         "priority": 100
       },
@@ -31351,6 +31991,10 @@
       },
       {
         "name": "RawUrlParseRule",
+        "priority": 100
+      },
+      {
+        "name": "RubyParseRule",
         "priority": 100
       }
     ],
