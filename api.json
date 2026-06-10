@@ -1,6 +1,6 @@
 {
   "version": "2.8.0",
-  "generatedAt": "2026-06-10T19:41:01.3480313Z",
+  "generatedAt": "2026-06-10T19:44:09.5945168Z",
   "namespaces": [],
   "types": [
     {
@@ -5317,6 +5317,22 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -5330,22 +5346,6 @@
             "paramTypes": [
               "PointerEventData"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniText.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6228,15 +6228,16 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.PrepareForParallel",
-            "name": "PrepareForParallel",
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
             "accessModifier": "protected",
             "isAbstract": false,
-            "isVirtual": true,
+            "isVirtual": false,
             "isStatic": false,
-            "isOverride": false,
+            "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6244,16 +6245,16 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.EnsureFirstPassComplete",
-            "name": "EnsureFirstPassComplete",
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
             "accessModifier": "protected",
-            "isAbstract": false,
+            "isAbstract": true,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6454,40 +6455,6 @@
             "paramTypes": [
               "PointerEventData"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6956,6 +6923,39 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureFirstPassComplete",
+            "name": "EnsureFirstPassComplete",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.EnsureLayoutComputed",
             "name": "EnsureLayoutComputed",
             "accessModifier": "protected",
@@ -7368,17 +7368,6 @@
             "seeAlso": []
           },
           {
-            "id": "UniTextBase.UseParallel",
-            "name": "UseParallel",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
-            "seeAlso": []
-          },
-          {
             "id": "UniTextBase.LastHoverResult",
             "name": "LastHoverResult",
             "accessModifier": "public",
@@ -7409,6 +7398,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the interactive range currently being hovered, if any.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.UseParallel",
+            "name": "UseParallel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
             "seeAlso": []
           },
           {
@@ -7579,28 +7579,12 @@
             "summary": "Raised when dirty flags change, indicating what needs rebuilding."
           },
           {
-            "id": "UniTextBase.BeforeProcess",
-            "name": "BeforeProcess",
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
             "accessModifier": "public",
-            "isStatic": true,
+            "isStatic": false,
             "type": "Action",
-            "summary": "Raised before any text processing in the current canvas update cycle."
-          },
-          {
-            "id": "UniTextBase.MeshApplied",
-            "name": "MeshApplied",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
-          },
-          {
-            "id": "UniTextBase.AfterProcess",
-            "name": "AfterProcess",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           },
           {
             "id": "UniTextBase.TextClicked",
@@ -7643,12 +7627,28 @@
             "summary": "Raised when the hovered glyph/cluster changes (desktop only)."
           },
           {
-            "id": "UniTextBase.Animated",
-            "name": "Animated",
+            "id": "UniTextBase.BeforeProcess",
+            "name": "BeforeProcess",
             "accessModifier": "public",
-            "isStatic": false,
+            "isStatic": true,
             "type": "Action",
-            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
+            "summary": "Raised before any text processing in the current canvas update cycle."
+          },
+          {
+            "id": "UniTextBase.MeshApplied",
+            "name": "MeshApplied",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
+          },
+          {
+            "id": "UniTextBase.AfterProcess",
+            "name": "AfterProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
           }
         ]
       }
