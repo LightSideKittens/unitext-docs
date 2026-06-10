@@ -1,6 +1,6 @@
 {
-  "version": "2.7.0",
-  "generatedAt": "2026-06-10T15:58:12.6060547Z",
+  "version": "2.8.0",
+  "generatedAt": "2026-06-10T19:41:01.3480313Z",
   "namespaces": [],
   "types": [
     {
@@ -5317,22 +5317,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniText.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniText.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -5346,6 +5330,22 @@
             "paramTypes": [
               "PointerEventData"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6228,16 +6228,15 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
+            "id": "UniTextBase.PrepareForParallel",
+            "name": "PrepareForParallel",
             "accessModifier": "protected",
             "isAbstract": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "isStatic": false,
-            "isOverride": true,
+            "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6245,16 +6244,16 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
+            "id": "UniTextBase.EnsureFirstPassComplete",
+            "name": "EnsureFirstPassComplete",
             "accessModifier": "protected",
-            "isAbstract": true,
+            "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6460,6 +6459,40 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.HasModifier",
             "name": "HasModifier",
             "accessModifier": "public",
@@ -6624,6 +6657,97 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetModifier",
+            "name": "GetModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "T",
+            "summary": "Returns the first modifier of type T, or if none. Unlike the style queries above, also searches [[CompositeModifier]] children.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetModifier",
+            "name": "TryGetModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Same lookup as [[GetModifier{T}]] in the try-get pattern: when a modifier of type T was found.",
+            "params": [],
+            "paramTypes": [
+              "T"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.TryGetModifier",
+            "name": "TryGetModifier",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Same lookup as [[GetModifier{T}]], also returning the [[Style]] that owns the found modifier (for a match inside a [[CompositeModifier]] \u2014 the composite\u0027s style).",
+            "params": [],
+            "paramTypes": [
+              "T",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextBase.GetModifiers",
+            "name": "GetModifiers",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Collects every modifier of type T into results (cleared first) and returns the count. Same search scope as [[GetModifier{T}]].",
+            "params": [],
+            "paramTypes": [
+              "List\u003CT\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
           },
           {
             "id": "UniTextBase.IsWholeTextStyle",
@@ -6827,39 +6951,6 @@
             "paramTypes": [
               "Type"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureFirstPassComplete",
-            "name": "EnsureFirstPassComplete",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7277,6 +7368,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.UseParallel",
+            "name": "UseParallel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.LastHoverResult",
             "name": "LastHoverResult",
             "accessModifier": "public",
@@ -7307,17 +7409,6 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the interactive range currently being hovered, if any.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.UseParallel",
-            "name": "UseParallel",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
             "seeAlso": []
           },
           {
@@ -7488,12 +7579,28 @@
             "summary": "Raised when dirty flags change, indicating what needs rebuilding."
           },
           {
-            "id": "UniTextBase.Animated",
-            "name": "Animated",
+            "id": "UniTextBase.BeforeProcess",
+            "name": "BeforeProcess",
             "accessModifier": "public",
-            "isStatic": false,
+            "isStatic": true,
             "type": "Action",
-            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
+            "summary": "Raised before any text processing in the current canvas update cycle."
+          },
+          {
+            "id": "UniTextBase.MeshApplied",
+            "name": "MeshApplied",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
+          },
+          {
+            "id": "UniTextBase.AfterProcess",
+            "name": "AfterProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
           },
           {
             "id": "UniTextBase.TextClicked",
@@ -7536,28 +7643,12 @@
             "summary": "Raised when the hovered glyph/cluster changes (desktop only)."
           },
           {
-            "id": "UniTextBase.BeforeProcess",
-            "name": "BeforeProcess",
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
             "accessModifier": "public",
-            "isStatic": true,
+            "isStatic": false,
             "type": "Action",
-            "summary": "Raised before any text processing in the current canvas update cycle."
-          },
-          {
-            "id": "UniTextBase.MeshApplied",
-            "name": "MeshApplied",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
-          },
-          {
-            "id": "UniTextBase.AfterProcess",
-            "name": "AfterProcess",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           }
         ]
       }
@@ -15098,6 +15189,7 @@
         "LowercaseModifier",
         "NoBreakModifier",
         "ParagraphSpacingModifier",
+        "RevealModifier",
         "RubyModifier",
         "ScriptPositionModifier",
         "SizeModifier",
@@ -21389,6 +21481,136 @@
             "type": "bool"
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "RevealModifier",
+      "name": "RevealModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Shows only the leading part of each covered range and hides the rest \u2014 the engine piece behind typewriter-style text reveal.",
+      "remarks": "Visibility is controlled by properties on the modifier ([[Fill]], [[VisibleClusters]], [[Collapse]]), not by tag parameters. Clusters are revealed in logical order, whole grapheme clusters at a time, independently per range. Line breaks are never hidden, so the line structure stays stable while text reveals.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "RevealModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RevealModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RevealModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RevealModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "RevealModifier.Fill",
+            "name": "Fill",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Visible fraction of each range: 0 hides everything, 1 shows everything. Ignored while [[VisibleClusters]] is set.",
+            "seeAlso": []
+          },
+          {
+            "id": "RevealModifier.VisibleClusters",
+            "name": "VisibleClusters",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Number of visible grapheme clusters from the start of each range; values beyond the range length show everything. -1 disables the count and lets [[Fill]] govern.",
+            "seeAlso": []
+          },
+          {
+            "id": "RevealModifier.Collapse",
+            "name": "Collapse",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "When, hidden clusters are excluded from shaping and layout and the text reflows (CSS display: none); when, they keep their space and are only not drawn (CSS visibility: hidden).",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
         "events": []
       }
     },
@@ -32119,6 +32341,10 @@
       },
       {
         "name": "Range",
+        "priority": 100
+      },
+      {
+        "name": "RevealModifier",
         "priority": 100
       },
       {
