@@ -1,6 +1,6 @@
 {
-  "version": "2.6.3",
-  "generatedAt": "2026-06-06T13:21:20.6141782Z",
+  "version": "2.7.0",
+  "generatedAt": "2026-06-10T15:58:12.6060547Z",
   "namespaces": [],
   "types": [
     {
@@ -15096,6 +15096,8 @@
         "LineHeightModifier",
         "ListModifier",
         "LowercaseModifier",
+        "NoBreakModifier",
+        "ParagraphSpacingModifier",
         "RubyModifier",
         "ScriptPositionModifier",
         "SizeModifier",
@@ -16200,7 +16202,9 @@
         "BaseModifier"
       ],
       "interfaces": [],
-      "derivedTypes": [],
+      "derivedTypes": [
+        "TruncateModifier"
+      ],
       "summary": "Truncates text that overflows its container and appends an ellipsis (...).",
       "remarks": "Parameter: optional position (0-1) controlling where the ellipsis appears: - 0: Truncates from the start, ellipsis at the beginning - 0.5: Truncates from the middle, ellipsis in the center - 1 (default): Truncates from the end, ellipsis at the end The modifier automatically detects overflow based on container height (with word wrap) or width (without word wrap) and uses binary search to find the optimal truncation point.",
       "seeAlso": [
@@ -16279,7 +16283,19 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "EllipsisModifier.ShowEllipsis",
+            "name": "ShowEllipsis",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "When, overflow is truncated without rendering the \u0022...\u0022 marker and no marker width is reserved.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -17583,6 +17599,16 @@
             "isConst": false,
             "type": "float",
             "summary": "Advance width in em units (1 = fontSize)."
+          },
+          {
+            "id": "InlineMedia.lineHeight",
+            "name": "lineHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Minimum height of lines containing this media, in em units (1 = fontSize). 0 = the media does not affect line height."
           },
           {
             "id": "InlineMedia.activeCount",
@@ -20244,6 +20270,102 @@
       }
     },
     {
+      "id": "NoBreakModifier",
+      "name": "NoBreakModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Keeps the tagged range on one line by suppressing automatic line wrapping inside it \u2014 the equivalent of CSS white-space: nowrap.",
+      "remarks": "Removes every soft wrap opportunity within the range (spaces, hyphens, soft hyphens, CJK and dictionary-segmented boundaries). Explicit breaks \u2014 a newline or a \u003Cbr\u003E tag \u2014 still break the line, and wrapping stays allowed immediately before and after the range. A range wider than the text box is split as a last resort, like any single unbreakable word. Pair with a [[TagRule]] (conventional tag name nobr): uniText.AddStyle(Style.Tag(new NoBreakModifier(), \u0022nobr\u0022)).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "NoBreakModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NoBreakModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NoBreakModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NoBreakModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "ObjModifier",
       "name": "ObjModifier",
       "namespace": "LightSide",
@@ -20583,6 +20705,102 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ParagraphSpacingModifier",
+      "name": "ParagraphSpacingModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Adds vertical spacing between paragraphs (text separated by line breaks).",
+      "remarks": "Parameters (comma-separated): After, Before \u2014 both optional. After opens a gap below each covered paragraph, Before above it; where two paragraphs meet the values add up (no CSS-style margin collapsing). Nothing is added at the block edges. Units: 10 (pixels), 50% or 0.5em (\u00D7 font size). When several ranges cover one paragraph, the largest value per side wins.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "ParagraphSpacingModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParagraphSpacingModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParagraphSpacingModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ParagraphSpacingModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -21258,7 +21476,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Sets ruby (furigana) \u2014 small annotation text placed above a base run to show its reading or meaning, as used in Japanese and other East-Asian typography.",
-      "remarks": "Pair it with [[RubyParseRule]] for standard markup \u003Cruby\u003E\u6F22\u5B57\u003Crt\u003E\u304B\u3093\u3058\u003C/rt\u003E\u003C/ruby\u003E and the shorthand \u003Cruby=\u304B\u3093\u3058\u003E\u6F22\u5B57\u003C/ruby\u003E: uniText.AddStyle(new RubyModifier(), new RubyParseRule()). The reading reaches the modifier as the range parameter, so any rule that supplies one works. A single base\u002Breading is group-ruby; several \u003Crt\u003E segments give mono-ruby (one reading per character): \u003Cruby\u003E\u6771\u003Crt\u003E\u3068\u3046\u003C/rt\u003E\u4EAC\u003Crt\u003E\u304D\u3087\u3046\u003C/rt\u003E\u003C/ruby\u003E. Layout follows CSS Ruby / JIS X 4051: the annotation is half the base size by default and is centered over the base. When the annotation is narrower than the base it is distributed by [[Align]] (default [[SpaceAround]] \u2014 the JIS 1:2:1 rule); when it is wider, the base columns are spread to fit it. The annotation raises the line height of the rows it sits on, so allow clearance above the first line (top padding or vertical centering). Horizontal, line-over annotations on left-to-right base text.",
+      "remarks": "Pair it with [[RubyParseRule]] for standard markup \u003Cruby\u003E\u6F22\u5B57\u003Crt\u003E\u304B\u3093\u3058\u003C/rt\u003E\u003C/ruby\u003E and the shorthand \u003Cruby=\u304B\u3093\u3058\u003E\u6F22\u5B57\u003C/ruby\u003E: uniText.AddStyle(new Style { Rule = new RubyParseRule(), Modifier = new RubyModifier() }). The reading reaches the modifier as the range parameter, so any rule that supplies one works. A single base\u002Breading is group-ruby; several \u003Crt\u003E segments give mono-ruby (one reading per character): \u003Cruby\u003E\u6771\u003Crt\u003E\u3068\u3046\u003C/rt\u003E\u4EAC\u003Crt\u003E\u304D\u3087\u3046\u003C/rt\u003E\u003C/ruby\u003E. Layout follows CSS Ruby / JIS X 4051: the annotation is half the base size by default and is centered over the base. When the annotation is narrower than the base it is distributed by [[Align]] (default [[SpaceAround]] \u2014 the JIS 1:2:1 rule); when it is wider, the base columns are spread to fit it. The annotation raises the line height of the rows it sits on, so allow clearance above the first line (top padding or vertical centering). Horizontal, line-over annotations on left-to-right base text.",
       "seeAlso": [
         "ScriptPositionModifier"
       ],
@@ -23140,6 +23358,46 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "TruncateModifier",
+      "name": "TruncateModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "EllipsisModifier",
+      "baseTypeChain": [
+        "EllipsisModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Truncates text that overflows its container without rendering an ellipsis.",
+      "remarks": "Parameter: optional position (0-1) controlling where text is removed: 0 \u2014 from the start, 0.5 \u2014 from the middle, 1 (default) \u2014 from the end.",
+      "seeAlso": [
+        "EllipsisModifier"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "TruncateModifier.ShowEllipsis",
+            "name": "ShowEllipsis",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -31832,6 +32090,10 @@
         "priority": 100
       },
       {
+        "name": "NoBreakModifier",
+        "priority": 100
+      },
+      {
         "name": "ObjModifier",
         "priority": 100
       },
@@ -31841,6 +32103,10 @@
       },
       {
         "name": "OutlineModifier",
+        "priority": 100
+      },
+      {
+        "name": "ParagraphSpacingModifier",
         "priority": 100
       },
       {
@@ -31905,6 +32171,10 @@
       },
       {
         "name": "TextBoxTrimModifier",
+        "priority": 100
+      },
+      {
+        "name": "TruncateModifier",
         "priority": 100
       },
       {
