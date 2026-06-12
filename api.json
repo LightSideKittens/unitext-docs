@@ -1,6 +1,6 @@
 {
-  "version": "2.8.3",
-  "generatedAt": "2026-06-12T15:02:20.3729310Z",
+  "version": "2.9.0",
+  "generatedAt": "2026-06-12T19:20:53.5333109Z",
   "namespaces": [],
   "types": [
     {
@@ -3648,6 +3648,114 @@
       }
     },
     {
+      "id": "TextMeasureOptions",
+      "name": "TextMeasureOptions",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Box constraints and setting overrides for [[MeasureText]]. Every null field falls back to the component\u0027s current value, so default measures the current text, as configured, at its natural unconstrained size. Overrides behave exactly like the matching component settings (with [[autoSize]] on, [[fontSize]] is ignored and [[minFontSize]] / [[maxFontSize]] drive the fit). Dimensions are outer ([[Padding]] included).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextMeasureOptions.text",
+            "name": "text",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string",
+            "summary": "Markup text to measure. Null \u2014 the component\u0027s current text."
+          },
+          {
+            "id": "TextMeasureOptions.maxWidth",
+            "name": "maxWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E",
+            "summary": "Wrap width. Null \u2014 unconstrained."
+          },
+          {
+            "id": "TextMeasureOptions.maxHeight",
+            "name": "maxHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E",
+            "summary": "Box height: with auto-size the font shrinks to fit [[maxWidth]] \u00D7 this before measuring, like in a real rect. Null \u2014 unconstrained. Does not affect flow without auto-size."
+          },
+          {
+            "id": "TextMeasureOptions.fontSize",
+            "name": "fontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.autoSize",
+            "name": "autoSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cbool\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.minFontSize",
+            "name": "minFontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.maxFontSize",
+            "name": "maxFontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.wordWrap",
+            "name": "wordWrap",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cbool\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.padding",
+            "name": "padding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003CVector4\u003E"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "TextOverEdge",
       "name": "TextOverEdge",
       "kind": "enum",
@@ -6956,6 +7064,26 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.MeasureText",
+            "name": "MeasureText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Vector2",
+            "summary": "Measures the size text occupies under the given constraints and setting overrides \u2014 the displayed text, layout and mesh are left untouched.",
+            "remarks": "Runs the component\u0027s full pipeline: styles and modifiers, font fallback, direction, word wrap; the text resolver is bypassed. Every non-null override in options acts exactly as if set on the component (auto-size fits the font into maxWidth \u00D7 maxHeight like into a real rect); afterwards the component\u0027s fields, layout caches and [[UniTextDirtyFlags]] are restored. Dimensions are outer ([[Padding]] included), so the result maps directly to a RectTransform. Measuring another [[text]] re-parses and re-shapes both texts \u2014 cache the result instead of calling every frame. Main thread only.",
+            "params": [],
+            "paramTypes": [
+              "TextMeasureOptions"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.EnsureLayoutComputed",
             "name": "EnsureLayoutComputed",
             "accessModifier": "protected",
@@ -8019,6 +8147,16 @@
             "isConst": false,
             "type": "PooledBuffer\u003CPositionedGlyph\u003E",
             "summary": "Final positioned glyphs ready for rendering."
+          },
+          {
+            "id": "UniTextBuffers.segmentBreaks",
+            "name": "segmentBreaks",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003CTextRange\u003E",
+            "summary": "Segment-level line break opportunities in codepoint space; filled by modifiers in the Shaped phase, consumed by line breaking. Text between consecutive entries wraps as a unit: it either fits entirely on the current line or starts a fresh one, and the entry\u0027s range \u2014 the delimiter \u2014 collapses when the break is taken on it (its codepoints stay in the line range but produce no glyphs and no width), the way trailing whitespace hangs at word-level breaks. A unit wider than the box wraps inside itself, and its lines accept no further units. A zero-length entry is a pure boundary with nothing to collapse."
           },
           {
             "id": "UniTextBuffers.virtualCodepoints",
@@ -15182,6 +15320,7 @@
         "RevealModifier",
         "RubyModifier",
         "ScriptPositionModifier",
+        "SeparatorModifier",
         "SizeModifier",
         "SmallCapsModifier",
         "SubMeshModifier",
@@ -21947,6 +22086,102 @@
       }
     },
     {
+      "id": "SeparatorModifier",
+      "name": "SeparatorModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Keeps each run of text between tagged separators whole during word wrap: a segment either fits entirely on the current line or moves to a fresh line and the separator before it collapses. A segment wider than the text box wraps inside itself as usual, and the lines holding its fragments accept no further segments.",
+      "remarks": "Pair with a [[SeparatorParseRule]], which inserts the separator string and marks its range: uniText.AddStyle(new Style { Modifier = new SeparatorModifier(), Rule = new SeparatorParseRule() }).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "SeparatorModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "ShadowModifier",
       "name": "ShadowModifier",
       "namespace": "LightSide",
@@ -24369,6 +24604,7 @@
         "RangeRule",
         "RawUrlParseRule",
         "RubyParseRule",
+        "SeparatorParseRule",
         "StringParseRule",
         "TagParseRule"
       ],
@@ -25067,6 +25303,113 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "SeparatorParseRule",
+      "name": "SeparatorParseRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Replaces the void separator tag (default \u003Csep\u003E) with the configured separator string and marks the inserted range for a paired [[SeparatorModifier]].",
+      "remarks": "Matches \u003Csep\u003E, \u003Csep/\u003E and \u003Csep=value\u003E, where value overrides [[Separator]] for that occurrence \u2014 quote it to keep surrounding spaces: \u003Csep=\u0022 \u25CF \u0022\u003E. A stray \u003C/sep\u003E is consumed and renders nothing.",
+      "seeAlso": [
+        "SeparatorModifier"
+      ],
+      "typeParameters": [],
+      "category": "parseRules",
+      "members": {
+        "methods": [
+          {
+            "id": "SeparatorParseRule.ctor",
+            "name": "SeparatorParseRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "SeparatorParseRule",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorParseRule.ctor",
+            "name": "SeparatorParseRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "SeparatorParseRule",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorParseRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "SeparatorParseRule.Separator",
+            "name": "Separator",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Separator string inserted in place of the tag.",
+            "seeAlso": []
+          },
+          {
+            "id": "SeparatorParseRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -31890,6 +32233,10 @@
         "priority": 100
       },
       {
+        "name": "TextMeasureOptions",
+        "priority": 100
+      },
+      {
         "name": "TextOverEdge",
         "priority": 100
       },
@@ -32354,6 +32701,10 @@
         "priority": 100
       },
       {
+        "name": "SeparatorModifier",
+        "priority": 100
+      },
+      {
         "name": "ShadowModifier",
         "priority": 100
       },
@@ -32481,6 +32832,10 @@
       },
       {
         "name": "RubyParseRule",
+        "priority": 100
+      },
+      {
+        "name": "SeparatorParseRule",
         "priority": 100
       }
     ],
@@ -32611,6 +32966,7 @@
     "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
     "Material": "https://docs.unity3d.com/ScriptReference/Material.html",
     "MonoBehaviour": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.html",
+    "Nullable": "https://learn.microsoft.com/en-us/dotnet/api/system.nullable-1",
     "PointerEventData": "https://docs.unity3d.com/ScriptReference/EventSystems.PointerEventData.html",
     "ReadOnlyMemory": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlymemory-1",
     "ReadOnlySpan": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlyspan-1",
