@@ -1,6 +1,6 @@
 {
-  "version": "2.11.0",
-  "generatedAt": "2026-06-16T05:22:31.7586423Z",
+  "version": "2.12.0",
+  "generatedAt": "2026-06-16T10:47:43.7002013Z",
   "namespaces": [],
   "types": [
     {
@@ -5194,6 +5194,24 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.OnSetDirty",
             "name": "OnSetDirty",
             "accessModifier": "protected",
@@ -6242,6 +6260,25 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Applies the current visibility ([[IsVisible]]) to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership for world \u2014 never tear down or rebuild, so that [[Show]]/[[Hide]] stay allocation-free.",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.OnSetDirty",
             "name": "OnSetDirty",
             "accessModifier": "protected",
@@ -6273,6 +6310,59 @@
             "summary": "Called during DeInit for subclass-specific cleanup (e.g., stencil materials).",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Show",
+            "name": "Show",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Re-shows text previously hidden with [[Hide]]. Reuses the already-built layout and mesh, so it is allocation-free and instant \u2014 no re-parse, shaping, layout or mesh rebuild. No-op if already visible.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Hide",
+            "name": "Hide",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Hides the text while keeping its built layout, mesh and pooled buffers intact: stops drawing and pointer hit-testing without tearing down the pipeline. Prefer this over disabling the GameObject/component or assigning empty text for text shown and hidden repeatedly (pooled lists, tooltips, HUD) \u2014 those force a full pipeline rebuild on every re-show, whereas [[Show]] after [[Hide]] is free. No-op if already hidden.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Raycast",
+            "name": "Raycast",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Vector2",
+              "Camera"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7482,6 +7572,17 @@
             "type": "Color",
             "hasGetter": true,
             "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.IsVisible",
+            "name": "IsVisible",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether the text is currently drawn and hit-testable. Setting this is equivalent to calling [[Show]] () or [[Hide]] ().",
             "seeAlso": []
           },
           {
@@ -10225,6 +10326,24 @@
             "returnType": "void",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextWorld.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
