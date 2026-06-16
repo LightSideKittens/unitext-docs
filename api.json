@@ -1,6 +1,6 @@
 {
-  "version": "2.10.0",
-  "generatedAt": "2026-06-13T16:00:27.1113634Z",
+  "version": "2.11.0",
+  "generatedAt": "2026-06-16T05:22:31.7586423Z",
   "namespaces": [],
   "types": [
     {
@@ -8661,6 +8661,7 @@
               "float",
               "float",
               "float",
+              "float",
               "float"
             ],
             "exceptions": [],
@@ -11155,6 +11156,32 @@
       }
     },
     {
+      "id": "VectorDragFieldAttribute",
+      "name": "VectorDragFieldAttribute",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "PropertyAttribute",
+      "baseTypeChain": [
+        "PropertyAttribute"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Draws a [[Vector2]] as a draggable label handle (drag scrubs both axes, double-click resets) plus editable X/Y fields, in place of Unity\u0027s default two-field row.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "editor",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "EmojiFont",
       "name": "EmojiFont",
       "namespace": "LightSide",
@@ -11615,7 +11642,8 @@
               "float",
               "List\u003CGlyphOverride\u003E",
               "string",
-              "List\u003CAxisDefault\u003E"
+              "List\u003CAxisDefault\u003E",
+              "int"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -11939,6 +11967,16 @@
           {
             "id": "Core.SpacingOffset",
             "name": "SpacingOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.SpaceAdvance",
+            "name": "SpaceAdvance",
             "accessModifier": "public",
             "isStatic": false,
             "type": "int",
@@ -13094,7 +13132,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Per-glyph tile size override. 0 = auto (use ClassifyTileSize), 64/128/256 = forced size.",
+      "summary": "Per-glyph overrides for one glyph index: SDF tile size plus advance, position and size adjustments applied wherever this glyph renders in the font.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -13119,6 +13157,33 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int"
+          },
+          {
+            "id": "GlyphOverride.advanceScale",
+            "name": "advanceScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GlyphOverride.offset",
+            "name": "offset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          },
+          {
+            "id": "GlyphOverride.scale",
+            "name": "scale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
           }
         ],
         "events": []
@@ -13913,6 +13978,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Baseline spacing added to every glyph\u0027s advance during shaping, in font design units. Layered additively with style-level letter-spacing.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.SpaceAdvance",
+            "name": "SpaceAdvance",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Space (U\u002B0020) advance for this font, in design units; replaces the width HarfBuzz reports. [[SpaceAdvanceUninitialized]] = use the font\u0027s own / HarfBuzz fallback.",
             "seeAlso": []
           },
           {
@@ -15065,6 +15141,15 @@
             "type": "string"
           },
           {
+            "id": "AttributeKeys.WordSpacing",
+            "name": "WordSpacing",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string"
+          },
+          {
             "id": "AttributeKeys.InteractiveRanges",
             "name": "InteractiveRanges",
             "accessModifier": "public",
@@ -15327,7 +15412,8 @@
         "TextBoxTrimModifier",
         "UppercaseModifier",
         "VariationModifier",
-        "WobbleAnimationModifier"
+        "WobbleAnimationModifier",
+        "WordSpacingModifier"
       ],
       "summary": "Base class for text modifiers \u2014 pieces of logic that alter appearance, layout, or behavior of a text range matched by an [[IParseRule]].",
       "remarks": "Subclass and override the protected hooks ([[OnEnable]], [[OnDisable]], [[OnDestroy]], [[OnApply]], optionally [[PrepareForParallel]]). Lifecycle dispatching is driven by the framework ([[Style]], the parse pipeline, [[CompositeModifier]]) \u2014 user code instantiates modifiers and hands them to [[Style]]; it should not invoke the lifecycle itself. Cycle (per parse pass on a UniText component): [[OnEnable]] runs once when the modifier first participates in a cycle \u2014 allocate pooled buffers and subscribe to UniText events here. [[OnApply]] runs for every tag/range matched in the current text. [[OnDisable]] runs at the start of the next cycle to unsubscribe event handlers; allocated buffers should stay alive so the next [[OnEnable]] can reuse them. [[OnDestroy]] runs when the modifier is removed from the component (style changed, font reload, component destroyed) \u2014 release pooled buffers and any other resources [[OnEnable]] acquired. Guaranteed to run exactly once per [[OnEnable]]-initiated resource acquisition, even when an intervening [[OnDisable]] has already cleared the subscription state.",
@@ -17734,31 +17820,13 @@
         "InlineObject",
         "InlineSprite"
       ],
-      "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearing) and rendering (width, height) need; the renderable payload is added by the concrete subclass.",
-      "remarks": "All metrics are in em units (relative to fontSize): width=1, height=1 means the media is fontSize x fontSize pixels advance=1 means the cursor moves by fontSize pixels after this media bearingX/bearingY are offsets relative to fontSize",
+      "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearingOffset) and rendering (size) need; the renderable payload is added by the concrete subclass.",
+      "remarks": "Pure shared data: one entry may be referenced by many components at once (e.g. through a shared [[UniTextSprites]] asset), so it holds no per-occurrence runtime state \u2014 the host [[InlineMediaModifier{TEntry, TWrapper}]] owns a wrapper pool per component. All metrics are in em units (relative to fontSize): size = (1,1) means the media is fontSize x fontSize pixels advance = 1 means the cursor moves by fontSize pixels after this media bearingOffset shifts the media relative to fontSize",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [
-          {
-            "id": "InlineMedia.UpdateInstances",
-            "name": "UpdateInstances",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Trims excess wrappers when fewer occurrences are active than instances exist, then runs [[Setup]] on every remaining instance to apply pending transform/content updates. Called per frame after the mesh rebuild.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
+        "methods": [],
         "properties": [],
         "fields": [
           {
@@ -17772,44 +17840,24 @@
             "summary": "Lookup name used in the tag parameter (e.g. jump in \u003Csprite=jump\u003E). Case-insensitive."
           },
           {
-            "id": "InlineMedia.width",
-            "name": "width",
+            "id": "InlineMedia.size",
+            "name": "size",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Width in em units (1 = fontSize)."
+            "type": "Vector2",
+            "summary": "Size in em units (1 = fontSize on each axis)."
           },
           {
-            "id": "InlineMedia.height",
-            "name": "height",
+            "id": "InlineMedia.bearingOffset",
+            "name": "bearingOffset",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Height in em units (1 = fontSize)."
-          },
-          {
-            "id": "InlineMedia.bearingX",
-            "name": "bearingX",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Horizontal offset in em units."
-          },
-          {
-            "id": "InlineMedia.bearingY",
-            "name": "bearingY",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Vertical offset in em units."
+            "type": "Vector2",
+            "summary": "Offset from the layout position in em units."
           },
           {
             "id": "InlineMedia.advance",
@@ -17830,16 +17878,6 @@
             "isConst": false,
             "type": "float",
             "summary": "Minimum height of lines containing this media, in em units (1 = fontSize). 0 = the media does not affect line height."
-          },
-          {
-            "id": "InlineMedia.activeCount",
-            "name": "activeCount",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "int",
-            "summary": "Number of on-screen occurrences claimed in the current rebuild pass; reset to 0 on every rebuild start."
           }
         ],
         "events": []
@@ -17978,6 +18016,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Destroys the wrapper GameObjects synchronously. This structural teardown (text emptied, component disabled or destroyed) is not followed by another rebuild, so the [[MeshApplied]]-deferred cleanup that [[OnDisable]] schedules would never fire. Always runs on the main thread.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -23303,6 +23342,26 @@
             "typeParameters": []
           },
           {
+            "id": "StylePreset.ReplaceStyle",
+            "name": "ReplaceStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the style at index and raises [[Changed]]. No-op if out of range.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "StylePreset.ClearStyles",
             "name": "ClearStyles",
             "accessModifier": "public",
@@ -24187,6 +24246,102 @@
           },
           {
             "id": "WobbleAnimationModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "WordSpacingModifier",
+      "name": "WordSpacingModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Adjusts the gap at spaces between words (the regular space and no-break space), leaving letter-to-letter spacing untouched. The CSS word-spacing analogue.",
+      "remarks": "Parameter: spacing with a unit \u2014 0.25em (relative to font size) or a raw pixel amount such as 4; negative values tighten. Applies at the regular space and no-break space; tabs and fixed-width spaces (U\u002B2000\u2013U\u002B200A, U\u002B3000) are left alone.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "WordSpacingModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnApply",
             "name": "OnApply",
             "accessModifier": "protected",
             "isAbstract": false,
@@ -25251,6 +25406,16 @@
             "hasSetter": false,
             "summary": "Low priority ensures this runs after explicit markup rules.",
             "seeAlso": []
+          },
+          {
+            "id": "RawUrlParseRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -25717,6 +25882,17 @@
           }
         ],
         "properties": [
+          {
+            "id": "TagRule.Name",
+            "name": "Name",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Configured tag name (without angle brackets). Consumers walking the active style set use this to pair the rule with its modifier \u2014 clipboard adapters emit / accept tags by this name, custom editors and inspectors render it, markup-to-HTML round-trip code reads it to derive the external element.",
+            "seeAlso": []
+          },
           {
             "id": "TagRule.TagName",
             "name": "TagName",
@@ -27007,6 +27183,44 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.StripMandatoryBreaks",
+            "name": "StripMandatoryBreaks",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Removes every mandatory break character (the [[IsMandatoryBreakChar]] set) from the string, returning the same instance when there is nothing to strip.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsC0ControlOrDelete",
+            "name": "IsC0ControlOrDelete",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if the codepoint is a C0 control character (U\u002B0000..U\u002B001F) or DELETE (U\u002B007F).",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.IsJustifiableWordSeparator",
             "name": "IsJustifiableWordSeparator",
             "accessModifier": "public",
@@ -27194,6 +27408,44 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.IsLetter",
+            "name": "IsLetter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "when the codepoint is a Unicode letter (general category L*). Uses the baked category table, so it is consistent across Mono/IL2CPP and covers supplementary letters that char.IsLetter(char) cannot reach.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsWhiteSpace",
+            "name": "IsWhiteSpace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "when the codepoint is whitespace per char.IsWhiteSpace. All Unicode whitespace lies in the BMP, so supplementary codepoints are never whitespace.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.GetScript",
             "name": "GetScript",
             "accessModifier": "public",
@@ -27330,6 +27582,69 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.MapCharsToCodepoints",
+            "name": "MapCharsToCodepoints",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Maps ascending UTF-16 char indices to codepoint indices in one text walk. Indices may repeat; out-of-range input clamps to the end. Output may alias the input span.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "ReadOnlySpan\u003Cint\u003E",
+              "Span\u003Cint\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.MapCodepointsToChars",
+            "name": "MapCodepointsToChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Maps ascending codepoint indices to UTF-16 char indices in one text walk. Indices may repeat; past-the-end input clamps to text.Length. Output may alias the input span.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "ReadOnlySpan\u003Cint\u003E",
+              "Span\u003Cint\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.EncodeUtf16",
+            "name": "EncodeUtf16",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Encodes a Unicode scalar into UTF-16: one code unit in high for BMP codepoints (low is 0), a surrogate pair otherwise. Returns the number of code units written (1 or 2).",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ushort",
+              "ushort"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.EnsureInitialized",
             "name": "EnsureInitialized",
             "accessModifier": "public",
@@ -27423,6 +27738,15 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.Delete",
+            "name": "Delete",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
             "id": "UnicodeData.NextLine",
             "name": "NextLine",
             "accessModifier": "public",
@@ -27488,6 +27812,42 @@
           {
             "id": "UnicodeData.WordJoiner",
             "name": "WordJoiner",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ByteOrderMark",
+            "name": "ByteOrderMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ReversedByteOrderMark",
+            "name": "ReversedByteOrderMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.RightSingleQuotationMark",
+            "name": "RightSingleQuotationMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.UnitSeparator",
+            "name": "UnitSeparator",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27747,6 +28107,15 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.ArabicTatweel",
+            "name": "ArabicTatweel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
             "id": "UnicodeData.ArabicLam",
             "name": "ArabicLam",
             "accessModifier": "public",
@@ -27785,6 +28154,15 @@
           {
             "id": "UnicodeData.ArabicAlef",
             "name": "ArabicAlef",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ArabicAlefWasla",
+            "name": "ArabicAlefWasla",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27864,6 +28242,25 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.ObjectReplacementCharacter",
+            "name": "ObjectReplacementCharacter",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ObjectReplacementCharacterString",
+            "name": "ObjectReplacementCharacterString",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string",
+            "summary": "String form of [[ObjectReplacementCharacter]] for insertion APIs."
+          },
+          {
             "id": "UnicodeData.ReplacementCharacter",
             "name": "ReplacementCharacter",
             "accessModifier": "public",
@@ -27875,6 +28272,15 @@
           {
             "id": "UnicodeData.DottedCircle",
             "name": "DottedCircle",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.Bullet",
+            "name": "Bullet",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27974,6 +28380,15 @@
           {
             "id": "UnicodeData.MaxBmp",
             "name": "MaxBmp",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.MaxCodepoint",
+            "name": "MaxCodepoint",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -28082,6 +28497,15 @@
           {
             "id": "UnicodeData.BlackFlagEmoji",
             "name": "BlackFlagEmoji",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.GrinningFaceEmoji",
+            "name": "GrinningFaceEmoji",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -32321,6 +32745,10 @@
       {
         "name": "TypeSelectorAttribute",
         "priority": 100
+      },
+      {
+        "name": "VectorDragFieldAttribute",
+        "priority": 100
       }
     ],
     "emoji": [
@@ -32762,6 +33190,10 @@
       },
       {
         "name": "WobbleAnimationModifier",
+        "priority": 100
+      },
+      {
+        "name": "WordSpacingModifier",
         "priority": 100
       }
     ],
