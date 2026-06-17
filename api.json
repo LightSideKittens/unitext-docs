@@ -1,6 +1,6 @@
 {
-  "version": "2.12.0",
-  "generatedAt": "2026-06-16T10:47:43.7002013Z",
+  "version": "2.12.1",
+  "generatedAt": "2026-06-17T13:39:48.5204266Z",
   "namespaces": [],
   "types": [
     {
@@ -10544,33 +10544,6 @@
             "summary": "Raised when the component\u0027s transform parent changes (may invalidate SortingGroup inheritance)."
           }
         ]
-      }
-    },
-    {
-      "id": "UniTextWorldBatcher",
-      "name": "UniTextWorldBatcher",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseType": "MonoBehaviour",
-      "baseTypeChain": [
-        "MonoBehaviour"
-      ],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Invisible singleton that batches [[UniTextWorld]] components into combined meshes while honoring Unity\u0027s sorting model (SortingLayer, OrderInLayer, SortingGroup) so batched text interleaves correctly with SpriteRenderer and other renderers.",
-      "remarks": "Two-level hierarchy: [[BatchGroup]] is a logical grouping by [[BatchKey]] = (materialInstanceId, sortingLayerID, sortingOrder, sortingGroupID). Conceptually \u0022one draw call worth of text\u0022. [[BatchShard]] is a physical mesh. A group holds one shard normally; when a group grows past [[WorldBatcherShardTargetVertexCount]] vertices, new shards are added so that structural rebuilds of one shard do not touch unrelated components. Dirty classification: Structural \u2014 vertex count changed, entry added/removed, sorting/material changed. Triggers a full rebuild of the affected shard (not the whole group). Positional \u2014 transform moved. Writes Position\u002BNormal only, for exactly this entry\u0027s slice of the shard\u0027s vertex buffer. Attributive \u2014 text rebuild without vertex count change (colors/UVs only). Writes the affected attribute streams for this entry\u0027s slice. Vertex buffer layout \u2014 fixed four streams: Stream 0: Position (float3) \u002B Normal (float3) = 24 bytes/vertex Stream 1: Color (UNorm8\u00D74) = 4 bytes/vertex Stream 2: UV0 (float4) = 16 bytes/vertex Stream 3: UV1 \u002B UV2 \u002B UV3 (float4\u00D73) = 48 bytes/vertex Separate streams let partial updates write only the affected attribute without rewriting unrelated data.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "core",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [],
-        "events": []
       }
     },
     {
@@ -32820,10 +32793,6 @@
         "priority": 100
       },
       {
-        "name": "UniTextWorldBatcher",
-        "priority": 100
-      },
-      {
         "name": "UniTextWorldRaycaster",
         "priority": 100
       },
@@ -33516,7 +33485,6 @@
     "List": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1",
     "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
     "Material": "https://docs.unity3d.com/ScriptReference/Material.html",
-    "MonoBehaviour": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.html",
     "Nullable": "https://learn.microsoft.com/en-us/dotnet/api/system.nullable-1",
     "PointerEventData": "https://docs.unity3d.com/ScriptReference/EventSystems.PointerEventData.html",
     "ReadOnlyMemory": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlymemory-1",
