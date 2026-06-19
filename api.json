@@ -1,6 +1,6 @@
 {
-  "version": "2.12.2",
-  "generatedAt": "2026-06-19T05:44:35.7706834Z",
+  "version": "2.12.3",
+  "generatedAt": "2026-06-19T11:08:32.9178037Z",
   "namespaces": [],
   "types": [
     {
@@ -5488,6 +5488,17 @@
             "hasSetter": false,
             "summary": "Gets all canvas renderers used for sub-meshes.",
             "seeAlso": []
+          },
+          {
+            "id": "UniText.RenderRoot",
+            "name": "RenderRoot",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RectTransform",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Single hidden child holding every render object this component spawns \u2014 glyph sub-meshes and inline media. Kept as the first sibling so the text composites below child graphics nested under the component (uGUI draws children over their parent); user children fall after it and highlights still self-order around it (\u0022Behind\u0022 before, \u0022Above\u0022 after). One node to position instead of each renderer. Main thread only \u2014 creates a GameObject.",
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -7572,6 +7583,17 @@
             "type": "Color",
             "hasGetter": true,
             "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.RenderRoot",
+            "name": "RenderRoot",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RectTransform",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Transform under which this component parents its generated render children (glyph sub-meshes, inline media). Main thread only \u2014 the Canvas backend lazily creates a hidden container.",
             "seeAlso": []
           },
           {
@@ -20409,13 +20431,13 @@
             "type": "RectTransform"
           },
           {
-            "id": "MediaWrapper.parent",
-            "name": "parent",
+            "id": "MediaWrapper.owner",
+            "name": "owner",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "Transform"
+            "type": "UniTextBase"
           },
           {
             "id": "MediaWrapper.anchoredPosition",
@@ -33495,7 +33517,6 @@
     "Span": "https://learn.microsoft.com/en-us/dotnet/api/system.span-1",
     "Sprite": "https://docs.unity3d.com/ScriptReference/Sprite.html",
     "StringBuilder": "https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder",
-    "Transform": "https://docs.unity3d.com/ScriptReference/Transform.html",
     "Type": "https://learn.microsoft.com/en-us/dotnet/api/system.type",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
     "Vector2": "https://docs.unity3d.com/ScriptReference/Vector2.html",
