@@ -1,6 +1,6 @@
 {
-  "version": "2.8.2",
-  "generatedAt": "2026-06-11T01:16:26.2815492Z",
+  "version": "2.12.3",
+  "generatedAt": "2026-06-19T10:57:57.5549449Z",
   "namespaces": [],
   "types": [
     {
@@ -3648,6 +3648,114 @@
       }
     },
     {
+      "id": "TextMeasureOptions",
+      "name": "TextMeasureOptions",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Box constraints and setting overrides for [[MeasureText]]. Every null field falls back to the component\u0027s current value, so default measures the current text, as configured, at its natural unconstrained size. Overrides behave exactly like the matching component settings (with [[autoSize]] on, [[fontSize]] is ignored and [[minFontSize]] / [[maxFontSize]] drive the fit). Dimensions are outer ([[Padding]] included).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "core",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextMeasureOptions.text",
+            "name": "text",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "string",
+            "summary": "Markup text to measure. Null \u2014 the component\u0027s current text."
+          },
+          {
+            "id": "TextMeasureOptions.maxWidth",
+            "name": "maxWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E",
+            "summary": "Wrap width. Null \u2014 unconstrained."
+          },
+          {
+            "id": "TextMeasureOptions.maxHeight",
+            "name": "maxHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E",
+            "summary": "Box height: with auto-size the font shrinks to fit [[maxWidth]] \u00D7 this before measuring, like in a real rect. Null \u2014 unconstrained. Does not affect flow without auto-size."
+          },
+          {
+            "id": "TextMeasureOptions.fontSize",
+            "name": "fontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.autoSize",
+            "name": "autoSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cbool\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.minFontSize",
+            "name": "minFontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.maxFontSize",
+            "name": "maxFontSize",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cfloat\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.wordWrap",
+            "name": "wordWrap",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003Cbool\u003E"
+          },
+          {
+            "id": "TextMeasureOptions.padding",
+            "name": "padding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Nullable\u003CVector4\u003E"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "TextOverEdge",
       "name": "TextOverEdge",
       "kind": "enum",
@@ -5086,6 +5194,24 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.OnSetDirty",
             "name": "OnSetDirty",
             "accessModifier": "protected",
@@ -5317,22 +5443,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniText.HandleAnimation",
-            "name": "HandleAnimation",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniText.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -5349,6 +5459,22 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "UniText.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [
@@ -5361,6 +5487,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets all canvas renderers used for sub-meshes.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniText.RenderRoot",
+            "name": "RenderRoot",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RectTransform",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Single hidden child holding every render object this component spawns \u2014 glyph sub-meshes and inline media. Kept as the first sibling so the text composites below child graphics nested under the component (uGUI draws children over their parent); user children fall after it and highlights still self-order around it (\u0022Behind\u0022 before, \u0022Above\u0022 after). One node to position instead of each renderer. Main thread only \u2014 creates a GameObject.",
             "seeAlso": []
           }
         ],
@@ -6134,6 +6271,25 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Applies the current visibility ([[IsVisible]]) to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership for world \u2014 never tear down or rebuild, so that [[Show]]/[[Hide]] stay allocation-free.",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.OnSetDirty",
             "name": "OnSetDirty",
             "accessModifier": "protected",
@@ -6165,6 +6321,59 @@
             "summary": "Called during DeInit for subclass-specific cleanup (e.g., stencil materials).",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Show",
+            "name": "Show",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Re-shows text previously hidden with [[Hide]]. Reuses the already-built layout and mesh, so it is allocation-free and instant \u2014 no re-parse, shaping, layout or mesh rebuild. No-op if already visible.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Hide",
+            "name": "Hide",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Hides the text while keeping its built layout, mesh and pooled buffers intact: stops drawing and pointer hit-testing without tearing down the pipeline. Prefer this over disabling the GameObject/component or assigning empty text for text shown and hidden repeatedly (pooled lists, tooltips, HUD) \u2014 those force a full pipeline rebuild on every re-show, whereas [[Show]] after [[Hide]] is free. No-op if already hidden.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Raycast",
+            "name": "Raycast",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Vector2",
+              "Camera"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6228,16 +6437,15 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
+            "id": "UniTextBase.PrepareForParallel",
+            "name": "PrepareForParallel",
             "accessModifier": "protected",
             "isAbstract": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "isStatic": false,
-            "isOverride": true,
+            "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6245,16 +6453,16 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.HandleAnimation",
-            "name": "HandleAnimation",
+            "id": "UniTextBase.EnsureFirstPassComplete",
+            "name": "EnsureFirstPassComplete",
             "accessModifier": "protected",
-            "isAbstract": true,
+            "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -6455,6 +6663,40 @@
             "paramTypes": [
               "PointerEventData"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unity callback invoked after Animator writes animated properties into this component\u0027s serialized fields. Subclasses delegate to their composed [[AnimationHandlerBase{T}]] to diff the animated state and aggregate the resulting [[UniTextDirtyFlags]] in a single [[SetDirty]] call.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.HandleAnimation",
+            "name": "HandleAnimation",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Diffs animated fields against the cached baseline through the subclass\u0027s animation handler. Implementations should forward to their composed [[AnimationHandlerBase{T}]] instance.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -6923,34 +7165,21 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureFirstPassComplete",
-            "name": "EnsureFirstPassComplete",
-            "accessModifier": "protected",
+            "id": "UniTextBase.MeasureText",
+            "name": "MeasureText",
+            "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "void",
-            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
+            "returnType": "Vector2",
+            "summary": "Measures the size text occupies under the given constraints and setting overrides \u2014 the displayed text, layout and mesh are left untouched.",
+            "remarks": "Runs the component\u0027s full pipeline: styles and modifiers, font fallback, direction, word wrap; the text resolver is bypassed. Every non-null override in options acts exactly as if set on the component (auto-size fits the font into maxWidth \u00D7 maxHeight like into a real rect); afterwards the component\u0027s fields, layout caches and [[UniTextDirtyFlags]] are restored. Dimensions are outer ([[Padding]] included), so the result maps directly to a RectTransform. Measuring another [[text]] re-parses and re-shapes both texts \u2014 cache the result instead of calling every frame. Main thread only.",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "TextMeasureOptions"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -7357,6 +7586,28 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.RenderRoot",
+            "name": "RenderRoot",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RectTransform",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Transform under which this component parents its generated render children (glyph sub-meshes, inline media). Main thread only \u2014 the Canvas backend lazily creates a hidden container.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.IsVisible",
+            "name": "IsVisible",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether the text is currently drawn and hit-testable. Setting this is equivalent to calling [[Show]] () or [[Hide]] ().",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.GlyphCount",
             "name": "GlyphCount",
             "accessModifier": "public",
@@ -7365,6 +7616,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the total number of glyphs.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.UseParallel",
+            "name": "UseParallel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
             "seeAlso": []
           },
           {
@@ -7398,17 +7660,6 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the interactive range currently being hovered, if any.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.UseParallel",
-            "name": "UseParallel",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": true,
-            "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
             "seeAlso": []
           },
           {
@@ -7579,12 +7830,28 @@
             "summary": "Raised when dirty flags change, indicating what needs rebuilding."
           },
           {
-            "id": "UniTextBase.Animated",
-            "name": "Animated",
+            "id": "UniTextBase.BeforeProcess",
+            "name": "BeforeProcess",
             "accessModifier": "public",
-            "isStatic": false,
+            "isStatic": true,
             "type": "Action",
-            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
+            "summary": "Raised before any text processing in the current canvas update cycle."
+          },
+          {
+            "id": "UniTextBase.MeshApplied",
+            "name": "MeshApplied",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
+          },
+          {
+            "id": "UniTextBase.AfterProcess",
+            "name": "AfterProcess",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Action",
+            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
           },
           {
             "id": "UniTextBase.TextClicked",
@@ -7627,28 +7894,12 @@
             "summary": "Raised when the hovered glyph/cluster changes (desktop only)."
           },
           {
-            "id": "UniTextBase.BeforeProcess",
-            "name": "BeforeProcess",
+            "id": "UniTextBase.Animated",
+            "name": "Animated",
             "accessModifier": "public",
-            "isStatic": true,
+            "isStatic": false,
             "type": "Action",
-            "summary": "Raised before any text processing in the current canvas update cycle."
-          },
-          {
-            "id": "UniTextBase.MeshApplied",
-            "name": "MeshApplied",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after meshes are applied to renderers, before canvas rendering begins."
-          },
-          {
-            "id": "UniTextBase.AfterProcess",
-            "name": "AfterProcess",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "Action",
-            "summary": "Raised after all text processing is complete, after [[MeshApplied]]."
+            "summary": "Raised after Unity Animator applies animated property values to this component, once the base field diff has issued the corresponding [[SetDirty]]. Modifiers with their own animatable fields should subscribe and run an equivalent diff over their state, calling [[SetDirty]] with the flags that match their effect."
           }
         ]
       }
@@ -8019,6 +8270,16 @@
             "isConst": false,
             "type": "PooledBuffer\u003CPositionedGlyph\u003E",
             "summary": "Final positioned glyphs ready for rendering."
+          },
+          {
+            "id": "UniTextBuffers.segmentBreaks",
+            "name": "segmentBreaks",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003CTextRange\u003E",
+            "summary": "Segment-level line break opportunities in codepoint space; filled by modifiers in the Shaped phase, consumed by line breaking. Text between consecutive entries wraps as a unit: it either fits entirely on the current line or starts a fresh one, and the entry\u0027s range \u2014 the delimiter \u2014 collapses when the break is taken on it (its codepoints stay in the line range but produce no glyphs and no width), the way trailing whitespace hangs at word-level breaks. A unit wider than the box wraps inside itself, and its lines accept no further units. A zero-length entry is a pure boundary with nothing to collapse."
           },
           {
             "id": "UniTextBuffers.virtualCodepoints",
@@ -8520,6 +8781,7 @@
             "paramTypes": [
               "Vector3[]",
               "int",
+              "float",
               "float",
               "float",
               "float",
@@ -10091,6 +10353,24 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextWorld.ApplyVisibility",
+            "name": "ApplyVisibility",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextWorld.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
@@ -10286,33 +10566,6 @@
             "summary": "Raised when the component\u0027s transform parent changes (may invalidate SortingGroup inheritance)."
           }
         ]
-      }
-    },
-    {
-      "id": "UniTextWorldBatcher",
-      "name": "UniTextWorldBatcher",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseType": "MonoBehaviour",
-      "baseTypeChain": [
-        "MonoBehaviour"
-      ],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Invisible singleton that batches [[UniTextWorld]] components into combined meshes while honoring Unity\u0027s sorting model (SortingLayer, OrderInLayer, SortingGroup) so batched text interleaves correctly with SpriteRenderer and other renderers.",
-      "remarks": "Two-level hierarchy: [[BatchGroup]] is a logical grouping by [[BatchKey]] = (materialInstanceId, sortingLayerID, sortingOrder, sortingGroupID). Conceptually \u0022one draw call worth of text\u0022. [[BatchShard]] is a physical mesh. A group holds one shard normally; when a group grows past [[WorldBatcherShardTargetVertexCount]] vertices, new shards are added so that structural rebuilds of one shard do not touch unrelated components. Dirty classification: Structural \u2014 vertex count changed, entry added/removed, sorting/material changed. Triggers a full rebuild of the affected shard (not the whole group). Positional \u2014 transform moved. Writes Position\u002BNormal only, for exactly this entry\u0027s slice of the shard\u0027s vertex buffer. Attributive \u2014 text rebuild without vertex count change (colors/UVs only). Writes the affected attribute streams for this entry\u0027s slice. Vertex buffer layout \u2014 fixed four streams: Stream 0: Position (float3) \u002B Normal (float3) = 24 bytes/vertex Stream 1: Color (UNorm8\u00D74) = 4 bytes/vertex Stream 2: UV0 (float4) = 16 bytes/vertex Stream 3: UV1 \u002B UV2 \u002B UV3 (float4\u00D73) = 48 bytes/vertex Separate streams let partial updates write only the affected attribute without rewriting unrelated data.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "core",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [],
-        "events": []
       }
     },
     {
@@ -11017,6 +11270,32 @@
       }
     },
     {
+      "id": "VectorDragFieldAttribute",
+      "name": "VectorDragFieldAttribute",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "PropertyAttribute",
+      "baseTypeChain": [
+        "PropertyAttribute"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Draws a [[Vector2]] as a draggable label handle (drag scrubs both axes, double-click resets) plus editable X/Y fields, in place of Unity\u0027s default two-field row.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "editor",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "EmojiFont",
       "name": "EmojiFont",
       "namespace": "LightSide",
@@ -11477,7 +11756,8 @@
               "float",
               "List\u003CGlyphOverride\u003E",
               "string",
-              "List\u003CAxisDefault\u003E"
+              "List\u003CAxisDefault\u003E",
+              "int"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -11809,6 +12089,16 @@
             "seeAlso": []
           },
           {
+            "id": "Core.SpaceAdvance",
+            "name": "SpaceAdvance",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
             "id": "Core.FakeBoldWeight",
             "name": "FakeBoldWeight",
             "accessModifier": "public",
@@ -11871,17 +12161,7 @@
             "seeAlso": []
           }
         ],
-        "fields": [
-          {
-            "id": "Core.batchProtectedKeys",
-            "name": "batchProtectedKeys",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "List\u003Clong\u003E"
-          }
-        ],
+        "fields": [],
         "events": []
       }
     },
@@ -12966,7 +13246,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Per-glyph tile size override. 0 = auto (use ClassifyTileSize), 64/128/256 = forced size.",
+      "summary": "Per-glyph overrides for one glyph index: SDF tile size plus advance, position and size adjustments applied wherever this glyph renders in the font.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
@@ -12991,6 +13271,33 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int"
+          },
+          {
+            "id": "GlyphOverride.advanceScale",
+            "name": "advanceScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "GlyphOverride.offset",
+            "name": "offset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          },
+          {
+            "id": "GlyphOverride.scale",
+            "name": "scale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
           }
         ],
         "events": []
@@ -13788,6 +14095,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextFont.SpaceAdvance",
+            "name": "SpaceAdvance",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Space (U\u002B0020) advance for this font, in design units; replaces the width HarfBuzz reports. [[SpaceAdvanceUninitialized]] = use the font\u0027s own / HarfBuzz fallback.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextFont.FakeBoldWeight",
             "name": "FakeBoldWeight",
             "accessModifier": "public",
@@ -14155,7 +14473,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Registers a font runtime under fontId so subsequent [[GetFontAsset]] lookups resolve to it. Required for fallback fonts discovered at runtime.",
+            "summary": "Registers a font runtime under fontId so subsequent [[GetFontAsset]] lookups resolve to it. Required for fallback fonts discovered at runtime. [[FontId]] is ignored \u2014 emoji resolves through its own lookup branch and the id is unstorable in the registry.",
             "params": [],
             "paramTypes": [
               "int",
@@ -14937,6 +15255,15 @@
             "type": "string"
           },
           {
+            "id": "AttributeKeys.WordSpacing",
+            "name": "WordSpacing",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string"
+          },
+          {
             "id": "AttributeKeys.InteractiveRanges",
             "name": "InteractiveRanges",
             "accessModifier": "public",
@@ -15192,13 +15519,15 @@
         "RevealModifier",
         "RubyModifier",
         "ScriptPositionModifier",
+        "SeparatorModifier",
         "SizeModifier",
         "SmallCapsModifier",
         "SubMeshModifier",
         "TextBoxTrimModifier",
         "UppercaseModifier",
         "VariationModifier",
-        "WobbleAnimationModifier"
+        "WobbleAnimationModifier",
+        "WordSpacingModifier"
       ],
       "summary": "Base class for text modifiers \u2014 pieces of logic that alter appearance, layout, or behavior of a text range matched by an [[IParseRule]].",
       "remarks": "Subclass and override the protected hooks ([[OnEnable]], [[OnDisable]], [[OnDestroy]], [[OnApply]], optionally [[PrepareForParallel]]). Lifecycle dispatching is driven by the framework ([[Style]], the parse pipeline, [[CompositeModifier]]) \u2014 user code instantiates modifiers and hands them to [[Style]]; it should not invoke the lifecycle itself. Cycle (per parse pass on a UniText component): [[OnEnable]] runs once when the modifier first participates in a cycle \u2014 allocate pooled buffers and subscribe to UniText events here. [[OnApply]] runs for every tag/range matched in the current text. [[OnDisable]] runs at the start of the next cycle to unsubscribe event handlers; allocated buffers should stay alive so the next [[OnEnable]] can reuse them. [[OnDestroy]] runs when the modifier is removed from the component (style changed, font reload, component destroyed) \u2014 release pooled buffers and any other resources [[OnEnable]] acquired. Guaranteed to run exactly once per [[OnEnable]]-initiated resource acquisition, even when an intervening [[OnDisable]] has already cleared the subscription state.",
@@ -17605,31 +17934,13 @@
         "InlineObject",
         "InlineSprite"
       ],
-      "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearing) and rendering (width, height) need; the renderable payload is added by the concrete subclass.",
-      "remarks": "All metrics are in em units (relative to fontSize): width=1, height=1 means the media is fontSize x fontSize pixels advance=1 means the cursor moves by fontSize pixels after this media bearingX/bearingY are offsets relative to fontSize",
+      "summary": "Common entry-data base for inline-flowed media ([[InlineSprite]], [[InlineObject]]). Carries the name and layout metrics that both shape (advance, bearingOffset) and rendering (size) need; the renderable payload is added by the concrete subclass.",
+      "remarks": "Pure shared data: one entry may be referenced by many components at once (e.g. through a shared [[UniTextSprites]] asset), so it holds no per-occurrence runtime state \u2014 the host [[InlineMediaModifier{TEntry, TWrapper}]] owns a wrapper pool per component. All metrics are in em units (relative to fontSize): size = (1,1) means the media is fontSize x fontSize pixels advance = 1 means the cursor moves by fontSize pixels after this media bearingOffset shifts the media relative to fontSize",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
-        "methods": [
-          {
-            "id": "InlineMedia.UpdateInstances",
-            "name": "UpdateInstances",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Trims excess wrappers when fewer occurrences are active than instances exist, then runs [[Setup]] on every remaining instance to apply pending transform/content updates. Called per frame after the mesh rebuild.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
+        "methods": [],
         "properties": [],
         "fields": [
           {
@@ -17643,44 +17954,24 @@
             "summary": "Lookup name used in the tag parameter (e.g. jump in \u003Csprite=jump\u003E). Case-insensitive."
           },
           {
-            "id": "InlineMedia.width",
-            "name": "width",
+            "id": "InlineMedia.size",
+            "name": "size",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Width in em units (1 = fontSize)."
+            "type": "Vector2",
+            "summary": "Size in em units (1 = fontSize on each axis)."
           },
           {
-            "id": "InlineMedia.height",
-            "name": "height",
+            "id": "InlineMedia.bearingOffset",
+            "name": "bearingOffset",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Height in em units (1 = fontSize)."
-          },
-          {
-            "id": "InlineMedia.bearingX",
-            "name": "bearingX",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Horizontal offset in em units."
-          },
-          {
-            "id": "InlineMedia.bearingY",
-            "name": "bearingY",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Vertical offset in em units."
+            "type": "Vector2",
+            "summary": "Offset from the layout position in em units."
           },
           {
             "id": "InlineMedia.advance",
@@ -17701,16 +17992,6 @@
             "isConst": false,
             "type": "float",
             "summary": "Minimum height of lines containing this media, in em units (1 = fontSize). 0 = the media does not affect line height."
-          },
-          {
-            "id": "InlineMedia.activeCount",
-            "name": "activeCount",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "int",
-            "summary": "Number of on-screen occurrences claimed in the current rebuild pass; reset to 0 on every rebuild start."
           }
         ],
         "events": []
@@ -17849,6 +18130,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Destroys the wrapper GameObjects synchronously. This structural teardown (text emptied, component disabled or destroyed) is not followed by another rebuild, so the [[MeshApplied]]-deferred cleanup that [[OnDisable]] schedules would never fire. Always runs on the main thread.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -20149,13 +20431,13 @@
             "type": "RectTransform"
           },
           {
-            "id": "MediaWrapper.parent",
-            "name": "parent",
+            "id": "MediaWrapper.owner",
+            "name": "owner",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "Transform"
+            "type": "UniTextBase"
           },
           {
             "id": "MediaWrapper.anchoredPosition",
@@ -21957,6 +22239,102 @@
       }
     },
     {
+      "id": "SeparatorModifier",
+      "name": "SeparatorModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Keeps each run of text between tagged separators whole during word wrap: a segment either fits entirely on the current line or moves to a fresh line and the separator before it collapses. A segment wider than the text box wraps inside itself as usual, and the lines holding its fragments accept no further segments.",
+      "remarks": "Pair with a [[SeparatorParseRule]], which inserts the separator string and marks its range: uniText.AddStyle(new Style { Modifier = new SeparatorModifier(), Rule = new SeparatorParseRule() }).",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "SeparatorModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "ShadowModifier",
       "name": "ShadowModifier",
       "namespace": "LightSide",
@@ -23078,6 +23456,26 @@
             "typeParameters": []
           },
           {
+            "id": "StylePreset.ReplaceStyle",
+            "name": "ReplaceStyle",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the style at index and raises [[Changed]]. No-op if out of range.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "Style"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "StylePreset.ClearStyles",
             "name": "ClearStyles",
             "accessModifier": "public",
@@ -23987,6 +24385,102 @@
       }
     },
     {
+      "id": "WordSpacingModifier",
+      "name": "WordSpacingModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Adjusts the gap at spaces between words (the regular space and no-break space), leaving letter-to-letter spacing untouched. The CSS word-spacing analogue.",
+      "remarks": "Parameter: spacing with a unit \u2014 0.25em (relative to font size) or a raw pixel amount such as 4; negative values tighten. Applies at the regular space and no-break space; tabs and fixed-width spaces (U\u002B2000\u2013U\u002B200A, U\u002B3000) are left alone.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "WordSpacingModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "WordSpacingModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "BackslashEscapeRule",
       "name": "BackslashEscapeRule",
       "namespace": "LightSide",
@@ -24379,6 +24873,7 @@
         "RangeRule",
         "RawUrlParseRule",
         "RubyParseRule",
+        "SeparatorParseRule",
         "StringParseRule",
         "TagParseRule"
       ],
@@ -25025,6 +25520,16 @@
             "hasSetter": false,
             "summary": "Low priority ensures this runs after explicit markup rules.",
             "seeAlso": []
+          },
+          {
+            "id": "RawUrlParseRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -25077,6 +25582,113 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "SeparatorParseRule",
+      "name": "SeparatorParseRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "IParseRule",
+      "baseTypeChain": [
+        "IParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Replaces the void separator tag (default \u003Csep\u003E) with the configured separator string and marks the inserted range for a paired [[SeparatorModifier]].",
+      "remarks": "Matches \u003Csep\u003E, \u003Csep/\u003E and \u003Csep=value\u003E, where value overrides [[Separator]] for that occurrence \u2014 quote it to keep surrounding spaces: \u003Csep=\u0022 \u25CF \u0022\u003E. A stray \u003C/sep\u003E is consumed and renders nothing.",
+      "seeAlso": [
+        "SeparatorModifier"
+      ],
+      "typeParameters": [],
+      "category": "parseRules",
+      "members": {
+        "methods": [
+          {
+            "id": "SeparatorParseRule.ctor",
+            "name": "SeparatorParseRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "SeparatorParseRule",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorParseRule.ctor",
+            "name": "SeparatorParseRule",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "SeparatorParseRule",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SeparatorParseRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "SeparatorParseRule.Separator",
+            "name": "Separator",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Separator string inserted in place of the tag.",
+            "seeAlso": []
+          },
+          {
+            "id": "SeparatorParseRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -25384,6 +25996,17 @@
           }
         ],
         "properties": [
+          {
+            "id": "TagRule.Name",
+            "name": "Name",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Configured tag name (without angle brackets). Consumers walking the active style set use this to pair the rule with its modifier \u2014 clipboard adapters emit / accept tags by this name, custom editors and inspectors render it, markup-to-HTML round-trip code reads it to derive the external element.",
+            "seeAlso": []
+          },
           {
             "id": "TagRule.TagName",
             "name": "TagName",
@@ -26674,6 +27297,44 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.StripMandatoryBreaks",
+            "name": "StripMandatoryBreaks",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "Removes every mandatory break character (the [[IsMandatoryBreakChar]] set) from the string, returning the same instance when there is nothing to strip.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsC0ControlOrDelete",
+            "name": "IsC0ControlOrDelete",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Returns true if the codepoint is a C0 control character (U\u002B0000..U\u002B001F) or DELETE (U\u002B007F).",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.IsJustifiableWordSeparator",
             "name": "IsJustifiableWordSeparator",
             "accessModifier": "public",
@@ -26861,6 +27522,44 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.IsLetter",
+            "name": "IsLetter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "when the codepoint is a Unicode letter (general category L*). Uses the baked category table, so it is consistent across Mono/IL2CPP and covers supplementary letters that char.IsLetter(char) cannot reach.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.IsWhiteSpace",
+            "name": "IsWhiteSpace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "when the codepoint is whitespace per char.IsWhiteSpace. All Unicode whitespace lies in the BMP, so supplementary codepoints are never whitespace.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.GetScript",
             "name": "GetScript",
             "accessModifier": "public",
@@ -26997,6 +27696,69 @@
             "typeParameters": []
           },
           {
+            "id": "UnicodeData.MapCharsToCodepoints",
+            "name": "MapCharsToCodepoints",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Maps ascending UTF-16 char indices to codepoint indices in one text walk. Indices may repeat; out-of-range input clamps to the end. Output may alias the input span.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "ReadOnlySpan\u003Cint\u003E",
+              "Span\u003Cint\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.MapCodepointsToChars",
+            "name": "MapCodepointsToChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Maps ascending codepoint indices to UTF-16 char indices in one text walk. Indices may repeat; past-the-end input clamps to text.Length. Output may alias the input span.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "ReadOnlySpan\u003Cint\u003E",
+              "Span\u003Cint\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UnicodeData.EncodeUtf16",
+            "name": "EncodeUtf16",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Encodes a Unicode scalar into UTF-16: one code unit in high for BMP codepoints (low is 0), a surrogate pair otherwise. Returns the number of code units written (1 or 2).",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ushort",
+              "ushort"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UnicodeData.EnsureInitialized",
             "name": "EnsureInitialized",
             "accessModifier": "public",
@@ -27090,6 +27852,15 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.Delete",
+            "name": "Delete",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
             "id": "UnicodeData.NextLine",
             "name": "NextLine",
             "accessModifier": "public",
@@ -27155,6 +27926,42 @@
           {
             "id": "UnicodeData.WordJoiner",
             "name": "WordJoiner",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ByteOrderMark",
+            "name": "ByteOrderMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ReversedByteOrderMark",
+            "name": "ReversedByteOrderMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.RightSingleQuotationMark",
+            "name": "RightSingleQuotationMark",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.UnitSeparator",
+            "name": "UnitSeparator",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27414,6 +28221,15 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.ArabicTatweel",
+            "name": "ArabicTatweel",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
             "id": "UnicodeData.ArabicLam",
             "name": "ArabicLam",
             "accessModifier": "public",
@@ -27452,6 +28268,15 @@
           {
             "id": "UnicodeData.ArabicAlef",
             "name": "ArabicAlef",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ArabicAlefWasla",
+            "name": "ArabicAlefWasla",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27531,6 +28356,25 @@
             "type": "int"
           },
           {
+            "id": "UnicodeData.ObjectReplacementCharacter",
+            "name": "ObjectReplacementCharacter",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.ObjectReplacementCharacterString",
+            "name": "ObjectReplacementCharacterString",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string",
+            "summary": "String form of [[ObjectReplacementCharacter]] for insertion APIs."
+          },
+          {
             "id": "UnicodeData.ReplacementCharacter",
             "name": "ReplacementCharacter",
             "accessModifier": "public",
@@ -27542,6 +28386,15 @@
           {
             "id": "UnicodeData.DottedCircle",
             "name": "DottedCircle",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.Bullet",
+            "name": "Bullet",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27641,6 +28494,15 @@
           {
             "id": "UnicodeData.MaxBmp",
             "name": "MaxBmp",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.MaxCodepoint",
+            "name": "MaxCodepoint",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -27749,6 +28611,15 @@
           {
             "id": "UnicodeData.BlackFlagEmoji",
             "name": "BlackFlagEmoji",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int"
+          },
+          {
+            "id": "UnicodeData.GrinningFaceEmoji",
+            "name": "GrinningFaceEmoji",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -31900,6 +32771,10 @@
         "priority": 100
       },
       {
+        "name": "TextMeasureOptions",
+        "priority": 100
+      },
+      {
         "name": "TextOverEdge",
         "priority": 100
       },
@@ -31937,10 +32812,6 @@
       },
       {
         "name": "UniTextSystemFont",
-        "priority": 100
-      },
-      {
-        "name": "UniTextWorldBatcher",
         "priority": 100
       },
       {
@@ -31983,6 +32854,10 @@
       },
       {
         "name": "TypeSelectorAttribute",
+        "priority": 100
+      },
+      {
+        "name": "VectorDragFieldAttribute",
         "priority": 100
       }
     ],
@@ -32364,6 +33239,10 @@
         "priority": 100
       },
       {
+        "name": "SeparatorModifier",
+        "priority": 100
+      },
+      {
         "name": "ShadowModifier",
         "priority": 100
       },
@@ -32421,6 +33300,10 @@
       },
       {
         "name": "WobbleAnimationModifier",
+        "priority": 100
+      },
+      {
+        "name": "WordSpacingModifier",
         "priority": 100
       }
     ],
@@ -32491,6 +33374,10 @@
       },
       {
         "name": "RubyParseRule",
+        "priority": 100
+      },
+      {
+        "name": "SeparatorParseRule",
         "priority": 100
       }
     ],
@@ -32620,7 +33507,7 @@
     "List": "https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1",
     "MaskableGraphic": "https://docs.unity3d.com/ScriptReference/UI.MaskableGraphic.html",
     "Material": "https://docs.unity3d.com/ScriptReference/Material.html",
-    "MonoBehaviour": "https://docs.unity3d.com/ScriptReference/MonoBehaviour.html",
+    "Nullable": "https://learn.microsoft.com/en-us/dotnet/api/system.nullable-1",
     "PointerEventData": "https://docs.unity3d.com/ScriptReference/EventSystems.PointerEventData.html",
     "ReadOnlyMemory": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlymemory-1",
     "ReadOnlySpan": "https://learn.microsoft.com/en-us/dotnet/api/system.readonlyspan-1",
@@ -32630,7 +33517,6 @@
     "Span": "https://learn.microsoft.com/en-us/dotnet/api/system.span-1",
     "Sprite": "https://docs.unity3d.com/ScriptReference/Sprite.html",
     "StringBuilder": "https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder",
-    "Transform": "https://docs.unity3d.com/ScriptReference/Transform.html",
     "Type": "https://learn.microsoft.com/en-us/dotnet/api/system.type",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
     "Vector2": "https://docs.unity3d.com/ScriptReference/Vector2.html",
