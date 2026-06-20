@@ -1,6 +1,6 @@
 {
-  "version": "2.12.5",
-  "generatedAt": "2026-06-20T18:39:28.5037449Z",
+  "version": "2.12.6",
+  "generatedAt": "2026-06-20T21:08:58.5637423Z",
   "namespaces": [],
   "types": [
     {
@@ -25026,8 +25026,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Replaces every occurrence of the void \u003Cbr\u003E tag with a hard line break.",
-      "remarks": "Matches \u003Cbr\u003E, \u003Cbr/\u003E, and \u003Cbr /\u003E case-insensitively, mirroring the HTML void-element contract: there is no closing tag, no nested content, and the element renders nothing of its own. The tag is stripped and a single line-feed (U\u002B000A) is written into the parsed text in its place. Once inserted, the line-feed is consumed by the regular UAX #14 mandatory-break path, so the new line keeps the surrounding paragraph\u0027s direction, alignment, and styling \u2014 the tag forces a line wrap, not a paragraph reset. Because the rule does not pair with a modifier, it is registered as a standalone rule.",
+      "summary": "Replaces the void \u003Cbr\u003E tag with a soft line break (U\u002B2028 LINE SEPARATOR): the line wraps but stays in the same paragraph, keeping the surrounding direction and taking no inter-paragraph spacing \u2014 like HTML \u003Cbr\u003E or a word-processor Shift\u002BEnter. A paragraph break is a literal newline (Enter) instead. Matches \u003Cbr\u003E, \u003Cbr/\u003E and \u003Cbr /\u003E case-insensitively with HTML void-element semantics: no closing tag, no nested content.",
       "seeAlso": [
         "IParseRule"
       ],
