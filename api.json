@@ -1,6 +1,6 @@
 {
-  "version": "2.12.7",
-  "generatedAt": "2026-06-20T22:36:43.7010196Z",
+  "version": "2.12.8",
+  "generatedAt": "2026-06-21T19:14:59.7089604Z",
   "namespaces": [],
   "types": [
     {
@@ -15514,12 +15514,11 @@
         "LineHeightModifier",
         "ListModifier",
         "LowercaseModifier",
-        "NoBreakModifier",
         "ParagraphSpacingModifier",
+        "RangeCollectingModifier",
         "RevealModifier",
         "RubyModifier",
         "ScriptPositionModifier",
-        "SeparatorModifier",
         "SizeModifier",
         "SmallCapsModifier",
         "SubMeshModifier",
@@ -20652,70 +20651,22 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "BaseModifier",
+      "baseType": "RangeCollectingModifier",
       "baseTypeChain": [
-        "BaseModifier"
+        "RangeCollectingModifier"
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Keeps the tagged range on one line by suppressing automatic line wrapping inside it \u2014 the equivalent of CSS white-space: nowrap.",
-      "remarks": "Removes every soft wrap opportunity within the range (spaces, hyphens, soft hyphens, CJK and dictionary-segmented boundaries). Explicit breaks \u2014 a newline or a \u003Cbr\u003E tag \u2014 still break the line, and wrapping stays allowed immediately before and after the range. A range wider than the text box is split as a last resort, like any single unbreakable word. Pair with a [[TagRule]] (conventional tag name nobr): uniText.AddStyle(Style.Tag(new NoBreakModifier(), \u0022nobr\u0022)).",
+      "summary": "Keeps the tagged range together as one word \u2014 no soft break is taken inside it.",
+      "remarks": "The range takes no soft, CJK, or dictionary break inside it, so it moves whole to the next line when it does not fit. Wrapping stays allowed immediately before and after it, so it behaves as a single word \u2014 and, like any word, a range wider than the text box still breaks to fit rather than overflowing. Applied to the character span of a visible markup tag (via a [[ChromeRule]]), it makes the tag a cohesive word. Pair with a [[TagRule]] (conventional tag name nobr): uniText.AddStyle(Style.Tag(new NoBreakModifier(), \u0022nobr\u0022)).",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
           {
-            "id": "NoBreakModifier.OnEnable",
-            "name": "OnEnable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "NoBreakModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "NoBreakModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "NoBreakModifier.OnApply",
-            "name": "OnApply",
+            "id": "NoBreakModifier.ApplyRange",
+            "name": "ApplyRange",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -20725,9 +20676,8 @@
             "returnType": "void",
             "params": [],
             "paramTypes": [
-              "int",
-              "int",
-              "string"
+              "UniTextBuffers",
+              "TextRange"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -21767,6 +21717,136 @@
       }
     },
     {
+      "id": "RangeCollectingModifier",
+      "name": "RangeCollectingModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [
+        "NoBreakModifier",
+        "SeparatorModifier"
+      ],
+      "summary": "Base for modifiers that collect codepoint ranges during apply and act on them in the Shaped phase \u2014 the channel through which a modifier influences wrapping. Subclasses implement [[ApplyRange]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [
+          {
+            "id": "RangeCollectingModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RangeCollectingModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RangeCollectingModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RangeCollectingModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RangeCollectingModifier.ApplyRange",
+            "name": "ApplyRange",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Acts on one collected range in the Shaped phase \u2014 emit it to a line-breaker buffer, or edit its break opportunities.",
+            "params": [],
+            "paramTypes": [
+              "UniTextBuffers",
+              "TextRange"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "RangeCollectingModifier.AllowEmptyRange",
+            "name": "AllowEmptyRange",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether a zero-length range (a pure boundary with nothing to keep or collapse) is recorded.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "RevealModifier",
       "name": "RevealModifier",
       "namespace": "LightSide",
@@ -22247,9 +22327,9 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "BaseModifier",
+      "baseType": "RangeCollectingModifier",
       "baseTypeChain": [
-        "BaseModifier"
+        "RangeCollectingModifier"
       ],
       "interfaces": [],
       "derivedTypes": [],
@@ -22261,56 +22341,8 @@
       "members": {
         "methods": [
           {
-            "id": "SeparatorModifier.OnEnable",
-            "name": "OnEnable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "SeparatorModifier.OnDisable",
-            "name": "OnDisable",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "SeparatorModifier.OnDestroy",
-            "name": "OnDestroy",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "SeparatorModifier.OnApply",
-            "name": "OnApply",
+            "id": "SeparatorModifier.ApplyRange",
+            "name": "ApplyRange",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -22320,16 +22352,26 @@
             "returnType": "void",
             "params": [],
             "paramTypes": [
-              "int",
-              "int",
-              "string"
+              "UniTextBuffers",
+              "TextRange"
             ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "SeparatorModifier.AllowEmptyRange",
+            "name": "AllowEmptyRange",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -33215,6 +33257,10 @@
       },
       {
         "name": "Range",
+        "priority": 100
+      },
+      {
+        "name": "RangeCollectingModifier",
         "priority": 100
       },
       {
