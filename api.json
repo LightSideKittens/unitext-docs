@@ -1,6 +1,6 @@
 {
-  "version": "2.12.10",
-  "generatedAt": "2026-07-06T06:04:32.4673020Z",
+  "version": "2.12.11",
+  "generatedAt": "2026-07-06T10:21:34.3304039Z",
   "namespaces": [],
   "types": [
     {
@@ -5806,6 +5806,32 @@
             ],
             "paramTypes": [
               "StringBuilder"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetText",
+            "name": "SetText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Sets the text to render from a character span without writing to the serialized text field and without allocating a [[string]]. The span is copied into a pooled internal buffer, so its backing storage may be reused or released immediately after the call \u2014 making this the safe bridge from a pool-rented builder.",
+            "remarks": "Allocation-free per call once the internal scratch buffer has grown to the required capacity. Unlike [[SetText]], this does not retain the caller\u0027s memory, so a builder whose buffer returns to a pool on dispose is safe to use.",
+            "params": [
+              {
+                "name": "source",
+                "type": "ReadOnlySpan\u003Cchar\u003E",
+                "description": "The text to render. An empty span clears the text."
+              }
+            ],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
