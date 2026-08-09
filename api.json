@@ -1,6 +1,6 @@
 {
-  "version": "3.0.0",
-  "generatedAt": "2026-08-08T01:21:55.9734294Z",
+  "version": "3.0.1",
+  "generatedAt": "2026-08-09T23:42:00.8175772Z",
   "namespaces": [],
   "types": [
     {
@@ -9601,7 +9601,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action\u003CUniTextWorld\u003E",
-            "summary": "Occurs when a sorting-context input has changed: [[SortingOrder]], [[SortingLayerID]] or [[CastShadows]] (all are batch-key components)."
+            "summary": "Occurs when a sorting-context input has changed: [[SortingOrder]], [[SortingLayerID]], [[CastShadows]] or [[Standalone]] (all are batch-key components)."
           },
           {
             "id": "UniTextWorld.ParentChanged",
@@ -17524,7 +17524,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action",
-            "summary": "Occurs when the user has cancelled editing \u2014 Escape (desktop), system back (mobile). The editor does not deactivate automatically; add [[DefocusOnCancelBehavior]] or subscribe directly when cancellation should release focus."
+            "summary": "Occurs when the user has cancelled editing \u2014 Escape (desktop), system back (mobile). The editor does not deactivate automatically; add [[DefocusOnCancelBehavior]] or subscribe directly when cancellation should release focus. Android delivers the back key only where the platform routes it to the app: an app opted into OnBackInvokedCallback dispatch (Unity\u0027s Predictive Back Support), and Android 13/14 while the keyboard is showing, dismiss the keyboard without raising this."
           },
           {
             "id": "UniTextEditable.Focused",
