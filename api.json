@@ -1,6 +1,6 @@
 {
-  "version": "3.0.1",
-  "generatedAt": "2026-08-09T23:42:00.8175772Z",
+  "version": "3.1.0",
+  "generatedAt": "2026-08-10T05:45:28.1646594Z",
   "namespaces": [],
   "types": [
     {
@@ -6056,6 +6056,60 @@
       }
     },
     {
+      "id": "FitStep",
+      "name": "FitStep",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [
+        "GlyphScaleFitStep",
+        "LineHeightFitStep",
+        "TrackingFitStep"
+      ],
+      "summary": "One budget of the auto-size fit ladder: an adjustment the component spends, in list order, before reducing the font size. Each step maps a fraction of its configured budget onto the shared [[FitBudgets]] the layout core consumes.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "components",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "GlyphScaleFitStep",
+      "name": "GlyphScaleFitStep",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "FitStep",
+      "baseTypeChain": [
+        "FitStep"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Compresses glyphs horizontally, up to a limit, before the font size shrinks \u2014 the hz / InDesign glyph-scaling lever. Quads and advances narrow together, so the text keeps its height while gaining columns.",
+      "remarks": "Values beyond ~2\u20133% visibly distort letterforms (vertical strokes thin while horizontal ones keep their weight) and stretch SDF effects anisotropically; print systems cap this lever at 2%.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "components",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "IUniTextResolver",
       "name": "IUniTextResolver",
       "namespace": "LightSide",
@@ -6175,6 +6229,32 @@
             "typeParameters": []
           }
         ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LineHeightFitStep",
+      "name": "LineHeightFitStep",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "FitStep",
+      "baseTypeChain": [
+        "FitStep"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Compresses line height, down to a limit, before the font size shrinks. Line boxes keep their glyphs; only the vertical advance between lines contracts.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "components",
+      "members": {
+        "methods": [],
         "properties": [],
         "fields": [],
         "events": []
@@ -6341,6 +6421,32 @@
             "summary": "An attached [[IUniTextResolver]] returned a substitute from [[TryResolve]] on the last rebuild, so [[RenderedText]] is the resolver\u0027s output rather than [[RawText]]."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "TrackingFitStep",
+      "name": "TrackingFitStep",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "FitStep",
+      "baseTypeChain": [
+        "FitStep"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Tightens letter spacing, up to a limit, before the font size shrinks. The reduction applies uniformly to every non-zero glyph advance.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "components",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -30434,6 +30540,94 @@
       }
     },
     {
+      "id": "FitBudgets",
+      "name": "FitBudgets",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Uniform text-fitting adjustments resolved by the auto-size fit ladder and applied on top of shaped advances: extra tracking per non-zero-advance glyph, a horizontal glyph-scale multiplier, and a line-height multiplier.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "layout",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "FitBudgets.IsIdentity",
+            "name": "IsIdentity",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether every adjustment is at its neutral value.",
+            "seeAlso": []
+          },
+          {
+            "id": "FitBudgets.IsAdvanceIdentity",
+            "name": "IsAdvanceIdentity",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether the advance-affecting adjustments are at their neutral values.",
+            "seeAlso": []
+          },
+          {
+            "id": "FitBudgets.Identity",
+            "name": "Identity",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "FitBudgets",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The neutral value: no tracking, no glyph scaling, no line-height scaling.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "FitBudgets.trackingEm",
+            "name": "trackingEm",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Tracking added to every non-zero glyph advance, in em (negative compresses)."
+          },
+          {
+            "id": "FitBudgets.glyphScale",
+            "name": "glyphScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Horizontal scale multiplier applied to glyph advances and quads; 1 is none."
+          },
+          {
+            "id": "FitBudgets.lineHeightScale",
+            "name": "lineHeightScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Multiplier applied to every line\u0027s advance height; 1 is none."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "HorizontalAlignment",
       "name": "HorizontalAlignment",
       "kind": "enum",
@@ -30838,6 +31032,66 @@
             "isConst": false,
             "type": "LastLineAlignment",
             "summary": "How the paragraph-terminating line is aligned when [[horizontalAlignment]] is [[Justify]]. Ignored otherwise."
+          },
+          {
+            "id": "LayoutSettings.justifyWordSpaceMin",
+            "name": "justifyWordSpaceMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Smallest word-separator width justification compression may reach, as a fraction of natural width."
+          },
+          {
+            "id": "LayoutSettings.justifyWordSpaceMax",
+            "name": "justifyWordSpaceMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest word-separator width justification expansion spends before the letter and glyph levers engage, as a fraction of natural width. Residual expansion beyond every budget still lands on word separators."
+          },
+          {
+            "id": "LayoutSettings.justifyLetterSpaceMin",
+            "name": "justifyLetterSpaceMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest letter-spacing reduction justification compression may spend, in em (non-positive)."
+          },
+          {
+            "id": "LayoutSettings.justifyLetterSpaceMax",
+            "name": "justifyLetterSpaceMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest letter-spacing addition justification expansion may spend, in em (non-negative)."
+          },
+          {
+            "id": "LayoutSettings.justifyGlyphScaleMin",
+            "name": "justifyGlyphScaleMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Smallest glyph-width fraction justification compression may reach; 1 disables the glyph lever."
+          },
+          {
+            "id": "LayoutSettings.justifyGlyphScaleMax",
+            "name": "justifyGlyphScaleMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest glyph-width fraction justification expansion may reach; 1 disables the glyph lever."
           },
           {
             "id": "LayoutSettings.overEdge",
@@ -31413,6 +31667,66 @@
             "isConst": false,
             "type": "LastLineAlignment",
             "summary": "Resolved alignment override for the final line."
+          },
+          {
+            "id": "LineStyleContext.wordSpaceMin",
+            "name": "wordSpaceMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Smallest word-separator width justification compression may reach, as a fraction of natural width."
+          },
+          {
+            "id": "LineStyleContext.wordSpaceMax",
+            "name": "wordSpaceMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest word-separator width justification expansion spends before the letter and glyph levers, as a fraction of natural width."
+          },
+          {
+            "id": "LineStyleContext.letterSpaceMin",
+            "name": "letterSpaceMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest letter-spacing reduction justification compression may spend, in em (non-positive)."
+          },
+          {
+            "id": "LineStyleContext.letterSpaceMax",
+            "name": "letterSpaceMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest letter-spacing addition justification expansion may spend, in em (non-negative)."
+          },
+          {
+            "id": "LineStyleContext.glyphScaleMin",
+            "name": "glyphScaleMin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Smallest glyph-width fraction justification compression may reach; 1 disables the glyph lever."
+          },
+          {
+            "id": "LineStyleContext.glyphScaleMax",
+            "name": "glyphScaleMax",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Largest glyph-width fraction justification expansion may reach; 1 disables the glyph lever."
           }
         ],
         "events": []
@@ -33782,6 +34096,26 @@
             "paramTypes": [
               "int",
               "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "TextProcessor.AddLineGap",
+            "name": "AddLineGap",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Adds a signed amount to the gap between lineIndex and the following line \u2014 negative pulls them together, down to full overlap; the gap never inverts. Requests sum, unlike the largest-wins [[ReserveLineSpace]], so a caller composing several of its own values resolves them before calling. Out-of-range indices are ignored, which is what keeps block edges untouched. Called from a modifier\u0027s line-height callback.",
+            "params": [],
+            "paramTypes": [
+              "int",
               "float"
             ],
             "exceptions": [],
@@ -36429,6 +36763,16 @@
             "summary": "Extra leading reserved on each line\u0027s over (above) / under (below) side for tall boundary content such as over/under ruby; index 0 and the last entry double as the block\u0027s top / bottom reserve."
           },
           {
+            "id": "UniTextBuffers.perLineGap",
+            "name": "perLineGap",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "PooledBuffer\u003Cfloat\u003E",
+            "summary": "Signed adjustment to the gap between each line and the next, summed from additive layout modifiers such as paragraph spacing; the last entry is unused, and block edges are never affected."
+          },
+          {
             "id": "UniTextBuffers.baseDirection",
             "name": "baseDirection",
             "accessModifier": "public",
@@ -36598,6 +36942,27 @@
               "float",
               "float",
               "float",
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextMeshGenerator.XScaleFace",
+            "name": "XScaleFace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scales a face quad horizontally around the pen position \u2014 the fit / justification glyph-compression channel. Deliberately not folded into [[currentGlyphScale]]: paint-layer growth stays isotropic while the rendered glyph narrows.",
+            "params": [],
+            "paramTypes": [
+              "int",
               "float",
               "float"
             ],
@@ -51083,7 +51448,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Adds vertical spacing between paragraphs (text separated by line breaks).",
-      "remarks": "Parameters (comma-separated): After, Before \u2014 both optional. After opens a gap below each covered paragraph, Before above it; where two paragraphs meet the values add up (no CSS-style margin collapsing). Nothing is added at the block edges. Units: 10 (pixels), 50% or 0.5em (\u00D7 font size). When several ranges cover one paragraph, the largest value per side wins.",
+      "remarks": "Parameters (comma-separated): After, Before \u2014 both optional. After opens a gap below each covered paragraph, Before above it; where two paragraphs meet the values add up (no CSS-style margin collapsing). Nothing is added at the block edges. Units: 10 (pixels), 50% or 0.5em (\u00D7 font size). Negative values pull the neighbouring paragraphs together, down to full overlap; the gap never inverts. When several ranges cover one paragraph, the largest value per side wins.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -52445,7 +52810,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Applies font size changes to text ranges.",
-      "remarks": "Parameter: size value with optional unit. 24 \u2014 absolute size in pixels 150% \u2014 percentage of base font size \u002B10 \u2014 relative increase in pixels -5 \u2014 relative decrease in pixels Percentages and deltas are relative to the component font size, never to an enclosing tag \u2014 nested ranges overwrite, they do not compound (unlike CSS). Lines containing enlarged text reserve extra leading so the scaled ink never overlaps neighboring lines; an explicit absolute \u003Clh\u003E still sets the line\u0027s own advance.",
+      "remarks": "Parameter: size value with optional unit. 24 \u2014 absolute size in pixels 150% \u2014 percentage of base font size \u002B10 \u2014 relative increase in pixels -5 \u2014 relative decrease in pixels Percentages and deltas are relative to the component font size, never to an enclosing tag \u2014 nested ranges overwrite, they do not compound (unlike CSS). A line\u0027s height follows the largest size on it, in both directions, so a line whose visible content is entirely scaled grows or shrinks with it while a line that also carries unscaled text keeps its base height; an absolute \u003Clh\u003E in pixels pins the line regardless.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -68784,7 +69149,19 @@
         "priority": 100
       },
       {
+        "name": "FitStep",
+        "priority": 100
+      },
+      {
+        "name": "GlyphScaleFitStep",
+        "priority": 100
+      },
+      {
         "name": "IUniTextResolver",
+        "priority": 100
+      },
+      {
+        "name": "LineHeightFitStep",
         "priority": 100
       },
       {
@@ -68793,6 +69170,10 @@
       },
       {
         "name": "TextOverrideSource",
+        "priority": 100
+      },
+      {
+        "name": "TrackingFitStep",
         "priority": 100
       },
       {
@@ -69658,6 +70039,10 @@
       {
         "name": "VerticalAlignment",
         "priority": 21
+      },
+      {
+        "name": "FitBudgets",
+        "priority": 100
       },
       {
         "name": "IAttributeData",
