@@ -1,8 +1,8 @@
 /**
  * Getting Started guide page.
  * Task-ordered walkthrough of UniText: scene setup, fonts and markup first,
- * then the subsystems — paint, animation, effects, interaction, selection,
- * editing, clipboard and platform input.
+ * then the subsystems — parameters, paint, animation, rules, interaction,
+ * selection, editing, clipboard and platform input.
  */
 
 import type { ReactNode } from "react";
@@ -25,6 +25,7 @@ import {
   Pencil,
   Plus,
   Puzzle,
+  SlidersHorizontal,
   Smile,
   Sparkles,
   TextCursor,
@@ -68,7 +69,7 @@ const FONT_RESOLUTION = [
   {
     tier: "System font",
     name: "OS font",
-    note: "always available, never configured",
+    note: "last resort everywhere except WebGL",
     glyphs: "한국어",
     dir: "ltr",
     text: "text-emerald-300",
@@ -123,6 +124,7 @@ function FontResolutionDiagram() {
         A stack of Inter + Noto Sans Arabic + Noto Sans CJK renders mixed
         English, Arabic and Chinese correctly: each run picks the first family
         that covers it, and the OS font catches whatever is left.
+        Emoji-presentation codepoints skip the chain entirely.
       </p>
     </div>
   );
@@ -259,7 +261,74 @@ function SourceModifierCrossbar() {
   );
 }
 
-/** §5.4 compositing order: layer-major (default) versus glyph-major. */
+/** §5.1 the four stages that resolve one parameter, weakest first. */
+function ParameterCascade() {
+  const stages = [
+    {
+      name: "Field",
+      value: "inspector value",
+      note: "every range of the modifier",
+    },
+    {
+      name: "Rule default",
+      value: "source default",
+      note: "every range that source produces",
+    },
+    { name: "Markup token", value: "<color=#F00>", note: "one range" },
+    {
+      name: "Owned value",
+      value: "Own / clip / rule",
+      note: "composes on top",
+      accent: true,
+    },
+  ];
+  const items: ReactNode[] = [];
+  stages.forEach((st, i) => {
+    if (i > 0) {
+      items.push(
+        <div
+          key={`arrow-${i}`}
+          className="flex items-center justify-center shrink-0 px-1.5"
+        >
+          <ArrowRight className="w-4 h-4 text-white/30" />
+        </div>,
+      );
+    }
+    items.push(
+      <div
+        key={st.name}
+        className={`flex-1 rounded-lg border px-3 py-2.5 ${
+          st.accent
+            ? "border-emerald-400/40 bg-emerald-400/10"
+            : "border-white/10 bg-white/[0.03]"
+        }`}
+      >
+        <div className="text-[11px] font-mono text-white/40 mb-1">
+          {st.name}
+        </div>
+        <div className="font-mono text-sm text-white/90 break-all">
+          {st.value}
+        </div>
+        <div className="text-[11px] text-white/40 mt-1.5">{st.note}</div>
+      </div>,
+    );
+  });
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-6 overflow-x-auto">
+      <div className="text-[11px] uppercase tracking-wider text-white/40 mb-3">
+        weakest stage first — each one falls through when it carries nothing
+      </div>
+      <div className="flex items-stretch min-w-[640px]">{items}</div>
+      <p className="mt-3 text-sm text-white/50">
+        The first three stages overwrite one another. Owned values do not — they
+        compose on top of the cascade result and are released independently, so
+        a range returns to its authored value the moment the owner lets go.
+      </p>
+    </div>
+  );
+}
+
+/** §6.4 compositing order: layer-major (default) versus glyph-major. */
 function PaintOrderDiagram() {
   const layers = [
     { name: "Shadow", cls: "bg-white/10 text-white/50" },
@@ -324,7 +393,7 @@ function PaintOrderDiagram() {
   );
 }
 
-/** §7.1 phase-driven motion: visual state is a pure function of Phase. */
+/** §8.1 phase-driven motion: visual state is a pure function of the input parameter. */
 function PhaseDrivenDiagram() {
   const samples = [0, 0.25, 0.5, 0.75, 1];
   return (
@@ -355,31 +424,181 @@ function PhaseDrivenDiagram() {
         </div>
       </div>
       <p className="mt-4 text-sm text-white/50">
-        The same phase always renders the same frame, so scrubbing, rewinding
+        The same input always renders the same frame, so scrubbing, rewinding
         and deterministic tests all work. Feed the value from{" "}
-        <code>UniTextPhaseDriver</code>, a tween library, Timeline, or an
-        Animator.
+        <code>UniTextDriver</code>, a tween library, Timeline, or an Animator.
       </p>
     </div>
   );
 }
 
-/** §8 the reactive chain: a signal reaches a modifier property without code. */
-function RangeEffectChain() {
+/**
+ * §8.5 one driver clip over four matched ranges: the window opens at Start, each
+ * member ramps for MemberDuration, and Stagger offsets the next one.
+ */
+function DriverClipDiagram() {
+  const px = (t: number) => 40 + t * 112;
+  const start = 1;
+  const memberDuration = 1.5;
+  const stagger = 0.5;
+  const members = [0, 1, 2, 3];
+  const clipEnd = start + memberDuration + stagger * (members.length - 1);
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4 overflow-x-auto">
+      <svg
+        viewBox="0 0 640 210"
+        className="w-full min-w-[560px] h-auto"
+        role="img"
+        aria-label="A driver clip ramping four matched ranges with a stagger between them"
+      >
+        <defs>
+          <linearGradient id="clipRamp" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#34d399" stopOpacity="0.85" />
+          </linearGradient>
+        </defs>
+
+        {[0, 1, 2, 3, 4, 5].map((t) => (
+          <g key={t}>
+            <line
+              x1={px(t)}
+              y1="30"
+              x2={px(t)}
+              y2="186"
+              stroke="rgba(255,255,255,0.07)"
+              strokeWidth="1"
+            />
+            <text
+              x={px(t)}
+              y="200"
+              textAnchor="middle"
+              fill="rgba(255,255,255,0.35)"
+              fontSize="10"
+            >
+              {t}s
+            </text>
+          </g>
+        ))}
+
+        <rect
+          x={px(start)}
+          y="34"
+          width={px(clipEnd) - px(start)}
+          height="150"
+          rx="8"
+          fill="rgba(255,255,255,0.03)"
+          stroke="rgba(52,211,153,0.35)"
+          strokeDasharray="4 3"
+        />
+        <text
+          x={px(start)}
+          y="24"
+          fill="rgba(52,211,153,0.9)"
+          fontSize="11"
+          fontFamily="ui-monospace, monospace"
+        >
+          Start
+        </text>
+        <text
+          x={px(clipEnd)}
+          y="24"
+          textAnchor="end"
+          fill="rgba(255,255,255,0.4)"
+          fontSize="11"
+          fontFamily="ui-monospace, monospace"
+        >
+          clip length = MemberDuration + Stagger × 3
+        </text>
+
+        {members.map((i) => {
+          const t0 = start + stagger * i;
+          const y = 48 + i * 33;
+          return (
+            <g key={i}>
+              <text x="8" y={y + 15} fill="rgba(255,255,255,0.4)" fontSize="11">
+                #{i + 1}
+              </text>
+              <rect
+                x={px(t0)}
+                y={y}
+                width={memberDuration * 112}
+                height="22"
+                rx="5"
+                fill="url(#clipRamp)"
+                stroke="rgba(255,255,255,0.16)"
+              />
+              <text
+                x={px(t0) + 8}
+                y={y + 15}
+                fill="rgba(255,255,255,0.55)"
+                fontSize="10"
+                fontFamily="ui-monospace, monospace"
+              >
+                From
+              </text>
+              <text
+                x={px(t0) + memberDuration * 112 - 8}
+                y={y + 15}
+                textAnchor="end"
+                fill="rgba(255,255,255,0.9)"
+                fontSize="10"
+                fontFamily="ui-monospace, monospace"
+              >
+                To
+              </text>
+            </g>
+          );
+        })}
+
+        <line
+          x1={px(start)}
+          y1="41"
+          x2={px(start + stagger)}
+          y2="41"
+          stroke="#fbbf24"
+          strokeWidth="1.5"
+        />
+        <text
+          x={px(start) + 4}
+          y="38"
+          fill="#fbbf24"
+          fontSize="10"
+          fontFamily="ui-monospace, monospace"
+        >
+          Stagger
+        </text>
+      </svg>
+      <p className="mt-3 text-sm text-white/50">
+        Four ranges matched by one clip&rsquo;s query. Every member runs the
+        same <code>MemberDuration</code> ramp from <code>From</code> to{" "}
+        <code>To</code>; <code>Stagger</code> offsets each next one in text
+        order, which is what makes the clip&rsquo;s length follow how many
+        ranges the query currently matches.
+      </p>
+    </div>
+  );
+}
+
+/** §9 the reactive chain: a signal reaches a modifier parameter without code. */
+function RangeRuleChain() {
   const steps = [
     { name: "RangeSignal", value: "hover", note: "what the range emits" },
     {
-      name: "RangeEffectSelector",
+      name: "RangeStateSelector",
       value: "Interaction",
-      note: "when it applies",
+      note: "when the rule applies",
     },
     {
-      name: "RangeEffectDriver",
+      name: "RangeStatePlayback",
       value: "120 ms · ease",
       note: "how it moves",
       accent: true,
     },
-    { name: "ModifierProperty", value: "Glow.Color", note: "what it changes" },
+    {
+      name: "ParameterDescriptor",
+      value: "Glow.Param.Color",
+      note: "what it drives",
+    },
   ];
   const items: ReactNode[] = [];
   steps.forEach((st, i) => {
@@ -417,39 +636,39 @@ function RangeEffectChain() {
       <div className="flex items-stretch min-w-[640px]">{items}</div>
       <p className="mt-3 text-sm text-white/50">
         &ldquo;Links glow on hover, animated over 120&nbsp;ms, and the glow is
-        the link&rsquo;s own colour&rdquo; is four serialized objects. Setting
-        an effect property changes only that playback — the serialized modifier
+        the link&rsquo;s own colour&rdquo; is four serialized objects. Writing
+        an owned parameter changes only that ownership — the serialized modifier
         field is never mutated.
       </p>
     </div>
   );
 }
 
-/** §13.1 paste ladder: the highest-priority adapter whose format is present wins. */
+/** §14.1 paste ladder: the highest-priority adapter whose format is present wins. */
 function ClipboardLadder() {
   const rungs = [
     {
       name: "UniTextSourceClipboardAdapter",
       format: "application/vnd.lightside.unitext",
-      note: "visible text + markup spans",
+      note: "visible text + markup spans · priority 100",
       cls: "border-emerald-400/40 bg-emerald-400/10",
     },
     {
       name: "TagHtmlClipboardAdapter",
       format: "HTML",
-      note: "styled text for other apps",
+      note: "styled text for other apps · priority 50",
       cls: "border-sky-400/40 bg-sky-400/10",
     },
     {
       name: "MarkdownClipboardAdapter",
       format: "Markdown",
-      note: "delimiters per modifier",
+      note: "delimiters per modifier · priority 40",
       cls: "border-amber-400/40 bg-amber-400/10",
     },
     {
       name: "PlainTextClipboardAdapter",
       format: "plain text",
-      note: "floor — always registered",
+      note: "the floor · priority 0",
       cls: "border-white/15 bg-white/[0.04]",
     },
   ];
@@ -475,8 +694,8 @@ function ClipboardLadder() {
         ))}
       </div>
       <p className="mt-4 text-sm text-white/50">
-        On copy the ladder runs the other way: every registered adapter
-        contributes its format, so one copy carries all of them at once.
+        On copy every registered adapter contributes its format in one atomic
+        multi-format write, so a single copy carries all of them at once.
       </p>
     </div>
   );
@@ -518,8 +737,12 @@ export default function GettingStartedPage() {
             <p className="text-white/70">
               <code>media.lightside.unitext</code> depends on{" "}
               <code>media.lightside.core</code> (MIT, free) — pooling, worker
-              threads, math, catalogs, the inspector toolkit and the
-              asset-migration framework. Installing UniText pulls Core
+              threads, math, catalogs, the inspector toolkit, the
+              asset-migration framework, and the value types the UniText API
+              exposes directly: <code>Ease</code>, <code>Gradient</code>,{" "}
+              <code>UnitValue</code>, <code>PaintProjectionKind</code>,{" "}
+              <code>PaintFit</code>, <code>PaintSpread</code> and{" "}
+              <code>LayerBlend</code>. Installing UniText pulls Core
               automatically.
             </p>
           </div>
@@ -585,11 +808,15 @@ export default function GettingStartedPage() {
               </h3>
 
               <p className="text-white/70 mb-4">
-                <strong>GameObject → UI → UniText → Text</strong>. The menu
-                instantiates the prefab assigned in{" "}
-                <code>UniTextSettings.textPrefab</code>, so a designer&rsquo;s
-                configured prefab is what appears — not a code-built hierarchy.
-                With no prefab assigned the component is created bare.
+                <strong>GameObject → UI (Canvas) → UniText → Text</strong>. The
+                menu instantiates the prefab in{" "}
+                <code>UniTextSettings.TextPrefab</code> — the package ships one
+                — so a designer&rsquo;s configured prefab is what appears, not a
+                code-built hierarchy. With the slot empty the menu builds the
+                object in code instead: a <code>UniText</code> on a 220×50{" "}
+                <code>RectTransform</code> under the scene&rsquo;s canvas,
+                creating that canvas and an <code>EventSystem</code> if there is
+                none.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -601,10 +828,26 @@ export default function GettingStartedPage() {
 
               <CodeBlock
                 code={`var text = gameObject.AddComponent<UniText>();
+text.Styles.Add(Style.Tag(new BoldModifier(), "b"));   // <b> exists only because this line says so
 text.Text = "Hello <b>world</b>";
 text.FontSize = 24;
-text.Color = Color.white;`}
+text.color = Color.white;`}
               />
+
+              <Notice type="info" className="mt-4">
+                No tag is built in. A component with no matching style renders{" "}
+                <code>&lt;b&gt;world&lt;/b&gt;</code> as literal characters —
+                markup is a style list, not a fixed vocabulary (§3). The shipped
+                prefabs and the Styles picker wire the common tags for you.
+              </Notice>
+
+              <p className="text-white/70 mt-4">
+                The same submenu creates <strong>Button</strong>,{" "}
+                <strong>Selectable Text</strong>, <strong>Editable Text</strong>{" "}
+                and <strong>Input Field</strong>, each from its own prefab slot
+                in <code>UniTextSettings</code> — assembled components, not
+                separate types (§12, §13).
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -620,10 +863,22 @@ text.Color = Color.white;`}
                 order, shadow casting.
               </p>
 
+              <p className="text-white/70 mb-4">
+                World texts that share a sorting context — sorting layer, order
+                in layer, <code>SortingGroup</code>, Unity layer, scene, shadow
+                casting — merge into one mesh behind one renderer, and one
+                renderer has one depth-sorting position: nothing can draw
+                between two texts of the same batch. Enable{" "}
+                <code>Standalone</code> on a text to give it a renderer of its
+                own; it then sorts by its own distance to the camera against
+                every other transparent renderer in the scene, at the cost of
+                one draw call.
+              </p>
+
               <p className="text-white/70">
                 Pointer input for world text is routed by{" "}
                 <code>UniTextWorldRaycaster</code> — add it to the camera that
-                should see the text (see §9.4).
+                should see the text (see §10.4).
               </p>
             </div>
 
@@ -665,6 +920,13 @@ text.Color = Color.white;`}
                         <code>SortingLayerID</code>, <code>SortingOrder</code>
                       </td>
                     </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4 text-white/50">Batching</td>
+                      <td className="py-2 pr-4">per canvas</td>
+                      <td className="py-2">
+                        per sorting context; <code>Standalone</code> opts out
+                      </td>
+                    </tr>
                     <tr>
                       <td className="py-2 pr-4 text-white/50">Lighting</td>
                       <td className="py-2 pr-4">unlit</td>
@@ -703,17 +965,20 @@ text.Color = Color.white;`}
               <h3 className="font-semibold mb-4">2.1 Creating a font asset</h3>
 
               <p className="text-white/70 mb-4">
-                <strong>
-                  Tools → UniText → Tools Window → Create Font Asset
-                </strong>
-                , or right-click a <code>.ttf</code>/<code>.otf</code> →{" "}
-                <strong>Create → UniText → Font</strong>.
+                <strong>Tools → UniText → Tools → Create Font Asset</strong>, or
+                right-click a <code>.ttf</code>/<code>.otf</code>/
+                <code>.ttc</code>/<code>.otc</code> file — or a Unity{" "}
+                <code>Font</code> — →{" "}
+                <strong>Create → UniText → Font Asset</strong>.
               </p>
 
               <p className="text-white/70 mb-4">
                 A <code>UniTextFont</code> wraps one font file. It carries the
-                face metrics (<code>FaceInfo</code>), the glyph atlas
-                configuration, and per-glyph overrides.
+                face metrics (<code>FaceInfo</code>), its rasterization tuning,
+                variable-axis defaults and per-glyph overrides; the glyph atlas
+                itself is shared by every font of a render mode. The font bytes
+                are Zstd-compressed into the asset, so the source file does not
+                have to ship.
               </p>
 
               <p className="text-white/60 text-sm mb-3">
@@ -723,23 +988,47 @@ text.Color = Color.white;`}
                 <li>
                   <strong>Render mode</strong> — <code>UniTextRenderMode</code>.
                   <code>SDF</code> (rounded corners on effects) or{" "}
-                  <code>MSDF</code> (sharp corners). MSDF costs more atlas
-                  memory; use it for sharp-cornered display type.
+                  <code>MSDF</code> (sharp corners). Set per component on{" "}
+                  <code>UniTextBase.RenderMode</code>, not on the font asset.
+                  MSDF costs more atlas memory; use it for sharp-cornered
+                  display type.
                 </li>
                 <li>
-                  <strong>Atlas</strong> — page size and glyph tile size. Larger
-                  tiles mean crisper small text at higher memory cost.
+                  <strong>Rasterization</strong> — <code>SDF Detail</code> and{" "}
+                  <code>Tile Size Offset</code> pick the raster tile a glyph
+                  lands in (64 or 128 px); raise them for hairline or
+                  calligraphic faces. Page size is fixed.
                 </li>
                 <li>
-                  <strong>Metrics normalization</strong> (
-                  <code>FontNormalizeMetric</code>) — makes fonts of different
-                  design sizes line up on the same baseline when mixed in one
-                  stack.
+                  <strong>Sizing</strong> — <code>Font Scale</code> rescales a
+                  face drawn too small or too large by design;{" "}
+                  <code>Normalize Size</code> (on by default) keeps the face in
+                  font-size normalization, matching its x-height or cap-height
+                  to the primary font. The metric itself is a project setting
+                  (Project Settings → UniText → Text Defaults →{" "}
+                  <strong>Font Size Match</strong>,{" "}
+                  <code>FontNormalizeMetric</code>);{" "}
+                  <code>FontSizeMatchModifier</code> overrides it on a
+                  component.
                 </li>
                 <li>
-                  <strong>Face override</strong> (<code>FaceInfoOverride</code>)
-                  — corrects ascender/descender/line gap when a font ships bad
-                  metrics.
+                  <strong>Metrics</strong> and <strong>Face Info</strong> — line
+                  height, ascender, descender, cap and mean line, underline,
+                  strikethrough and sub/superscript offsets, all read from the
+                  file and editable when a font ships bad values;{" "}
+                  <code>Reset Metrics</code> restores the file&rsquo;s own.
+                  Family name, style, weight and italic flag are read-only
+                  unless the asset is a <code>UniTextFontVariant</code>.
+                  Per-platform overrides (<code>FaceInfoOverride</code>) exist
+                  only on <code>UniTextSystemFont</code> (§2.5).
+                </li>
+                <li>
+                  <strong>Spacing &amp; Style</strong> —{" "}
+                  <code>Spacing Offset</code> and <code>Space Width</code> in
+                  design units for faces that render too tight or too loose;{" "}
+                  <code>Italic Style</code> (synthetic slant, degrees) and{" "}
+                  <code>Fake Bold Weight</code> (CSS weight steps) stand in for
+                  a missing italic or bold cut.
                 </li>
               </ul>
             </div>
@@ -750,11 +1039,16 @@ text.Color = Color.white;`}
               </h3>
 
               <p className="text-white/70 mb-4">
-                A <code>UniTextFontStack</code> is the asset you actually assign
-                to a component. It holds <strong>families</strong>; a{" "}
-                <code>FontFamily</code> groups faces that differ only by style
-                (regular, bold, italic, bold-italic) and carries a{" "}
-                <code>name</code> used by the <code>&lt;font&gt;</code> tag.
+                A <code>UniTextFontStack</code> goes in a component&rsquo;s{" "}
+                <code>FontStack</code> slot; a single face can go in{" "}
+                <code>Font</code> instead, and when both are set{" "}
+                <code>Font</code> is the primary while the stack supplies the
+                fallbacks. A stack holds <strong>families</strong>; a{" "}
+                <code>FontFamily</code> groups a primary plus faces that differ
+                only by style (bold, italic, bold-italic, variable), carries a{" "}
+                <code>name</code> used by the <code>&lt;font&gt;</code> tag, and
+                an optional <code>preferredLanguage</code> BCP 47 tag that wins
+                resolution for runs marked with it (§15.2).
               </p>
 
               <p className="text-white/60 text-sm mb-3">
@@ -763,8 +1057,14 @@ text.Color = Color.white;`}
 
               <FontResolutionDiagram />
 
+              <p className="text-white/70 mb-4">
+                Emoji-presentation codepoints bypass this chain: an assigned{" "}
+                <code>UniTextColorFont</code> in the stack wins, otherwise the
+                platform emoji cascade (§17).
+              </p>
+
               <p className="text-white/60 text-sm mb-3">Two stack shapes:</p>
-              <ul className="space-y-2 text-white/70 list-disc list-inside">
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <strong>Combined</strong> — one stack, families grouped
                   inside. The common case.
@@ -775,6 +1075,15 @@ text.Color = Color.white;`}
                   the same fallbacks.
                 </li>
               </ul>
+
+              <p className="text-white/70">
+                Both are created from a font-asset selection:{" "}
+                <strong>Create → UniText → Font Stack (Combined)</strong> merges
+                two or more fonts into one stack,{" "}
+                <strong>Create → UniText → Font Stack (Per Font)</strong> makes
+                one stack per selected font. A stack chains to the next through
+                its <code>Fallback Stack</code> slot.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -784,16 +1093,26 @@ text.Color = Color.white;`}
                 A variable font exposes axes (<code>wght</code>,{" "}
                 <code>wdth</code>, <code>ital</code>, <code>slnt</code>,{" "}
                 <code>opsz</code>). UniText reads them and can instance any
-                point in the design space. Set defaults per family (
-                <code>AxisDefault</code>) and override per range with{" "}
-                <code>&lt;var&gt;</code> (§4.1). <code>UniTextFontVariant</code>{" "}
-                names a reusable axis combination.
+                point in the design space. Set defaults per font asset (
+                <code>UniTextFont.AxisDefault</code>, inspector{" "}
+                <strong>Variable Font Axes</strong>) and override per range with{" "}
+                <code>&lt;var&gt;</code> (§4.1).
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>UniTextFontVariant</code> (
+                <strong>Create → UniText → Font Variant</strong>) borrows
+                another font&rsquo;s bytes and owns everything else — metrics,
+                rasterization, axis defaults, glyph overrides — with its own
+                atlas and shaper cache, so pinned axis defaults give a reusable
+                design-space point without duplicating the file.
               </p>
 
               <p className="text-white/70">
                 Variable instancing is memory-aware —{" "}
-                <code>FontVariationMemoryStats</code> reports what the variation
-                cache holds.
+                <code>UniTextFontProvider.VariationMemoryStats</code> returns a{" "}
+                <code>FontVariationMemoryStats</code> snapshot of what the
+                variation cache holds.
               </p>
             </div>
 
@@ -801,7 +1120,7 @@ text.Color = Color.white;`}
               <h3 className="font-semibold mb-4">2.4 Tools window</h3>
 
               <p className="text-white/70 mb-4">
-                <strong>Tools → UniText → Tools Window</strong>:
+                <strong>Tools → UniText → Tools</strong>:
               </p>
 
               <ul className="space-y-2 text-white/70 list-disc list-inside">
@@ -811,14 +1130,19 @@ text.Color = Color.white;`}
                 </li>
                 <li>
                   <strong>Font Subsetter</strong> — strip unused glyphs from a
-                  font to shrink the build. Give it the codepoints you ship (or
-                  a text corpus) and it emits a reduced font file.
+                  font to shrink the build. Pick <strong>Keep</strong> or{" "}
+                  <strong>Remove</strong>, give it character sets, ranges or a
+                  text corpus, and it emits either a reduced <code>.ttf</code>{" "}
+                  file or a <code>UniTextFont</code> asset built from it.
                 </li>
                 <li>
                   <strong>Dictionary Builder</strong> — builds the
                   word-segmentation dictionary used for line breaking in scripts
-                  without spaces (Thai, Khmer, Lao, Burmese, Japanese) — see{" "}
-                  <code>WordSegmentationDictionary</code>.
+                  without spaces (Thai, Lao, Khmer, Myanmar, Chinese, Japanese)
+                  — see <code>WordSegmentationDictionary</code>. A built
+                  dictionary takes effect only once it is listed in Project
+                  Settings → UniText → Word Segmentation (
+                  <code>UniTextSettings.Dictionaries</code>).
                 </li>
               </ul>
             </div>
@@ -827,22 +1151,57 @@ text.Color = Color.white;`}
               <h3 className="font-semibold mb-4">2.5 System fonts</h3>
 
               <p className="text-white/70 mb-4">
-                <strong>Automatic OS fallback</strong> is always on: any
+                <strong>Automatic OS fallback</strong> is on by default: any
                 codepoint no family in the stack covers is rendered from the OS
-                font. Nothing to configure — a project that ships only a Latin
-                font still renders Japanese text pasted by a user.
+                font, so a project that ships only a Latin font still renders
+                Japanese text pasted by a user. Project Settings → UniText →
+                Fonts → <strong>Disable System Font Fallback</strong> turns it
+                off (<code>UniTextSettings.SystemFontDisabled</code>, runtime
+                mirror <code>SystemFont.Disabled</code>); explicitly assigned{" "}
+                <code>UniTextSystemFont</code> assets keep working.
+              </p>
+
+              <Notice type="warning" className="mb-4">
+                WebGL has no OS font access — assign a regular{" "}
+                <code>UniTextFont</code> there.
+              </Notice>
+
+              <p className="text-white/70 mb-4">
+                <strong>Explicit system font</strong> —{" "}
+                <strong>Create → UniText → System Font Asset</strong> makes a{" "}
+                <code>UniTextSystemFont</code>: a font whose bytes come from the
+                OS, picked per platform (Common, Windows, macOS, Linux, iOS,
+                Android) with per-platform face-metric (
+                <code>FaceInfoOverride</code>) and rasterization overrides. Put
+                it in a stack to use the OS font as a named family, e.g. to
+                match the platform&rsquo;s UI font. Project Settings → UniText →
+                Fonts → <strong>Default System Font</strong> additionally makes
+                one the primary for components with no <code>Font</code> and no{" "}
+                <code>FontStack</code>.
               </p>
 
               <p className="text-white/70 mb-4">
-                <strong>Explicit system font</strong> — create a{" "}
-                <code>UniTextSystemFont</code> asset and put it in the stack to
-                use the OS font as a named family, e.g. to match the
-                platform&rsquo;s UI font.
+                An entry is requested from the operating system{" "}
+                <strong>by family name</strong>, so it resolves wherever the
+                machine keeps that family installed. On Android the entries
+                resolve to the device&rsquo;s own sans-serif, serif and
+                monospace roles, so <code>Roboto</code>, <code>Noto Sans</code>{" "}
+                and <code>Droid Sans</code> all yield the real UI face of the
+                device, manufacturer replacements included. A resolved face
+                carries the variable-axis values the OS bound to it. Lookup
+                happens the first time the asset is drawn or its data is read,
+                so <code>ResolvedFontName</code>, <code>ResolvedPath</code>,{" "}
+                <code>ResolvedPlatform</code> and <code>ResolveFailed</code>{" "}
+                stay unset until then.
               </p>
 
               <p className="text-white/70">
-                <code>SystemFontMemoryStats</code> reports what the system-font
-                cache holds.
+                <code>SystemFont.MemoryStats</code> returns a{" "}
+                <code>SystemFontMemoryStats</code> snapshot of what the
+                system-font cache holds;{" "}
+                <code>SystemFont.InactiveSourceCapacity</code> and{" "}
+                <code>SystemFont.InactiveByteBudget</code> bound what it keeps
+                after the last text releases it.
               </p>
             </div>
 
@@ -850,18 +1209,27 @@ text.Color = Color.white;`}
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">2.6 Color fonts</h3>
                 <p className="text-white/70">
-                  <code>UniTextColorFont</code> handles color glyph formats
-                  (COLR/CPAL, CBDT, sbix, SVG-in-OT). Emoji are the common case
-                  (§16), but the same path renders any color font.
+                  <code>UniTextColorFont</code> (
+                  <strong>Create → UniText → Color Font Asset</strong>) handles
+                  color glyph formats: CBDT/sbix bitmap and COLRv0/COLRv1
+                  vector. Emoji are the common case (§17) — the always-on emoji
+                  font stays the provider for emoji-presentation codepoints —
+                  but the same path renders any color font.{" "}
+                  <strong>Color Pixel Size</strong> sets the rasterization size
+                  in the shared color atlas; bitmap faces snap to the nearest
+                  strike. SVG-in-OT is detected but not rendered, and WebGL
+                  rasterizes no embedded color font.
                 </p>
               </div>
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">2.7 Materials</h3>
                 <p className="text-white/70">
-                  Each font asset owns a material per render mode. Custom
-                  shaders are covered in §17; assigning a custom material to a
-                  range is <code>MaterialModifier</code> (§4.1).
+                  Materials are shared, not per asset: one canvas material draws
+                  SDF, MSDF and color glyphs together, and world text adds a lit
+                  and an unlit variant. Custom shaders are covered in §18;
+                  assigning a custom material to a range is{" "}
+                  <code>MaterialModifier</code> (§4.1).
                 </p>
               </div>
             </div>
@@ -942,7 +1310,7 @@ text.Color = Color.white;`}
                 </tr>
                 <tr className="border-b border-white/5">
                   <td className="py-2 pr-4">
-                    <code>MarkdownWrapRule(&quot;**&quot;)</code>
+                    <code>MarkdownWrapRule</code> · Marker <code>**</code>
                   </td>
                   <td className="py-2 pr-4">
                     <code>**bold**</code>
@@ -973,10 +1341,12 @@ text.Color = Color.white;`}
               <p className="text-white/70 mb-4">
                 <strong>Inspector.</strong> Expand <strong>Styles</strong> on
                 the component, press <strong>+</strong>. A searchable picker
-                opens with the built-in presets grouped by category (Common,
-                Text Style, Decoration, Appearance, Layout, Interactive, Inline,
-                Utility, Animation, Custom). Picking a preset configures both
-                sides; you can then edit either independently.
+                opens, grouped first by how the style is driven — Whole Text,
+                Tags, Inline Tags, Markdown, Auto-detect, Protection — and under
+                Whole Text and Tags by modifier category (Common, Text Style,
+                Decoration, Appearance, Layout, Interactive, Inline, Utility,
+                Animation, Custom). Picking a preset configures both sides; you
+                can then edit either independently.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -996,6 +1366,12 @@ Style.FromSource(source, modifier)                 // any RangeSource you like`}
                 code={`text.Styles.Add(Style.Tag(new BoldModifier(), "b"));
 text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
               />
+
+              <p className="text-white/70 mt-4">
+                A style can be switched off without removing it:{" "}
+                <code>Enabled = false</code> skips it entirely — never parsed,
+                applied or rendered — and preserves its configuration.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -1023,22 +1399,55 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                 </li>
               </ul>
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
                 For multi-parameter modifiers the merge is per-slot: values
-                present in the tag win, missing slots come from the default.{" "}
-                <code>MarkdownWrapRule</code> supports the same field.
+                present in the tag win, missing slots come from the default.
+                Slots inside one modifier are comma-separated, and an empty slot
+                takes the default — <code>&lt;pspace=,4&gt;</code> sets only the
+                second. A <code>CompositeModifier</code> splits its parameter by{" "}
+                <code>;</code>, one segment per child, before each child reads
+                its own slots. <code>MarkdownWrapRule</code> supports the same
+                field.
+              </p>
+
+              <p className="text-white/70">
+                That merge is one stage of the parameter cascade — modifier
+                field, rule default, markup token, owned value (§5.1).
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">3.3 Parse rule types</h3>
 
-              <p className="text-white/70 mb-6">
+              <p className="text-white/70 mb-4">
                 <strong>Tag rules.</strong> <code>TagRule</code> with a
                 configurable name. Parameters are optional. Self-closing is
                 syntax-driven: <code>&lt;tag/&gt;</code>,{" "}
                 <code>&lt;tag=value/&gt;</code>. <code>InlineTagRule</code> is
                 the self-closing variant used by inline media.
+              </p>
+
+              <p className="text-white/70 mb-3">
+                An opening tag can carry a <code>#label</code> anchor, written
+                after the tag name and before any value:
+              </p>
+
+              <CodeBlock
+                language="text"
+                disableTypeLinks
+                code={`<b #intro>named range</b>
+<color #warn=#FF0000>named range with a value</color>
+<obj #icon=star/>`}
+              />
+
+              <p className="text-white/70 mt-4 mb-6">
+                The label names that one occurrence. It is stripped with the
+                tag, travels with the range as <code>ModifierRange.Label</code>,
+                and selects it in a range query —{" "}
+                <code>modifier.Ranges().WhereLabel(&quot;intro&quot;)</code>{" "}
+                (§19.6). Label characters are letters, digits, <code>_</code>{" "}
+                and <code>-</code>. The closing tag stays plain:{" "}
+                <code>&lt;/b&gt;</code>.
               </p>
 
               <p className="text-white/60 text-sm mb-3">Markdown rules</p>
@@ -1055,7 +1464,7 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                   <tbody className="text-white/70">
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule(&quot;**&quot;)</code>
+                        <code>MarkdownWrapRule</code>, Marker <code>**</code>
                       </td>
                       <td className="py-2">
                         <code>**bold**</code>
@@ -1063,7 +1472,7 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule(&quot;*&quot;)</code>
+                        <code>MarkdownWrapRule</code>, Marker <code>*</code>
                       </td>
                       <td className="py-2">
                         <code>*italic*</code>
@@ -1071,7 +1480,7 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule(&quot;~~&quot;)</code>
+                        <code>MarkdownWrapRule</code>, Marker <code>~~</code>
                       </td>
                       <td className="py-2">
                         <code>~~strike~~</code>
@@ -1079,7 +1488,7 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
-                        <code>MarkdownWrapRule(&quot;++&quot;)</code>
+                        <code>MarkdownWrapRule</code>, Marker <code>++</code>
                       </td>
                       <td className="py-2">
                         <code>++underline++</code>
@@ -1099,7 +1508,8 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                       </td>
                       <td className="py-2">
                         <code>- item</code>, <code>* item</code>,{" "}
-                        <code>1. item</code>
+                        <code>+ item</code>, <code>1. item</code>,{" "}
+                        <code>1) item</code>
                       </td>
                     </tr>
                     <tr>
@@ -1107,7 +1517,10 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                         <code>RawUrlParseRule</code>
                       </td>
                       <td className="py-2">
-                        auto-detects bare <code>https://…</code>
+                        auto-detects bare URLs: <code>http(s)://</code>,{" "}
+                        <code>ftp(s)://</code>, <code>file://</code>,{" "}
+                        <code>mailto:</code>, <code>tel:</code>,{" "}
+                        <code>www.</code>
                       </td>
                     </tr>
                   </tbody>
@@ -1139,7 +1552,7 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                         <code>MutableRangeSource</code>
                       </td>
                       <td className="py-2">
-                        ranges maintained at runtime that survive edits (§11.4)
+                        ranges maintained at runtime that survive edits (§12.4)
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -1147,7 +1560,8 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                         <code>StringParseRule</code>
                       </td>
                       <td className="py-2">
-                        match, and optionally replace, a literal pattern
+                        match a list of literal patterns (case-sensitive),
+                        optionally replacing each with one fixed string
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -1163,7 +1577,10 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                         <code>TriggerWordParseRule</code>
                       </td>
                       <td className="py-2">
-                        match words from a list — the usual driver for{" "}
+                        auto-detects <code>&lt;trigger&gt;word</code> tokens (
+                        <code>@name</code>, <code>#tag</code>) — one
+                        configurable trigger character, the word becomes the
+                        parameter; commonly paired with{" "}
                         <code>InteractiveModifier</code>
                       </td>
                     </tr>
@@ -1171,7 +1588,12 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                       <td className="py-2 pr-4">
                         <code>SeparatorParseRule</code>
                       </td>
-                      <td className="py-2">structural separators</td>
+                      <td className="py-2">
+                        void <code>&lt;sep&gt;</code> tag replaced with a
+                        configurable separator string (
+                        <code>&lt;sep=&quot; ● &quot;&gt;</code> overrides it);
+                        pair with <code>SeparatorModifier</code>
+                      </td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
@@ -1184,7 +1606,10 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                         <code>LineBreakParseRule</code>
                       </td>
                       <td className="py-2">
-                        explicit <code>&lt;br&gt;</code>
+                        explicit <code>&lt;br&gt;</code>,{" "}
+                        <code>&lt;br/&gt;</code> — inserts a soft line break
+                        (U+2028) that wraps inside the paragraph; standalone, no
+                        modifier
                       </td>
                     </tr>
                     <tr>
@@ -1267,32 +1692,94 @@ text.RemoveRule(myRule);`}
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">3.4 Priority</h3>
-                <p className="text-white/70">
-                  Ranges from different sources can overlap. Each{" "}
-                  <code>Style</code> has a priority that decides which rule
-                  claims a position when several match. Protection rules always
-                  win over content rules.
-                </p>
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">3.4 Priority</h3>
+
+              <p className="text-white/70 mb-4">
+                Ranges from different sources can overlap. Priority belongs to
+                the rule, not the <code>Style</code>:{" "}
+                <code>ParseRule.Priority</code> orders the rules highest first,
+                and the first rule that consumes at a position claims it.
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Priority
+                      </th>
+                      <th className="text-left py-2 text-white/60">Rules</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>int.MaxValue</code>
+                      </td>
+                      <td className="py-2">
+                        protection rules — they always win
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>10</code>
+                      </td>
+                      <td className="py-2">
+                        <code>MathParseRule</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>1</code>
+                      </td>
+                      <td className="py-2">
+                        <code>LineBreakParseRule</code>,{" "}
+                        <code>SeparatorParseRule</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>0</code>
+                      </td>
+                      <td className="py-2">
+                        the default, <code>TagRule</code> included;{" "}
+                        <code>MarkdownWrapRule</code> uses its marker length
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>-100</code>
+                      </td>
+                      <td className="py-2">
+                        auto-detection — <code>RawUrlParseRule</code>,{" "}
+                        <code>TriggerWordParseRule</code>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">3.5 Style presets</h3>
-                <p className="text-white/70 mb-3">
-                  A <code>StylePreset</code> is a project asset holding a
-                  configured style list. Assign presets to a component (
-                  <code>StylePresets</code>) to share one markup vocabulary
-                  across many components;{" "}
-                  <code>UniTextSettings.GlobalStylePreset</code> applies
-                  project-wide when <code>UseGlobalStylePreset</code> is on.
-                  Local styles compose on top.
-                </p>
-                <p className="text-white/70">
-                  Editing a preset asset rebuilds every live component using it.
-                </p>
-              </div>
+              <p className="text-white/70">
+                Auto-detection sits below everything, so explicit markup claims
+                a position before a detector does. A custom rule overrides{" "}
+                <code>Priority</code>.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">3.5 Style presets</h3>
+              <p className="text-white/70 mb-3">
+                A <code>StylePreset</code> is a project asset holding a
+                configured style list. Assign presets to a component (
+                <code>StylePresets</code>) to share one markup vocabulary across
+                many components; <code>UniTextSettings.GlobalStylePreset</code>{" "}
+                applies project-wide when <code>UseGlobalStylePreset</code> is
+                on. Local styles compose on top.
+              </p>
+              <p className="text-white/70">
+                Editing a preset asset rebuilds every live component using it.
+              </p>
             </div>
           </div>
         </section>
@@ -1306,9 +1793,16 @@ text.RemoveRule(myRule);`}
             4. Built-in Modifiers
           </h2>
 
+          <p className="text-white/70 mb-4">
+            Default tag names below are conventions, not constraints — the
+            Styles picker wires most of them, and any modifier takes any tag
+            through <code>Style.Tag(...)</code> (§3.1).
+          </p>
+
           <p className="text-white/70 mb-6">
-            Default tag names below are what the presets wire up; they are
-            conventions, not constraints.
+            Every value a tag carries lands in one of the modifier&rsquo;s{" "}
+            <strong>parameters</strong>: §5 is how they resolve, how a modifier
+            of your own declares them, and how code addresses them.
           </p>
 
           <div className="space-y-6">
@@ -1335,7 +1829,9 @@ text.RemoveRule(myRule);`}
                         <code>BoldModifier</code>
                       </td>
                       <td className="py-2">
-                        <code>&lt;b=700&gt;</code> picks a weight
+                        <code>&lt;b=700&gt;</code> picks a weight;{" "}
+                        <code>&lt;b=700,f&gt;</code> synthesizes it,{" "}
+                        <code>&lt;b=700,r&gt;</code> uses a real face only
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -1431,7 +1927,7 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">BCP 47 tag</td>
                     </tr>
-                    <tr>
+                    <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>&lt;mat&gt;</code>
                       </td>
@@ -1439,6 +1935,41 @@ text.RemoveRule(myRule);`}
                         <code>MaterialModifier</code>
                       </td>
                       <td className="py-2">custom material, optional tint</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>&lt;ruby&gt;</code>,{" "}
+                        <code>&lt;ruby=かんじ&gt;</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>RubyModifier</code>
+                      </td>
+                      <td className="py-2">
+                        furigana above a base run; pair with{" "}
+                        <code>RubyParseRule</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>&lt;sup&gt;</code>, <code>&lt;sub&gt;</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>ScriptPositionModifier</code>
+                      </td>
+                      <td className="py-2">
+                        OpenType <code>sups</code>/<code>subs</code>,
+                        synthesized when the font lacks them
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4 text-white/40">—</td>
+                      <td className="py-2 pr-4">
+                        <code>GlyphResolutionModifier</code>
+                      </td>
+                      <td className="py-2">
+                        raises the atlas tile resolution of the range&rsquo;s
+                        glyphs; grow-only and shared
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -1470,7 +2001,7 @@ text.RemoveRule(myRule);`}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">4.2 Layout</h3>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto mb-4">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10">
@@ -1490,10 +2021,22 @@ text.RemoveRule(myRule);`}
                         <code>LetterSpacingModifier</code>
                       </td>
                       <td className="py-2">
-                        <code>5</code>, <code>0.1em</code>;{" "}
-                        <code>&lt;cspace=0.5em,true&gt;</code> forces monospace
-                        advance. On cursive scripts positive spacing renders
-                        tatweel so joins survive
+                        <code>5</code>, <code>0.1em</code>. On cursive scripts
+                        positive spacing renders tatweel so joins survive
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>&lt;cwidth&gt;</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>CharacterWidthModifier</code>
+                      </td>
+                      <td className="py-2">
+                        fits each character into a cell of one width and centers
+                        the glyph in it: <code>1em</code> full-width,{" "}
+                        <code>0.5em</code> half-width, <code>auto</code> the
+                        widest glyph of the range
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -1598,9 +2141,9 @@ text.RemoveRule(myRule);`}
                       <td className="py-2 pr-4">
                         <code>DirectionModifier</code>
                       </td>
-                      <td className="py-2">per-range base direction</td>
+                      <td className="py-2">whole-text base direction</td>
                     </tr>
-                    <tr>
+                    <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>&lt;arc&gt;</code>
                       </td>
@@ -1609,9 +2152,45 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">curves the baseline</td>
                     </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4 text-white/40">—</td>
+                      <td className="py-2 pr-4">
+                        <code>SeparatorModifier</code>
+                      </td>
+                      <td className="py-2">
+                        keeps each run between tagged separators whole across
+                        wrap; pair with <code>SeparatorParseRule</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4 text-white/40">—</td>
+                      <td className="py-2 pr-4">
+                        <code>TextBoxTrimModifier</code>
+                      </td>
+                      <td className="py-2">
+                        trims space above and below to chosen metrics (CSS{" "}
+                        <code>text-box-trim</code>)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4 text-white/40">—</td>
+                      <td className="py-2 pr-4">
+                        <code>FontSizeMatchModifier</code>
+                      </td>
+                      <td className="py-2">
+                        matches mixed fonts on x-height or cap-height (CSS{" "}
+                        <code>font-size-adjust</code>)
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
+
+              <Notice type="warning">
+                The monospace flag on <code>&lt;cspace&gt;</code> is gone.{" "}
+                <code>&lt;cwidth=auto&gt;</code> replaces it; a second{" "}
+                <code>&lt;cspace&gt;</code> token is ignored.
+              </Notice>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -1621,7 +2200,7 @@ text.RemoveRule(myRule);`}
                 The 2.x <code>&lt;gradient&gt;</code> and{" "}
                 <code>&lt;outline&gt;</code> tags are gone. Fills, strokes,
                 shadows and glows are now <strong>paint layers</strong> over a
-                shared paint system (§5).
+                shared paint system (§6).
               </Notice>
 
               <p className="text-white/70 mb-4">
@@ -1701,8 +2280,13 @@ text.RemoveRule(myRule);`}
               </div>
 
               <p className="text-white/70">
-                Every one of them accepts a colour, a gradient or a texture
-                through the same <code>TextPaint</code> (§5).
+                <code>FillModifier</code>, <code>StrokeModifier</code>,{" "}
+                <code>ShadowModifier</code>, <code>GlowModifier</code> and{" "}
+                <code>InnerShadowModifier</code> each take a colour, a gradient
+                or a texture through the same <code>PaintRef</code> (§6).{" "}
+                <code>ExtrudeModifier</code> shades its slices across a near→far
+                colour pair, and <code>PaintOrderModifier</code> carries no
+                paint.
               </p>
             </div>
 
@@ -1757,10 +2341,13 @@ text.RemoveRule(myRule);`}
               </div>
 
               <p className="text-white/70">
-                Decorations are range geometry, not glyph effects: they use{" "}
-                <code>HighlightPresentation</code> for paint, corners (
-                <code>RangeDecorationCorners</code>) and how a logical range
-                splits into figures (<code>GeometryMapping</code>).
+                <code>HighlightModifier</code> is range geometry, not a glyph
+                effect: <code>HighlightPresentation</code> carries its paint,
+                corners and geometry mapping (§7).{" "}
+                <code>UnderlineModifier</code> and{" "}
+                <code>StrikethroughModifier</code> draw horizontal lines across
+                the text and carry their own paint, <code>LineStyle</code>,
+                thickness, offset and skip-ink parameters.
               </p>
             </div>
 
@@ -1823,11 +2410,15 @@ text.RemoveRule(myRule);`}
             <div className="grid gap-6 md:grid-cols-3">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">4.6 Animation</h3>
-                <p className="text-white/70">
+                <p className="text-white/70 mb-3">
                   <code>&lt;reveal&gt;</code> drives <code>RevealModifier</code>
                   ; the phase-driven glyph modifiers (<code>WaveModifier</code>,{" "}
                   <code>ShakeModifier</code>, …) are added as styles. Both are
-                  covered in §7.
+                  covered in §8.
+                </p>
+                <p className="text-white/70">
+                  <code>UniTextDriver</code> sequences either of them, per
+                  range, with no code (§8.5).
                 </p>
               </div>
 
@@ -1853,12 +2444,350 @@ text.RemoveRule(myRule);`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 5. The Paint System                                                 */}
+        {/* 5. Modifier Parameters                                              */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <SlidersHorizontal className="w-6 h-6 text-[var(--color-accent)]" />
+            5. Modifier Parameters
+          </h2>
+
+          <p className="text-white/70 mb-4">
+            Every serialized field a modifier exposes to markup or to runtime
+            addressing is a <strong>parameter</strong>: one named, typed value
+            that resolves separately for each range the modifier covers.
+          </p>
+
+          <p className="text-white/70 mb-6">
+            Four surfaces address the same parameter, because all four address
+            the one <code>ParameterDescriptor</code> the modifier publishes: a
+            markup token (§3), a range state rule (§9), a driver clip (§8.5),
+            and code (§19.6).
+          </p>
+
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">5.1 The cascade</h3>
+
+              <p className="text-white/70 mb-4">
+                A parameter resolves per range, weakest stage first:
+              </p>
+
+              <ParameterCascade />
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Stage
+                      </th>
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Set by
+                      </th>
+                      <th className="text-left py-2 text-white/60">Scope</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Field</td>
+                      <td className="py-2 pr-4">
+                        the modifier&rsquo;s inspector value
+                      </td>
+                      <td className="py-2">every range of the modifier</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Rule default</td>
+                      <td className="py-2 pr-4">
+                        the source&rsquo;s default parameter (§3.2)
+                      </td>
+                      <td className="py-2">every range that source produces</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Markup token</td>
+                      <td className="py-2 pr-4">
+                        the tag&rsquo;s positional slot
+                      </td>
+                      <td className="py-2">one range</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">Owned value</td>
+                      <td className="py-2 pr-4">
+                        <code>Own</code> — code (§19.6), a driver clip (§8.5), a{" "}
+                        <code>ParameterRule</code> (§9)
+                      </td>
+                      <td className="py-2">
+                        one range, or every range a query matches
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                A stage that carries nothing falls through to the one below: an
+                absent slot, an unparsable token and a bare empty slot (
+                <code>&lt;pspace=,4&gt;</code>) all leave the value where the
+                weaker stage put it. <code>&quot;&quot;</code> and{" "}
+                <code>&apos;&apos;</code> are set empty strings, not absent.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Slots are positional and comma-separated in tag order (
+                <code>&lt;pspace=10,4&gt;</code>). A subclass&rsquo;s own
+                parameters precede the ones it inherits, so a base-declared
+                parameter sits at a later slot on a subclass&rsquo;s tag than on
+                the base&rsquo;s.
+              </p>
+
+              <Notice type="info">
+                Tokens parse out of the box for <code>float</code>,{" "}
+                <code>int</code>, <code>bool</code>, <code>string</code>,{" "}
+                <code>Vector2</code>, <code>Color32</code>,{" "}
+                <code>UnitValue</code>, <code>UnitVector2</code>, and any enum —
+                by member name, or by a single character when it is unique among
+                the members. Any other type parses only through a declared
+                parser (§5.3).
+              </Notice>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">5.2 Descriptors</h3>
+
+              <p className="text-white/70 mb-4">
+                A <code>ParameterDescriptor</code> is one parameter&rsquo;s
+                stable identity. Each modifier publishes its own in a nested
+                static <code>Param</code> class:
+              </p>
+
+              <CodeBlock
+                code={`ColorModifier.Param.Color        // ParameterDescriptor<ColorModifier, Color32>
+WaveModifier.Param.Amplitude     // ParameterDescriptor<WaveModifier, float>
+RevealModifier.Param.Front       // ParameterDescriptor<RevealModifier, UnitValue>`}
+              />
+
+              <div className="overflow-x-auto my-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Member
+                      </th>
+                      <th className="text-left py-2 text-white/60">Reports</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Id</code>
+                      </td>
+                      <td className="py-2">
+                        the backing field name — what serialized bindings
+                        persist
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>DisplayName</code>
+                      </td>
+                      <td className="py-2">the editor label</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Slot</code>
+                      </td>
+                      <td className="py-2">
+                        the positional markup slot, or −1 for a parameter with
+                        no markup presence
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>SlotOn(modifier)</code>
+                      </td>
+                      <td className="py-2">
+                        the slot on a concrete subclass, where own parameters
+                        come first
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>ValueType</code>, <code>ModifierType</code>
+                      </td>
+                      <td className="py-2">the closed types</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>SupportedCompositions</code>
+                      </td>
+                      <td className="py-2">
+                        which <code>ParameterComposition</code> operations owned
+                        values may use
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                The typed descriptor does the work:{" "}
+                <code>Resolve(modifier, in context)</code> returns the full
+                cascade including owned values, <code>ResolveCascade</code>{" "}
+                stops below them, <code>ReadRoot</code> / <code>SetRoot</code>{" "}
+                read and write the field itself, and <code>Lerp</code>{" "}
+                interpolates under the value type&rsquo;s contract.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>Param.All</code> is a modifier&rsquo;s full set, and{" "}
+                <code>ParameterDescriptor.Find(modifier, id)</code> resolves one
+                by <code>Id</code> where the modifier type is not known
+                statically.
+              </p>
+
+              <p className="text-white/70">
+                <strong>Composition.</strong> <code>ParameterComposition</code>{" "}
+                is how an owned value combines with the cascade result:{" "}
+                <code>Replace</code>, <code>Add</code>, <code>Multiply</code>,
+                or the descriptor&rsquo;s declared <code>Custom</code>{" "}
+                operation. What a parameter supports follows its value type —{" "}
+                <code>float</code>, <code>int</code> and <code>Vector2</code>{" "}
+                add and multiply, <code>Color32</code> multiplies,{" "}
+                <code>UnitValue</code> and <code>UnitVector2</code> add (mixed
+                units cannot combine, and the owned value wins whole), enums,{" "}
+                <code>bool</code> and <code>string</code> replace only.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">5.3 Declaring parameters</h3>
+
+              <CodeBlock
+                code={`[Serializable]
+[GenerateParameters]
+public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
+{
+    /// <summary>Peak vertical offset in pixels.</summary>
+    [SerializeField, Parameter, StateProperty(nameof(MarkMeshDirty))]
+    private float amplitude = 3f;
+}`}
+              />
+
+              <div className="overflow-x-auto my-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Attribute
+                      </th>
+                      <th className="text-left py-2 text-white/60">Declares</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>[GenerateParameters]</code>
+                      </td>
+                      <td className="py-2">
+                        the type opts in; it must be <code>partial</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>[Parameter]</code>
+                      </td>
+                      <td className="py-2">
+                        a parameter occupying the next positional markup slot,
+                        in declaration order
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>[SlotlessParameter]</code>
+                      </td>
+                      <td className="py-2">
+                        a parameter with cascade, ownership and rules but no
+                        markup slot
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>[ParameterContainer]</code>
+                      </td>
+                      <td className="py-2">
+                        flattens a <code>[SerializeReference]</code>{" "}
+                        object&rsquo;s own <code>[Parameter]</code> fields into
+                        the owner&rsquo;s schema; it must name{" "}
+                        <code>Invalidate</code>, and containers do not nest
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                <code>[GenerateParameters]</code> emits the nested{" "}
+                <code>Param</code> class, the aggregated <code>Param.All</code>{" "}
+                set (inherited members first) and the <code>Descriptors</code>{" "}
+                override, at compile time — the generator ships prebuilt as{" "}
+                <code>Analyzers/LightSide.UniText.ParamCodeGen.dll</code>,
+                source in <code>tools~/ParamCodeGen</code>. Authoring mistakes
+                are compiler errors: a type that is not <code>partial</code>{" "}
+                (UTP001), a marked type with no parameter fields (UTP002), a
+                container naming no invalidation (UTP003).
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A parameter field is state-tracked: it carries{" "}
+                <code>[StateProperty]</code> (or another state attribute) beside{" "}
+                <code>[Parameter]</code>, and that is also its invalidation — a
+                write through any stage of the cascade raises exactly what a
+                write to the field raises.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>[Parameter]</code> carries three options.{" "}
+                <code>Parser</code> names a static{" "}
+                <code>bool (ReadOnlySpan&lt;char&gt;, out T)</code> method
+                giving the parameter its own token vocabulary.{" "}
+                <code>Invalidate</code> names an instance parameterless method
+                to raise instead of the field&rsquo;s own notification.{" "}
+                <code>Descriptor = false</code> keeps the markup slot and the
+                editor schema while declaring no descriptor — no cascade, no
+                ownership, no driving.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A parameter whose root is not a plain field declares its
+                descriptor by hand with <code>ParameterDescriptor.From</code>,{" "}
+                <code>FromEnum</code> or <code>Custom</code>;{" "}
+                <code>WithParser</code> and <code>WithCustom</code> refine one.
+              </p>
+
+              <p className="text-white/70">
+                Four further attributes shape only the inspector:{" "}
+                <code>[Unit(&quot;%|abs&quot;)]</code> lists the unit choices of
+                a <code>UnitValue</code> / <code>UnitVector2</code>,{" "}
+                <code>[Options(&quot;@paints&quot;)]</code> fills a{" "}
+                <code>string</code> parameter&rsquo;s dropdown from a registered
+                provider, <code>[Variant]</code> renders a discriminated union,
+                and <code>[VisibleWhen]</code> hides a field until another
+                parameter holds a given value. A provider whose catalog lives
+                outside Unity&rsquo;s object graph calls{" "}
+                <code>ParameterProviders.Invalidate</code> to make open
+                inspectors rebuild their dropdowns.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 6. The Paint System                                                 */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Palette className="w-6 h-6 text-[var(--color-accent)]" />
-            5. The Paint System
+            6. The Paint System
           </h2>
 
           <p className="text-white/70 mb-6">
@@ -1868,11 +2797,14 @@ text.RemoveRule(myRule);`}
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">5.1 What a paint is</h3>
+              <h3 className="font-semibold mb-4">6.1 What a paint is</h3>
               <p className="text-white/70 mb-3">
-                A <code>TextPaint</code> is a solid colour, a gradient or a
-                texture, plus how it projects and composites. A{" "}
-                <code>PaintSwatch</code> is a named <code>TextPaint</code> in a
+                A <code>TextPaint</code> is the resolved runtime paint — a solid
+                colour, a gradient or a texture, plus how it projects and
+                composites. It is resolved per application and is never
+                serialized. The authored form is <code>Paint</code> (source,
+                projection, blend); a <code>PaintSwatch</code> is a named{" "}
+                <code>Paint</code> plus its <code>PaintMapping</code>, held in a
                 catalogue.
               </p>
               <p className="text-white/70">
@@ -1883,7 +2815,7 @@ text.RemoveRule(myRule);`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">5.2 Where swatches live</h3>
+              <h3 className="font-semibold mb-4">6.2 Where swatches live</h3>
 
               <p className="text-white/70 mb-4">
                 Named swatches come from an <code>IPaintProvider</code>:
@@ -1936,35 +2868,65 @@ text.RemoveRule(myRule);`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">5.3 Projection</h3>
+              <h3 className="font-semibold mb-4">6.3 Projection</h3>
 
               <p className="text-white/70 mb-4">
-                Two settings decide how a gradient or texture spreads over text:
+                Four settings decide how a gradient or texture spreads over
+                text:
               </p>
 
-              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+              <ul className="space-y-3 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>PaintMapping</code> — the frame the paint is measured
                   against: the glyph, the range, the line, the whole block.
                 </li>
                 <li>
-                  <code>PaintFit</code> — how a texture fills that frame.
+                  <code>PaintFit</code> — how the source&rsquo;s own aspect
+                  fills that frame: <code>Stretch</code>, <code>Contain</code>,{" "}
+                  <code>Cover</code>, <code>Tile</code>. Textures take their
+                  aspect from the sampled pixels; <code>Radial</code> and{" "}
+                  <code>Angular</code> gradients are square sources, so anything
+                  but <code>Stretch</code> keeps a ring circular on a non-square
+                  frame. <code>Linear</code> ignores it; <code>Tile</code> makes{" "}
+                  <code>scale</code> the repeat count.
                 </li>
                 <li>
-                  <code>GradientShape</code> — <code>Linear</code> (project onto
-                  an axis), <code>Radial</code> (distance from centre),{" "}
-                  <code>Angular</code> (conic sweep).
+                  <code>PaintProjectionKind</code> — <code>Linear</code>{" "}
+                  (project onto an axis), <code>Radial</code> (distance from
+                  centre), <code>Angular</code> (conic sweep).
+                </li>
+                <li>
+                  <code>PaintSpread</code> — how a gradient continues past the
+                  frame: <code>Clamp</code> holds the end stops,{" "}
+                  <code>Repeat</code> restarts the ramp, <code>Mirror</code>{" "}
+                  restarts it reversed so adjacent periods meet without a step.
+                  Inert for <code>Angular</code>, whose sweep already spans one
+                  period.
                 </li>
               </ul>
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
                 The frame choice is what makes a gradient run across a whole
                 sentence instead of restarting per glyph.
               </p>
+
+              <Notice type="info">
+                Every projection value resolves through one chain, weakest to
+                strongest: swatch → modifier field → default parameters (§3.2) →
+                tag attribute. <code>Inherit</code> on <code>PaintMapping</code>
+                , <code>PaintProjectionKind</code>, <code>PaintFit</code>,{" "}
+                <code>PaintSpread</code> and <code>LayerBlend</code>, and{" "}
+                <code>NaN</code> on <code>angle</code>, <code>scale</code> or
+                either <code>offset</code> axis, mean no value at that layer. A
+                chain that resolves to nothing falls back to <code>Block</code>,{" "}
+                <code>Linear</code>, <code>Stretch</code>, <code>Clamp</code>{" "}
+                and <code>Normal</code>; a non-positive <code>scale</code>{" "}
+                becomes 1.
+              </Notice>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">5.4 Compositing</h3>
+              <h3 className="font-semibold mb-4">6.4 Compositing</h3>
 
               <PaintOrderDiagram />
 
@@ -1973,38 +2935,54 @@ text.RemoveRule(myRule);`}
                 selects <strong>layer-major</strong> (each layer across all
                 glyphs, then the next — the component default, cheapest) or{" "}
                 <strong>glyph-major</strong> (every layer of one glyph, then the
-                next glyph — correct when layers of adjacent glyphs overlap).{" "}
-                <code>LayerBlendOverride</code> overrides the blend of a single
-                resolved paint.
+                next glyph — correct when layers of adjacent glyphs overlap).
+                Glyph-major covers only same-material quads of the base mesh;
+                texture paints and the colour-glyph segment always stack
+                layer-major. <code>LayerBlend</code> sets how a resolved paint
+                composites — <code>Normal</code>, <code>Multiply</code>,{" "}
+                <code>Screen</code>, <code>Additive</code>,{" "}
+                <code>Exclusion</code> — and its <code>Inherit</code> member
+                keeps the mode the swatch authored.
               </p>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 6. Range Decorations                                                */}
+        {/* 7. Range Decorations                                                */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Layers className="w-6 h-6 text-[var(--color-accent)]" />
-            6. Range Decorations
+            7. Range Decorations
           </h2>
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10 space-y-4">
             <p className="text-white/70">
               <code>BaseRangeDecorationModifier</code> is the base for
-              modifier-authored geometry attached to visual ranges — underlines,
-              strikethroughs, highlights, and your own. It owns range
+              modifier-authored geometry attached to visual ranges —{" "}
+              <code>HighlightModifier</code> and your own. It owns range
               accumulation, paint resolution, renderer handles and rebuild
               timing; a subclass only turns one logical range into figures.
+              Underlines and strikethroughs take the other path:{" "}
+              <code>BaseLineModifier</code> emits virtual glyph quads through
+              the mesh pipeline, so per-glyph modifiers reach them like any face
+              glyph.
             </p>
 
             <p className="text-white/70">
               <code>GeometryMapping</code> chooses how a logical range becomes
-              visual figures (one box per line, one per fragment, merged).{" "}
+              visual figures: <code>Glyph</code> (one rounded figure per shaped
+              cluster), <code>Line</code> (one per line/BiDi fragment),{" "}
+              <code>Range</code> (fragments rounded only at the logical
+              endpoints — the default), <code>Block</code> (one connected
+              multi-line contour with no internal seams).{" "}
+              <code>RangePaintMapping</code> picks the paint frame independently
+              of that topology: <code>InheritGeometry</code>, <code>Glyph</code>
+              , <code>Line</code>, <code>Range</code>, <code>TextBlock</code>.{" "}
               <code>RangeDecorationCorners</code> masks which corners round.{" "}
-              <code>RangeDecorationOrder</code> places decorations relative to
-              glyphs.
+              <code>RangeDecorationOrder</code> places a decoration{" "}
+              <code>Behind</code> or <code>Above</code> the text.
             </p>
 
             <Notice type="info">
@@ -2017,49 +2995,59 @@ text.RemoveRule(myRule);`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 7. Animation                                                        */}
+        {/* 8. Animation                                                        */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Wand2 className="w-6 h-6 text-[var(--color-accent)]" />
-            7. Animation
+            8. Animation
           </h2>
 
           <p className="text-white/70 mb-6">
-            Two independent systems: continuous phase-driven motion, and
-            one-shot reveal.
+            Two systems — continuous phase-driven motion and reveal — plus the{" "}
+            <code>UniTextDriver</code> sequencer that ramps any modifier
+            parameter of either over a timeline.
           </p>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">7.1 Phase-driven modifiers</h3>
+              <h3 className="font-semibold mb-4">8.1 Phase-driven modifiers</h3>
 
               <p className="text-white/70 mb-4">
-                Every animated glyph modifier implements{" "}
-                <code>IPhaseDriven</code>: its visual state is a pure function
-                of <code>Phase</code>. The modifier never advances time itself.
+                Every animated glyph modifier renders from an external input
+                parameter — <code>Phase</code>, or <code>Roll</code> on{" "}
+                <code>RollingModifier</code>: its visual state is a pure
+                function of that input. The modifier never advances time itself.
+                The input is a <em>slotless</em> parameter — it takes no
+                positional markup slot, but it cascades and can be owned per
+                range like any other (§5.1).
               </p>
 
               <PhaseDrivenDiagram />
 
               <p className="text-white/60 text-sm mb-3">
-                Feed Phase from whatever owns time:
+                Feed it from whatever owns time:
               </p>
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-6">
                 <li>
-                  <code>UniTextPhaseDriver</code> — drop this component next to
-                  the text for free-running motion. The &ldquo;just make it
-                  move&rdquo; default.
+                  <code>UniTextDriver</code> — a sequencer component on the
+                  text&rsquo;s GameObject. Its clips ramp any modifier
+                  parameter, <code>Phase</code> included, over a shared timeline
+                  (§8.5).
                 </li>
                 <li>A tween library, Timeline, or your own code.</li>
                 <li>
                   A Unity Animator through <code>UniTextAnimationBridge</code> +{" "}
-                  <code>PhaseAnimationHandler</code>.
+                  <code>ModifierFieldsAnimationHandler</code> (§8.4), or by
+                  animating <code>UniTextDriver.Progress</code>.
                 </li>
               </ul>
 
               <p className="text-white/60 text-sm mb-3">
-                Built-ins, all <code>GlyphParamModifier&lt;Params&gt;</code>:
+                Built-ins — all <code>GlyphParamModifier&lt;Params&gt;</code>{" "}
+                subclasses except <code>GlitchModifier</code> (an{" "}
+                <code>EffectModifier</code>) and <code>RollingModifier</code>{" "}
+                and <code>ScrambleModifier</code> (<code>BaseModifier</code>s):
               </p>
 
               <div className="overflow-x-auto mb-4">
@@ -2141,7 +3129,8 @@ text.RemoveRule(myRule);`}
                         <code>RollingModifier</code>
                       </td>
                       <td className="py-2">
-                        characters roll on a cyclic glyph wheel
+                        characters roll on a cyclic glyph wheel; driven by{" "}
+                        <code>Roll</code> toward 0, not <code>Phase</code>
                       </td>
                     </tr>
                     <tr>
@@ -2149,7 +3138,9 @@ text.RemoveRule(myRule);`}
                         <code>ScrambleModifier</code>
                       </td>
                       <td className="py-2">
-                        decode effect settling left to right
+                        decode effect settling left to right; driven by{" "}
+                        <code>Progress</code>, with <code>Phase</code> churning
+                        the random picks
                       </td>
                     </tr>
                   </tbody>
@@ -2158,23 +3149,39 @@ text.RemoveRule(myRule);`}
 
               <p className="text-white/70">
                 <code>spread</code> decorrelates neighbouring glyphs;{" "}
-                <code>frequency</code> sets cycles per phase unit.
+                <code>frequency</code> sets cycles per phase unit.{" "}
+                <code>ShakeModifier</code>, <code>GlitchModifier</code> and{" "}
+                <code>ScrambleModifier</code> carry neither — their{" "}
+                <code>rate</code> sets re-rolls per phase unit;{" "}
+                <code>RollingModifier</code>&rsquo;s <code>spread</code> is roll
+                reduction per character, so later characters settle later.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">7.2 Writing your own</h3>
+              <h3 className="font-semibold mb-4">8.2 Writing your own</h3>
               <p className="text-white/70">
-                Subclass <code>GlyphParamModifier&lt;TParams&gt;</code>: parse
-                the range&rsquo;s tag parameters into <code>TParams</code>, then
-                transform each glyph in <code>OnGlyph</code> through{" "}
-                <code>GlyphQuad</code> (four vertices, order BL-TL-TR-BR). Keep
-                it a pure function of phase and worker-thread safe.
+                Subclass <code>GlyphParamModifier&lt;TParams&gt;</code>: mark
+                each serialized field <code>[Parameter]</code>, tag the class{" "}
+                <code>[GenerateParameters]</code>, and resolve the range&rsquo;s
+                values through the cascade in{" "}
+                <code>ResolveParams(in RangeApplyContext context)</code> — one{" "}
+                <code>Param.&lt;Name&gt;.Resolve(this, in context)</code> call
+                per field. Override <code>AttributeKey</code> with a string
+                unique to the modifier type (the built-ins use{" "}
+                <code>AttributeKeys</code>). Then transform each glyph in{" "}
+                <code>
+                  OnGlyph(UniTextMeshGenerator gen, int cluster, in TParams p,
+                  float phase)
+                </code>{" "}
+                through <code>GlyphQuad</code> (four vertices, order
+                BL-TL-TR-BR). Keep it a pure function of the supplied phase and
+                worker-thread safe.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">7.3 Reveal</h3>
+              <h3 className="font-semibold mb-4">8.3 Reveal</h3>
 
               <p className="text-white/70 mb-4">
                 <code>RevealModifier</code> shows only the leading part of each
@@ -2182,13 +3189,21 @@ text.RemoveRule(myRule);`}
               </p>
 
               <CodeBlock
-                code={`text.GetModifier<RevealModifier>().Fill = elapsed / duration;`}
+                code={`text.GetModifier<RevealModifier>().Front = UnitValue.Percent(100f * elapsed / duration);`}
               />
 
               <ul className="space-y-2 text-white/70 list-disc list-inside mt-4 mb-6">
                 <li>
-                  <code>Fill</code> (0&ndash;1) — visible fraction.{" "}
-                  <code>VisibleClusters</code> overrides it when &ge; 0.
+                  <code>Front</code> (<code>UnitValue</code>, default{" "}
+                  <code>100%</code>) — the reveal frontier: a percentage of the
+                  frontier axis, or an absolute position in grapheme clusters.
+                  Fractional values blend the frontier cluster; positions beyond
+                  the length show everything.
+                </li>
+                <li>
+                  Authorable in markup: <code>&lt;reveal=fade,50%&gt;</code> —
+                  the first tag parameter names the appearance entry, the second
+                  sets <code>Front</code>.
                 </li>
                 <li>
                   <code>Collapse</code> — <code>false</code> keeps hidden
@@ -2200,6 +3215,25 @@ text.RemoveRule(myRule);`}
                   Reveals whole grapheme clusters in logical order; line breaks
                   are never hidden.
                 </li>
+                <li>
+                  <code>PerRange</code> — <code>false</code> (the default) runs
+                  one shared frontier over the union of covered clusters in text
+                  order, so covered ranges reveal one after another;{" "}
+                  <code>true</code> fills every range independently and
+                  simultaneously.
+                </li>
+                <li>
+                  A cluster covered by overlapping ranges belongs to the
+                  innermost one — it alone governs that cluster&rsquo;s
+                  visibility and appearance effect.
+                </li>
+                <li>
+                  <code>Clock</code> (<code>PlaybackClock</code>, default{" "}
+                  <code>Unscaled</code>) — the time source appear and hide
+                  effects advance on. <code>Manual</code> advances only through{" "}
+                  <code>AdvanceTime(float)</code>; a clock change mid-flight
+                  restarts running phases.
+                </li>
               </ul>
 
               <p className="text-white/70 mb-4">
@@ -2209,8 +3243,9 @@ text.RemoveRule(myRule);`}
                 Spiral, Pop, Drop, Rain, Burst, Domino, Swing, Wave, Shake,
                 Glitch, Chaos and Tint. <code>CompositeRevealHandler</code> runs
                 several in one slot; <code>EasedRevealHandler</code> is the base
-                for handlers that remap <code>Progress</code> through an
-                authored easing.
+                for handlers that remap <code>Progress</code> through an{" "}
+                <code>Ease</code> — a built-in curve, a cubic Bézier, or an
+                authored keyed curve.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -2218,19 +3253,39 @@ text.RemoveRule(myRule);`}
                 <code>RevealHandlerEntry</code>), resolved per range by the tag
                 parameter, from <code>InlineRevealHandlerProvider</code> (edited
                 on the modifier) or <code>AssetRevealHandlerProvider</code> /{" "}
-                <code>UniTextRevealHandlers</code> (a shared project asset).
+                <code>UniTextRevealHandlers</code> (a shared project asset). The
+                modifier&rsquo;s <code>HandlerName</code> parameter is the
+                default for ranges whose tag carries no parameter; an empty name
+                selects the provider&rsquo;s unnamed entry. Each handler&rsquo;s{" "}
+                <code>Duration</code> (seconds, default <code>0.25</code>) is
+                how long its effect plays for one glyph; <code>0</code> makes
+                the change instant.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A receding frontier animates too. The cluster keeps its place in
+                the mesh — and, under <code>Collapse</code>, in layout — until
+                its hide effect finishes. Each entry&rsquo;s optional{" "}
+                <code>HideHandler</code> picks that effect; left unset, the
+                entry&rsquo;s own <code>Handler</code> replays backwards.
+                Interrupting one direction with the other continues from the
+                glyph&rsquo;s current state instead of restarting.
               </p>
 
               <Notice type="warning">
                 A custom handler transforms only the quad handed to{" "}
                 <code>Apply</code> (<code>RevealGlyphInfo</code>), must be
                 worker-thread safe, and <strong>must</strong> resolve to
-                identity at <code>Progress = 1</code>.
+                identity at <code>Progress = 1</code> — that single rule is what
+                lets every effect serve both directions. A handler that wraps
+                others constructs a <code>RevealGlyphInfo</code> with an
+                explicit progress to give each child its own remapped timeline,
+                the way <code>CompositeRevealHandler</code> does.
               </Notice>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">7.4 Animator integration</h3>
+              <h3 className="font-semibold mb-4">8.4 Animator integration</h3>
 
               <p className="text-white/70 mb-4">
                 A Unity Animator writes serialized fields directly, bypassing
@@ -2240,7 +3295,7 @@ text.RemoveRule(myRule);`}
                 Animator writes and converts changes into correct invalidation.
               </p>
 
-              <ul className="space-y-2 text-white/70 list-disc list-inside">
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>UniTextFieldsAnimationHandler</code> — the
                   component&rsquo;s own fields (size, colour, wrap, auto-size,
@@ -2248,108 +3303,404 @@ text.RemoveRule(myRule);`}
                   adds sorting and shadow casting.
                 </li>
                 <li>
-                  <code>ModifierAnimationHandler</code> — one live modifier.
-                </li>
-                <li>
-                  <code>PhaseAnimationHandler</code> — the first{" "}
-                  <code>IPhaseDriven</code> modifier&rsquo;s phase.
+                  <code>ModifierFieldsAnimationHandler</code> — every state
+                  field of every modifier in the host&rsquo;s styles, rebound
+                  when the style graph changes. It covers the component&rsquo;s
+                  own <code>Styles</code> only; a modifier living in a{" "}
+                  <code>StylePreset</code> or the project-wide preset is not
+                  reached.
                 </li>
               </ul>
+
+              <Notice type="info">
+                Per-range parameter values are not diffable this way — drive
+                them through <code>UniTextDriver</code> (§8.5) or parameter
+                ownership (§19.6) instead.
+              </Notice>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">8.5 The sequencer</h3>
+
+              <p className="text-white/70 mb-4">
+                <code>UniTextDriver</code> animates parameters (§5) without
+                code: each clip owns one parameter of one modifier across the
+                ranges its query matches and ramps every match between two
+                endpoint values inside its own window on a shared timeline. Add
+                it to the text&rsquo;s own GameObject —{" "}
+                <strong>Add Component → UniText → UniText Driver</strong>; it
+                requires a <code>UniTextBase</code> there.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Clips are authored in the inspector, or on the timeline its{" "}
+                <strong>Open Timeline</strong> button raises: clips sit on
+                tracks, drag to move and resize, split at the playhead,
+                duplicate, copy, paste, mute and marquee-select, with a
+                scrubbable ruler, snapping, zoom and pan. Double-clicking a clip
+                opens its full editor in place; a multi-clip selection edits the
+                shared fields together.
+              </p>
+
+              <DriverClipDiagram />
+
+              <p className="text-white/60 text-sm mb-3">Per clip:</p>
+              <div className="overflow-x-auto mb-6">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Setting
+                      </th>
+                      <th className="text-left py-2 text-white/60">Meaning</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Start</code>
+                      </td>
+                      <td className="py-2">
+                        the second on the driver&rsquo;s timeline the
+                        clip&rsquo;s window opens
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Query</code>
+                      </td>
+                      <td className="py-2">
+                        the <code>RangeQueryDefinition</code> (§19.6) selecting
+                        the ranges this clip drives; its filters follow text
+                        edits
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>From</code>, <code>To</code>
+                      </td>
+                      <td className="py-2">
+                        the endpoint values, both <code>RuleValue</code>s of the
+                        parameter&rsquo;s own type (§9)
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Composition</code>
+                      </td>
+                      <td className="py-2">
+                        how the driven value combines with each range&rsquo;s
+                        cascade (§5.2)
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Priority</code>
+                      </td>
+                      <td className="py-2">
+                        against other owners of the same parameter
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>MemberDuration</code>
+                      </td>
+                      <td className="py-2">
+                        seconds one member&rsquo;s ramp lasts
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Stagger</code>
+                      </td>
+                      <td className="py-2">
+                        seconds between the starts of adjacent members&rsquo;
+                        ramps, in text order
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Easing</code>
+                      </td>
+                      <td className="py-2">
+                        the <code>Ease</code> the ramp is remapped through
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                A clip lasts{" "}
+                <code>MemberDuration + Stagger × (members − 1)</code>, so its
+                length follows how many ranges its query currently matches.
+                Outside its window a clip holds its boundary value —{" "}
+                <code>From</code> before the start, <code>To</code> after the
+                end. A <code>Replace</code> clip holds only until the playhead
+                passes the start of another <code>Replace</code> clip of the
+                same parameter and priority; the latest started one drives.{" "}
+                <code>Add</code>, <code>Multiply</code> and <code>Custom</code>{" "}
+                clips compose alongside and stay engaged throughout.
+              </p>
+
+              <p className="text-white/60 text-sm mb-3">Per driver:</p>
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Setting
+                      </th>
+                      <th className="text-left py-2 text-white/60">Meaning</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Clock</td>
+                      <td className="py-2">
+                        <code>PlaybackClock</code> — <code>Scaled</code>,{" "}
+                        <code>Unscaled</code>, or <code>Manual</code>, which
+                        advances only through <code>Advance(deltaTime)</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Loop</td>
+                      <td className="py-2">
+                        <code>DriverLoop.Once</code>, <code>Loop</code> or{" "}
+                        <code>PingPong</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Duration</td>
+                      <td className="py-2">
+                        fixed timeline length in seconds; clips still extend it,
+                        and 0 derives the length from the clips alone
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">Play On Enable</td>
+                      <td className="py-2">
+                        starts playback when the component enables, in play mode
+                        only
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                <code>Speed</code> scales the playhead and runs it backwards
+                when negative. <code>Progress</code> is the normalized playhead,
+                0&ndash;1: setting it renders that exact state, so an Animator,
+                a Timeline track or a scrub bar drives the whole sequence
+                through one float. <code>Playhead</code> is the same position in
+                seconds — a <code>PingPong</code> return reads as the mirrored
+                position, never as a phase past the end — and{" "}
+                <code>TimelineLength</code> reports the resolved length.{" "}
+                <code>Play()</code>, <code>Pause()</code>, <code>Stop()</code>,{" "}
+                <code>Seek(normalized)</code> and <code>Advance(seconds)</code>{" "}
+                drive it; <code>Rebind()</code> rebuilds every clip&rsquo;s
+                ownership against the current styles, which a style change does
+                on its own.
+              </p>
+
+              <p className="text-white/70">
+                Ownership follows each clip&rsquo;s query across text edits and
+                is released on disable, returning every range to its cascade.
+                Scrubbing and playback both work in edit mode.
+              </p>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 8. Range State Effects                                              */}
+        {/* 9. Range State Rules                                                */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Zap className="w-6 h-6 text-[var(--color-accent)]" />
-            8. Range State Effects
+            9. Range State Rules
           </h2>
 
           <p className="text-white/70 mb-6">
-            A reactive layer that drives <strong>any modifier property</strong>{" "}
+            A reactive layer that drives <strong>any modifier parameter</strong>{" "}
             from <strong>any signal</strong>, per range, without code.
           </p>
 
-          <RangeEffectChain />
+          <RangeRuleChain />
 
-          <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-            <p className="text-white/60 text-sm mb-3">The pieces:</p>
-            <ul className="space-y-3 text-white/70 list-disc list-inside mb-4">
-              <li>
-                <code>RangeSignal</code> — a value a range emits: hover, press,
-                focus, a scalar you publish (<code>BuiltInScalarSignal</code>,{" "}
-                <code>RangeSignals</code>).
-              </li>
-              <li>
-                <code>RangeEffectSelector</code> — when the effect applies.
-                Compose with <code>AllRangeEffectSelector</code>,{" "}
-                <code>AnyRangeEffectSelector</code>,{" "}
-                <code>NotRangeEffectSelector</code>,{" "}
-                <code>InteractionRangeEffectSelector</code>,{" "}
-                <code>ScalarRangeEffectSelector</code>.
-              </li>
-              <li>
-                <code>RangeEffectDriver</code> — how the contribution moves over
-                time: <code>BuiltInPropertyDriver</code> (clock + easing),{" "}
-                <code>InstantEffectDriver</code>,{" "}
-                <code>ManualEffectDriver</code>,{" "}
-                <code>SignalProgressEffectDriver</code>.
-              </li>
-              <li>
-                <code>ModifierProperty</code> /{" "}
-                <code>EffectProperty&lt;TValue&gt;</code> — the target. Setting
-                an effect property changes only that playback; it never mutates
-                the serialized modifier field.
-              </li>
-              <li>
-                <code>RangeEffectValue</code> — typed targets:{" "}
-                <code>ColorRangeEffectValue</code>,{" "}
-                <code>FloatRangeEffectValue</code>,{" "}
-                <code>UnitRangeEffectValue</code>,{" "}
-                <code>Vector2RangeEffectValue</code>,{" "}
-                <code>UnitVector2RangeEffectValue</code>.
-              </li>
-            </ul>
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <p className="text-white/60 text-sm mb-3">The pieces:</p>
+              <ul className="space-y-3 text-white/70 list-disc list-inside">
+                <li>
+                  <code>RangeSignal</code> — a value a range emits: hover,
+                  press, focus, a scalar you publish (
+                  <code>BuiltInScalarSignal</code>, <code>RangeSignals</code>).
+                  A project declares its own with{" "}
+                  <code>new RangeSignal&lt;T&gt;(id)</code> — the{" "}
+                  <code>unitext.</code> id namespace is reserved — and matches
+                  it from code with <code>RangeSignalSelector&lt;T&gt;</code>.
+                </li>
+                <li>
+                  <code>RangeStateSelector</code> — when the rule applies.
+                  Compose with <code>AllRangeStateSelector</code>,{" "}
+                  <code>AnyRangeStateSelector</code>,{" "}
+                  <code>NotRangeStateSelector</code>,{" "}
+                  <code>InteractionRangeStateSelector</code>,{" "}
+                  <code>ScalarRangeStateSelector</code>.
+                </li>
+                <li>
+                  <code>RangeStatePlayback</code> — how the contribution moves
+                  over time: <code>TransitionPlayback</code> (enter/exit
+                  duration, <code>Ease</code>, <code>PlaybackClock</code>),{" "}
+                  <code>InstantPlayback</code>, <code>ManualPlayback</code>,{" "}
+                  <code>SignalProgressPlayback</code>.
+                </li>
+                <li>
+                  <code>ParameterDescriptor</code> /{" "}
+                  <code>OwnedParameter&lt;TValue&gt;</code> — the target. Every{" "}
+                  <code>[Parameter]</code> field of a modifier is published as a
+                  static descriptor on that modifier&rsquo;s generated{" "}
+                  <code>Param</code> class (§5.2), which is what{" "}
+                  <code>ParameterRule.SetTarget</code> binds to. Writing an{" "}
+                  <code>OwnedParameter</code> changes only that ownership; it
+                  never mutates the serialized modifier field.
+                </li>
+                <li>
+                  <code>RuleValue</code> — typed targets:{" "}
+                  <code>ColorRuleValue</code>, <code>FloatRuleValue</code>,{" "}
+                  <code>UnitRuleValue</code>, <code>Vector2RuleValue</code>,{" "}
+                  <code>UnitVector2RuleValue</code>, <code>IntRuleValue</code>,{" "}
+                  <code>BoolRuleValue</code>, <code>StringRuleValue</code>,{" "}
+                  <code>EnumRuleValue&lt;TEnum&gt;</code>. Each supplies either
+                  the value authored on it or, with{" "}
+                  <code>RangeValueSource.PayloadMember</code>, a named member
+                  read from the range&rsquo;s payload.{" "}
+                  <code>RuleValue&lt;TValue&gt;</code> is the public base for a
+                  project&rsquo;s own unmanaged value type.
+                </li>
+              </ul>
+            </div>
 
-            <p className="text-white/70">
-              <code>RangeStateEffect</code> wires them together;{" "}
-              <code>ModifierEffect</code> and <code>PropertyEffect</code> are
-              the concrete shapes. <code>UniTextEffects</code> is the shared
-              catalogue asset.
-            </p>
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <p className="text-white/70 mb-4">
+                <code>RangeStateRule</code> wires them together;{" "}
+                <code>ModifierRule</code> (applies a transient modifier graph
+                while active) and <code>ParameterRule</code> (drives one
+                parameter of another modifier in the same graph) are the
+                concrete shapes. Rules are authored on{" "}
+                <code>InteractiveModifier.Rules</code>;{" "}
+                <code>UniTextRanges</code> is the per-component runtime that
+                owns their playbacks, reached with{" "}
+                <code>UniTextRanges.For(text)</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Every rule also carries <code>Scope</code> —{" "}
+                <code>RangeRuleScope.Entity</code> by default, one playback
+                writing to every segment of the entity, or <code>Segment</code>{" "}
+                for an independent playback per segment — an optional one-shot{" "}
+                <code>Trigger</code> (<code>RangeRuleEvent.Activated</code> or{" "}
+                <code>ContextRequested</code>) that fires independently of the
+                selector, and a <code>Priority</code> deciding which{" "}
+                <code>Replace</code> contribution wins. A{" "}
+                <code>ParameterRule</code> adds <code>Composition</code> (
+                <code>Replace</code>, <code>Add</code>, <code>Multiply</code>,{" "}
+                <code>Custom</code>), deciding how its contribution combines
+                with the cascade result and with concurrent rules. The default
+                selector is <code>InteractionRangeStateSelector</code> requiring{" "}
+                <code>Hovered</code>; the default playback is{" "}
+                <code>InstantPlayback</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                From code, <code>UniTextRanges.For(text)</code> publishes
+                signals —{" "}
+                <code>SetSignal(entity, RangeSignals.Selected, true)</code>, the
+                segment-scoped and <code>RangeChannel</code> overloads, and{" "}
+                <code>SetSignalForAll</code> — advances playbacks configured
+                with <code>PlaybackClock.Manual</code> through{" "}
+                <code>AdvanceManual(deltaTime)</code>, and raises{" "}
+                <code>RuleEntered</code>, <code>RuleExited</code>,{" "}
+                <code>RuleUpdated</code> and <code>RuleTriggered</code>, each
+                carrying the <code>RangeRuleInstance</code>. <code>Own</code>{" "}
+                takes one parameter of a materialized range into ownership until
+                the handle is released or the range&rsquo;s identity retires
+                with a text edit (§19.6). <code>PrefersReducedMotion</code>{" "}
+                collapses every decorative playback to its final value.
+              </p>
+
+              <p className="text-white/70">
+                <code>Playback</code> is the weight envelope every playback runs
+                on: instant and eased transitions, pulses, deferred release and
+                clock routing, allocation-free. A playback of your own drives it
+                through a host implementing <code>IPlaybackHost</code> —{" "}
+                <code>ApplyWeight</code> for the current weight,{" "}
+                <code>ReleaseOutputs</code> after a releasing run completes.
+              </p>
+            </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 9. Interaction                                                      */}
+        {/* 10. Interaction                                                     */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <MousePointerClick className="w-6 h-6 text-[var(--color-accent)]" />
-            9. Interaction
+            10. Interaction
           </h2>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">9.1 Interactive ranges</h3>
-              <p className="text-white/70 mb-3">
+              <h3 className="font-semibold mb-4">10.1 Interactive ranges</h3>
+
+              <p className="text-white/70 mb-4">
                 <code>InteractiveModifier</code> makes a range respond to
-                pointer input. It self-subscribes to the pointer surface —
-                overlapping ranges from different modifiers all dispatch, in
-                registration order.
+                pointer input. Input, geometry, overlap and pointer state belong
+                to one per-component <code>UniTextInteractions</code> router the
+                modifier registers with; the modifier owns only authored policy,
+                events and default actions. Overlapping ranges resolve to a
+                single target: highest <code>InteractionPriority</code> first,
+                then Style order, then the shorter range, then registration
+                order. A range with <code>PassThrough</code> set emits its
+                events without consuming the pointer, so underlying UI still
+                receives the gesture.
               </p>
+
+              <p className="text-white/70 mb-4">
+                <code>RangeInteraction</code> is the borrowed event context
+                routed through capture, target and bubble — copy any value
+                needed after the callback returns, because the router reuses the
+                instance. <code>RangeState</code> is the per-range machine{" "}
+                <code>Normal → Hovered → Pressed</code>, plus{" "}
+                <code>Disabled</code>; read it with{" "}
+                <code>InteractiveModifier.GetRangeState</code>. The router
+                publishes the same changes as typed signals —{" "}
+                <code>RangeSignals.Hovered</code>, <code>Pressed</code>,{" "}
+                <code>Focused</code>, <code>Disabled</code> — and those, not{" "}
+                <code>RangeState</code>, are what §9 selectors match.
+              </p>
+
               <p className="text-white/70">
-                <code>RangeInteraction</code> describes one interaction;{" "}
-                <code>RangeState</code> carries hover/press/focus state that §8
-                selectors read.
+                Code subscribes through the same router:{" "}
+                <code>UniTextInteractions.For(text).Get(channel)</code> returns
+                the <code>RangeInteractionChannel</code> for one{" "}
+                <code>RangeChannel</code> asset, with <code>Activated</code>,{" "}
+                <code>ContextRequested</code>, <code>Entered</code>,{" "}
+                <code>Exited</code>, <code>StateChanged</code>,{" "}
+                <code>LongPressProgress</code>, <code>Gesture</code>,{" "}
+                <code>FocusChanged</code> and a catch-all{" "}
+                <code>Interaction</code>. A modifier with no channel of its own
+                inherits the range source&rsquo;s; with neither, routing is
+                modifier-local through{" "}
+                <code>InteractiveModifier.Interaction</code>.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">9.2 Actions</h3>
+              <h3 className="font-semibold mb-4">10.2 Actions</h3>
 
               <p className="text-white/70 mb-4">
                 A range can carry serialized actions instead of code:
@@ -2378,17 +3729,13 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">copies the range text</td>
                     </tr>
-                    <tr className="border-b border-white/5">
+                    <tr>
                       <td className="py-2 pr-4">
                         <code>SetActiveAction</code>
                       </td>
-                      <td className="py-2">toggles a GameObject</td>
-                    </tr>
-                    <tr>
-                      <td className="py-2 pr-4">
-                        <code>RangeActionEvents</code>
+                      <td className="py-2">
+                        sets a GameObject active or inactive
                       </td>
-                      <td className="py-2">UnityEvents on the range</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2396,13 +3743,21 @@ text.RemoveRule(myRule);`}
 
               <p className="text-white/70">
                 <code>RangeAction</code> is the base — subclass it for your own.{" "}
-                <code>RangeActionContext</code> carries the range, the component
-                and the pointer data.
+                <code>RangeActionContext</code> carries the text component, the
+                entity, the hit segment, the payload and the pointer data, and
+                stays valid after dispatch returns. Each action declares which
+                routed events run it through <code>RangeActionEvents</code> (
+                <code>Activated</code>, <code>ContextRequested</code>, default{" "}
+                <code>Activated</code>) and returns <code>RangeActionFlow</code>{" "}
+                to continue or stop the rest of the list. Actions run in
+                Inspector order after capture, target and bubble handlers, and
+                are skipped when a handler calls{" "}
+                <code>RangeInteraction.PreventDefault</code>.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">9.3 Gestures</h3>
+              <h3 className="font-semibold mb-4">10.3 Gestures</h3>
               <p className="text-white/70">
                 <code>RangeGestureRecognizer</code> and{" "}
                 <code>DragRangeGestureRecognizer</code> turn raw pointer streams
@@ -2413,7 +3768,7 @@ text.RemoveRule(myRule);`}
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                9.4 Viewports and world text
+                10.4 Viewports and world text
               </h3>
 
               <p className="text-white/70 mb-4">
@@ -2444,19 +3799,27 @@ text.RemoveRule(myRule);`}
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">9.5 Links</h3>
+                <h3 className="font-semibold mb-4">10.5 Links</h3>
                 <p className="text-white/70">
                   <code>LinkModifier</code> + <code>MarkdownLinkParseRule</code>{" "}
                   + <code>RawUrlParseRule</code> cover the usual set: explicit{" "}
                   <code>&lt;link=url&gt;</code>, Markdown{" "}
-                  <code>[text](url)</code>, and bare URLs. Pair with{" "}
-                  <code>OpenUrlAction</code> for click-to-open, and a §8 effect
-                  for hover feedback.
+                  <code>[text](url)</code>, and bare URLs. It opens the resolved
+                  URL through <code>Application.OpenURL</code> while{" "}
+                  <code>AutoOpenUrl</code> is set, and raises{" "}
+                  <code>LinkClicked</code>, <code>LinkEntered</code> and{" "}
+                  <code>LinkExited</code>; use <code>OpenUrlAction</code>{" "}
+                  instead when the URL comes from a payload member or a literal.
+                  It carries no colour or underline of its own — compose it with{" "}
+                  <code>ColorModifier</code> (§4.1) and{" "}
+                  <code>UnderlineModifier</code> (§4.4) — and ships two{" "}
+                  <code>ModifierRule</code> entries for pressed and activation
+                  feedback; add a §9 rule for hover feedback.
                 </p>
               </div>
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">9.6 Text resolver</h3>
+                <h3 className="font-semibold mb-4">10.6 Text resolver</h3>
                 <p className="text-white/70">
                   <code>IUniTextResolver</code> overrides the source text of a
                   component before it is parsed — without touching the
@@ -2471,20 +3834,47 @@ text.RemoveRule(myRule);`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 10. Inline Media                                                    */}
+        {/* 11. Inline Media                                                    */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <ImageIcon className="w-6 h-6 text-[var(--color-accent)]" />
-            10. Inline Media
+            11. Inline Media
           </h2>
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10">
             <p className="text-white/70 mb-4">
-              <code>&lt;obj=name/&gt;</code> and{" "}
-              <code>&lt;sprite=name/&gt;</code> place an object or sprite in the
-              text flow. The glyph advance, line breaking and baseline alignment
-              treat it as a character.
+              <code>&lt;obj=name&gt;</code> and <code>&lt;sprite=name&gt;</code>{" "}
+              place an object or sprite in the text flow. Each inserts one
+              codepoint — U+FFFC OBJECT REPLACEMENT CHARACTER — so glyph
+              advance, line breaking, baseline alignment and every codepoint
+              index treat it as a character. Both run on{" "}
+              <code>InlineTagRule</code> (§3.3): the <code>/&gt;</code>{" "}
+              shorthand is accepted but not required, and a stray{" "}
+              <code>&lt;/obj&gt;</code> is stripped.
+            </p>
+
+            <p className="text-white/60 text-sm mb-3">
+              Arguments are positional and comma-separated after the name:
+            </p>
+
+            <CodeBlock
+              language="text"
+              disableTypeLinks
+              code={`<obj=name[,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]>
+<sprite=name[,color][,aspect][,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]>`}
+            />
+
+            <p className="text-white/70 mt-4 mb-6">
+              Size, offset, advance and line height are em units (1 = font
+              size); pivot is normalized; rotation is degrees.{" "}
+              <code>color</code> is empty for the entry&rsquo;s own colour,{" "}
+              <code>i</code> to inherit the component&rsquo;s colour (CSS{" "}
+              <code>currentColor</code>), or <code>#RGB</code> /{" "}
+              <code>#RRGGBB</code> / <code>#RRGGBBAA</code> / a named colour;{" "}
+              <code>aspect</code> is <code>true</code> / <code>false</code>.
+              Values resolve weakest → strongest: provider entry → keyed
+              override → default parameter (§3.2) → tag argument.
             </p>
 
             <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
@@ -2507,47 +3897,66 @@ text.RemoveRule(myRule);`}
               </li>
               <li>
                 <code>InlineObjectOverride</code> /{" "}
-                <code>InlineSpriteOverride</code> — per-range overrides of size,
-                tint, baseline.
+                <code>InlineSpriteOverride</code> — rows on the modifier&rsquo;s{" "}
+                <code>Overrides</code> list, each matched to one provider entry
+                by <code>Key</code>. Each field has an unset state — NaN,{" "}
+                <code>InheritBool.Inherit</code>,{" "}
+                <code>SpriteColorSource.Original</code> — that falls back to the
+                provider entry.
               </li>
             </ul>
 
             <p className="text-white/70">
-              <code>InlineObjectPolicy</code> decides how inline objects behave
-              with respect to interaction and wrapping.
+              <code>InlineObjectPolicy</code> on{" "}
+              <code>InteractiveModifier</code> (§10) decides whether the U+FFFC
+              clusters of inline media take part in an interactive range&rsquo;s
+              hit geometry: <code>Include</code> (default), <code>Exclude</code>
+              , <code>Only</code>.
             </p>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 11. Selection                                                       */}
+        {/* 12. Selection                                                       */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <TextCursor className="w-6 h-6 text-[var(--color-accent)]" />
-            11. Selection
+            12. Selection
           </h2>
 
           <p className="text-white/70 mb-6">
             <code>UniTextSelectable</code> adds read-only selection to Canvas or
-            world text.
+            world text.{" "}
+            <strong>
+              GameObject → UI (Canvas) → UniText → Selectable Text
+            </strong>{" "}
+            instantiates the prefab assigned in <code>UniTextSettings</code>,
+            already wired with handles and a context menu;{" "}
+            <strong>Add Component → UniText → Selectable</strong> adds the
+            component to an existing text object. The text component must be
+            there first — <code>RequireComponent</code> validates{" "}
+            <code>UniTextBase</code> but cannot auto-add an abstract type. One
+            per GameObject.
           </p>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">11.1 What the user gets</h3>
+              <h3 className="font-semibold mb-4">12.1 What the user gets</h3>
               <p className="text-white/70">
                 Click places a caret; double-click selects a word (and a drag
                 continuing from it extends by whole words); triple-click selects
                 a paragraph; drag selects; Shift extends; right-click or
-                long-press selects the word and opens the context menu; Copy and
-                Select-All work from the keyboard while focused. One selection
-                per document, with EventSystem-driven defocus.
+                long-press opens the context menu, promoting a collapsed caret
+                to the word under the pointer and leaving an existing selection
+                intact; Copy and Select-All work from the keyboard while
+                focused. One selection per document, with EventSystem-driven
+                defocus.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">11.2 The selection model</h3>
+              <h3 className="font-semibold mb-4">12.2 The selection model</h3>
 
               <p className="text-white/70 mb-4">
                 <code>TextSelection</code> is anchor / focus / affinity over
@@ -2576,11 +3985,13 @@ text.RemoveRule(myRule);`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">11.3 Code</h3>
+              <h3 className="font-semibold mb-4">12.3 Code</h3>
 
               <CodeBlock
                 code={`selectable.SetCaret(index);
 selectable.SetSelection(anchor, focus);
+selectable.ExtendSelection(focus);
+selectable.DragSelectionHandle(draggingAnchor, index);
 selectable.SelectWord(index);
 selectable.SelectLine(index);
 selectable.SelectParagraph(index);
@@ -2591,14 +4002,28 @@ var s = selectable.GetSelectedText();`}
 
               <p className="text-white/70 mt-4 mb-4">
                 Mutators return <code>bool</code> — <code>false</code> means the
-                request was rejected (out of range, or vetoed).
+                selection did not change: the request resolved to the state
+                already held, or a <code>SelectionChanging</code> subscriber
+                vetoed it. Out-of-range indices are clamped to{" "}
+                <code>[0, codepointCount]</code>, never rejected.{" "}
+                <code>DragSelectionHandle</code> never collapses the selection —
+                an endpoint dragged onto the fixed one is clamped a grapheme
+                cluster away, and dragging past it swaps the handles&rsquo;
+                roles.
               </p>
 
               <p className="text-white/60 text-sm mb-3">Events:</p>
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
-                  <code>SelectionChanging</code> — vetoable. Inspect{" "}
-                  <code>Proposed</code>, set <code>Cancel</code> to block.
+                  <code>SelectionChanging</code> — vetoable and ordered:{" "}
+                  <code>
+                    selectable.SelectionChanging.Subscribe(handler, order)
+                  </code>
+                  , lower orders first. Inspect <code>Proposed</code>, set{" "}
+                  <code>Cancel</code> to block, or assign <code>Proposed</code>{" "}
+                  to clamp the change into a permitted range. Selection moves
+                  caused by a text mutation (insert, delete, IME commit, undo)
+                  bypass it.
                 </li>
                 <li>
                   <code>SelectionChanged</code> — carries previous and current
@@ -2611,23 +4036,45 @@ var s = selectable.GetSelectedText();`}
 
               <p className="text-white/70">
                 <code>SelectionHitTest</code> exposes the line/codepoint
-                navigation helpers the caret path uses.
+                navigation helpers the caret path uses.{" "}
+                <code>SelectionHighlight</code> styles the live highlight — the
+                same <code>HighlightPresentation</code> authored highlights use
+                (§7); <code>RefreshHighlight()</code> re-bakes its rects after
+                an out-of-band reposition.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                11.4 Ranges that survive edits
+                12.4 Ranges that survive edits
               </h3>
-              <p className="text-white/70">
+
+              <p className="text-white/70 mb-4">
                 <code>MutableRangeSource</code> maintains ranges at runtime and
                 patches their indices through every edit, so a highlight stays
-                on the word it marked even as the user types before it.
+                on the word it marked even as the user types before it. Under
+                the default <code>RangeTracking.Content</code>, a range whose
+                span the edit removed entirely is dropped.
+              </p>
+
+              <CodeBlock
+                code={`using var update = source.BeginUpdate(source.Snapshot);
+var id = update.Add(new TextRange(start, length));
+update.Commit();
+
+source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in one notification`}
+              />
+
+              <p className="text-white/70 mt-4">
+                Every update targets one <code>TextRevision</code>:{" "}
+                <code>BeginUpdate</code> and <code>Commit</code> throw when the
+                text moved on, or when the source is not bound to a component
+                with a completed parse.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">11.5 Context menu</h3>
+              <h3 className="font-semibold mb-4">12.5 Context menu</h3>
 
               <p className="text-white/70 mb-4">
                 The menu is <strong>your scene UI</strong>.{" "}
@@ -2642,17 +4089,26 @@ var s = selectable.GetSelectedText();`}
                 <code>CutContextMenuItem</code>,{" "}
                 <code>PasteContextMenuItem</code>,{" "}
                 <code>SelectAllContextMenuItem</code>, plus{" "}
-                <code>ActionContextMenuItem</code> (runtime callback) and{" "}
+                <code>ActionContextMenuItem</code> (a Button raising{" "}
+                <code>Invoked</code>) and <code>ToggleContextMenuItem</code> (a
+                Toggle raising <code>ValueChanged</code>); both hide on a bare
+                caret when their Only With Selection flag is set.{" "}
                 <code>CommandContextMenuItem</code> /{" "}
-                <code>ButtonContextMenuItem</code> as bases.{" "}
+                <code>ButtonContextMenuItem</code> are the bases.{" "}
                 <code>ContextMenuCapabilities</code> reports which standard
-                actions apply right now.
+                actions apply right now — <code>CanCut</code>,{" "}
+                <code>CanCopy</code>, <code>CanPaste</code>,{" "}
+                <code>CanSelectAll</code>, <code>HasSelection</code>.
               </p>
 
               <p className="text-white/70 mb-4">
-                <code>PrefabTextContextMenu</code> presents the shipped Unity-UI
-                menu from a prefab. Implement <code>ITextContextMenu</code>{" "}
-                directly for a native or bespoke menu.
+                <code>PrefabTextContextMenu</code> presents a Unity-UI menu from
+                a prefab shared through the touch overlay; with the slot empty
+                it presents nothing.{" "}
+                <code>Defaults/Editing/ContextMenu.prefab</code> is the shipped
+                menu, assigned in the shipped Selectable Text prefab. Implement{" "}
+                <code>ITextContextMenu</code> directly for a native or bespoke
+                menu.
               </p>
 
               <Notice type="info">
@@ -2663,7 +4119,15 @@ var s = selectable.GetSelectedText();`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">11.6 Touch affordances</h3>
+              <h3 className="font-semibold mb-4">12.6 Touch affordances</h3>
+
+              <p className="text-white/70 mb-4">
+                The entity slots live on <code>UniTextSelectable</code>, but a
+                sibling <code>UniTextEditable</code> (§13) shows and drives them
+                — read-only selection alone presents no handles and no
+                magnifier. The context menu (§12.5) is the one touch affordance{" "}
+                <code>UniTextSelectable</code> presents by itself.
+              </p>
 
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
@@ -2681,23 +4145,42 @@ var s = selectable.GetSelectedText();`}
 
               <p className="text-white/70">
                 <code>PrefabSelectionHandles</code> and{" "}
-                <code>PrefabMagnifier</code> present the shipped Unity-UI
-                versions; <code>SelectableEntity</code> is the base for your
-                own. Each capability is independent — an entity may implement
-                either or both (<code>ITouchHandles</code>).
+                <code>PrefabMagnifier</code> present Unity-UI entities from a
+                prefab shared through the touch overlay; an entity whose prefab
+                slot is empty presents nothing.{" "}
+                <code>Defaults/Editing/SelectionHandles.prefab</code> is the
+                shipped handles prefab, assigned in the shipped Selectable Text
+                prefab. No loupe prefab ships — build one from{" "}
+                <strong>Add Component → UniText → Magnifier</strong> (
+                <code>UniTextMagnifier</code>) and assign it; it captures
+                through a canvas camera, so it stays hidden on a Screen Space -
+                Overlay canvas, which has none. <code>SelectableEntity</code> is
+                the base for your own. Each capability is independent — an
+                entity may implement either or both (<code>ITouchHandles</code>
+                ).
               </p>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 12. Editing                                                         */}
+        {/* 13. Editing                                                         */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Pencil className="w-6 h-6 text-[var(--color-accent)]" />
-            12. Editing
+            13. Editing
           </h2>
+
+          <p className="text-white/70 mb-4">
+            <strong>GameObject → UI (Canvas) → UniText → Editable Text</strong>{" "}
+            and{" "}
+            <strong>GameObject → UI (Canvas) → UniText → Input Field</strong>{" "}
+            add an editable field to a Canvas. Both instantiate the prefab
+            assigned in <code>UniTextSettings</code>, so a project&rsquo;s own
+            prefab is what appears; with an empty slot the menu item creates
+            nothing and warns.
+          </p>
 
           <p className="text-white/70 mb-4">
             <code>UniTextEditable</code> is a sibling of{" "}
@@ -2710,26 +4193,46 @@ var s = selectable.GetSelectedText();`}
           <p className="text-white/70 mb-4">
             It tracks its size through the text component&rsquo;s{" "}
             <code>ILayoutElement</code>: add a <code>ContentSizeFitter</code>,
-            or place it under a layout group. Field chrome — background,
-            viewport, scrolling, placeholder, labels — is assembled from
-            ordinary Unity layout components plus decorators, not a fixed
+            or place it under a layout group. Put it directly under a{" "}
+            <code>RectMask2D</code> to make that parent the clipping viewport
+            and enable internal scrolling when content overflows. The rest of
+            the field chrome — background, placeholder, labels — is assembled
+            from ordinary Unity layout components plus decorators, not a fixed
             component.
           </p>
 
           <Notice type="new" className="mb-6">
             All OS input arrives independently of Unity&rsquo;s input system, so
             editing works whatever the project&rsquo;s Active Input Handling is
-            set to (§15).
+            set to (§16).
           </Notice>
+
+          <CodeBlock
+            code={`editable.Text = "value";              // serialized source; preserved byte-for-byte until an edit
+var visible = editable.VisibleText;   // the same document without markup
+editable.InsertText("abc");
+editable.DeletePrevious();
+editable.DeleteWordNext();
+editable.Copy(); editable.Cut(); editable.Paste();
+editable.PastePlain();                // paste without formatting
+editable.Undo(); editable.Redo();
+editable.SelectAll();
+editable.Activate(); editable.Deactivate();`}
+          />
+
+          <p className="text-white/70 mt-4 mb-6">
+            <code>ReadOnly</code> keeps selection and copy while refusing every
+            mutation.
+          </p>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">12.1 Events</h3>
+              <h3 className="font-semibold mb-4">13.1 Events</h3>
 
               <CodeBlock
                 code={`editable.TextChanged      += () => { };
 editable.ValueChanged     += value => { };
-editable.DocumentChanged  += doc => { };
+editable.DocumentChanged  += reason => { };   // TextChangeReason: input.type, input.paste, program.set, input.restore
 editable.Submitted        += value => { };
 editable.Cancelled        += () => { };
 editable.Focused          += () => { };
@@ -2737,7 +4240,9 @@ editable.Defocused        += () => { };
 editable.SelectionChanged += (anchor, focus) => { };
 editable.EditApplied      += shape => { };
 editable.CompositionStateChanged     += composing => { };
-editable.TouchKeyboardVisibilityChanged += visible => { };`}
+editable.TouchKeyboardVisibilityChanged += visible => { };
+editable.CaretContextChanged            += context => { };
+editable.ValidationChanged              += state => { };`}
               />
 
               <p className="text-white/70 mt-4">
@@ -2748,7 +4253,7 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">12.2 Behaviors</h3>
+              <h3 className="font-semibold mb-4">13.2 Behaviors</h3>
 
               <p className="text-white/70 mb-4">
                 Policy lives in <code>InputBehavior</code> objects, not in the
@@ -2757,6 +4262,12 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                 . The base carries no policy; every specific lives in a
                 subclass. This mirrors <code>BaseModifier</code>, adapted to the
                 editing pipeline.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                An editor holds two slots: <code>Behaviors</code>, the local
+                list in hook order, and <code>BehaviorPresets</code>, shared
+                preset assets applied after it.
               </p>
 
               <div className="overflow-x-auto mb-4">
@@ -2774,14 +4285,23 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                       <td className="py-2 pr-4">
                         <code>PasswordBehavior</code>
                       </td>
-                      <td className="py-2">masks the value</td>
+                      <td className="py-2">
+                        single-line masked field: every codepoint renders as{" "}
+                        <code>MaskChar</code>, line breaks are rejected,
+                        copy/cut are blocked unless <code>AllowCopy</code>,
+                        native input is secure; <code>Revealed</code> drives a
+                        show-password toggle
+                      </td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>SingleLineBehavior</code>
                       </td>
                       <td className="py-2">
-                        Return submits instead of inserting
+                        web <code>&lt;input&gt;</code> semantics: Enter submits,
+                        newlines are stripped from typing, paste and IME commit
+                        (multi-line pastes are joined), and submit releases
+                        focus unless <code>KeepFocusOnSubmit</code>
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -2835,7 +4355,12 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                         <code>TextFormattingBehavior</code>
                       </td>
                       <td className="py-2">
-                        bold/italic/… commands over the selection
+                        style commands over the selection or as a typing style —
+                        bold (B), italic (I), underline (U), clear formatting (
+                        <code>{"`"}</code>) — and the field&rsquo;s markup
+                        policy: <code>MarkupVisibility</code>,{" "}
+                        <code>MarkupChrome</code>, <code>RichPaste</code>,{" "}
+                        <code>PlainTextPaste</code>, <code>TypingMarkup</code>
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -2884,25 +4409,43 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                         <code>AutoValidateBehavior</code>
                       </td>
                       <td className="py-2">
-                        re-runs validators on a schedule (
-                        <code>AutoValidateMode</code>)
+                        re-runs validators on a chosen trigger (
+                        <code>AutoValidateMode</code>:{" "}
+                        <code>OnValueChanged</code>, <code>OnUnfocus</code>,{" "}
+                        <code>OnSubmit</code>, <code>Always</code>) and
+                        publishes the result to <code>Validation</code>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
                 <code>InputBehaviorPreset</code> is a project asset holding a
                 behavior list — one asset defines a field archetype (chat
                 composer, password field, form field) reused across scenes. Each
                 editor instantiates a runtime copy, so per-instance state never
                 leaks back into the asset.
               </p>
+
+              <p className="text-white/70">
+                Markup visibility is the field-level policy for authored tags.{" "}
+                <code>UniTextEditable.MarkupVisibility</code> is{" "}
+                <code>Hidden</code> (default — tags never show and the caret
+                steps over them as atomic units), <code>RevealActiveRange</code>{" "}
+                (the tags of the range the caret is inside reveal as editable
+                source), or <code>Raw</code> (every tag shows as literal source
+                text and the caret moves through it);{" "}
+                <code>TextFormattingBehavior</code> authors it.{" "}
+                <code>ChromeRule</code> entries in{" "}
+                <code>UniTextEditable.MarkupChrome</code> style the visible tag
+                characters — different modifier kinds compose, same-kind rules
+                resolve by selector specificity, ties to the first listed.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">12.3 Filters vs validators</h3>
+              <h3 className="font-semibold mb-4">13.3 Filters vs validators</h3>
 
               <p className="text-white/70 mb-4">Two different jobs:</p>
 
@@ -2912,16 +4455,24 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                   <em>as they are typed</em>. Built-ins:{" "}
                   <code>AlphanumericFilter</code>, <code>IntegerFilter</code>,{" "}
                   <code>DecimalFilter</code>, <code>EmailFilter</code>,{" "}
-                  <code>NameFilter</code>. A filter judges the post-state of an{" "}
-                  <code>EditProposal</code>: replacing a selection is legal
-                  whenever the result is legal.
+                  <code>NameFilter</code>. Override{" "}
+                  <code>Allows(in EditProposal)</code> and judge the post-state:
+                  replacing a selection is legal whenever the result is legal.
+                  Pure deletions never reach it — a character filter cannot
+                  block deleting. <code>PreferredKeyboardType</code> supplies a
+                  mobile keyboard when no <code>NativeKeyboardBehavior</code>{" "}
+                  overrides it.
                 </li>
                 <li>
                   <code>InputValidatorBase</code> lets input through and judges
-                  the <em>whole value</em>, returning a{" "}
-                  <code>ValidationState</code> (status + message) that{" "}
-                  <code>AutoValidateBehavior</code> publishes for decorators to
-                  show.
+                  the <em>whole value</em>. Override{" "}
+                  <code>Validate(ITextDocument)</code> and return a{" "}
+                  <code>ValidationState</code>; none ship — validators are
+                  per-project. <code>Status</code> is an open token, empty when
+                  valid (<code>ValidationStatus.Invalid</code> /{" "}
+                  <code>Pending</code> are the common ones), and{" "}
+                  <code>Message</code> is what a{" "}
+                  <code>SupportingTextDecorator</code> shows.
                 </li>
               </ul>
 
@@ -2940,7 +4491,7 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">12.4 Decorators</h3>
+              <h3 className="font-semibold mb-4">13.4 Decorators</h3>
 
               <p className="text-white/70 mb-4">
                 <code>FieldDecorator</code> is a state-driven visual that
@@ -2996,7 +4547,7 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                 The counter counts the document <strong>source</strong> — the
                 same space <code>LengthLimitBehavior</code> enforces in — so
                 count and cap always agree. In a field with hidden markup that
-                includes markup characters.
+                count includes the markup characters, not just the visible text.
               </p>
 
               <p className="text-white/70">
@@ -3007,18 +4558,33 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">12.5 Caret</h3>
-                <p className="text-white/70">
+                <h3 className="font-semibold mb-4">13.5 Caret</h3>
+                <p className="text-white/70 mb-3">
                   <code>InputCaretRenderer</code> draws the caret as a filled
                   rectangle. It is the extension point: subclass it, override{" "}
                   <code>OnPopulateMesh</code> reading <code>CaretRect</code> and{" "}
                   <code>BlinkVisible</code> for a block cursor, an underline or
-                  a gradient, then assign it as the caret renderer.
+                  a gradient, then assign it to{" "}
+                  <code>UniTextEditable.CaretRenderer</code>; with none
+                  assigned, one is created on first activation.
+                </p>
+                <p className="text-white/70">
+                  The caret toggles every{" "}
+                  <code>UniTextSettings.CaretBlinkInterval</code> seconds and
+                  stops blinking, visible, after{" "}
+                  <code>UniTextSettings.CaretBlinkTimeout</code> seconds of
+                  inactivity. The static{" "}
+                  <code>InputCaretRenderer.PrefersNonBlinkingCaret</code>{" "}
+                  suppresses the blink entirely; the integration layer sets it
+                  from the platform preference — iOS 17+ &ldquo;Prefer
+                  Non-Blinking Cursor&rdquo;, the macOS Reduce Motion cursor
+                  setting — alongside{" "}
+                  <code>Accessibility.PrefersReducedMotion</code>.
                 </p>
               </div>
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">12.6 Caret context</h3>
+                <h3 className="font-semibold mb-4">13.6 Caret context</h3>
                 <p className="text-white/70 mb-3">
                   <code>CaretContext</code> reports which modifiers cover the
                   caret — the full set plus what entered and left since the
@@ -3038,16 +4604,20 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">12.7 Soft keyboard</h3>
+              <h3 className="font-semibold mb-4">13.7 Soft keyboard</h3>
 
               <p className="text-white/70 mb-4">
                 <code>NativeKeyboardConfig</code> carries the portable traits:{" "}
                 <code>KeyboardType</code>, <code>ReturnKeyType</code>,{" "}
                 <code>AutoCapitalization</code>, <code>AutoCorrection</code>,{" "}
-                <code>SpellChecking</code>, <code>SmartFeatureMode</code>,{" "}
-                <code>KeyboardAppearance</code> (iOS),{" "}
-                <code>AndroidImeFlags</code> (Android),{" "}
-                <code>AutofillHint</code>.
+                <code>SpellChecking</code>, <code>AutofillHint</code>. iOS-only:{" "}
+                <code>SmartQuotes</code>, <code>SmartDashes</code>,{" "}
+                <code>SmartInsertDelete</code> (each a{" "}
+                <code>SmartFeatureMode</code>), <code>KeyboardAppearance</code>,{" "}
+                <code>EnablesReturnKeyAutomatically</code>,{" "}
+                <code>ShowDoneToolbar</code>, <code>PasswordRules</code>.
+                Android-only: <code>ImeFlags</code> (
+                <code>AndroidImeFlags</code>).
               </p>
 
               <p className="text-white/70 mb-4">
@@ -3076,12 +4646,12 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 13. Clipboard                                                       */}
+        {/* 14. Clipboard                                                       */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Clipboard className="w-6 h-6 text-[var(--color-accent)]" />
-            13. Clipboard
+            14. Clipboard
           </h2>
 
           <p className="text-white/70 mb-6">
@@ -3090,26 +4660,34 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">13.1 Adapters</h3>
+              <h3 className="font-semibold mb-4">14.1 Adapters</h3>
 
               <p className="text-white/70 mb-4">
-                An <code>IClipboardAdapter</code> is one format stage. On copy,
-                every registered adapter contributes its format; on paste, the
-                highest-<code>Priority</code> adapter whose format is present
-                wins.
+                An <code>IClipboardAdapter</code> is one format stage. The
+                built-in set is fixed per field: on copy every adapter
+                contributes its format as one atomic multi-format write; on
+                paste the highest-<code>Priority</code> adapter whose format is
+                present wins.
               </p>
 
               <ClipboardLadder />
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
                 Copying a styled selection into an email keeps the formatting;
                 copying it back into UniText restores the exact modifiers.
               </p>
+
+              <Notice type="info">
+                A selection whose markup is visible to the user —{" "}
+                <code>Raw</code>, or a range revealed under{" "}
+                <code>RevealActiveRange</code> — copies as plain text only, with
+                no semantic channels: what is on screen is what pastes.
+              </Notice>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                13.2 Teaching a modifier to travel
+                14.2 Teaching a modifier to travel
               </h3>
 
               <p className="text-white/70 mb-4">
@@ -3127,7 +4705,16 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                 <code>ModifierMarkdownSchema</code> (which delimiters —{" "}
                 <code>MarkdownSyntaxKind.Wrap</code> for <code>**bold**</code>,{" "}
                 <code>Link</code> for <code>[text](url)</code> where the
-                parameter is the URL). Built-ins are pre-registered.
+                parameter is the URL). A schema must declare{" "}
+                <code>CanonicalTagName</code> — the UniText source tag the paste
+                gate matches against the field&rsquo;s styles — or set{" "}
+                <code>MatchesSourceTagName</code> when the modifier&rsquo;s own
+                tag names are its element names (<code>sup</code> /{" "}
+                <code>sub</code>); a schema with neither is rejected with a
+                warning. Register once per type, on the main thread; a repeat
+                registration of the same type is a no-op. An unregistered
+                modifier&rsquo;s ranges copy as plain text. Built-ins are
+                pre-registered.
               </p>
 
               <Notice type="info">
@@ -3136,19 +4723,37 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
               </Notice>
             </div>
 
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">14.3 Plain text</h3>
+
+              <p className="text-white/70 mb-4">
+                Plain text is the one channel whose intent is unknown: a pasted{" "}
+                <code>&lt;b&gt;</code> might be markup or literal.{" "}
+                <code>UniTextEditable.PlainTextPaste</code> decides —{" "}
+                <code>Auto</code> (default) follows{" "}
+                <code>MarkupVisibility</code>, parsing under <code>Raw</code>{" "}
+                and inserting literally otherwise, <code>Literal</code> always
+                inserts verbatim, <code>Parse</code> always reparses with the
+                field&rsquo;s own rules.{" "}
+                <code>UniTextEditable.TypingMarkup</code> does the same for
+                hand-typed text — <code>Parse</code> (default) or{" "}
+                <code>Literal</code>; formatting commands, programmatic styling,
+                inline objects and paste are unaffected by it.
+              </p>
+
+              <p className="text-white/70">
+                <code>UniTextEditable.RichPaste</code> (default{" "}
+                <code>true</code>) gates the structured channels entirely: with
+                it off, a paste always inserts the clipboard&rsquo;s plain text
+                and the HTML / Markdown / UniText formats are ignored.{" "}
+                <code>TextFormattingBehavior</code> carries all three as
+                authored values and applies them to the editor.
+              </p>
+            </div>
+
             <div className="grid gap-6 md:grid-cols-2">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">13.3 Plain text</h3>
-                <p className="text-white/70">
-                  Plain text is the one channel whose intent is unknown: a
-                  pasted <code>&lt;b&gt;</code> might be markup or literal.{" "}
-                  <code>PlainTextPastePolicy</code> decides.{" "}
-                  <code>TypingMarkupPolicy</code> does the same for typed text.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">13.4 Media</h3>
+                <h3 className="font-semibold mb-4">14.4 Media</h3>
                 <p className="text-white/70">
                   <code>MediaContent</code> is offered to{" "}
                   <code>MediaReceived</code> before the text pipeline runs —
@@ -3163,52 +4768,88 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                   turns pasted images into attachment cards.
                 </p>
               </div>
+
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-semibold mb-4">14.5 Paste permission</h3>
+                <p className="text-white/70">
+                  <code>UniTextPasteControl</code> is the cross-platform Paste
+                  widget. On iOS 16+ it overlays a native{" "}
+                  <code>UIPasteControl</code> on its own{" "}
+                  <code>RectTransform</code>, so a tap pastes without the system
+                  paste-permission prompt; elsewhere it drives{" "}
+                  <code>UniTextEditable.Paste</code> through an optional{" "}
+                  <code>Button</code> on itself or a child. Left unassigned,{" "}
+                  <code>Target</code> resolves from the parent hierarchy and{" "}
+                  <code>FallbackButton</code> from itself or a child.{" "}
+                  <code>DisplayMode</code> (<code>IconAndLabel</code> /{" "}
+                  <code>IconOnly</code> / <code>LabelOnly</code>) and{" "}
+                  <code>CornerStyle</code> (<code>Capsule</code> /{" "}
+                  <code>Dynamic</code> / <code>Fixed</code> / <code>Small</code>
+                  ) style the native control; <code>Pasted</code> fires on
+                  either path. A programmatic <code>TriggerPaste</code> on iOS
+                  16+ outside a user-action context surfaces the system prompt.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 14. Language and Internationalization                               */}
+        {/* 15. Language and Internationalization                               */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Languages className="w-6 h-6 text-[var(--color-accent)]" />
-            14. Language and Internationalization
+            15. Language and Internationalization
           </h2>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                14.1 Three places to set the language
+                15.1 Three places to set the language
               </h3>
 
               <ol className="space-y-2 text-white/70 list-decimal list-inside mb-4">
                 <li>
-                  <strong>Component</strong> — the default language for all text
-                  in it.
+                  <strong>Component</strong> — <code>Language</code>, the
+                  default BCP 47 tag for all text in it (a whole-text{" "}
+                  <code>LanguageModifier</code>).
                 </li>
                 <li>
                   <code>&lt;lang=…&gt;</code> — per range, BCP 47:{" "}
                   <code>&lt;lang=zh-Hans&gt;汉字&lt;/lang&gt;</code>.
                 </li>
                 <li>
-                  <strong>Font family</strong> — a family may declare the
-                  languages it serves (<code>LanguageMatching</code>).
+                  <strong>Font family</strong> — a family may declare one BCP 47
+                  tag it prefers (<code>FontFamily.preferredLanguage</code>); a
+                  run carrying a matching tag prefers that family during
+                  codepoint-to-font resolution. Matching is prefix-wise, so{" "}
+                  <code>zh</code> matches <code>zh-Hans</code> (
+                  <code>LanguageMatching</code>).
                 </li>
               </ol>
 
-              <p className="text-white/70">
-                Language matters beyond fallback: it selects the correct forms
-                for Han unification (Chinese vs Japanese vs Korean shapes of the
-                same codepoint), locale-aware casing (Turkish dotted i), and
-                script-specific line breaking.
+              <p className="text-white/70 mb-4">
+                Language matters beyond fallback: it drives the OpenType{" "}
+                <code>locl</code> feature, which selects the correct forms for
+                Han unification (Chinese vs Japanese vs Korean shapes of the
+                same codepoint).
               </p>
+
+              <Notice type="info">
+                Case conversion and line breaking are language-independent:{" "}
+                <code>UppercaseModifier</code> / <code>LowercaseModifier</code>{" "}
+                use the bundled simple UCD mappings, which ignore
+                locale-conditional rules such as Turkish dotless I, and break
+                opportunities come from each codepoint&rsquo;s script
+                (UAX&nbsp;#14).
+              </Notice>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">
-                  14.2 Picking fonts by language
+                  15.2 Picking fonts by language
                 </h3>
                 <p className="text-white/70">
                   Put language-specific families in the stack and name them;{" "}
@@ -3219,9 +4860,9 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
               </div>
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">14.3 Localization</h3>
+                <h3 className="font-semibold mb-4">15.3 Localization</h3>
                 <p className="text-white/70">
-                  <code>IUniTextResolver</code> (§9.6) substitutes text at
+                  <code>IUniTextResolver</code> (§10.6) substitutes text at
                   render time. Combined with <code>&lt;lang&gt;</code> and a
                   per-language font stack, one component serves every locale
                   without scene changes.
@@ -3232,17 +4873,17 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 15. RTL, BiDi and Platform Input                                    */}
+        {/* 16. RTL, BiDi and Platform Input                                    */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Globe className="w-6 h-6 text-[var(--color-accent)]" />
-            15. RTL, BiDi and Platform Input
+            16. RTL, BiDi and Platform Input
           </h2>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">15.1 Bidirectional text</h3>
+              <h3 className="font-semibold mb-4">16.1 Bidirectional text</h3>
 
               <p className="text-white/70 mb-4">
                 The full Unicode Bidirectional Algorithm runs on every
@@ -3252,10 +4893,14 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
               </p>
 
               <p className="text-white/70 mb-4">
-                <code>TextDirection</code> sets the base direction.{" "}
-                <code>DirectionModifier</code> overrides it per range. Caret
-                movement, selection and hit-testing are all BiDi-aware — this is
-                why <code>CaretAffinity</code> exists (§11.2).
+                The base direction is <code>TextDirection.Auto</code> unless a{" "}
+                <code>DirectionModifier</code> sets it; <code>Auto</code>{" "}
+                resolves each paragraph from its own first strong character
+                (UAX&nbsp;#9). <code>DirectionModifier</code> applies whole-text
+                — its resolved value becomes the base direction of every
+                paragraph, not of one range. Caret movement, selection and
+                hit-testing are all BiDi-aware — this is why{" "}
+                <code>CaretAffinity</code> exists (§12.2).
               </p>
 
               <p className="text-white/70">
@@ -3266,7 +4911,7 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">15.2 Native input</h3>
+              <h3 className="font-semibold mb-4">16.2 Native input</h3>
 
               <p className="text-white/70 mb-4">
                 <code>UniTextNativeInput</code> delivers OS key, text,
@@ -3294,7 +4939,7 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">15.3 IME</h3>
+              <h3 className="font-semibold mb-4">16.3 IME</h3>
               <p className="text-white/70">
                 Composition is first-class: <code>CompositionStateChanged</code>{" "}
                 reports when a composition is in flight, composition clauses
@@ -3307,12 +4952,12 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 16. Emoji                                                           */}
+        {/* 17. Emoji                                                           */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Smile className="w-6 h-6 text-[var(--color-accent)]" />
-            16. Emoji
+            17. Emoji
           </h2>
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -3324,47 +4969,79 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
 
             <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
               <li>
-                <code>EmojiFont</code> — a bundled emoji font asset.
+                <code>EmojiFont</code> — the system emoji runtime, resolved from
+                the OS and served without a stack entry (<code>Instance</code>,{" "}
+                <code>IsAvailable</code>, <code>Disabled</code>); reserved font
+                id −1.
               </li>
               <li>
-                <code>SystemEmojiFont</code> — the OS emoji font.
+                <code>SystemEmojiFont</code> — locates the OS emoji font file
+                per platform (Segoe UI Emoji, Apple Color Emoji, NotoColorEmoji,
+                …).
               </li>
               <li>
-                <code>ColorFontCore</code> — the shared colour-glyph decoder.
+                <code>UniTextColorFont</code> — a colour-font asset (CBDT/sbix
+                bitmap or COLRv0/COLRv1 vector) added to a stack like any other
+                font.
+              </li>
+              <li>
+                <code>ColorFontCore</code> — the shared colour-font runtime
+                behind <code>EmojiFont</code> and <code>UniTextColorFont</code>.
               </li>
             </ul>
 
-            <p className="text-white/70">
+            <p className="text-white/70 mb-4">
               Emoji participate in line breaking, selection and editing as
               single clusters: one arrow-key press crosses a whole family emoji,
               and one backspace deletes it.
+            </p>
+
+            <p className="text-white/70">
+              <strong>Project Settings → UniText → Disable Emoji</strong> turns
+              colour emoji off globally (
+              <code>UniTextSettings.EmojiDisabled</code>, mirrored to{" "}
+              <code>EmojiFont.Disabled</code>). A <code>UniTextColorFont</code>{" "}
+              in the stack ships a colour font of your own; the system emoji
+              font stays the privileged provider for emoji-presentation
+              codepoints.
             </p>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 17. Custom Materials and Shaders                                    */}
+        {/* 18. Custom Materials and Shaders                                    */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-[var(--color-accent)]" />
-            17. Custom Materials and Shaders
+            18. Custom Materials and Shaders
           </h2>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                17.1 Using a ready material
+                18.1 Using a ready material
               </h3>
-              <p className="text-white/70">
+
+              <p className="text-white/70 mb-4">
                 Assign a material to <code>MaterialModifier</code> and tag a
                 range with <code>&lt;mat&gt;</code>. An optional parameter tints
                 it: <code>&lt;mat=#FF8800&gt;</code>.
               </p>
+
+              <p className="text-white/70">
+                <code>RenderOrder</code> decides how the sub-mesh composes with
+                the base text pass: <code>Replace</code> (the default)
+                suppresses the base face on the range, so only the custom
+                material shows; <code>Keep</code> renders the custom material as
+                its own layer, ordered by the modifier&rsquo;s position in{" "}
+                <code>Styles</code>. Paint layers (stroke, shadow, glow) stay
+                separate quads either way.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">17.2 Authoring a shader</h3>
+              <h3 className="font-semibold mb-4">18.2 Authoring a shader</h3>
 
               <p className="text-white/70 mb-4">
                 UniText ships shader includes so one source compiles for Canvas,
@@ -3373,22 +5050,65 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
                 SDF sampling.
               </p>
 
+              <p className="text-white/70 mb-4">
+                <strong>Assets → Create → UniText → Custom Effect</strong>{" "}
+                writes three files: the effect include plus its Canvas and World
+                shells, with the package prelude includes already resolved. The
+                visual logic lives in the include — implement{" "}
+                <code>half4 UniTextEffect(UniTextFrag i)</code> and return a
+                premultiplied colour; the shells are touched only to declare
+                Properties. <code>UniTextFrag</code> carries{" "}
+                <code>sdfAlpha</code>, <code>signedDist</code>,{" "}
+                <code>glyphUV</code>, <code>atlasUV</code>,{" "}
+                <code>atlasColor</code>, <code>color</code>,{" "}
+                <code>glyphMeta</code>, <code>lineFlow</code>,{" "}
+                <code>tileId</code>, <code>tileHash</code>, <code>userA</code> /{" "}
+                <code>userB</code> and <code>positionWS</code>;{" "}
+                <code>UniText_EffectLib.hlsl</code> supplies the building
+                blocks. A material bound through <code>MaterialModifier</code>{" "}
+                must declare <code>_MainTex</code> as a <code>2DArray</code> —
+                the atlas is bound automatically.
+              </p>
+
               <Notice type="warning" className="mb-4">
-                Vertex channels are a contract: decorations own TEXCOORD2 and
-                TEXCOORD3 (<code>CoverageMode</code>, the paint contract written
-                by <code>CoverageQuadOps</code>
-                ). Custom effects use the free prelude meta channel.
+                Vertex channels are a contract, and TEXCOORD2 / TEXCOORD3 carry
+                two disjoint streams that never share a quad. On base-mesh quads
+                they hold the coverage and paint contract (
+                <code>CoverageMode</code>, written by{" "}
+                <code>CoverageQuadOps</code>, read with the{" "}
+                <code>UniTextCoverage</code> helpers). On a{" "}
+                <code>MaterialModifier</code> sub-mesh they are user channels A
+                and B — filled from <code>ConstantUv2</code> /{" "}
+                <code>ConstantUv3</code>, the <code>glyphDataWriter</code>{" "}
+                delegate, or an <code>OnWriteGlyphUV</code> override — and reach
+                the fragment as <code>UniTextFrag.userA</code> /{" "}
+                <code>userB</code>.
               </Notice>
 
+              <p className="text-white/70 mb-4">
+                The prelude&rsquo;s own interpolators are fully claimed (
+                <code>meta.w</code> carries the packed tile hash), so per-glyph
+                custom data rides the <code>MaterialModifier</code> user
+                channels or is produced in the <code>UNITEXT_EFFECT_VERT</code>{" "}
+                vertex hook. The paint interpolator&rsquo;s fourth channel packs
+                the gradient&rsquo;s <code>PaintSpread</code> alongside the
+                paint kind, so a hand-written shader reading it directly must
+                unpack both.
+              </p>
+
               <p className="text-white/70">
-                <code>SubMeshModifier</code> gives a range its own sub-mesh with
-                its own material — the escape hatch when a range needs a
-                genuinely different shader.
+                <code>MaterialModifier</code> derives from{" "}
+                <code>SubMeshModifier</code>, the abstract base that gives a
+                range its own sub-mesh, <code>CanvasRenderer</code> and
+                material. A range that needs a genuinely different shader needs
+                only <code>MaterialModifier</code>; subclass{" "}
+                <code>SubMeshModifier</code> when the sub-mesh geometry itself
+                must be built differently.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">17.3 Noise</h3>
+              <h3 className="font-semibold mb-4">18.3 Noise</h3>
               <p className="text-white/70">
                 <strong>Tools → LightSide → Noise Generator</strong> produces
                 noise textures for shader effects.
@@ -3398,17 +5118,17 @@ editable.TouchKeyboardVisibilityChanged += visible => { };`}
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 18. Text Model and Runtime API                                      */}
+        {/* 19. Text Model and Runtime API                                      */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <FileCode className="w-6 h-6 text-[var(--color-accent)]" />
-            18. Text Model and Runtime API
+            19. Text Model and Runtime API
           </h2>
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">18.1 Assigning text</h3>
+              <h3 className="font-semibold mb-4">19.1 Assigning text</h3>
 
               <CodeBlock
                 code={`text.Text = "value";                 // serialized field
@@ -3417,94 +5137,496 @@ text.SetText(charSpan);              // from a span`}
               />
 
               <p className="text-white/70 mt-4">
-                <code>TextOverrideSource</code> reports why the rendered text
-                differs from the serialized field (a runtime buffer, a resolver,
-                or both).
+                <code>Text</code> is the serialized field. <code>RawText</code>{" "}
+                is the runtime source before any resolver substitution,{" "}
+                <code>ResolvedText</code> the resolver&rsquo;s last output,{" "}
+                <code>RenderedText</code> what the pipeline actually parses —
+                the resolver&rsquo;s output when one is active, otherwise{" "}
+                <code>RawText</code> — and <code>CleanText</code> the same text
+                with markup stripped. All are zero-alloc; <code>CleanText</code>
+                &rsquo;s span is pooled, so copy it if it must outlive the next
+                parse. <code>TextOverride</code> (
+                <code>TextOverrideSource</code>) reports why the rendered text
+                differs from the serialized field — a runtime buffer, a
+                resolver, or both.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">18.2 Measuring</h3>
+              <h3 className="font-semibold mb-4">19.2 Measuring</h3>
 
               <CodeBlock
                 code={`var size = text.MeasureText(new TextMeasureOptions { maxWidth = 300f });`}
               />
 
-              <p className="text-white/70 mt-4">
+              <p className="text-white/70 mt-4 mb-4">
                 Every null field in <code>TextMeasureOptions</code> falls back
                 to the component&rsquo;s current value, so a default measure is
                 &ldquo;the current text, as configured, at its natural
                 size&rdquo;. Dimensions are outer — padding included.
               </p>
+
+              <Notice type="warning">
+                The text resolver is bypassed, and the call is main-thread only.
+                Measuring another <code>text</code> re-parses and re-shapes both
+                texts — cache the result rather than calling it per frame.
+              </Notice>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">18.3 Hit testing</h3>
+              <h3 className="font-semibold mb-4">19.3 Hit testing</h3>
+
+              <p className="text-white/70 mb-4">
+                <code>HitTestRange(localPoint, maxDistance)</code>, and its
+                overload taking a screen point and a <code>Camera</code>,
+                returns a <code>TextHitResult</code>: the glyph whose box
+                contains the point and its cluster. Use it for entity queries —
+                links, mentions, hover ranges.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>HitTestCaret(screenPoint, camera)</code> returns the
+                codepoint index a caret should take, edge-snapped (left half of
+                glyph N → N, right half → N+1); the{" "}
+                <code>out bool upstream</code> overload also reports affinity
+                (§12.2). The two are not interchangeable: caret snapping at a
+                range&rsquo;s trailing edge lands past the range.
+              </p>
+
               <p className="text-white/70">
-                <code>TextHitResult</code> maps a point to a codepoint index and
-                back. <code>TextLine</code>, <code>TextRun</code> and{" "}
-                <code>PositionedGlyph</code> expose the laid-out structure;{" "}
-                <code>TextRange</code> addresses a span.
+                <code>ResultGlyphs</code> exposes the laid-out glyphs (
+                <code>PositionedGlyph</code>), <code>Buffers.lines</code> the
+                lines (<code>TextLine</code>) and{" "}
+                <code>Buffers.orderedRuns</code> the runs in visual order (
+                <code>ShapedRun</code>); <code>TextRun</code> is the pre-shaping
+                itemization run. <code>TextRange</code> addresses a span as
+                start plus length. All of these are pooled — copy what must
+                outlive the next rebuild.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">18.4 Invalidation</h3>
-              <p className="text-white/70">
+              <h3 className="font-semibold mb-4">19.4 Invalidation</h3>
+
+              <p className="text-white/70 mb-4">
                 <code>UniTextDirty</code> names the coarsest pipeline stage a
                 change invalidates; higher stages subsume the cheaper ones.{" "}
                 <code>SetDirty</code> re-enters at the flag you pass, so pass
-                the least expensive stage that captures your change.{" "}
-                <code>UniTextCommitChanges</code> reports what one completed
-                pass actually changed.
+                the least expensive stage that captures your change; its second
+                overload also declares the observable outputs the pass will
+                change. <code>UniTextCommitChanges</code> reports what one
+                completed pass actually changed and arrives on{" "}
+                <code>Committed</code>; <code>LayoutCommitted</code> fires when
+                this component&rsquo;s mesh is applied and its layout is final
+                for the frame.
+              </p>
+
+              <p className="text-white/70">
+                A custom attribute store implements{" "}
+                <code>IAttributeData.Prepare(int)</code>, which UniText calls
+                once per parse, so the store is always indexed by the codepoints
+                of the text currently being laid out.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">18.5 Inspecting</h3>
+              <h3 className="font-semibold mb-4">19.5 Inspecting</h3>
+
+              <p className="text-white/70 mb-4">
+                The debug overlay visualizes glyph boxes, baselines, advances,
+                run bounds, line bounds, modifier ranges, BiDi direction and
+                pipeline statistics — the first tool to reach for when layout
+                does something unexpected.
+              </p>
+
               <p className="text-white/70">
-                The debug overlay visualizes glyph boxes, line boxes, run
-                bounds, BiDi levels and pipeline statistics — the first tool to
-                reach for when layout does something unexpected.
+                <strong>Tools → UniText → Inspection Mode</strong>{" "}
+                (Ctrl/Cmd+Shift+I) toggles it in the editor;{" "}
+                <code>UniTextInspector.ToggleKey</code> (F8) toggles it in play
+                mode and in development builds. <code>PinKey</code> (P) freezes
+                the current card so the cursor can move on.{" "}
+                <code>UniTextInspector.Layers</code> (
+                <code>InspectionLayers</code>) selects the drawn layers,{" "}
+                <code>ShowBiDi</code> and <code>ShowStats</code> add direction
+                arrows and the statistics card, and <code>Target</code> pins one
+                component instead of following the cursor. The card lists each
+                modifier covering the probed cluster with its parameters
+                resolved there.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                19.6 Ranges and parameter ownership
+              </h3>
+
+              <p className="text-white/70 mb-4">
+                A parse materializes a modifier&rsquo;s ranges. Code reads them
+                as <code>ModifierRange</code>, selects them with{" "}
+                <code>RangeQuery</code>, and takes a parameter (§5) over on them
+                with <code>Own</code>.
+              </p>
+
+              <CodeBlock
+                code={`var ranges = new List<ModifierRange>();
+text.GetModifier<LinkModifier>().GetRanges(ranges);   // text order`}
+              />
+
+              <div className="overflow-x-auto my-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        <code>ModifierRange</code> member
+                      </th>
+                      <th className="text-left py-2 text-white/60">Carries</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Range</code>
+                      </td>
+                      <td className="py-2">
+                        the covered codepoints, in rendered text space
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Identity</code>, <code>Segment</code>
+                      </td>
+                      <td className="py-2">
+                        the stable entity, and the concrete segment of it this
+                        range covers
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>PrimaryValue</code>
+                      </td>
+                      <td className="py-2">
+                        the semantic value the source emitted — a link&rsquo;s
+                        URL, a mention&rsquo;s id
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Label</code>
+                      </td>
+                      <td className="py-2">
+                        the <code>#label</code> anchor authored on the tag
+                        (§3.3), or null
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Channel</code>
+                      </td>
+                      <td className="py-2">
+                        the <code>RangeChannel</code> asset the range is routed
+                        to, or null
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Resolve(parameter)</code>
+                      </td>
+                      <td className="py-2">
+                        the range&rsquo;s resolved value: cascade plus owned
+                        values
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Own(parameter, …)</code>
+                      </td>
+                      <td className="py-2">
+                        takes that parameter over on this one range
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <Notice type="info" className="mb-6">
+                A range stays addressable for as long as the parser preserves
+                its <code>Identity</code>; an edit inside the range retires the
+                identity, and ownership taken on it is released.
+              </Notice>
+
+              <p className="text-white/70 mb-3">
+                <strong>Queries.</strong> <code>modifier.Ranges()</code> starts
+                a <code>RangeQuery</code>. It is an immutable value: every
+                filter returns a new query, and filters combine with AND.
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Filter
+                      </th>
+                      <th className="text-left py-2 text-white/60">Keeps</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WhereLabel(label)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges whose tag carries that <code>#label</code> anchor
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WhereParameter(parameter, value)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges whose token for that parameter parses to{" "}
+                        <code>value</code>; ranges without the token never match
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WhereToken(parameter, token)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges whose raw token for that parameter matches,
+                        ordinally
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WhereBare()</code>
+                      </td>
+                      <td className="py-2">
+                        ranges authored with no explicit token at all
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WherePrimaryValue(value)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges whose source-emitted value matches
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>WhereChannel(channel)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges routed to one channel asset
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Intersecting(range)</code>,{" "}
+                        <code>Within(range)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges overlapping, or contained by, a codepoint span
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Where(predicate)</code>
+                      </td>
+                      <td className="py-2">
+                        ranges a <code>ModifierRangePredicate</code> accepts
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Skip(n)</code>, <code>Take(n)</code>
+                      </td>
+                      <td className="py-2">
+                        a window of the matches, in text order
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-6">
+                A query carries at most one parameter filter —{" "}
+                <code>WhereParameter</code> and <code>WhereToken</code> exclude
+                each other. <code>Collect(list)</code> materializes the matches;{" "}
+                <code>Matches(in range)</code> tests one range against the
+                filters. <code>RangeQueryDefinition</code> is the serialized
+                form of the same filter set, rebuilt into a live query on every
+                bind, so an inspector-authored selection follows text edits.
+                Driver clips (§8.5) are authored this way.
+              </p>
+
+              <p className="text-white/70 mb-3">
+                <strong>Ownership.</strong> <code>Own</code> composes a value on
+                top of a parameter&rsquo;s cascade until it is released.
+              </p>
+
+              <CodeBlock
+                code={`text.Text = "Stock <color #alert>low</color>, restock <color #alert>today</color>";
+
+var color = text.GetModifier<ColorModifier>();
+using var alert = color.Ranges()
+    .WhereLabel("alert")
+    .Own(ColorModifier.Param.Color);
+
+alert.Value = new Color32(255, 64, 64, 255);        // every matching range
+alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the next parse`}
+              />
+
+              <div className="overflow-x-auto my-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Entry point
+                      </th>
+                      <th className="text-left py-2 text-white/60">Owns</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>ModifierRange.Own</code>
+                      </td>
+                      <td className="py-2">
+                        one parameter of one range →{" "}
+                        <code>OwnedParameter&lt;TValue&gt;</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>RangeQuery.Own</code>
+                      </td>
+                      <td className="py-2">
+                        one parameter across the query&rsquo;s matches →{" "}
+                        <code>OwnedParameterSet&lt;TModifier,TValue&gt;</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>BaseModifier.Own</code>
+                      </td>
+                      <td className="py-2">
+                        the same, across every range of the modifier
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>UniTextRanges.Own</code>
+                      </td>
+                      <td className="py-2">
+                        either shape, from the runtime the component already
+                        holds
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                <code>OwnedParameter&lt;TValue&gt;</code> carries{" "}
+                <code>Value</code>, the <code>Baseline</code> beneath it, its{" "}
+                <code>Composition</code> and <code>IsAlive</code>.{" "}
+                <code>Release</code> — or <code>Dispose</code> — returns the
+                parameter to its cascade; every other member throws{" "}
+                <code>ObjectDisposedException</code> once the ownership is dead.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>OwnedParameterSet&lt;TModifier,TValue&gt;</code> is
+                standing ownership. It re-materializes after every parse —
+                ranges that stop matching release, new matches receive the
+                broadcast <code>Value</code>, survivors keep theirs — and raises{" "}
+                <code>Changed</code> when it does. <code>Count</code> and{" "}
+                <code>GetRange(i)</code> follow text order,{" "}
+                <code>SetValue(i, value)</code> writes one member until the next
+                parse, and <code>Withhold()</code> deactivates every
+                member&rsquo;s value without giving up membership.
+              </p>
+
+              <Notice type="info" className="mb-4">
+                Code, rules (§9) and driver clips (§8.5) all reach a parameter
+                through this one path, so they compose against each other by{" "}
+                <code>ParameterComposition</code> and priority instead of
+                overwriting one another.
+              </Notice>
+
+              <p className="text-white/70">
+                <strong>Tools → UniText → Range Debugger</strong> captures a{" "}
+                <code>UniTextRangeDebugSnapshot</code> — the live range entities
+                of a component and the rule playbacks bound to them — and can
+                push signal values by hand.
               </p>
             </div>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 19. Accessibility                                                   */}
+        {/* 20. Accessibility                                                   */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <Accessibility className="w-6 h-6 text-[var(--color-accent)]" />
-            19. Accessibility
+            20. Accessibility
           </h2>
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10">
             <p className="text-white/70 mb-4">
-              <code>UniTextSemantics</code> exposes the document as a semantic
-              tree: <code>TextSemanticNode</code> with a{" "}
-              <code>TextSemanticRole</code>, states (
-              <code>TextSemanticStates</code>) and actions (
-              <code>TextSemanticActions</code>). <code>SemanticModifier</code>{" "}
-              annotates a range with a role.
+              <code>UniTextSemantics.For(text)</code> returns the semantic tree
+              of one component; the static <code>TryGet</code> finds an existing
+              one without creating it. <code>Nodes</code> lists the live{" "}
+              <code>TextSemanticNode</code>s in logical codepoint order, each
+              carrying <code>Identity</code>, <code>Role</code> (
+              <code>TextSemanticRole</code>), <code>Label</code>,{" "}
+              <code>Value</code>, <code>Hint</code>, <code>Language</code>,{" "}
+              <code>States</code> (<code>TextSemanticStates</code>),{" "}
+              <code>Actions</code> (<code>TextSemanticActions</code>),{" "}
+              <code>Segments</code> and <code>Bounds</code>.
             </p>
 
-            <p className="text-white/70">
-              Screen readers and automated tests consume the tree; a link range
-              reports as a link, a heading as a heading, an editable as a text
-              field.
+            <p className="text-white/70 mb-4">
+              <code>Changed</code> fires once per added, updated or removed
+              node, <code>Committed</code> after one layout commit has emitted
+              them all. <code>PerformAction(identity, action)</code> invokes a
+              single declared action; <code>ActionRequested</code> runs project
+              handlers first, and <code>PreventDefault</code> on the request
+              suppresses the built-in Activate / Context routing.
             </p>
+
+            <p className="text-white/70 mb-4">
+              <code>SemanticModifier</code> is the only producer: applied
+              through a <code>Style</code> like any modifier (§3.1), it
+              annotates a range with role, label, value, hint, language, states
+              and actions. An empty label derives from the covered text by
+              default.
+            </p>
+
+            <Notice type="info">
+              Nothing enters the tree on its own: a range is described only
+              where a <code>SemanticModifier</code> covers it, and its role is
+              whatever that modifier resolves — <code>Text</code>,{" "}
+              <code>Link</code>, <code>Button</code>, <code>Mention</code>,{" "}
+              <code>Tag</code>, <code>Code</code>, <code>Math</code>,{" "}
+              <code>Heading</code>, <code>Image</code>, <code>Comment</code>,{" "}
+              <code>Error</code> or <code>Status</code>. The tree is
+              platform-neutral: a native accessibility bridge or an automated
+              test is an adapter over it, and the package ships none.
+            </Notice>
           </div>
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 20. Recipes                                                         */}
+        {/* 21. Recipes                                                         */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <ListChecks className="w-6 h-6 text-[var(--color-accent)]" />
-            20. Recipes
+            21. Recipes
           </h2>
 
           <div className="space-y-6">
@@ -3512,9 +5634,18 @@ text.SetText(charSpan);              // from a span`}
               <h3 className="font-semibold mb-4">Clickable links</h3>
               <CodeBlock
                 code={`text.Styles.Add(Style.Tag(new LinkModifier(), "link"));
-text.AddRule(new RawUrlParseRule());
+text.Styles.Add(Style.FromSource(new RawUrlParseRule(), new LinkModifier()));
 text.Text = "See <link=https://example.com>the docs</link> or https://example.com";`}
               />
+              <p className="text-white/70 mt-4">
+                <code>LinkModifier</code> carries no base visual styling —
+                compose it with <code>ColorModifier</code> and{" "}
+                <code>UnderlineModifier</code> in a{" "}
+                <code>CompositeModifier</code> (as the built-in Link preset
+                does) to make links read as links. <code>AutoOpenUrl</code> is
+                on by default; subscribe to <code>LinkClicked</code> to handle
+                activation instead.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -3524,10 +5655,15 @@ text.Text = "See <link=https://example.com>the docs</link> or https://example.co
 reveal.Collapse = false;
 for (float t = 0; t < duration; t += Time.deltaTime)
 {
-    reveal.Fill = t / duration;
+    reveal.Front = UnitValue.Percent(100f * t / duration);
     yield return null;
 }`}
               />
+              <p className="text-white/70 mt-4">
+                A <code>UniTextDriver</code> clip on{" "}
+                <code>RevealModifier.Param.Front</code> does the same without a
+                coroutine, and scrubs in the editor (§8.5).
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -3547,8 +5683,9 @@ text.Styles.Add(Style.Range(new ColorModifier(), 0, 5, "#FF0000"));   // a fixed
                   Add <code>UniTextSelectable</code> +{" "}
                   <code>UniTextEditable</code>, then an{" "}
                   <code>InputBehaviorPreset</code> holding{" "}
-                  <code>SingleLineBehavior</code> (Return submits),{" "}
-                  <code>MediaInputBehavior</code> (pasted images become
+                  <code>SubmitKeyBehavior</code> (Enter submits, Shift+Enter
+                  inserts a newline, focus survives), a{" "}
+                  <code>MediaInputBehavior</code> subclass (pasted images become
                   attachments), <code>LengthLimitBehavior</code>, and a{" "}
                   <code>PlaceholderDecorator</code>.
                 </p>
@@ -3581,8 +5718,10 @@ text.Styles.Add(Style.Range(new ColorModifier(), 0, 5, "#FF0000"));   // a fixed
                 </h3>
                 <p className="text-white/70">
                   Leave the stack empty or put a single{" "}
-                  <code>UniTextSystemFont</code> in it. Automatic OS fallback
-                  covers everything else.
+                  <code>UniTextSystemFont</code> in it. Automatic OS fallback (
+                  <code>SystemFont</code>) covers everything else. WebGL is the
+                  exception — it has no OS font access, so a WebGL build needs a
+                  regular <code>UniTextFont</code> in the stack.
                 </p>
               </div>
             </div>
@@ -3607,7 +5746,7 @@ text.Styles.Add(Style.Range(new ColorModifier(), 0, 5, "#FF0000"));   // a fixed
               to={`${basePath}/api?category=modifiers`}
               className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition"
             >
-              <Code className="w-5 h-5 text-[var(--color-accent)]" />
+              <Puzzle className="w-5 h-5 text-[var(--color-accent)]" />
               <span>Markup Modifiers</span>
               <ArrowRight className="w-4 h-4 ml-auto text-white/40" />
             </Link>
