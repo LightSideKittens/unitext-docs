@@ -1,6 +1,6 @@
 {
-  "version": "3.3.0",
-  "generatedAt": "2026-08-25T05:29:12.7917900Z",
+  "version": "3.3.1",
+  "generatedAt": "2026-08-29T12:27:17.2363698Z",
   "namespaces": [],
   "types": [
     {
@@ -990,13 +990,30 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Base for phase-driven glyph modifiers: resolves each range\u0027s parameters through the cascade into a TParams set and hands it, with the range\u0027s resolved phase, to [[OnGlyph]] for every rendered glyph the range covers. Renders one exact state per phase value; never animates on its own.",
+      "summary": "Base for phase-driven glyph modifiers: resolves each range\u0027s parameters through the cascade into a TParams set and hands it, with the range\u0027s resolved phase, to [[OnGlyph]] for every rendered glyph the range covers. Renders one exact state per phase value; never animates on its own. Parameters re-resolve before every mesh rebuild, so driving them re-renders the mesh without re-applying ranges.",
       "remarks": "Ranges of every modifier sharing the key land in one per-cluster axis \u2014 a cluster renders the parameter set of the range applied last, and the glyph pass runs once for it.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
       "members": {
         "methods": [
+          {
+            "id": "GlyphParamModifier.MarkParamsDirty",
+            "name": "MarkParamsDirty",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Raises the invalidation of a parameter the per-rebuild refresh re-resolves: the mesh regenerates from the current values without re-applying ranges. Every TParams field\u0027s state callback points here.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "GlyphParamModifier.CreateChannel",
             "name": "CreateChannel",
@@ -1073,7 +1090,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "TParams",
-            "summary": "Resolves this range\u0027s parameter set through the cascade.",
+            "summary": "Resolves this range\u0027s parameter set through the cascade. Runs on the main thread, at range application and again before every mesh rebuild \u2014 implementations read state and cause no side effects.",
             "params": [],
             "paramTypes": [
               "RangeApplyContext"
@@ -5960,7 +5977,8 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "string"
+            "type": "string",
+            "summary": "Component name for worker-safe diagnostics. Captured on the first rebuild in players; always fresh in the editor."
           },
           {
             "id": "CachedTransformData.rectTransform",
@@ -6596,6 +6614,54 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.OnCanvasHierarchyChanged",
+            "name": "OnCanvasHierarchyChanged",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.OnTransformParentChanged",
+            "name": "OnTransformParentChanged",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.CrossFadeColor",
             "name": "CrossFadeColor",
             "accessModifier": "public",
@@ -6637,8 +6703,8 @@
             "typeParameters": []
           },
           {
-            "id": "UniText.Update",
-            "name": "Update",
+            "id": "UniText.OnFrameTick",
+            "name": "OnFrameTick",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -6743,6 +6809,16 @@
             "seeAlso": []
           },
           {
+            "id": "UniText.NeedsFrameTick",
+            "name": "NeedsFrameTick",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
             "id": "UniText.RenderRoot",
             "name": "RenderRoot",
             "accessModifier": "public",
@@ -6813,7 +6889,6 @@
         "MaskableGraphic"
       ],
       "interfaces": [
-        "IPointerDownHandler",
         "IPointerUpHandler",
         "IPointerEnterHandler",
         "IPointerExitHandler",
@@ -6824,7 +6899,7 @@
         "UniTextWorld"
       ],
       "summary": "Shared base for UniText components \u2014 handles text processing (Unicode, BiDi, shaping, line breaking, modifiers, emoji, font fallback, variable fonts). Concrete subclasses supply the rendering backend: [[UniText]] (Canvas) and [[UniTextWorld]] (world-space).",
-      "remarks": "Implements Unity [[EventSystem]] interfaces on the base class so both [[UniText]] (driven by GraphicRaycaster) and [[UniTextWorld]] (driven by PhysicsRaycaster/Physics2DRaycaster with a collider) receive the same events through the same code path. Event surface. [[TextClicked]] \u2014 single-tap activation. Consumable: setting [[Consumed]] suppresses propagation of the Unity click to the parent UI hierarchy. Multi-tap detection (double = word, triple = line) is the consumer\u0027s responsibility \u2014 the host emits one event per click without aggregating. [[ContextRequested]] \u2014 unified context-menu request. Triggered by right-click on desktop or long-press on touch / pen (matches HTML contextmenu, WinUI ContextRequested, SwiftUI.contextMenu). Consumable. [[TextLongPressProgress]] \u2014 fires every frame while a primary press from a touch / pen pointer is held in place, with progress in [0, 1]. Notification only. Mouse holds do not emit progress. [[HoverChanged]] \u2014 hover position changed; [[None]] when the pointer leaves. Notification only. The base class deliberately does NOT implement the uGUI drag interfaces \u2014 a plain label must never capture drags from an enclosing ScrollRect. Drag-to-select lives on [[UniTextSelectable]], which implements the drag handlers on the same GameObject and applies the touch-scroll-vs-select policy. Emitted [[TextPointerEvent]] instances are REUSED across emissions \u2014 consumers must not retain them beyond the callback.",
+      "remarks": "Implements Unity [[EventSystem]] interfaces on the base class so both [[UniText]] (driven by GraphicRaycaster) and [[UniTextWorld]] (driven by PhysicsRaycaster/Physics2DRaycaster with a collider) receive the same events through the same code path. Event surface. [[TextClicked]] \u2014 single-tap activation. Consumable: setting [[Consumed]] suppresses propagation of the Unity click to the parent UI hierarchy. Multi-tap detection (double = word, triple = line) is the consumer\u0027s responsibility \u2014 the host emits one event per click without aggregating. [[ContextRequested]] \u2014 unified context-menu request. Triggered by right-click on desktop or long-press on touch / pen (matches HTML contextmenu, WinUI ContextRequested, SwiftUI.contextMenu). Consumable. [[TextLongPressProgress]] \u2014 fires every frame while a primary press from a touch / pen pointer is held in place, with progress in [0, 1]. Notification only. Mouse holds do not emit progress. [[HoverChanged]] \u2014 hover position changed; [[None]] when the pointer leaves. Notification only. The base class deliberately does NOT implement the uGUI drag interfaces \u2014 a plain label must never capture drags from an enclosing ScrollRect. Drag-to-select lives on [[UniTextSelectable]], which implements the drag handlers on the same GameObject and applies the touch-scroll-vs-select policy. It equally does NOT implement [[IPointerClickHandler]]. An input module resolves a click against the click handler found under the pointer at press and again at release, so a label holding that role becomes the click target of every press over it and an enclosing Selectable is activated only when press and release land on the label itself. The release is resolved here instead: this component\u0027s own click first, then the enclosing hierarchy\u0027s click by the same uGUI rule and independent of this component\u0027s gesture state. PointerEventData.eligibleForClick is cleared once resolved, so no input module dispatches that click a second time. Emitted [[TextPointerEvent]] instances are REUSED across emissions \u2014 consumers must not retain them beyond the callback.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "components",
@@ -7204,8 +7279,25 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.Update",
-            "name": "Update",
+            "id": "UniTextBase.RefreshFrameTick",
+            "name": "RefreshFrameTick",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Aligns the [[Updating]] subscription with [[NeedsFrameTick]]; call after any change to the state it reads.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnFrameTick",
+            "name": "OnFrameTick",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": true,
@@ -7213,6 +7305,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
+            "summary": "Runs the component\u0027s per-frame work from [[Updating]] while [[NeedsFrameTick]] holds. Overrides run their own work after the base call.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -8727,6 +8820,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.NeedsFrameTick",
+            "name": "NeedsFrameTick",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Gets whether the component currently requires a per-frame tick. Overrides extend the demand with their own per-frame state and call [[RefreshFrameTick]] whenever that state changes.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.IsWorldSpace",
             "name": "IsWorldSpace",
             "accessModifier": "public",
@@ -9015,7 +9119,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action",
-            "summary": "Occurs once per Unity frame from [[Update]]. Per-frame consumers subscribe here instead of being driven by hard-coded calls inside [[Update]]."
+            "summary": "Occurs once per frame while the component is enabled, from [[Updating]] immediately before script Update callbacks. In edit mode an active subscription keeps the editor pumping frames until removed."
           },
           {
             "id": "UniTextBase.LayoutCommitted",
@@ -10076,7 +10180,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "World-space pointer raycaster for [[UniTextWorld]] components.",
-      "remarks": "Attach to a [[Camera]] to route pointer events (clicks, hover) to all active [[UniTextWorld]] components visible from that camera. Analogous to [[GraphicRaycaster]] for Canvas, but uses direct ray/plane/rect math instead of colliders \u2014 no physics dependency at the text level. Hit detection: rect containment in each component\u0027s local [[RectTransform]] rect. The full rect is the clickable area (like Canvas raycastTarget); finer-grained glyph-accurate hit testing happens inside UniTextBase.OnPointerClick via [[HitTestRange]]. Occlusion: results carry distance, so Unity\u0027s [[EventSystem]] sorts them against any other raycaster ([[GraphicRaycaster]], PhysicsRaycaster, Physics2DRaycaster) automatically. For scenes without a PhysicsRaycaster but with physical geometry that should block clicks, set [[BlockingObjects]] to TwoD/ThreeD/All \u2014 the raycaster will test for blocking colliders between the camera and the hit point before accepting the hit.",
+      "remarks": "Attach to a [[Camera]] to route pointer events (clicks, hover) to all active [[UniTextWorld]] components visible from that camera. Analogous to [[GraphicRaycaster]] for Canvas, but uses direct ray/plane/rect math instead of colliders \u2014 no physics dependency at the text level. Hit detection: rect containment in each component\u0027s local [[RectTransform]] rect. The full rect is the clickable area (like Canvas raycastTarget); finer-grained glyph-accurate hit testing happens inside the component\u0027s pointer handling via [[HitTestRange]]. Occlusion: results carry distance, so Unity\u0027s [[EventSystem]] sorts them against any other raycaster ([[GraphicRaycaster]], PhysicsRaycaster, Physics2DRaycaster) automatically. For scenes without a PhysicsRaycaster but with physical geometry that should block clicks, set [[BlockingObjects]] to TwoD/ThreeD/All \u2014 the raycaster will test for blocking colliders between the camera and the hit point before accepting the hit.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "components",
@@ -46186,6 +46290,25 @@
             "params": [],
             "paramTypes": [
               "StateMember"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaseModifier.MarkRenderDirty",
+            "name": "MarkRenderDirty",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Marks the mesh stage dirty without queueing a range re-apply \u2014 for members whose applied values the modifier re-resolves before each rebuild. Does nothing when hasRanges is; an unowned instance raises the structural mesh notification instead, so authoring-time edits still reach consumers.",
+            "params": [],
+            "paramTypes": [
+              "bool"
             ],
             "exceptions": [],
             "seeAlso": [],
