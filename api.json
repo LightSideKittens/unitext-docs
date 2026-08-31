@@ -1,6 +1,6 @@
 {
   "version": "3.3.2",
-  "generatedAt": "2026-08-31T00:32:06.5037292Z",
+  "generatedAt": "2026-08-31T00:41:51.9415215Z",
   "namespaces": [],
   "types": [
     {
@@ -64272,7 +64272,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Unity-input polling backend for keyboard editing and single-clause IME composition.",
-      "remarks": "The backend does not show software keyboards, present native fields, or consume pushed document windows.",
+      "remarks": "The backend does not show software keyboards, present native fields, or consume pushed document windows. A held key repeats on a fixed schedule of the backend\u0027s own, ignoring the operating system\u0027s typematic settings, which platform transports honour instead. Text is read from Keyboard.onTextInput or Input.inputString, so a platform that fills neither takes editing keys but no characters.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "platform",
