@@ -1,6 +1,6 @@
 {
-  "version": "3.3.1",
-  "generatedAt": "2026-08-29T12:27:17.2363698Z",
+  "version": "3.3.2",
+  "generatedAt": "2026-08-31T00:32:06.5037292Z",
   "namespaces": [],
   "types": [
     {
@@ -6034,7 +6034,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "How a driver\u0027s playhead behaves at the end of its timeline.",
+      "summary": "Legacy playhead repeat modes.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "components",
@@ -6050,8 +6050,7 @@
             "isReadonly": true,
             "isConst": false,
             "type": "DriverLoop",
-            "defaultValue": "0",
-            "summary": "Stops at the end; [[Play]] restarts from the beginning."
+            "defaultValue": "0"
           },
           {
             "id": "DriverLoop.Loop",
@@ -6061,8 +6060,7 @@
             "isReadonly": true,
             "isConst": false,
             "type": "DriverLoop",
-            "defaultValue": "1",
-            "summary": "Wraps to the beginning and keeps running."
+            "defaultValue": "1"
           },
           {
             "id": "DriverLoop.PingPong",
@@ -6072,8 +6070,7 @@
             "isReadonly": true,
             "isConst": false,
             "type": "DriverLoop",
-            "defaultValue": "2",
-            "summary": "Runs back and forth between the ends."
+            "defaultValue": "2"
           }
         ],
         "events": []
@@ -6728,7 +6725,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets the clipping rectangle for masking, applying to all sub-mesh renderers. Mask removal reaches a clippable only through this call (never [[Cull]]), so an invalid rect also clears [[VisibleWindow]] \u2014 otherwise the mesh would stay windowed with no mask to excuse it.",
+            "summary": "Sets the clipping rectangle for masking, applying to all sub-mesh renderers. Mask removal reaches a clippable only through this call (never [[Cull]]), so an invalid rect also resets [[VisibleWindow]] and the clip-cull state \u2014 otherwise the mesh would stay windowed and culled with no mask to excuse it.",
             "params": [],
             "paramTypes": [
               "Rect",
@@ -6767,12 +6764,29 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Culls against the actual rendered mesh bounds rather than the [[RectTransform]]. Glyphs can extend beyond the rect (long words, overflow, outline/glow, modifier transforms), so the default rect-corner test would hide still-visible meshes.",
+            "summary": "Culls against the actual rendered mesh bounds rather than the [[RectTransform]] (whose corners serve until a mesh exists). Glyphs can extend beyond the rect (long words, overflow, outline/glow, modifier transforms), so the default rect-corner test would hide still-visible meshes.",
             "params": [],
             "paramTypes": [
               "Rect",
               "bool"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.OnCullingChanged",
+            "name": "OnCullingChanged",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Restores the effective cull \u2014 the union of clip-culling and render suppression \u2014 on every culling change, so a direct [[cull]] write from outside never lifts a [[Hide]] or scene-visibility state.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9454,7 +9468,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Starts or resumes playback; at the end of a [[Once]] run it restarts.",
+            "summary": "Starts or resumes playback; a finished finite run restarts at its beginning for positive speed or its end for negative speed.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -48801,8 +48815,8 @@
       }
     },
     {
-      "id": "IPlaybackHost",
-      "name": "IPlaybackHost",
+      "id": "IParameterOps\u003CTValue\u003E",
+      "name": "IParameterOps\u003CTValue\u003E",
       "namespace": "LightSide",
       "kind": "interface",
       "accessModifier": "public",
@@ -48811,28 +48825,28 @@
       "isStatic": false,
       "baseTypeChain": [],
       "interfaces": [],
-      "derivedTypes": [
-        "RangeRuleInstance"
-      ],
-      "summary": "Applies a [[Playback]]\u0027s decisions: weight onto outputs, and their release.",
+      "derivedTypes": [],
+      "summary": "Provides one parameter value type\u0027s parsing, interpolation, and arithmetic contract; reported capabilities remain stable for the provider\u0027s lifetime.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "members": {
         "methods": [
           {
-            "id": "IPlaybackHost.ApplyWeight",
-            "name": "ApplyWeight",
+            "id": "IParameterOps.Lerp",
+            "name": "Lerp",
             "accessModifier": "public",
             "isAbstract": true,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "void",
-            "summary": "Applies the current envelope weight to the host\u0027s outputs.",
+            "returnType": "TValue",
+            "summary": "Interpolates from from to to at normalized progress, with zero selecting the former and one selecting the latter.",
             "params": [],
             "paramTypes": [
+              "TValue",
+              "TValue",
               "float"
             ],
             "exceptions": [],
@@ -48840,24 +48854,113 @@
             "typeParameters": []
           },
           {
-            "id": "IPlaybackHost.ReleaseOutputs",
-            "name": "ReleaseOutputs",
+            "id": "IParameterOps.Add",
+            "name": "Add",
             "accessModifier": "public",
             "isAbstract": true,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "void",
-            "summary": "Releases the host\u0027s outputs after the envelope completed a releasing run.",
+            "returnType": "TValue",
+            "summary": "Combines the current and owned values when [[CanAdd]] is true.",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "TValue",
+              "TValue"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IParameterOps.Multiply",
+            "name": "Multiply",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TValue",
+            "summary": "Combines the current and owned values when [[CanMultiply]] is true.",
+            "params": [],
+            "paramTypes": [
+              "TValue",
+              "TValue"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "IParameterOps.TryParse",
+            "name": "TryParse",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Attempts to parse one value, returning fallback through value on failure.",
+            "params": [],
+            "paramTypes": [
+              "ParameterReader",
+              "TValue",
+              "TValue"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "IParameterOps.CanAdd",
+            "name": "CanAdd",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether additive composition and its identity are supported.",
+            "seeAlso": []
+          },
+          {
+            "id": "IParameterOps.CanMultiply",
+            "name": "CanMultiply",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether multiplicative composition and its identity are supported.",
+            "seeAlso": []
+          },
+          {
+            "id": "IParameterOps.AddIdentity",
+            "name": "AddIdentity",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TValue",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Owned value that leaves the current value unchanged under [[Add]] when [[CanAdd]] is true.",
+            "seeAlso": []
+          },
+          {
+            "id": "IParameterOps.MultiplyIdentity",
+            "name": "MultiplyIdentity",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TValue",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Owned value that leaves the current value unchanged under [[Multiply]] when [[CanMultiply]] is true.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -52197,6 +52300,30 @@
             "typeParameters": []
           },
           {
+            "id": "ParameterDescriptor.WithOperations",
+            "name": "WithOperations",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "ParameterDescriptor\u003CTModifier, TValue\u003E",
+            "summary": "Replaces the value type\u0027s default parsing, interpolation, and arithmetic contract while preserving any declared parser and custom composition.",
+            "params": [],
+            "paramTypes": [
+              "IParameterOps\u003CTValue\u003E"
+            ],
+            "exceptions": [
+              {
+                "type": "ArgumentNullException",
+                "description": "operations is null."
+              }
+            ],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "ParameterDescriptor.WithParser",
             "name": "WithParser",
             "accessModifier": "public",
@@ -53079,320 +53206,6 @@
             "type": "Placement",
             "defaultValue": "1",
             "summary": "Lowered, reduced glyphs (OpenType \u0027subs\u0027 or synthesized)."
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "Playback",
-      "name": "Playback",
-      "namespace": "LightSide",
-      "kind": "struct",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Allocation-free weight envelope of one animated application: instant and eased transitions, pulses, deferred release, and clock routing. Pure state machine \u2014 the host interprets every decision through [[IPlaybackHost]], so the same envelope serves any output kind.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "modifiers",
-      "members": {
-        "methods": [
-          {
-            "id": "Playback.SetWeight",
-            "name": "SetWeight",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Sets the weight immediately, cancelling nothing.",
-            "params": [],
-            "paramTypes": [
-              "THost",
-              "float"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.TransitionTo",
-            "name": "TransitionTo",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Starts a timed transition toward target; zero duration applies it immediately. A releasing run releases the host\u0027s outputs on completing at zero weight.",
-            "params": [],
-            "paramTypes": [
-              "THost",
-              "float",
-              "float",
-              "Ease",
-              "PlaybackClock",
-              "bool"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.TriggerPulse",
-            "name": "TriggerPulse",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Runs the enter half of a pulse; the exit half starts when the enter completes.",
-            "params": [],
-            "paramTypes": [
-              "THost",
-              "float",
-              "float",
-              "Ease",
-              "PlaybackClock"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.HoldOneFrame",
-            "name": "HoldOneFrame",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Applies full weight for exactly one tick of the current clock, then releases.",
-            "params": [],
-            "paramTypes": [
-              "THost"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.CompleteForReducedMotion",
-            "name": "CompleteForReducedMotion",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Snaps in-flight work to its end state, honoring a reduced-motion preference.",
-            "params": [],
-            "paramTypes": [
-              "THost"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.Tick",
-            "name": "Tick",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Advances pending work by deltaTime on clock. Returns whether the envelope still needs ticks.",
-            "params": [],
-            "paramTypes": [
-              "THost",
-              "float",
-              "PlaybackClock"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "THost"
-              }
-            ]
-          },
-          {
-            "id": "Playback.Reset",
-            "name": "Reset",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Drops all pending work and returns the weight to zero without applying it.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [
-          {
-            "id": "Playback.Weight",
-            "name": "Weight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Current envelope weight, 0..1.",
-            "seeAlso": []
-          },
-          {
-            "id": "Playback.Transitioning",
-            "name": "Transitioning",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Whether a timed transition is in flight.",
-            "seeAlso": []
-          },
-          {
-            "id": "Playback.Clock",
-            "name": "Clock",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "PlaybackClock",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Clock the in-flight work advances on.",
-            "seeAlso": []
-          },
-          {
-            "id": "Playback.NeedsTick",
-            "name": "NeedsTick",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Whether the envelope has pending work needing ticks on any clock.",
-            "seeAlso": []
-          },
-          {
-            "id": "Playback.UsesFrameClock",
-            "name": "UsesFrameClock",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Whether pending work advances on a frame clock (scaled or unscaled).",
-            "seeAlso": []
-          },
-          {
-            "id": "Playback.UsesManualClock",
-            "name": "UsesManualClock",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Whether pending work advances only through manual ticks.",
-            "seeAlso": []
-          }
-        ],
-        "fields": [],
-        "events": []
-      }
-    },
-    {
-      "id": "PlaybackClock",
-      "name": "PlaybackClock",
-      "kind": "enum",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": false,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Time source a [[Playback]] envelope advances on.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "modifiers",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "PlaybackClock.Scaled",
-            "name": "Scaled",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "PlaybackClock",
-            "defaultValue": "0",
-            "summary": "Uses [[deltaTime]]."
-          },
-          {
-            "id": "PlaybackClock.Unscaled",
-            "name": "Unscaled",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "PlaybackClock",
-            "defaultValue": "1",
-            "summary": "Uses [[unscaledDeltaTime]]."
-          },
-          {
-            "id": "PlaybackClock.Manual",
-            "name": "Manual",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "PlaybackClock",
-            "defaultValue": "2",
-            "summary": "Advances only through [[AdvanceManual]]."
           }
         ],
         "events": []
@@ -70159,6 +69972,17 @@
             "seeAlso": []
           },
           {
+            "id": "ParameterAttribute.Operations",
+            "name": "Operations",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Name of a static IParameterOps\u003CT\u003E field or property on the field\u0027s declaring type that replaces the value type\u0027s default parameter operations. An explicitly named [[Parser]] remains the parsing authority.",
+            "seeAlso": []
+          },
+          {
             "id": "ParameterAttribute.Descriptor",
             "name": "Descriptor",
             "accessModifier": "public",
@@ -70248,6 +70072,16 @@
           {
             "id": "SlotlessParameterAttribute.Parser",
             "name": "Parser",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "SlotlessParameterAttribute.Operations",
+            "name": "Operations",
             "accessModifier": "public",
             "isStatic": false,
             "type": "string",
@@ -73984,7 +73818,7 @@
         "priority": 100
       },
       {
-        "name": "IPlaybackHost",
+        "name": "IParameterOps\u003CTValue\u003E",
         "priority": 100
       },
       {
@@ -74141,14 +73975,6 @@
       },
       {
         "name": "Placement",
-        "priority": 100
-      },
-      {
-        "name": "Playback",
-        "priority": 100
-      },
-      {
-        "name": "PlaybackClock",
         "priority": 100
       },
       {
