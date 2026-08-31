@@ -1,6 +1,6 @@
 {
-  "version": "3.3.2",
-  "generatedAt": "2026-08-31T00:41:51.9415215Z",
+  "version": "3.3.3",
+  "generatedAt": "2026-08-31T07:01:42.9916989Z",
   "namespaces": [],
   "types": [
     {
@@ -22129,7 +22129,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Synthetic italic slant in degrees, applied as a horizontal skew when an italic tag is set. 0 falls back to [[DefaultItalicStyle]].",
+            "summary": "Synthetic italic slant in percent of height (30 leans the top right by 0.30 of the height, \u224816.7\u00B0, not 30\u00B0), applied as a horizontal skew when an italic tag is set. 0 falls back to [[DefaultItalicStyle]].",
             "seeAlso": []
           },
           {
@@ -22239,7 +22239,7 @@
             "isReadonly": false,
             "isConst": true,
             "type": "float",
-            "summary": "Synthetic-italic slant used when a font stores none (value 0), notably OS system-font fallbacks built at runtime. The italic modifier reads it as a horizontal shear factor."
+            "summary": "Synthetic-italic slant used when a font stores none (value 0), notably OS system-font fallbacks built at runtime. The italic modifier reads it as a horizontal shear in percent of height."
           }
         ],
         "events": []
@@ -49004,7 +49004,7 @@
             "isConst": false,
             "type": "ItalicMode",
             "defaultValue": "1",
-            "summary": "Always shear by [[slant]] degrees, ignoring real faces."
+            "summary": "Always shear by [[slant]] percent of height, ignoring real faces."
           },
           {
             "id": "ItalicMode.FontSlant",
@@ -49047,7 +49047,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Renders italic by slanting glyphs. Tags: \u003Ci\u003E = auto, \u003Ci=20\u003E = synthetic slant of 20\u00B0, \u003Ci=f\u003E = the run font\u0027s own slant, \u003Ci=r\u003E = a real italic face only.",
+      "summary": "Renders italic by slanting glyphs. Tags: \u003Ci\u003E = auto, \u003Ci=20\u003E = synthetic shear of 20% of height, \u003Ci=f\u003E = the run font\u0027s own slant, \u003Ci=r\u003E = a real italic face only.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -49108,7 +49108,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Synthetic shear angle in degrees (\u2212100\u2026100), applied when [[Mode]] is [[Synthetic]]. A per-range value overrides it.",
+            "summary": "Synthetic shear in percent of height (\u2212100\u2026100; 30 leans the top right by 0.30 of the height, \u224816.7\u00B0, not 30\u00B0), applied when [[Mode]] is [[Synthetic]]. A per-range value overrides it.",
             "seeAlso": []
           },
           {
@@ -49140,7 +49140,7 @@
         "IMarkupValue"
       ],
       "derivedTypes": [],
-      "summary": "Italic choice: a mode plus, for [[Synthetic]], a shear angle. Serializes to a single markup token \u2014 empty for auto, the angle for synthetic, f for font-slant, r for real-only.",
+      "summary": "Italic choice: a mode plus, for [[Synthetic]], a shear percentage. Serializes to a single markup token \u2014 empty for auto, the percentage for synthetic, f for font-slant, r for real-only.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -64271,8 +64271,8 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Unity-input polling backend for keyboard editing and single-clause IME composition.",
-      "remarks": "The backend does not show software keyboards, present native fields, or consume pushed document windows. A held key repeats on a fixed schedule of the backend\u0027s own, ignoring the operating system\u0027s typematic settings, which platform transports honour instead. Text is read from Keyboard.onTextInput or Input.inputString, so a platform that fills neither takes editing keys but no characters.",
+      "summary": "Unity-event backend for keyboard editing and single-clause IME composition.",
+      "remarks": "Keys and characters both come from the operating system\u0027s key events, drained through [[PopEvent]] while a field is focused \u2014 the same source Unity\u0027s own input fields read, which is what carries layout-resolved characters and the system\u0027s key repeat. The drain consumes those events, so other consumers stop seeing keyboard input while a field is focused. The backend does not show software keyboards, present native fields, or consume pushed document windows.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "platform",
@@ -64288,7 +64288,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Opens polling for one reporter epoch.",
+            "summary": "Opens one reporter epoch.",
             "params": [],
             "paramTypes": [
               "NativeInputOpenRequest",
@@ -64368,7 +64368,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Releases a quiesced polling epoch.",
+            "summary": "Releases a quiesced epoch.",
             "params": [],
             "paramTypes": [
               "NativeInputReporter"
@@ -64387,7 +64387,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Abandons a polling epoch and clears composition state.",
+            "summary": "Abandons an epoch and clears composition state.",
             "params": [],
             "paramTypes": [
               "NativeInputReporter"
@@ -64446,7 +64446,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Releases polling and composition state.",
+            "summary": "Releases the epoch and composition state.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
