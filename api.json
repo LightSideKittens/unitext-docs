@@ -1,6 +1,6 @@
 {
-  "version": "3.4.0",
-  "generatedAt": "2026-09-01T21:48:03.5254429Z",
+  "version": "3.5.0",
+  "generatedAt": "2026-09-02T12:46:20.1955895Z",
   "namespaces": [],
   "types": [
     {
@@ -1217,7 +1217,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "RGB-split glitch bursts: during a burst the glyph doubles into magenta and cyan copies pushed in opposite directions under a crisp original, with horizontal jerks and rare blink-outs. Re-rolls [[Rate]] times per phase unit; deterministic per phase, so scrubbing reproduces the same bursts.",
+      "summary": "RGB-split glitch bursts: during a burst the glyph doubles into magenta and cyan copies pushed in opposite directions under a crisp original, with horizontal jerks and rare blink-outs. Re-rolls [[Rate]] times per phase unit; deterministic per phase, so scrubbing reproduces the same bursts. A colour glyph under the Apply policy gets the jerks, the blink-outs and silhouette fringes; its picture stays in its own layer.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
@@ -8935,7 +8935,7 @@
         "UniTextWorld"
       ],
       "summary": "Shared base for UniText components \u2014 handles text processing (Unicode, BiDi, shaping, line breaking, modifiers, emoji, font fallback, variable fonts). Concrete subclasses supply the rendering backend: [[UniText]] (Canvas) and [[UniTextWorld]] (world-space).",
-      "remarks": "Implements Unity [[EventSystem]] interfaces on the base class so both [[UniText]] (driven by GraphicRaycaster) and [[UniTextWorld]] (driven by PhysicsRaycaster/Physics2DRaycaster with a collider) receive the same events through the same code path. Event surface. [[TextClicked]] \u2014 single-tap activation. Consumable: setting [[Consumed]] suppresses propagation of the Unity click to the parent UI hierarchy. Multi-tap detection (double = word, triple = line) is the consumer\u0027s responsibility \u2014 the host emits one event per click without aggregating. [[ContextRequested]] \u2014 unified context-menu request. Triggered by right-click on desktop or long-press on touch / pen (matches HTML contextmenu, WinUI ContextRequested, SwiftUI.contextMenu). Consumable. [[TextLongPressProgress]] \u2014 fires every frame while a primary press from a touch / pen pointer is held in place, with progress in [0, 1]. Notification only. Mouse holds do not emit progress. [[HoverChanged]] \u2014 hover position changed; [[None]] when the pointer leaves. Notification only. The base class deliberately does NOT implement the uGUI drag interfaces \u2014 a plain label must never capture drags from an enclosing ScrollRect. Drag-to-select lives on [[UniTextSelectable]], which implements the drag handlers on the same GameObject and applies the touch-scroll-vs-select policy. It equally does NOT implement [[IPointerClickHandler]]. An input module resolves a click against the click handler found under the pointer at press and again at release, so a label holding that role becomes the click target of every press over it and an enclosing Selectable is activated only when press and release land on the label itself. The release is resolved here instead: this component\u0027s own click first, then the enclosing hierarchy\u0027s click by the same uGUI rule and independent of this component\u0027s gesture state. PointerEventData.eligibleForClick is cleared once resolved, so no input module dispatches that click a second time. Emitted [[TextPointerEvent]] instances are REUSED across emissions \u2014 consumers must not retain them beyond the callback.",
+      "remarks": "Implements Unity [[EventSystem]] interfaces on the base class so both [[UniText]] (driven by GraphicRaycaster) and [[UniTextWorld]] (driven by PhysicsRaycaster/Physics2DRaycaster with a collider) receive the same events through the same code path. Event surface. [[TextClicked]] \u2014 single-tap activation. Consumable: setting [[Consumed]] suppresses propagation of the Unity click to the parent UI hierarchy. Multi-tap detection (double = word, triple = line) is the consumer\u0027s responsibility \u2014 the host emits one event per click without aggregating. [[ContextRequested]] \u2014 unified context-menu request. Triggered by right-click on desktop or long-press on touch / pen (matches HTML contextmenu, WinUI ContextRequested, SwiftUI.contextMenu). Consumable. [[TextLongPressProgress]] \u2014 fires every frame while a primary press from a touch / pen pointer is held in place, with progress in [0, 1]. Notification only. Mouse holds do not emit progress. [[HoverChanged]] \u2014 hover position changed; [[None]] when the pointer leaves. Notification only. The base class deliberately does NOT implement the uGUI drag interfaces \u2014 a plain label must never capture drags from an enclosing ScrollRect. Drag-to-select lives on [[UniTextSelectable]], which implements the drag handlers on the same GameObject and applies the touch-scroll-vs-select policy. It equally does NOT implement [[IPointerClickHandler]]. An input module resolves a click against the click handler found under the pointer at press and again at release, so a label holding that role becomes the click target of every press over it and an enclosing Selectable is activated only when press and release land on the label itself. The release is resolved here instead: this component\u0027s own click first, then the enclosing hierarchy\u0027s click by the same rule and independent of this component\u0027s gesture state. Which side dispatches that hierarchy click depends on the module. One that records PointerEventData.pointerClick already targets the host and dispatches it itself; this component only suppresses it, by clearing that field. One that resolves the click against pointerPress \u2014 where this component sits, as the press handler \u2014 can never reach the host, so the click is dispatched from here. Clearing eligibleForClick is not a suppression lever: InputSystemUIInputModule reads it into its click decision before it sends the pointer-up, and would dispatch a second click regardless. Emitted [[TextPointerEvent]] instances are REUSED across emissions \u2014 consumers must not retain them beyond the callback.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "components",
@@ -22373,9 +22373,10 @@
       ],
       "interfaces": [],
       "derivedTypes": [
-        "EmojiFont"
+        "EmojiFont",
+        "SpriteFont"
       ],
-      "summary": "Runtime for a color font (CBDT/sbix bitmap or COLRv0/COLRv1 vector). Plain [[Core]] subclass \u2014 not a ScriptableObject; constructable on worker threads. Owns the color-glyph rasterization pipeline: color-format detection, FreeType/Blend2D rendering into the shared color atlas, and color glyph metrics. The system emoji font ([[EmojiFont]]) and the [[UniTextColorFont]] asset are both built on this base.",
+      "summary": "Runtime for a color font (CBDT/sbix bitmap or COLRv0/COLRv1 vector). Plain [[Core]] subclass \u2014 not a ScriptableObject; constructable on worker threads. Owns the color-glyph rasterization pipeline: color-format detection, FreeType/Blend2D rendering into the shared color atlas, and color glyph metrics. The system emoji font ([[EmojiFont]]) and the [[UniTextColorFont]] asset are both built on this base. A glyph an effect decorates also gets a silhouette field in the SDF atlas, derived from the same bitmap\u0027s alpha when it is packed.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "emoji",
@@ -22527,15 +22528,38 @@
             "typeParameters": []
           },
           {
+            "id": "ColorFontCore.FitBitmapToAtlas",
+            "name": "FitBitmapToAtlas",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Downscales a bitmap larger than the atlas content size in place (pooled buffers swapped), preserving its aspect.",
+            "params": [],
+            "paramTypes": [
+              "byte[]",
+              "int",
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "ColorFontCore.ComputeGlyphMetrics",
             "name": "ComputeGlyphMetrics",
             "accessModifier": "protected",
             "isAbstract": false,
-            "isVirtual": false,
+            "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
             "returnType": "GlyphMetrics",
+            "summary": "Design-unit metrics of a rendered bitmap. The bitmap\u0027s pixel-to-design ratio follows the colour format: the COLRv1 render size, the sbix strike, the CBDT advance, or the requested pixel size.",
             "params": [],
             "paramTypes": [
               "uint",
@@ -39326,11 +39350,12 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Requests atlas warm-up for an exact glyph in a registered font. Deduplicated because the shared buffer survives granular modifier re-applies.",
+            "summary": "Requests atlas warm-up for an exact glyph in a registered font. Deduplicated because the shared buffer survives granular modifier re-applies; a repeated request keeps the larger silhouette-field reach (fieldExtent, see [[ColorGlyphField]]).",
             "params": [],
             "paramTypes": [
               "int",
-              "uint"
+              "uint",
+              "byte"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -40023,6 +40048,25 @@
       "members": {
         "methods": [
           {
+            "id": "UniTextMeshGenerator.FaceGlyphH",
+            "name": "FaceGlyphH",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Height in em of the field a face quad samples: the glyph\u0027s for an outline face, the silhouette\u0027s for a colour face with a field, 0 for a colour face without one.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextMeshGenerator.TrackGlyphKey",
             "name": "TrackGlyphKey",
             "accessModifier": "public",
@@ -40468,7 +40512,7 @@
             "isConstructor": false,
             "returnType": "List\u003CUniTextRenderData\u003E",
             "summary": "Collects raw render data (vertex/UV/triangle array slices \u002B material/order metadata) for every segment produced by the latest mesh generation. Does not build Unity [[Mesh]] objects \u2014 consumers (canvas UpdateSubMeshes, world batcher) decide what to do with the raw data.",
-            "remarks": "Text and color quads live in the same pooled buffers ([[Vertices]], [[Uvs0]], [[Colors]], [[Triangles]]) as contiguous ranges: text in [0, sdfVertexCount), color after. Each entry carries vertexOffset/vertexCount bounding only the vertices its triangles reference (a tight span, not the whole segment), with triangle indices relative to that span \u2014 consumers read exactly the slice, so interleaved layer runs do not duplicate the segment\u0027s vertex data per run. Array references remain valid only until the next [[GenerateMeshDataOnly]] / [[CollectRenderData]] cycle on the same generator (pooled buffers may be regrown or returned). Consumers must not retain references across frames.",
+            "remarks": "Text and color quads live in the same pooled buffers ([[Vertices]], [[Uvs0]], [[Colors]], [[Triangles]]) as contiguous ranges: text faces first, colour faces next, then the effect and decoration quads appended at main-pass finalization. Each entry carries vertexOffset/vertexCount bounding only the vertices its triangles reference (a tight span, not the whole segment), with triangle indices relative to that span \u2014 consumers read exactly the slice, so interleaved layer runs do not duplicate the segment\u0027s vertex data per run. Array references remain valid only until the next [[GenerateMeshDataOnly]] / [[CollectRenderData]] cycle on the same generator (pooled buffers may be regrown or returned). Consumers must not retain references across frames.",
             "returns": "Shared list of [[UniTextRenderData]] entries \u2014 the base segment\u0027s layer runs (text and color quads share one segment; the per-glyph mode in UV1.w picks the sampler) plus any sub-meshes appended by [[onCollectSubMeshes]] subscribers. The list is reused on the next call; consumers must use/copy immediately.",
             "params": [],
             "paramTypes": [],
@@ -40479,6 +40523,17 @@
         ],
         "properties": [
           {
+            "id": "UniTextMeshGenerator.HasColorFaceField",
+            "name": "HasColorFaceField",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether the colour glyph currently in [[onGlyph]] carries a silhouette field for effects to sample; always false for an outline glyph.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextMeshGenerator.onMainPassComplete",
             "name": "onMainPassComplete",
             "accessModifier": "public",
@@ -40486,7 +40541,7 @@
             "type": "OrderedEvent",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Runs after primary text glyph emission and before main-pass finalization.",
+            "summary": "Runs after every face quad \u2014 text and colour glyphs alike \u2014 and before main-pass finalization.",
             "seeAlso": []
           },
           {
@@ -40497,7 +40552,7 @@
             "type": "OrderedEvent",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Runs after [[onMainPassComplete]] and before color-quad emission.",
+            "summary": "Runs after [[onMainPassComplete]], with every face quad emitted, before triangle materialization.",
             "seeAlso": []
           },
           {
@@ -41615,6 +41670,16 @@
             "isConst": false,
             "type": "uint",
             "summary": "Shaped glyph id to rasterize."
+          },
+          {
+            "id": "VirtualGlyph.fieldExtent",
+            "name": "fieldExtent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "byte",
+            "summary": "Silhouette-field request for a colour glyph (see [[ColorGlyphField]]); 0 asks for the bitmap alone."
           }
         ],
         "events": []
@@ -49473,21 +49538,23 @@
       }
     },
     {
-      "id": "InlineMediaModifier\u003CTEntry, TWrapper, TOverride\u003E",
-      "name": "InlineMediaModifier\u003CTEntry, TWrapper, TOverride\u003E",
+      "id": "InlineMediaModifier\u003CTEntry, TOverride\u003E",
+      "name": "InlineMediaModifier\u003CTEntry, TOverride\u003E",
       "namespace": "LightSide",
       "kind": "class",
       "accessModifier": "public",
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+      "baseType": "InlineMediaModifier\u003CTEntry\u003E",
       "baseTypeChain": [
-        "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+        "InlineMediaModifier\u003CTEntry\u003E",
         "BaseModifier"
       ],
       "interfaces": [],
-      "derivedTypes": [],
+      "derivedTypes": [
+        "InlineObjectModifier\u003CTEntry, TWrapper, TOverride\u003E"
+      ],
       "summary": "Inline-media modifier with typed per-entry overrides.",
       "seeAlso": [],
       "typeParameters": [],
@@ -49594,8 +49661,8 @@
       }
     },
     {
-      "id": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
-      "name": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+      "id": "InlineMediaModifier\u003CTEntry\u003E",
+      "name": "InlineMediaModifier\u003CTEntry\u003E",
       "namespace": "LightSide",
       "kind": "class",
       "accessModifier": "public",
@@ -49608,19 +49675,15 @@
       ],
       "interfaces": [],
       "derivedTypes": [
-        "InlineMediaModifier\u003CTEntry, TWrapper, TOverride\u003E"
+        "InlineMediaModifier\u003CTEntry, TOverride\u003E"
       ],
-      "summary": "Shared base for modifiers that embed inline-flowed media (prefab instances, sprite quads, future GPU mesh subitems) into text. Subclasses pick the entry type and wrapper type, supply a typed provider field, and translate entries into wrapper state \u2014 the base owns the cluster mapping, shape/render passes, lifecycle of wrapper instances, and provider event subscription.",
+      "summary": "Shared base for modifiers that flow inline media \u2014 sprites, prefab instances \u2014 through text. Owns the catalog snapshot, the per-occurrence resolution of size, offset, advance and line space, the shaping-slot rewrite that reserves the media\u0027s advance, and the line-space reservation. How an occurrence becomes visible is the subclass\u0027s: a glyph in the text mesh ([[SpriteModifier]]) or a child object ([[InlineObjectModifier{TEntry, TWrapper, TOverride}]]).",
       "remarks": "Provider values are replaced by a matching keyed override and then by tag arguments.",
       "seeAlso": [],
       "typeParameters": [
         {
           "name": "TEntry",
           "description": "The catalog entry type (must extend [[InlineMedia]])."
-        },
-        {
-          "name": "TWrapper",
-          "description": "The [[MediaWrapper]] subclass that materialises each on-screen occurrence."
         }
       ],
       "category": "media",
@@ -49629,27 +49692,6 @@
       ],
       "members": {
         "methods": [
-          {
-            "id": "InlineMediaModifier.ConfigureWrapper",
-            "name": "ConfigureWrapper",
-            "accessModifier": "protected",
-            "isAbstract": true,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Copies the per-frame visual state from entry into wrapper (sprite/color, prefab reference, etc.). cluster is the source-text cluster index of this occurrence \u2014 subclasses use it to apply per-occurrence overrides parsed by OnExtraTokens from extra tag arguments.",
-            "params": [],
-            "paramTypes": [
-              "TWrapper",
-              "TEntry",
-              "int"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
           {
             "id": "InlineMediaModifier.HasRenderable",
             "name": "HasRenderable",
@@ -49661,7 +49703,7 @@
             "isConstructor": false,
             "returnType": "bool",
             "summary": "Returns when the entry\u0027s renderable payload is present (sprite assigned, prefab assigned). Entries failing this check are skipped at render time but still influence layout.",
-            "remarks": "Invoked from the parallel mesh-generation phase, so implementations MUST be worker-thread safe \u2014 use is not null reference checks rather than Unity\u0027s overloaded != null, which calls EnsureRunningOnMainThread and throws off the main thread. Destroyed Unity assets are filtered correctly later by the main-thread MediaWrapper.TryCreate path.",
+            "remarks": "Invoked from the parallel mesh-generation phase, so implementations MUST be worker-thread safe \u2014 use is not null reference checks rather than Unity\u0027s overloaded != null, which calls EnsureRunningOnMainThread and throws off the main thread. Destroyed Unity assets are filtered correctly later on the main thread.",
             "params": [],
             "paramTypes": [
               "TEntry"
@@ -49729,6 +49771,45 @@
             "typeParameters": []
           },
           {
+            "id": "InlineMediaModifier.OnShapingStarted",
+            "name": "OnShapingStarted",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Runs before the shaping pass rewrites the occurrences\u0027 slots \u2014 the moment per-occurrence placement state from the previous shaping is stale. Worker thread.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineMediaModifier.OnMediaShaped",
+            "name": "OnMediaShaped",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Per-occurrence hook after the shaping slot took the media\u0027s advance and bearing offset. A subclass that renders through the mesh adds its own offsets to glyph and records the occurrence\u0027s placement here. Also runs when a granular re-apply refreshes the slot in place. Worker thread.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ResolvedMedia\u003C\u003E",
+              "ShapedGlyph",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "InlineMediaModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
@@ -49770,7 +49851,6 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Unsubscribes and schedules a one-shot pool trim on the host\u0027s next [[LayoutCommitted]]: when this cycle no longer applies the modifier (style removed, tag deleted), the surviving wrappers are destroyed right after the rebuild that dropped them; a re-parse that re-enables cancels the deferred trim in [[OnEnable]] and the wrappers are reused instead.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -49787,7 +49867,6 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Destroys the wrapper GameObjects synchronously. This structural teardown (text emptied, component disabled or destroyed) is not followed by another rebuild, so the deferred cleanup that [[OnDisable]] schedules would never fire. Always runs on the main thread.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -49880,6 +49959,28 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "The catalog this modifier consults. Concrete subclass exposes a typed provider field with the appropriate marker interface.",
+            "seeAlso": []
+          },
+          {
+            "id": "InlineMediaModifier.ClusterMedia",
+            "name": "ClusterMedia",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "FastIntDictionary\u003CResolvedMedia\u003C\u003E\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Resolved occurrences of the current parse by source cluster; the per-rebuild placement pass reads it.",
+            "seeAlso": []
+          },
+          {
+            "id": "InlineMediaModifier.SnapshotEntries",
+            "name": "SnapshotEntries",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "ValueCollection\u003C\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Entries of the captured catalog. Main thread, between [[PrepareForParallel]] calls.",
             "seeAlso": []
           },
           {
@@ -50128,6 +50229,122 @@
       }
     },
     {
+      "id": "InlineObjectModifier\u003CTEntry, TWrapper, TOverride\u003E",
+      "name": "InlineObjectModifier\u003CTEntry, TWrapper, TOverride\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "InlineMediaModifier\u003CTEntry, TOverride\u003E",
+      "baseTypeChain": [
+        "InlineMediaModifier\u003CTEntry, TOverride\u003E",
+        "InlineMediaModifier\u003CTEntry\u003E",
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Inline-media modifier whose occurrences are child objects (prefab instances) positioned over the text: owns the wrapper pools and their lifecycle across rebuilds.",
+      "seeAlso": [],
+      "typeParameters": [
+        {
+          "name": "TEntry",
+          "description": "The catalog entry type (must extend [[InlineMedia]])."
+        },
+        {
+          "name": "TWrapper",
+          "description": "The [[MediaWrapper]] subclass that materialises each on-screen occurrence."
+        },
+        {
+          "name": "TOverride",
+          "description": "The keyed presentation-override type."
+        }
+      ],
+      "category": "media",
+      "attributes": [
+        "Serializable"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "InlineObjectModifier.ConfigureWrapper",
+            "name": "ConfigureWrapper",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Copies the per-frame visual state from entry into wrapper (prefab reference, etc.). cluster is the source-text cluster index of this occurrence \u2014 subclasses use it to apply per-occurrence overrides parsed by OnExtraTokens from extra tag arguments.",
+            "params": [],
+            "paramTypes": [
+              "TWrapper",
+              "TEntry",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineObjectModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineObjectModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Unsubscribes and schedules a one-shot pool trim on the host\u0027s next [[LayoutCommitted]]: when this cycle no longer applies the modifier (style removed, tag deleted), the surviving wrappers are destroyed right after the rebuild that dropped them; a re-parse that re-enables cancels the deferred trim in [[OnEnable]] and the wrappers are reused instead.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "InlineObjectModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Destroys the wrapper GameObjects synchronously. This structural teardown (text emptied, component disabled or destroyed) is not followed by another rebuild, so the deferred cleanup that [[OnDisable]] schedules would never fire. Always runs on the main thread.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "InlineObjectOverride",
       "name": "InlineObjectOverride",
       "namespace": "LightSide",
@@ -50223,7 +50440,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Defines an inline sprite that can be embedded within text flow.",
-      "remarks": "Pure data: the host [[SpriteModifier]] owns lifecycle state (instance count, generated GameObjects), so the same [[InlineSprite]] instance can safely be referenced by multiple modifiers.",
+      "remarks": "Pure data: the host [[SpriteModifier]] owns per-occurrence state, so the same [[InlineSprite]] instance can safely be referenced by multiple modifiers.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "media",
@@ -50489,7 +50706,7 @@
         "PrefabMediaWrapper",
         "SpriteImageWrapper"
       ],
-      "summary": "Owns a single inline-flowed RectTransform created by [[InlineMediaModifier{TEntry, TWrapper}]]. Subclasses decide how the instance is created (prefab clone vs fresh GameObject) and how per-frame visual state is applied (sprite/color, prefab-internal rebuild).",
+      "summary": "Owns a single inline-flowed RectTransform created by [[InlineObjectModifier{TEntry, TWrapper, TOverride}]]. Subclasses decide how the instance is created (prefab clone vs fresh GameObject) and how per-frame visual state is applied (sprite/color, prefab-internal rebuild).",
       "seeAlso": [],
       "typeParameters": [],
       "category": "media",
@@ -50675,9 +50892,9 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "InlineMediaModifier\u003CInlineObject, PrefabMediaWrapper, InlineObjectOverride\u003E",
+      "baseType": "InlineObjectModifier\u003CInlineObject, PrefabMediaWrapper, InlineObjectOverride\u003E",
       "baseTypeChain": [
-        "InlineMediaModifier\u003CInlineObject, PrefabMediaWrapper, InlineObjectOverride\u003E"
+        "InlineObjectModifier\u003CInlineObject, PrefabMediaWrapper, InlineObjectOverride\u003E"
       ],
       "interfaces": [],
       "derivedTypes": [],
@@ -50999,6 +51216,162 @@
       }
     },
     {
+      "id": "SpriteFont",
+      "name": "SpriteFont",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ColorFontCore",
+      "baseTypeChain": [
+        "ColorFontCore"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The process-wide colour font whose glyphs are sprites. Every inline sprite of every component is a glyph of this runtime, so it takes a glyph\u0027s place in the text mesh \u2014 the layer stack in order, world-space text, effects through its silhouette field \u2014 while drawing from its own texture at native resolution through the sub-mesh its component keeps per texture; nothing is copied into an atlas. A silhouette field is derived from a read-back of the sprite\u0027s pixels only when an effect asks for one. Glyph ids are issued per [[Sprite]] object and stay stable for the process. The nominal glyph box is 1 em tall on the baseline, its width the sprite\u0027s aspect.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "media",
+      "members": {
+        "methods": [
+          {
+            "id": "SpriteFont.LoadFontFace",
+            "name": "LoadFontFace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "UniTextFontError",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteFont.HasGlyphInAtlas",
+            "name": "HasGlyphInAtlas",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "A registered sprite is always drawable: its pixels are its own texture.",
+            "params": [],
+            "paramTypes": [
+              "uint",
+              "UniTextRenderMode"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteFont.Register",
+            "name": "Register",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "uint",
+            "summary": "Glyph id of a sprite, issued on first sight. Main thread \u2014 reads the sprite\u0027s rect, texture and mesh.",
+            "params": [],
+            "paramTypes": [
+              "Sprite"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteFont.TryGetGlyph",
+            "name": "TryGetGlyph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Glyph id and width-over-height aspect of a registered sprite; false for one never registered. Safe on worker threads.",
+            "params": [],
+            "paramTypes": [
+              "Sprite",
+              "uint",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteFont.ComputeGlyphMetrics",
+            "name": "ComputeGlyphMetrics",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "GlyphMetrics",
+            "summary": "A sprite glyph is its rect\u0027s aspect wide and one em tall, standing on the baseline.",
+            "params": [],
+            "paramTypes": [
+              "uint",
+              "RenderedGlyphData",
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "SpriteFont.Instance",
+            "name": "Instance",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "SpriteFont",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The singleton, created on first access. Main thread on creation.",
+            "seeAlso": []
+          },
+          {
+            "id": "SpriteFont.FontDataHash",
+            "name": "FontDataHash",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "SpriteFont.DiagnosticNamePrefix",
+            "name": "DiagnosticNamePrefix",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "SpriteImageWrapper",
       "name": "SpriteImageWrapper",
       "namespace": "LightSide",
@@ -51013,7 +51386,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Wrapper that creates a single-Image GameObject on demand.",
+      "summary": "Wrapper that creates a single-Image GameObject on demand, for an [[InlineObjectModifier{TEntry, TWrapper, TOverride}]] that places sprites as child objects rather than mesh glyphs.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "media",
@@ -51110,14 +51483,14 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper, InlineSpriteOverride\u003E",
+      "baseType": "InlineMediaModifier\u003CInlineSprite, InlineSpriteOverride\u003E",
       "baseTypeChain": [
-        "InlineMediaModifier\u003CInlineSprite, SpriteImageWrapper, InlineSpriteOverride\u003E"
+        "InlineMediaModifier\u003CInlineSprite, InlineSpriteOverride\u003E"
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Embeds [[Sprite]] assets inline with text. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
-      "remarks": "Tag syntax: \u003Csprite=name[,colorArg][,aspect][,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the keyed override when present, otherwise the provider entry\u0027s own [[Color]]. i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. aspect (true/false) and the shared presentation overrides (size, bearing offset, advance, line space above/below \u2014 em units; pivot \u2014 normalized; rotation \u2014 degrees) resolve through the override hierarchy, weakest \u2192 strongest: provider entry \u2192 keyed override \u2192 default parameters \u2192 tag attribute. The sprite name resolves through [[Provider]]; a matching entry in [[Overrides]] changes only its presentation. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
+      "summary": "Embeds [[Sprite]] assets inline with text as glyphs of the text mesh. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
+      "remarks": "Tag syntax: \u003Csprite=name[,colorArg][,aspect][,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the keyed override when present, otherwise the provider entry\u0027s own [[Color]]. i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. aspect (true/false) and the shared presentation overrides (size, bearing offset, advance, line space above/below \u2014 em units; pivot \u2014 normalized; rotation \u2014 degrees) resolve through the override hierarchy, weakest \u2192 strongest: provider entry \u2192 keyed override \u2192 default parameters \u2192 tag attribute. Every sprite is a glyph of the process-wide [[SpriteFont]]: it takes its place in the layer stack, renders in world-space text, and receives the layer effects (shadow, glow, stroke, \u2026) whose colour-glyph policy applies to it. It draws from its own texture at native resolution \u2014 one sub-mesh per distinct texture, so the sprites of one atlas share a draw call \u2014 and a tightly packed sprite draws by its own outline mesh. The sprite name resolves through [[Provider]]; a matching entry in [[Overrides]] changes only its presentation. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localisation, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
         "ObjModifier",
         "ISpriteProvider",
@@ -51167,8 +51540,8 @@
             "typeParameters": []
           },
           {
-            "id": "SpriteModifier.ConfigureWrapper",
-            "name": "ConfigureWrapper",
+            "id": "SpriteModifier.OnDisable",
+            "name": "OnDisable",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -51177,10 +51550,60 @@
             "isConstructor": false,
             "returnType": "void",
             "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteModifier.OnShapingStarted",
+            "name": "OnShapingStarted",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "SpriteModifier.OnMediaShaped",
+            "name": "OnMediaShaped",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Resolves the occurrence\u0027s glyph and box: the sprite keeps its aspect inside the box, centred, or stretches to fill it; the offsets land in the shaping slot, the scales in the placement. The glyph is requested with the silhouette field any effect asked for on this cluster \u2014 the only atlas work a sprite ever needs.",
+            "params": [],
             "paramTypes": [
-              "SpriteImageWrapper",
-              "InlineSprite",
-              "int"
+              "int",
+              "ResolvedMedia",
+              "ShapedGlyph",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -52189,6 +52612,16 @@
             "isReadonly": false,
             "isConst": true,
             "type": "string"
+          },
+          {
+            "id": "AttributeKeys.ColorGlyphField",
+            "name": "ColorGlyphField",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string",
+            "summary": "Per-codepoint silhouette-field request for colour glyphs, written by effects that apply to them (see ColorGlyphField)."
           }
         ],
         "events": []
@@ -52218,7 +52651,7 @@
         "FontFeatureModifier",
         "FontSizeMatchModifier",
         "GlyphResolutionModifier",
-        "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+        "InlineMediaModifier\u003CTEntry\u003E",
         "InteractiveModifier",
         "LineHeightModifier",
         "ListModifier",
@@ -53006,6 +53439,62 @@
       }
     },
     {
+      "id": "ColorGlyphPolicy",
+      "name": "ColorGlyphPolicy",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Whether a layer effect decorates the colour glyphs \u2014 emoji and inline sprites \u2014 inside its range.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "ColorGlyphPolicy.Inherit",
+            "name": "Inherit",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ColorGlyphPolicy",
+            "defaultValue": "PaintInherit.None",
+            "summary": "No value at this layer (see [[PaintInherit]]); an unresolved chain means the effect\u0027s own default."
+          },
+          {
+            "id": "ColorGlyphPolicy.Skip",
+            "name": "Skip",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ColorGlyphPolicy",
+            "defaultValue": "0",
+            "summary": "The effect leaves colour glyphs untouched."
+          },
+          {
+            "id": "ColorGlyphPolicy.Apply",
+            "name": "Apply",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ColorGlyphPolicy",
+            "defaultValue": "1",
+            "summary": "The effect renders on the glyph\u0027s silhouette, a distance field the atlas derives from the bitmap\u0027s alpha at the 50% threshold."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "ColorModifier",
       "name": "ColorModifier",
       "namespace": "LightSide",
@@ -53472,7 +53961,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Called once per glyph during mesh generation. The subclass decides whether the current glyph ([[currentCluster]]) needs an effect quad and invokes [[EnqueueDuplicate]] if so. Emoji glyphs must be skipped (uniText.MeshGenerator.font.IsColor).",
+            "summary": "Called once per glyph during mesh generation. The subclass decides whether the current glyph ([[currentCluster]]) needs an effect quad and invokes [[EnqueueDuplicate]] if so. A colour glyph (font.IsColor) may be decorated only when [[HasColorFaceField]] holds and the range\u0027s colour-glyph policy is [[Apply]]; its duplicates then sample the silhouette field instead of the bitmap.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -53530,12 +54019,72 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "PaintSpread",
-            "summary": "Resolves this effect\u0027s range spread override against its inherited value. Reads the final parameter slot, so call it after every other parameter the effect reads.",
+            "summary": "Resolves this effect\u0027s range spread override against its inherited value. Reads the slot before the colour-glyph policy, so call it after every other paint parameter the effect reads.",
             "params": [],
             "paramTypes": [
               "ParameterReader",
               "RangeApplyContext",
               "PaintSpread"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.ResolveColorGlyphs",
+            "name": "ResolveColorGlyphs",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "ColorGlyphPolicy",
+            "summary": "Resolves the range\u0027s colour-glyph policy \u2014 Inherit falls through to [[DefaultColorGlyphPolicy]]. Reads the final parameter slot, so call it last.",
+            "params": [],
+            "paramTypes": [
+              "ParameterReader",
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.ResolveColorGlyphs",
+            "name": "ResolveColorGlyphs",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "ColorGlyphPolicy",
+            "summary": "Resolves the range\u0027s colour-glyph policy by the parameter\u0027s own slot \u2014 for effects that read no other parameter through a reader.",
+            "params": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "EffectModifier.RequestColorGlyphField",
+            "name": "RequestColorGlyphField",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Asks the atlas pipeline for the silhouette fields of the colour glyphs in [start, end) (codepoint indices), reserving at least reachEm of rim beyond the glyph edge. Call from [[OnApply]] for every range whose policy is [[Apply]]; the fields exist by the time the mesh is built.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -53676,6 +54225,28 @@
             "typeParameters": []
           },
           {
+            "id": "EffectModifier.EnqueueDuplicate",
+            "name": "EnqueueDuplicate",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Queues a duplicate at an explicit layer sequence \u2014 a claimed fill\u0027s output sequence rather than this modifier\u0027s own.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "LayerBlend",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "EffectModifier.OnFlush",
             "name": "OnFlush",
             "accessModifier": "protected",
@@ -53702,7 +54273,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Reserves a 4-vertex effect-quad slot: copies positions, UV0 and UV1 from the source quad, records the quad at sequence with blend, and advances [[vertexCount]].",
+            "summary": "Reserves a 4-vertex effect-quad slot: copies positions, UV0 and UV1 from the source quad \u2014 or, for a colour face that carries a silhouette field, builds the SDF quad over that field \u2014 records the quad at sequence with blend, and advances [[vertexCount]].",
             "remarks": "[[Colors]] and [[Uvs2]] are not initialised here \u2014 the subclass writes both in [[OnEmitQuad]] via the [[CoverageQuadOps]] helpers. Leaving them untouched keeps the base ignorant of per-effect data layout.",
             "returns": "First vertex index of the new quad.",
             "params": [],
@@ -53745,7 +54316,7 @@
             "type": "PaintSpread",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Gradient continuation outside the paint\u0027s mapping frame, honoured by effects that project a paint; Inherit uses the swatch\u0027s value. Occupies the final parameter slot of every effect, so any parameter added later must follow it.",
+            "summary": "Gradient continuation outside the paint\u0027s mapping frame, honoured by effects that project a paint; Inherit uses the swatch\u0027s value.",
             "seeAlso": [],
             "attributes": [
               "UnityEngine.SerializeField",
@@ -53754,6 +54325,25 @@
               "StateProperty(nameof(MarkMeshDirty))"
             ],
             "defaultValue": "PaintSpread.Inherit",
+            "source": "state"
+          },
+          {
+            "id": "EffectModifier.ColorGlyphs",
+            "name": "ColorGlyphs",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "ColorGlyphPolicy",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether the effect decorates colour glyphs \u2014 emoji and inline sprites \u2014 through their silhouette; Inherit uses the effect\u0027s own default ([[DefaultColorGlyphPolicy]]). The final parameter slot of every effect, so any parameter added later must follow it.",
+            "seeAlso": [],
+            "attributes": [
+              "UnityEngine.SerializeField",
+              "Parameter",
+              "Inheritable",
+              "StateProperty(nameof(MarkMeshDirty))"
+            ],
+            "defaultValue": "ColorGlyphPolicy.Inherit",
             "source": "state"
           },
           {
@@ -53784,6 +54374,17 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "EffectModifier.DefaultColorGlyphPolicy",
+            "name": "DefaultColorGlyphPolicy",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "ColorGlyphPolicy",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The colour-glyph policy an unresolved [[Inherit]] chain resolves to: skip, unless the effect reads naturally on a silhouette (a shadow, a glow).",
             "seeAlso": []
           }
         ],
@@ -67763,6 +68364,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "seeAlso": []
+          },
+          {
+            "id": "GlowModifier.DefaultColorGlyphPolicy",
+            "name": "DefaultColorGlyphPolicy",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "ColorGlyphPolicy",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "A glow reads naturally on any silhouette, so emoji and sprites glow unless a range opts out.",
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -71282,6 +71894,17 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "ShadowModifier.DefaultColorGlyphPolicy",
+            "name": "DefaultColorGlyphPolicy",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "ColorGlyphPolicy",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "A shadow reads naturally on any silhouette, so emoji and sprites cast one unless a range opts out.",
             "seeAlso": []
           }
         ],
@@ -83637,11 +84260,11 @@
         "priority": 100
       },
       {
-        "name": "InlineMediaModifier\u003CTEntry, TWrapper, TOverride\u003E",
+        "name": "InlineMediaModifier\u003CTEntry, TOverride\u003E",
         "priority": 100
       },
       {
-        "name": "InlineMediaModifier\u003CTEntry, TWrapper\u003E",
+        "name": "InlineMediaModifier\u003CTEntry\u003E",
         "priority": 100
       },
       {
@@ -83650,6 +84273,10 @@
       },
       {
         "name": "InlineObject",
+        "priority": 100
+      },
+      {
+        "name": "InlineObjectModifier\u003CTEntry, TWrapper, TOverride\u003E",
         "priority": 100
       },
       {
@@ -83698,6 +84325,10 @@
       },
       {
         "name": "SpriteColorSource",
+        "priority": 100
+      },
+      {
+        "name": "SpriteFont",
         "priority": 100
       },
       {
@@ -83764,6 +84395,10 @@
       },
       {
         "name": "CharacterWidthModifier",
+        "priority": 100
+      },
+      {
+        "name": "ColorGlyphPolicy",
         "priority": 100
       },
       {
