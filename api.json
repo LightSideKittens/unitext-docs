@@ -1,6 +1,6 @@
 {
-  "version": "3.5.5",
-  "generatedAt": "2026-09-03T17:04:50.2957894Z",
+  "version": "3.5.6",
+  "generatedAt": "2026-09-03T17:55:15.3333527Z",
   "namespaces": [],
   "types": [
     {
@@ -49860,10 +49860,10 @@
             "type": "Vector2",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Normalized rotation pivot; (0,0) is bottom-left and (1,1) is top-right.",
+            "summary": "Normalized anchor in the size box: content that does not fill the box is held to it, and rotation turns about it. (0,0) is bottom-left, (1,1) top-right.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Rotation pivot in normalized coordinates; (0,0) is bottom-left and (1,1) is top-right.\u0022)",
+              "Tooltip(\u0022Anchor in the size box, normalized: holds content that does not fill the box and centres the rotation; (0,0) is bottom-left, (1,1) is top-right.\u0022)",
               "SerializeField",
               "VectorDragField",
               "StateProperty"
@@ -50584,10 +50584,10 @@
             "type": "Vector2",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Normalized rotation-pivot override; NaN per axis inherits the provider entry.",
+            "summary": "Normalized anchor override; NaN per axis inherits the provider entry.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Rotation pivot in normalized coordinates; NaN per axis inherits the provider entry.\u0022)",
+              "Tooltip(\u0022Anchor in the size box, normalized; NaN per axis inherits the provider entry.\u0022)",
               "SerializeField",
               "Parameter",
               "Inheritable(0f, 0f)",
@@ -52085,7 +52085,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Resolves the occurrence\u0027s glyph and box: the sprite keeps its aspect inside the box, centred, or stretches to fill it; the offsets land in the shaping slot, the scales in the placement. The glyph is requested with the silhouette field any effect asked for on this cluster \u2014 the only atlas work a sprite ever needs.",
+            "summary": "Resolves the occurrence\u0027s glyph and box: the sprite keeps its aspect inside the box, held to the box\u0027s pivot, or stretches to fill it; the offsets land in the shaping slot, the scales in the placement. The glyph is requested with the silhouette field any effect asked for on this cluster \u2014 the only atlas work a sprite ever needs.",
             "params": [],
             "paramTypes": [
               "int",
