@@ -1,6 +1,6 @@
 {
-  "version": "3.5.4",
-  "generatedAt": "2026-09-03T16:53:16.8294826Z",
+  "version": "3.5.5",
+  "generatedAt": "2026-09-03T17:04:50.2957894Z",
   "namespaces": [],
   "types": [
     {
@@ -2302,6 +2302,99 @@
       }
     },
     {
+      "id": "ShakeModifier.Params",
+      "name": "Params",
+      "namespace": "LightSide",
+      "declaringType": "ShakeModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "animation",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "Params.amplitude",
+            "name": "amplitude",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.angle",
+            "name": "angle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.rate",
+            "name": "rate",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "SpinModifier.Params",
+      "name": "Params",
+      "namespace": "LightSide",
+      "declaringType": "SpinModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "animation",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "Params.frequency",
+            "name": "frequency",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.spread",
+            "name": "spread",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
       "id": "GlitchModifier.Params",
       "name": "Params",
       "namespace": "LightSide",
@@ -2371,10 +2464,10 @@
       }
     },
     {
-      "id": "ShakeModifier.Params",
+      "id": "WobbleModifier.Params",
       "name": "Params",
       "namespace": "LightSide",
-      "declaringType": "ShakeModifier",
+      "declaringType": "WobbleModifier",
       "kind": "struct",
       "accessModifier": "public",
       "isAbstract": false,
@@ -2390,60 +2483,9 @@
         "methods": [],
         "properties": [],
         "fields": [
-          {
-            "id": "Params.amplitude",
-            "name": "amplitude",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
           {
             "id": "Params.angle",
             "name": "angle",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.rate",
-            "name": "rate",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "FloatModifier.Params",
-      "name": "Params",
-      "namespace": "LightSide",
-      "declaringType": "FloatModifier",
-      "kind": "struct",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "animation",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "Params.amplitude",
-            "name": "amplitude",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
@@ -2477,150 +2519,6 @@
       "name": "Params",
       "namespace": "LightSide",
       "declaringType": "PendulumModifier",
-      "kind": "struct",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "animation",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "Params.angle",
-            "name": "angle",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.frequency",
-            "name": "frequency",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.spread",
-            "name": "spread",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "SpinModifier.Params",
-      "name": "Params",
-      "namespace": "LightSide",
-      "declaringType": "SpinModifier",
-      "kind": "struct",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "animation",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "Params.frequency",
-            "name": "frequency",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.spread",
-            "name": "spread",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "DeformModifier.Params",
-      "name": "Params",
-      "namespace": "LightSide",
-      "declaringType": "DeformModifier",
-      "kind": "struct",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "animation",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "Params.amplitude",
-            "name": "amplitude",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.scale",
-            "name": "scale",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float"
-          },
-          {
-            "id": "Params.drift",
-            "name": "drift",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "Vector2"
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "WobbleModifier.Params",
-      "name": "Params",
-      "namespace": "LightSide",
-      "declaringType": "WobbleModifier",
       "kind": "struct",
       "accessModifier": "public",
       "isAbstract": false,
@@ -2719,10 +2617,10 @@
       }
     },
     {
-      "id": "BounceModifier.Params",
+      "id": "WaveModifier.Params",
       "name": "Params",
       "namespace": "LightSide",
-      "declaringType": "BounceModifier",
+      "declaringType": "WaveModifier",
       "kind": "struct",
       "accessModifier": "public",
       "isAbstract": false,
@@ -2770,10 +2668,112 @@
       }
     },
     {
-      "id": "WaveModifier.Params",
+      "id": "DeformModifier.Params",
       "name": "Params",
       "namespace": "LightSide",
-      "declaringType": "WaveModifier",
+      "declaringType": "DeformModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "animation",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "Params.amplitude",
+            "name": "amplitude",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.scale",
+            "name": "scale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.drift",
+            "name": "drift",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Vector2"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "FloatModifier.Params",
+      "name": "Params",
+      "namespace": "LightSide",
+      "declaringType": "FloatModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "animation",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "Params.amplitude",
+            "name": "amplitude",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.frequency",
+            "name": "frequency",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          },
+          {
+            "id": "Params.spread",
+            "name": "spread",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "BounceModifier.Params",
+      "name": "Params",
+      "namespace": "LightSide",
+      "declaringType": "BounceModifier",
       "kind": "struct",
       "accessModifier": "public",
       "isAbstract": false,
@@ -10047,6 +10047,229 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextBase.Units",
+            "name": "Units",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextUnitSequence",
+            "summary": "The text\u0027s units of unit granularity, in logical order. Enumerating allocates nothing; nothing is computed until it is.",
+            "params": [],
+            "paramTypes": [
+              "TextUnit"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.Units",
+            "name": "Units",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextUnitSequence",
+            "summary": "The units of unit granularity inside range, in logical order, each clipped to the range. Out-of-bounds parts of the range are dropped.",
+            "params": [],
+            "paramTypes": [
+              "TextUnit",
+              "TextRange"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.CountUnits",
+            "name": "CountUnits",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "How many units of unit granularity the text holds.",
+            "params": [],
+            "paramTypes": [
+              "TextUnit"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.CountUnits",
+            "name": "CountUnits",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "How many units of unit granularity range holds. A unit the range only partly covers counts as one.",
+            "params": [],
+            "paramTypes": [
+              "TextUnit",
+              "TextRange"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TryGetLabeled",
+            "name": "TryGetLabeled",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Codepoint span of the range the author anchored with #label, whatever modifier\u0027s tag carries it \u2014 the whole-text counterpart of a modifier\u0027s own WhereLabel query, for a caller that knows the name but not the owner. The first such range in text order answers when a name was used more than once.",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "TextRange"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.UnitAt",
+            "name": "UnitAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextRange",
+            "summary": "The unit of unit granularity holding codepointIndex, or an empty range at that index when the text does not reach it.",
+            "params": [],
+            "paramTypes": [
+              "TextUnit",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.OnDidApplyAnimationProperties",
+            "name": "OnDidApplyAnimationProperties",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.PrepareForParallel",
+            "name": "PrepareForParallel",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureFirstPassComplete",
+            "name": "EnsureFirstPassComplete",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.MeasureText",
+            "name": "MeasureText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Vector2",
+            "summary": "Measures the size text occupies under the given constraints and setting overrides \u2014 the displayed text, layout and mesh are left untouched.",
+            "remarks": "Runs the component\u0027s full pipeline: styles and modifiers, font fallback, direction, word wrap; the text resolver is bypassed. Every non-null override in options acts exactly as if set on the component (auto-size fits the font into maxWidth \u00D7 maxHeight like into a real rect). Overrides live in a detached measurement state; component fields are never rewritten, and layout caches plus [[UniTextDirty]] are restored afterwards. Dimensions are outer ([[Padding]] included), so the result maps directly to a RectTransform. Measuring another [[text]] re-parses and re-shapes both texts \u2014 cache the result instead of calling every frame. Main thread only.",
+            "params": [],
+            "paramTypes": [
+              "TextMeasureOptions"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureLayoutComputed",
+            "name": "EnsureLayoutComputed",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.EnsureLayoutFit",
+            "name": "EnsureLayoutFit",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
+            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextBase.GetModifier",
             "name": "GetModifier",
             "accessModifier": "public",
@@ -10581,55 +10804,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.PrepareForParallel",
-            "name": "PrepareForParallel",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureFirstPassComplete",
-            "name": "EnsureFirstPassComplete",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Ensures the first pass (parsing, BiDi, shaping) has run. No-op in the normal pipeline (Phase 1 already ran). Enables LayoutRebuilder.ForceRebuildLayoutImmediate to work outside the pipeline.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.OnDidApplyAnimationProperties",
-            "name": "OnDidApplyAnimationProperties",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniTextBase.HitTestRange",
             "name": "HitTestRange",
             "accessModifier": "public",
@@ -10768,180 +10942,6 @@
             "params": [],
             "paramTypes": [
               "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.MeasureText",
-            "name": "MeasureText",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "Vector2",
-            "summary": "Measures the size text occupies under the given constraints and setting overrides \u2014 the displayed text, layout and mesh are left untouched.",
-            "remarks": "Runs the component\u0027s full pipeline: styles and modifiers, font fallback, direction, word wrap; the text resolver is bypassed. Every non-null override in options acts exactly as if set on the component (auto-size fits the font into maxWidth \u00D7 maxHeight like into a real rect). Overrides live in a detached measurement state; component fields are never rewritten, and layout caches plus [[UniTextDirty]] are restored afterwards. Dimensions are outer ([[Padding]] included), so the result maps directly to a RectTransform. Measuring another [[text]] re-parses and re-shapes both texts \u2014 cache the result instead of calling every frame. Main thread only.",
-            "params": [],
-            "paramTypes": [
-              "TextMeasureOptions"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureLayoutComputed",
-            "name": "EnsureLayoutComputed",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Main layout pass. Computes the \u0022preferred\u0022 state \u2014 [[cachedPreferredHeight]] and an initial [[cachedEffectiveFontSize]] \u2014 for the current rect width. Cached by width only: result is independent of rect.height.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[CalculateLayoutInputVertical]]; world-space variant has it called implicitly by [[EnsureLayoutFit]].",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.EnsureLayoutFit",
-            "name": "EnsureLayoutFit",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Full layout: main pass then, if needed, shrinks [[cachedEffectiveFontSize]] under the current rect.height. Main-pass state comes from the width cache; second pass is cached by rect.height so repeat calls within a frame are free.",
-            "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.Units",
-            "name": "Units",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "TextUnitSequence",
-            "summary": "The text\u0027s units of unit granularity, in logical order. Enumerating allocates nothing; nothing is computed until it is.",
-            "params": [],
-            "paramTypes": [
-              "TextUnit"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.Units",
-            "name": "Units",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "TextUnitSequence",
-            "summary": "The units of unit granularity inside range, in logical order, each clipped to the range. Out-of-bounds parts of the range are dropped.",
-            "params": [],
-            "paramTypes": [
-              "TextUnit",
-              "TextRange"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.CountUnits",
-            "name": "CountUnits",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "int",
-            "summary": "How many units of unit granularity the text holds.",
-            "params": [],
-            "paramTypes": [
-              "TextUnit"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.CountUnits",
-            "name": "CountUnits",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "int",
-            "summary": "How many units of unit granularity range holds. A unit the range only partly covers counts as one.",
-            "params": [],
-            "paramTypes": [
-              "TextUnit",
-              "TextRange"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.TryGetLabeled",
-            "name": "TryGetLabeled",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Codepoint span of the range the author anchored with #label, whatever modifier\u0027s tag carries it \u2014 the whole-text counterpart of a modifier\u0027s own WhereLabel query, for a caller that knows the name but not the owner. The first such range in text order answers when a name was used more than once.",
-            "params": [],
-            "paramTypes": [
-              "string",
-              "TextRange"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.UnitAt",
-            "name": "UnitAt",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "TextRange",
-            "summary": "The unit of unit granularity holding codepointIndex, or an empty range at that index when the text does not reach it.",
-            "params": [],
-            "paramTypes": [
-              "TextUnit",
-              "int"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -11370,6 +11370,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.TextSpan",
+            "name": "TextSpan",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextRange",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Codepoint span of the whole processed text \u2014 the rendered text after parsing, which is what every structure and range API addresses.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.UseParallel",
             "name": "UseParallel",
             "accessModifier": "public",
@@ -11378,6 +11389,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets whether parallel processing is enabled for multiple components.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.PreferredHeight",
+            "name": "PreferredHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
             "seeAlso": []
           },
           {
@@ -11411,28 +11433,6 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Last hover hit test result. Tracked only while [[HoverChanged]] has subscribers \u2014 without them the per-move hit test is skipped and this stays [[None]].",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.PreferredHeight",
-            "name": "PreferredHeight",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "float",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextBase.TextSpan",
-            "name": "TextSpan",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "TextRange",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Codepoint span of the whole processed text \u2014 the rendered text after parsing, which is what every structure and range API addresses.",
             "seeAlso": []
           }
         ],
@@ -11574,26 +11574,6 @@
             ]
           },
           {
-            "id": "UniTextBase.RangeInteractionEventOrder",
-            "name": "RangeInteractionEventOrder",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": false,
-            "isConst": true,
-            "type": "int",
-            "summary": "Built-in range-routing order; lower values intercept it."
-          },
-          {
-            "id": "UniTextBase.ComponentDefaultEventOrder",
-            "name": "ComponentDefaultEventOrder",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": false,
-            "isConst": true,
-            "type": "int",
-            "summary": "Built-in selection/editing order; default subscribers run first."
-          },
-          {
             "id": "UniTextBase.cachedEffectiveFontSize",
             "name": "cachedEffectiveFontSize",
             "accessModifier": "protected",
@@ -11612,6 +11592,26 @@
             "isConst": false,
             "type": "float",
             "summary": "Cached preferred height \u2014 what the text wants at its unconstrained (main-pass) size. Not updated by the second pass: parent layout groups read this as \u0022desired height\u0022, which must stay stable even when the rect is smaller than desired."
+          },
+          {
+            "id": "UniTextBase.RangeInteractionEventOrder",
+            "name": "RangeInteractionEventOrder",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int",
+            "summary": "Built-in range-routing order; lower values intercept it."
+          },
+          {
+            "id": "UniTextBase.ComponentDefaultEventOrder",
+            "name": "ComponentDefaultEventOrder",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "int",
+            "summary": "Built-in selection/editing order; default subscribers run first."
           }
         ],
         "events": [
@@ -12730,6 +12730,22 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextWorld.OnDeInit",
+            "name": "OnDeInit",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextWorld.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -12743,22 +12759,6 @@
             "paramTypes": [
               "PointerEventData"
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextWorld.OnDeInit",
-            "name": "OnDeInit",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "params": [],
-            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -20972,143 +20972,6 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextEditable.RefreshMarkup",
-            "name": "RefreshMarkup",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Re-renders after a [[MarkupChrome]] mutation.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextEditable.IsStyleActive",
-            "name": "IsStyleActive",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Whether typing now would produce T-styled text \u2014 the toolbar state query: a pending typing style wins, otherwise the spans at the caret decide.",
-            "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextEditable.IsStyleActive",
-            "name": "IsStyleActive",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "params": [],
-            "paramTypes": [
-              "Type"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextEditable.IsStyleActive",
-            "name": "IsStyleActive",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "Whether typing now would produce text matching exemplar\u0027s style (by modifier signature \u2014 a composite matches its ordered child types). A pending typing style wins; otherwise the spans at the caret decide.",
-            "params": [],
-            "paramTypes": [
-              "BaseModifier"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextEditable.TryGetStyleParameter",
-            "name": "TryGetStyleParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "The parameter the active T style carries at the caret / selection \u2014 the color-swatch query for toolbars. A pending typing style wins; otherwise the covering span\u0027s parameter is returned. when the style is not active.",
-            "params": [],
-            "paramTypes": [
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": [
-              {
-                "name": "T"
-              }
-            ]
-          },
-          {
-            "id": "UniTextEditable.TryGetStyleParameter",
-            "name": "TryGetStyleParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "params": [],
-            "paramTypes": [
-              "Type",
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextEditable.TryGetStyleParameter",
-            "name": "TryGetStyleParameter",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "bool",
-            "summary": "The parameter the active style matching exemplar carries at the caret / selection \u2014 the color-swatch query for toolbars. A pending typing style wins; otherwise the covering span\u0027s parameter is returned. when the style is not active or its value is mixed.",
-            "params": [],
-            "paramTypes": [
-              "BaseModifier",
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
             "id": "UniTextEditable.Activate",
             "name": "Activate",
             "accessModifier": "public",
@@ -21203,8 +21066,8 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextEditable.HandleScroll",
-            "name": "HandleScroll",
+            "id": "UniTextEditable.RefreshMarkup",
+            "name": "RefreshMarkup",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
@@ -21212,31 +21075,9 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Handles mouse wheel scroll. Arrives through the editor\u0027s own [[IScrollHandler]]; custom gesture pipelines call directly. No-op standalone (no clipping viewport) or while the content fits the viewport.",
+            "summary": "Re-renders after a [[MarkupChrome]] mutation.",
             "params": [],
-            "paramTypes": [
-              "PointerEventData"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextEditable.GetCaretScreenPosition",
-            "name": "GetCaretScreenPosition",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "Vector2",
-            "summary": "Screen-space caret position for codepointIndex (document space) \u2014 bottom picks the caret rect\u0027s bottom or top edge. The geometry query selection-UI implementations ([[ISelectionHandles]], [[IMagnifier]], system toolbars) issue against [[ActiveEditor]] to place themselves.",
-            "params": [],
-            "paramTypes": [
-              "int",
-              "bool"
-            ],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -21800,6 +21641,126 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextEditable.IsStyleActive",
+            "name": "IsStyleActive",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether typing now would produce T-styled text \u2014 the toolbar state query: a pending typing style wins, otherwise the spans at the caret decide.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextEditable.IsStyleActive",
+            "name": "IsStyleActive",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Type"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextEditable.IsStyleActive",
+            "name": "IsStyleActive",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether typing now would produce text matching exemplar\u0027s style (by modifier signature \u2014 a composite matches its ordered child types). A pending typing style wins; otherwise the spans at the caret decide.",
+            "params": [],
+            "paramTypes": [
+              "BaseModifier"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextEditable.TryGetStyleParameter",
+            "name": "TryGetStyleParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "The parameter the active T style carries at the caret / selection \u2014 the color-swatch query for toolbars. A pending typing style wins; otherwise the covering span\u0027s parameter is returned. when the style is not active.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": [
+              {
+                "name": "T"
+              }
+            ]
+          },
+          {
+            "id": "UniTextEditable.TryGetStyleParameter",
+            "name": "TryGetStyleParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Type",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextEditable.TryGetStyleParameter",
+            "name": "TryGetStyleParameter",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "The parameter the active style matching exemplar carries at the caret / selection \u2014 the color-swatch query for toolbars. A pending typing style wins; otherwise the covering span\u0027s parameter is returned. when the style is not active or its value is mixed.",
+            "params": [],
+            "paramTypes": [
+              "BaseModifier",
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextEditable.SetValidation",
             "name": "SetValidation",
             "accessModifier": "public",
@@ -21813,6 +21774,45 @@
             "params": [],
             "paramTypes": [
               "ValidationState"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextEditable.HandleScroll",
+            "name": "HandleScroll",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Handles mouse wheel scroll. Arrives through the editor\u0027s own [[IScrollHandler]]; custom gesture pipelines call directly. No-op standalone (no clipping viewport) or while the content fits the viewport.",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextEditable.GetCaretScreenPosition",
+            "name": "GetCaretScreenPosition",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Vector2",
+            "summary": "Screen-space caret position for codepointIndex (document space) \u2014 bottom picks the caret rect\u0027s bottom or top edge. The geometry query selection-UI implementations ([[ISelectionHandles]], [[IMagnifier]], system toolbars) issue against [[ActiveEditor]] to place themselves.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "bool"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -22080,6 +22080,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextEditable.ActiveEditor",
+            "name": "ActiveEditor",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "UniTextEditable",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Currently active editor across the application \u2014 THE \u0022current editor\u0022 authority. Selection UI ([[ISelectionHandles]] / [[IInsertionHandle]], [[IMagnifier]], [[ITextContextMenu]]) pulls geometry and document state from here at call time \u2014 implementations are never bound to a specific field, so they can never render against a stale one. Set on [[Activate]], cleared when [[Deactivate]] completes.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextEditable.MarkupVisibility",
             "name": "MarkupVisibility",
             "accessModifier": "public",
@@ -22099,28 +22110,6 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Rules styling the markup tag characters wherever they are visible \u2014 every tag under [[Raw]], the caret\u0027s tags under [[RevealActiveRange]]. Each rule\u0027s [[Selector]] picks which markup it targets; rules of different modifier kinds compose, same-kind rules resolve by specificity. Call [[RefreshMarkup]] after mutating at runtime.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextEditable.ModifiersAtCaret",
-            "name": "ModifiersAtCaret",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "IReadOnlyList\u003CBaseModifier\u003E",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Modifiers currently covering the caret / selection. Reused list \u2014 copy to keep.",
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextEditable.ActiveEditor",
-            "name": "ActiveEditor",
-            "accessModifier": "public",
-            "isStatic": true,
-            "type": "UniTextEditable",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Currently active editor across the application \u2014 THE \u0022current editor\u0022 authority. Selection UI ([[ISelectionHandles]] / [[IInsertionHandle]], [[IMagnifier]], [[ITextContextMenu]]) pulls geometry and document state from here at call time \u2014 implementations are never bound to a specific field, so they can never render against a stale one. Set on [[Activate]], cleared when [[Deactivate]] completes.",
             "seeAlso": []
           },
           {
@@ -22154,6 +22143,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Whether hand-typed markup is parsed or kept literal \u2014 see [[TypingMarkupPolicy]]. Default [[Parse]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextEditable.ModifiersAtCaret",
+            "name": "ModifiersAtCaret",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IReadOnlyList\u003CBaseModifier\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Modifiers currently covering the caret / selection. Reused list \u2014 copy to keep.",
             "seeAlso": []
           },
           {
