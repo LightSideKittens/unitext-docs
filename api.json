@@ -1,6 +1,6 @@
 {
   "version": "3.5.7",
-  "generatedAt": "2026-09-05T00:32:18.5716929Z",
+  "generatedAt": "2026-09-05T01:19:26.7938500Z",
   "namespaces": [],
   "types": [
     {
@@ -57875,7 +57875,7 @@
       ],
       "derivedTypes": [],
       "summary": "Applies a user-authored [[Material]] to a text range by emitting a dedicated sub-mesh with its own CanvasRenderer.",
-      "remarks": "The custom shader must include UniText_Custom.cginc \u2014 see Assets/Create/UniText/Custom Material Shader for a working template. The glyph atlases are global shader bindings and must NOT appear in the shader\u0027s Properties block; per-glyph user data is written into TEXCOORD2 / TEXCOORD3 (see [[constantUv2]], [[constantUv3]], [[glyphDataWriter]] and [[OnWriteGlyphUV]]). Default [[renderOrder]] is [[Replace]]: the base pass is suppressed on the range (the face quad is claimed and not recorded into the main mesh). Use [[Keep]] to keep the base pass and stack the custom material as its own layer, ordered by this modifier\u0027s position in Styles. Parameter: optional tint color. Format: \u003Cmat=#RRGGBBAA\u003E or \u003Cmat=red\u003E. The tint multiplies the vertex color that the shader receives. Replace suppresses the base face structurally: the glyph\u0027s base quad is not recorded, so the result is independent of where the modifier sits among other Styles. Paint layers (stroke, shadow, glow) are separate quads at their own sequence and still render over/under it. Emoji glyphs are handled identically to text \u2014 the unified vertex-mode contract lets the one custom material render every glyph mode.",
+      "remarks": "The custom shader must include LightSide_Custom.cginc \u2014 see Assets/Create/UniText/Custom Effect for a working template. The glyph atlases are global shader bindings and must NOT appear in the shader\u0027s Properties block; per-glyph user data is written into TEXCOORD2 / TEXCOORD3 (see [[constantUv2]], [[constantUv3]], [[glyphDataWriter]] and [[OnWriteGlyphUV]]). Default [[renderOrder]] is [[Replace]]: the base pass is suppressed on the range (the face quad is claimed and not recorded into the main mesh). Use [[Keep]] to keep the base pass and stack the custom material as its own layer, ordered by this modifier\u0027s position in Styles. Parameter: optional tint color. Format: \u003Cmat=#RRGGBBAA\u003E or \u003Cmat=red\u003E. The tint multiplies the vertex color that the shader receives. Replace suppresses the base face structurally: the glyph\u0027s base quad is not recorded, so the result is independent of where the modifier sits among other Styles. Paint layers (stroke, shadow, glow) are separate quads at their own sequence and still render over/under it. Emoji glyphs are handled identically to text \u2014 the unified vertex-mode contract lets the one custom material render every glyph mode.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -58071,7 +58071,7 @@
             "summary": "Custom material applied to this modifier\u0027s ranges.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Custom material to apply to the range. The shader must include UniText_Custom.cginc.\u0022)",
+              "Tooltip(\u0022Custom material to apply to the range. The shader must include LightSide_Custom.cginc.\u0022)",
               "SerializeField",
               "StateProperty(nameof(ApplyMaterialChange))"
             ],
@@ -58164,10 +58164,10 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Optional em-space expansion applied to emitted glyph quads.",
+            "summary": "Optional outward expansion of emitted glyph quads, in glyph heights.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Expand each glyph quad outward by this many em-units so shader effects (glow, edge, etc.) \u0022 \u002B\n                 \u0022aren\u0027t clipped by the glyph\u0027s tight bounding box. Negative = read from shader\u0027s \u0022 \u002B\n                 \u0022_UniTextMeshPadding property (shader-driven default).\u0022)",
+              "Tooltip(\u0022Expand each glyph quad outward by this fraction of the glyph height so shader effects \u0022 \u002B\n                 \u0022(glow, edge, etc.) aren\u0027t clipped by the glyph\u0027s tight bounding box. The atlas reserves \u0022 \u002B\n                 \u0022matching rim, up to the signed-distance spread it can store. Negative = read from shader\u0027s \u0022 \u002B\n                 \u0022_LightSideMeshPadding property (shader-driven default).\u0022)",
               "SerializeField",
               "StateProperty(nameof(ApplyQuadPaddingChange))"
             ],
