@@ -1,6 +1,6 @@
 {
-  "version": "3.5.8",
-  "generatedAt": "2026-09-05T10:07:24.9452891Z",
+  "version": "3.5.9",
+  "generatedAt": "2026-09-05T16:31:19.5139840Z",
   "namespaces": [],
   "types": [
     {
@@ -8292,59 +8292,6 @@
       }
     },
     {
-      "id": "DriverLoop",
-      "name": "DriverLoop",
-      "kind": "enum",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": false,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Legacy playhead repeat modes.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "components",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "DriverLoop.Once",
-            "name": "Once",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "DriverLoop",
-            "defaultValue": "0"
-          },
-          {
-            "id": "DriverLoop.Loop",
-            "name": "Loop",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "DriverLoop",
-            "defaultValue": "1"
-          },
-          {
-            "id": "DriverLoop.PingPong",
-            "name": "PingPong",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "DriverLoop",
-            "defaultValue": "2"
-          }
-        ],
-        "events": []
-      }
-    },
-    {
       "id": "FitStep",
       "name": "FitStep",
       "namespace": "LightSide",
@@ -9469,7 +9416,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Rect",
-            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop), clamped to non-negative. Main-thread only.",
+            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop). A negative rect size collapses to zero at the pivot; padding exceeding the size keeps the left and top edges. Main-thread only.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -12036,7 +11983,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Moves the playhead to a normalized 0..1 position and renders that state.",
+            "summary": "Moves the playhead to a normalized 0..1 position of the first pass and renders that state.",
             "params": [],
             "paramTypes": [
               "float"
@@ -12130,7 +12077,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Position on the timeline in seconds: where the sequence evaluates, so a [[PingPong]] return reads as the mirrored position and never as a phase past the end. Setting it seeks the forward pass and renders that state; [[Progress]] is the same position normalized.",
+            "summary": "Position on the timeline in seconds: where the sequence evaluates, so a [[PingPong]] or [[Yoyo]] return reads as the mirrored position and never as a phase past the end. Setting it seeks that many seconds into the run, counted from its first pass, and renders that state; [[Progress]] is the same position normalized.",
             "seeAlso": []
           },
           {
@@ -37330,7 +37277,27 @@
       "typeParameters": [],
       "category": "layout",
       "members": {
-        "methods": [],
+        "methods": [
+          {
+            "id": "TextProcessSettings.IsUnbounded",
+            "name": "IsUnbounded",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether a layout extent carries no limit: [[FloatMax]] or beyond. Zero is a limit like any other.",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
         "properties": [],
         "fields": [
           {
@@ -56212,7 +56179,7 @@
         "BaseRangeDecorationModifier",
         "PaintLayerModifier"
       ],
-      "summary": "Receives the normalized weight of a transient modifier application.",
+      "summary": "Receives the weight of a transient modifier application, saturated to 0..1.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -56228,7 +56195,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets the weight used by subsequent range applications in the current pass.",
+            "summary": "Sets the weight, 0..1, used by subsequent range applications in the current pass.",
             "params": [],
             "paramTypes": [
               "float"
@@ -56609,7 +56576,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "TValue",
-            "summary": "Interpolates from from to to at normalized progress, with zero selecting the former and one selecting the latter.",
+            "summary": "Interpolates from from to to at normalized progress, with zero selecting the former and one selecting the latter. Progress outside [0, 1] extrapolates; a type that cannot extrapolate selects the endpoint the progress lies beyond, and one with a bounded range saturates.",
             "params": [],
             "paramTypes": [
               "TValue",
@@ -60862,7 +60829,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "TValue",
-            "summary": "Interpolates between two values under this parameter\u0027s type contract.",
+            "summary": "Interpolates between two values under this parameter\u0027s type contract, extrapolating past either endpoint where the type allows.",
             "params": [],
             "paramTypes": [
               "TValue",
@@ -62993,7 +62960,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets the normalized built-in weight without choosing a tween implementation.",
+            "summary": "Sets the blend weight immediately, without choosing a tween implementation.",
             "params": [],
             "paramTypes": [
               "float"
@@ -63095,7 +63062,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Current normalized contribution weight.",
+            "summary": "Blend weight of the contributions: the cascade at 0, the rule\u0027s target at 1, and extrapolation past either, which a transition\u0027s easing may reach in flight.",
             "seeAlso": []
           }
         ],
@@ -83773,10 +83740,6 @@
       },
       {
         "name": "CachedTransformData",
-        "priority": 100
-      },
-      {
-        "name": "DriverLoop",
         "priority": 100
       },
       {
