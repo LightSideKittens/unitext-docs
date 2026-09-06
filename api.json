@@ -1,6 +1,6 @@
 {
-  "version": "3.5.10",
-  "generatedAt": "2026-09-05T20:56:48.5253872Z",
+  "version": "3.5.11",
+  "generatedAt": "2026-09-06T12:55:24.2815012Z",
   "namespaces": [],
   "types": [
     {
@@ -70636,7 +70636,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Sets the painter order of a range\u0027s paint layers ([[PaintOrder]]): layer-major (the component default) draws each layer across all glyphs before the next layer; glyph-major composites every layer of one glyph before the next glyph, so a later glyph\u0027s stroke or shadow overlaps earlier glyphs\u0027 fill. The axis is a single per-component channel \u2014 all layer modifiers follow it, overlapping ranges resolve innermost-wins, and unmarked text stays layer-major. Characters connected by the Unicode cursive joining algorithm (Arabic, Syriac, N\u0027Ko, Mongolian, \u2026) never split: each connected stretch keeps layer order and composites as one unit, so glyph-major Arabic stacks per word rather than per letter.",
+      "summary": "Sets the painter order of a range\u0027s paint layers ([[PaintOrder]]): layer-major (the component default) draws each layer across all glyphs before the next layer; glyph-major composites every layer of one glyph before the next glyph, so a later glyph\u0027s stroke or shadow overlaps earlier glyphs\u0027 fill; reverse stacks a glyph-major range front to back instead, so earlier glyphs overlap later ones. The axis is a single per-component channel \u2014 all layer modifiers follow it, overlapping ranges resolve innermost-wins, and unmarked text stays layer-major. Characters connected by the Unicode cursive joining algorithm (Arabic, Syriac, N\u0027Ko, Mongolian, \u2026) never split: each connected stretch keeps layer order and composites as one unit, so glyph-major Arabic stacks per word rather than per letter.",
       "remarks": "Applies to same-material quads of the base mesh. Separate-material output (texture paints, the color-glyph segment) always stacks layer-major, and a blend-mode change between adjacent glyph-major quads splits the draw. Stylistic connected Latin fonts (script typefaces joining via ligatures and contextual alternates) carry no data signal that marks them cursive; their connections are not detected.",
       "seeAlso": [],
       "typeParameters": [],
@@ -70707,7 +70707,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Stamps the range\u0027s resolved order into the shared per-codepoint axis ([[paintOrders]]); overlapping ranges resolve innermost-wins through packed (start, end) winner entries. Glyph-major stamping is joining-aware: a character cursively connected to a neighbour (Transparent characters skipped, edges probed past the range bounds) keeps layer order, and Transparent characters inherit their base\u0027s mode so a connected stretch stays one contiguous composition group.",
+            "summary": "Stamps the range\u0027s resolved order into the shared per-codepoint axis ([[paintOrders]]); overlapping ranges resolve innermost-wins through packed (start, end) winner entries. Glyph-major stamping is joining-aware: a character cursively connected to a neighbour (Transparent characters skipped, edges probed past the range bounds) keeps layer order, and Transparent characters inherit their base\u0027s mode so a connected stretch stays one contiguous composition group. A reversed range carries [[PaintOrderReversed]] on every stamp, connected stretches included, so the mesh generator mirrors the range as a whole.",
             "params": [],
             "paramTypes": [
               "RangeApplyContext"
@@ -70735,6 +70735,24 @@
               "Tooltip(\u0022Layer draws each layer across all glyphs; Glyph composites each glyph fully before the next.\u0022)"
             ],
             "defaultValue": "PaintOrder.Glyph",
+            "source": "state"
+          },
+          {
+            "id": "PaintOrderModifier.Reverse",
+            "name": "Reverse",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Stacks glyph-major glyphs front to back \u2014 an earlier glyph\u0027s stroke or shadow overlaps later glyphs \u2014 when the markup carries no value. Layer order has no direction and ignores it.",
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "Parameter",
+              "StateProperty(nameof(MarkMeshDirty))",
+              "Tooltip(\u0022Glyph order stacks the first glyph on top instead of the last. Ignored by Layer order.\u0022)"
+            ],
             "source": "state"
           }
         ],
@@ -77685,7 +77703,7 @@
       "derivedTypes": [
         "PrefabSelectionHandles"
       ],
-      "summary": "Insertion-handle capability on touch platforms: a single draggable handle under a collapsed caret that the user drags to reposition it, taps to raise the context menu, or releases to confirm placement. It is optional and independent of [[ISelectionHandles]]; one entity may implement either capability or both.",
+      "summary": "Insertion-handle capability for touch interaction: a single draggable handle under a collapsed caret that the user drags to reposition it, taps to raise the context menu, or releases to confirm placement. It is optional and independent of [[ISelectionHandles]]; one entity may implement either capability or both.",
       "remarks": "[[Show]] appears the handle at the current caret, [[UpdatePosition]] follows it while visible, and [[Hide]] removes it when the caret is gone, a selection forms, or focus is lost.",
       "seeAlso": [],
       "typeParameters": [],
@@ -77978,7 +77996,7 @@
       "derivedTypes": [
         "PrefabSelectionHandles"
       ],
-      "summary": "Selection-handle capability on touch platforms: two draggable endpoints the user moves to adjust selection boundaries. The entity owns its presentation; the editable only drives it.",
+      "summary": "Selection-handle capability for touch interaction: two draggable endpoints the user moves to adjust selection boundaries. The entity owns its presentation; the editable only drives it.",
       "remarks": "[[Show]] is called when a selection is established, [[UpdatePositions]] while it remains visible, and [[Hide]] when the selection collapses or focus is lost.",
       "seeAlso": [],
       "typeParameters": [],
