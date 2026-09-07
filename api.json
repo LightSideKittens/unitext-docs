@@ -1,6 +1,6 @@
 {
-  "version": "3.6.0",
-  "generatedAt": "2026-09-07T15:43:17.3709680Z",
+  "version": "3.7.0",
+  "generatedAt": "2026-09-07T23:36:31.2973062Z",
   "namespaces": [],
   "types": [
     {
@@ -6238,6 +6238,17 @@
         "methods": [],
         "properties": [
           {
+            "id": "ClipboardCopyContext.TextComponent",
+            "name": "TextComponent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniTextBase",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The text component the selection was copied from.",
+            "seeAlso": []
+          },
+          {
             "id": "ClipboardCopyContext.Editable",
             "name": "Editable",
             "accessModifier": "public",
@@ -6245,7 +6256,7 @@
             "type": "UniTextEditable",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "The editable field that initiated the copy operation.",
+            "summary": "The editable field that initiated the copy, or for a copy from read-only selectable text.",
             "seeAlso": []
           },
           {
@@ -6256,7 +6267,7 @@
             "type": "string",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Selection serialized in the source field\u0027s own markup syntax.",
+            "summary": "Selection serialized in the source field\u0027s own markup syntax; empty for a copy from read-only text, whose source is not kept.",
             "seeAlso": []
           },
           {
@@ -8842,6 +8853,42 @@
             "typeParameters": []
           },
           {
+            "id": "UniText.ProjectedEmPixels",
+            "name": "ProjectedEmPixels",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Screen-space canvases resolve the em size from the canvas scale and this transform\u0027s scale relative to the canvas; a world-space canvas relies on a camera adapter\u0027s projected scale.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.ApplyWindowScroll",
+            "name": "ApplyWindowScroll",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Re-places the window by moving the render root and the mask stamp root; built meshes stay untouched.",
+            "params": [],
+            "paramTypes": [
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniText.OnSetDirty",
             "name": "OnSetDirty",
             "accessModifier": "protected",
@@ -8855,6 +8902,40 @@
             "paramTypes": [
               "UniTextDirty"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.ResolveAutomaticViewport",
+            "name": "ResolveAutomaticViewport",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Nullable\u003CRect\u003E",
+            "summary": "A Canvas text is its own viewport: a document shows through its rect, which a [[UniTextDocumentView]] keeps equal to the view\u0027s.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniText.ResolveDisplayBounds",
+            "name": "ResolveDisplayBounds",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Nullable\u003CRect\u003E",
+            "summary": "The root canvas is all a Canvas can show.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9121,6 +9202,16 @@
             "seeAlso": []
           },
           {
+            "id": "UniText.RenderRootOffsetsGeometry",
+            "name": "RenderRootOffsetsGeometry",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
             "id": "UniText.NeedsFrameTick",
             "name": "NeedsFrameTick",
             "accessModifier": "protected",
@@ -9301,6 +9392,42 @@
               "int",
               "int"
             ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.DeclareVisibleWindow",
+            "name": "DeclareVisibleWindow",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Makes window (this RectTransform\u0027s local space) the visible window until [[ReleaseDeclaredWindow]]; clip rects the backend receives meanwhile are ignored.",
+            "params": [],
+            "paramTypes": [
+              "Rect"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ReleaseDeclaredWindow",
+            "name": "ReleaseDeclaredWindow",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Ends a declared window; the backend\u0027s own clip rect, if any, takes over at its next update.",
+            "params": [],
+            "paramTypes": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10214,6 +10341,316 @@
             "remarks": "Main-thread only. Canvas variant invokes this from [[SetLayoutVertical]]; world-space variant from the render pipeline before mesh generation.",
             "params": [],
             "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ProjectedEmPixels",
+            "name": "ProjectedEmPixels",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Screen pixels per em for the viewer; \u002B\u221E when unknown, so text always renders.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.SetDocument",
+            "name": "SetDocument",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Renders rope as this component\u0027s text. A document that fits its viewport renders whole; a longer one renders through a window \u2014 only the blocks near the viewport are parsed, shaped and laid out \u2014 starting at its top, and scrolls through [[ScrollDocumentTo]] and [[ScrollDocumentBy]]: a [[UniTextDocumentView]] drives those for a Canvas text. The serialized text is left untouched. Pass takeOwnership to have the component dispose the document with itself.",
+            "params": [],
+            "paramTypes": [
+              "Rope",
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.RevealDocumentSpan",
+            "name": "RevealDocumentSpan",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scrolls so the document-space span [top, bottom] (top-down, local units) is inside the viewport, moving as little as possible; usable the moment a document is set. A text whose position follows a camera raises [[DocumentScrollRequested]] instead of moving itself. A document that fits its viewport whole has nowhere to scroll.",
+            "params": [],
+            "paramTypes": [
+              "double",
+              "double",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.RevealLocalSpan",
+            "name": "RevealLocalSpan",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scrolls so a rect in this RectTransform\u0027s local space (rendered geometry: a caret, a range) is inside the viewport.",
+            "params": [],
+            "paramTypes": [
+              "Rect",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ScrollToCodepoint",
+            "name": "ScrollToCodepoint",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scrolls so the block holding a document codepoint is inside the viewport.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ScrollToParagraph",
+            "name": "ScrollToParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Scrolls so a paragraph\u0027s first block is at the top of the viewport.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ScrollDocumentTo",
+            "name": "ScrollDocumentTo",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Puts document Y top at the viewport\u0027s top edge, clamped to the document; the window follows on the next pass. Whoever scrolls this text calls it: a view from its drag and scrollbars, a camera adapter from the camera.",
+            "params": [],
+            "paramTypes": [
+              "double"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ScrollDocumentBy",
+            "name": "ScrollDocumentBy",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Moves the document position by local units: positive dy scrolls further down the document, positive dx further right (unwrapped text only).",
+            "params": [],
+            "paramTypes": [
+              "double",
+              "double"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ResolveAutomaticViewport",
+            "name": "ResolveAutomaticViewport",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Nullable\u003CRect\u003E",
+            "summary": "The viewport a backend supplies on its own when none is declared \u2014 a text that is its own viewport returns its rect \u2014 or to fall back to the clip rect and the display.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ResolveDisplayBounds",
+            "name": "ResolveDisplayBounds",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Nullable\u003CRect\u003E",
+            "summary": "Bounds of what the display can show, in this RectTransform\u0027s local space (the root canvas, a camera\u0027s view of the text\u0027s plane), or when nothing is known to display this text.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.TransformRectBetween",
+            "name": "TransformRectBetween",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rect",
+            "summary": "Axis-aligned bounds of rect (in source\u0027s local space) expressed in target\u0027s local space. Two rects under one root are mapped through their stored anchor data alone \u2014 transforms lag a layout pass within its frame, this does not; rects without a common root, or under a zero scale, go through transforms.",
+            "params": [],
+            "paramTypes": [
+              "RectTransform",
+              "Rect",
+              "RectTransform"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.PivotInAncestor",
+            "name": "PivotInAncestor",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Vector2",
+            "summary": "Position of rect\u0027s pivot in the local space of ancestor \u2014 or of the topmost RectTransform above it when, returned in reached \u2014 with the size of one of its local units there, from stored anchor data alone: anchors, anchored position, pivot, size and local scale of every RectTransform on the way. Rotation is not represented.",
+            "params": [],
+            "paramTypes": [
+              "RectTransform",
+              "RectTransform",
+              "Vector2",
+              "RectTransform"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.ApplyWindowScroll",
+            "name": "ApplyWindowScroll",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Places already-built geometry at offset without rebuilding it; returns when the backend cannot, in which case the mesh is regenerated with the offset baked into its rect.",
+            "params": [],
+            "paramTypes": [
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.LocalToDocumentY",
+            "name": "LocalToDocumentY",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "double",
+            "summary": "Document Y (top-down) of a local-space Y on the rendered geometry: the window\u0027s placement is undone, so a caret or range rect converts exactly.",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.DocumentToLocalY",
+            "name": "DocumentToLocalY",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Local-space Y of a document Y, on the rendered geometry\u0027s placement; positions outside the window are extrapolated.",
+            "params": [],
+            "paramTypes": [
+              "double"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextBase.GetCodepointDocumentSpan",
+            "name": "GetCodepointDocumentSpan",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Document-space top and bottom of the block containing a document codepoint \u2014 the vertical span a codepoint is known to lie within before it is laid out.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "double",
+              "double"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -11239,7 +11676,18 @@
             "type": "Nullable\u003CRect\u003E",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Local-space window that bounds mesh emission: paragraphs fully outside it produce no quads. Layout, selection, caret and hit-testing are unaffected \u2014 only rendering is windowed. renders everything. Canvas components feed it from the mask clip rect automatically; set it explicitly for custom virtualized scrollers, in this RectTransform\u0027s local space.",
+            "summary": "Local-space window this text is seen through: it bounds mesh emission (paragraphs fully outside it produce no quads) and, for a document, selects the blocks that are materialized. Layout, selection, caret and hit-testing are unaffected. renders everything; a document is still never materialized beyond what the display can show, whatever window is set. Canvas components feed it from the clip rect a clipper applies to them; [[DeclareVisibleWindow]] overrides that with a window of the caller\u0027s own, in this RectTransform\u0027s local space.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.VisibleWindowDeclared",
+            "name": "VisibleWindowDeclared",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True while a declared window stands in for the clip rect (see [[DeclareVisibleWindow]]).",
             "seeAlso": []
           },
           {
@@ -11349,6 +11797,171 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Height the text content needs inside the padded inner rect (accounts for auto-sizing). Does not include vertical [[Padding]] \u2014 this is the content-box height, matching CSS height with box-sizing: content-box. The ILayoutElement contract adds vertical padding so ContentSizeFitter sizes the outer RectTransform to fit content \u002B padding.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.Document",
+            "name": "Document",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Rope",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The document this component renders, or while the text is a plain string. Supplied by [[SetDocument]], a [[UniTextDocumentLoader]], or the editing host.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.IsWindowed",
+            "name": "IsWindowed",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when the pipeline runs over a viewport-bounded window of the document rather than the whole text: the document is taller (or, unwrapped, wider) than the viewport it is seen through. Every rendered-codepoint index the component reports is then relative to [[RenderedCodepointOffset]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.RenderedCodepointOffset",
+            "name": "RenderedCodepointOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Document codepoint index of the first rendered codepoint; zero when the whole text is rendered.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.RenderedCodepointExtent",
+            "name": "RenderedCodepointExtent",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Number of document codepoints inside the rendered window (the whole document when not windowed).",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.WindowLocalOffset",
+            "name": "WindowLocalOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Vector2",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Translation, in this RectTransform\u0027s local space, that places the rendered window at its document position: mesh-space geometry plus this offset is local space. Zero when not windowed.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.DocumentContentHeight",
+            "name": "DocumentContentHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Height a RectTransform laid out from this text takes for the document: its total height as estimated and measured so far, capped at [[MaxLayoutExtent]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.DocumentContentWidth",
+            "name": "DocumentContentWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Width a RectTransform laid out from this text takes for the document unwrapped: its widest line known so far, capped at [[MaxLayoutExtent]].",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.DocumentTop",
+            "name": "DocumentTop",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Document Y (top-down, local units) at the viewport\u0027s top edge. Held as a block and an offset into it, so a correction of estimated heights above the viewport changes this value, never the content under the viewport.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.DocumentLeft",
+            "name": "DocumentLeft",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Document X (local units) at the viewport\u0027s left edge; zero for wrapped text.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.MaxDocumentTop",
+            "name": "MaxDocumentTop",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Largest [[DocumentTop]] that still fills the viewport, from the document\u0027s current extent.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.MaxDocumentLeft",
+            "name": "MaxDocumentLeft",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Largest [[DocumentLeft]] that still fills the viewport; zero for wrapped text.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.IsGreeked",
+            "name": "IsGreeked",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when the document renders as line bars because glyphs would be smaller than [[LegibilityFloorPixels]]; no text is laid out then, the bars come from the document\u0027s block extents.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.ScanProfile",
+            "name": "ScanProfile",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "ScanProfile",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The scan classes this component\u0027s markup rules make significant, for documents built for it.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.PositionFollowsGeometry",
+            "name": "PositionFollowsGeometry",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True for a backend whose document is a physical plane a camera looks at: the position is where the camera looks, a viewport move is a scroll, and scroll requests go out through [[DocumentScrollRequested]] for the camera to fulfil. A Canvas text is scrolled by a view setting its position directly.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextBase.RenderRootOffsetsGeometry",
+            "name": "RenderRootOffsetsGeometry",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when [[ApplyWindowScroll]] re-places built geometry, so mesh space excludes the window offset.",
             "seeAlso": []
           },
           {
@@ -11543,6 +12156,26 @@
             "summary": "Cached preferred height \u2014 what the text wants at its unconstrained (main-pass) size. Not updated by the second pass: parent layout groups read this as \u0022desired height\u0022, which must stay stable even when the rect is smaller than desired."
           },
           {
+            "id": "UniTextBase.MaxLayoutExtent",
+            "name": "MaxLayoutExtent",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "float",
+            "summary": "Largest extent a RectTransform is laid out to for a document: past it, float precision in the transform chain shifts geometry by visible fractions of a pixel. A longer document scrolls in a [[UniTextDocumentView]]."
+          },
+          {
+            "id": "UniTextBase.LegibilityFloorPixels",
+            "name": "LegibilityFloorPixels",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "float",
+            "summary": "Screen size of one em below which a windowed document renders its lines as bars instead of glyphs."
+          },
+          {
             "id": "UniTextBase.RangeInteractionEventOrder",
             "name": "RangeInteractionEventOrder",
             "accessModifier": "public",
@@ -11619,6 +12252,38 @@
             "isStatic": false,
             "type": "Action",
             "summary": "Occurs after Unity\u0027s Animator applied animated property values to this component. The Animator writes serialized fields directly, bypassing the property setters that raise [[UniTextDirty]], so nothing invalidates on its own \u2014 attach a [[UniTextAnimationBridge]] with the handlers for the fields you animate, or subscribe here and run your own diff, calling [[SetDirty]] with the matching flags."
+          },
+          {
+            "id": "UniTextBase.DocumentGeometryChanged",
+            "name": "DocumentGeometryChanged",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Occurs on the main thread after measured block extents changed the document\u0027s geometry (total height, block tops)."
+          },
+          {
+            "id": "UniTextBase.DocumentPositionChanged",
+            "name": "DocumentPositionChanged",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Occurs on the main thread after [[DocumentTop]] or [[DocumentLeft]] changed."
+          },
+          {
+            "id": "UniTextBase.DocumentChanged",
+            "name": "DocumentChanged",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Occurs after [[Document]] was set or removed."
+          },
+          {
+            "id": "UniTextBase.DocumentScrollRequested",
+            "name": "DocumentScrollRequested",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action\u003Cdouble\u003E",
+            "summary": "Occurs when a text whose position follows a camera is asked to show another part of the document ([[RevealDocumentSpan]] and its callers): the argument is the document Y the viewport\u0027s top edge should land at, for whoever moves the camera."
           },
           {
             "id": "UniTextBase.TextClicked",
@@ -12695,6 +13360,39 @@
             "typeParameters": []
           },
           {
+            "id": "UniTextWorld.ResolveDisplayBounds",
+            "name": "ResolveDisplayBounds",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Nullable\u003CRect\u003E",
+            "summary": "A camera\u0027s view on the text\u0027s plane is all it can show: the main camera, or in the editor the scene view\u0027s camera when no main camera exists. A camera adapter that supplies the projected scale owns the display and its window already is the camera\u0027s projection, so nothing narrows it. With no camera at all nothing displays the text and only the document\u0027s top is materialized.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextWorld.ProjectedEmPixels",
+            "name": "ProjectedEmPixels",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "float",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "UniTextWorld.ResolveEventCamera",
             "name": "ResolveEventCamera",
             "accessModifier": "protected",
@@ -12829,6 +13527,17 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "When, this text receives pointer events (clicks, hover, interactive ranges) from [[UniTextWorldRaycaster]]. Disable for purely decorative text \u2014 the raycaster will skip it.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextWorld.PositionFollowsGeometry",
+            "name": "PositionFollowsGeometry",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "World text is a plane a camera looks at: its document position is where the camera looks.",
             "seeAlso": []
           }
         ],
@@ -13059,6 +13768,2704 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "BlockLease",
+      "name": "BlockLease",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [
+        "IDisposable"
+      ],
+      "derivedTypes": [],
+      "summary": "Blocks pinned by [[Lease]]; content reads are thread-safe, disposal is main-thread.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [
+          {
+            "id": "BlockLease.BlockCharCount",
+            "name": "BlockCharCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.BlockCodepointCount",
+            "name": "BlockCodepointCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.BlockSeparatorCount",
+            "name": "BlockSeparatorCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.BlockFlags",
+            "name": "BlockFlags",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextBlockFlags",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.BlockEndsParagraph",
+            "name": "BlockEndsParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.CopyChars",
+            "name": "CopyChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies the concatenated content of every leased block; returns the number of chars written.",
+            "params": [],
+            "paramTypes": [
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.CopyBlockChars",
+            "name": "CopyBlockChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies one leased block\u0027s content.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.CopyBlockChars",
+            "name": "CopyBlockChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies logical chars [start, start\u002Bcount) of one leased block.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "int",
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BlockLease.Dispose",
+            "name": "Dispose",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "BlockLease.BlockCount",
+            "name": "BlockCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "BlockLease.IsValid",
+            "name": "IsValid",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [
+          {
+            "id": "BlockLease.FirstBlock",
+            "name": "FirstBlock",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int",
+            "summary": "Index of the first leased block in the rope at lease time."
+          },
+          {
+            "id": "BlockLease.CharOffset",
+            "name": "CharOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int",
+            "summary": "Document char offset of the first leased block at lease time."
+          },
+          {
+            "id": "BlockLease.CodepointOffset",
+            "name": "CodepointOffset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int",
+            "summary": "Document codepoint offset of the first leased block at lease time."
+          },
+          {
+            "id": "BlockLease.CharCount",
+            "name": "CharCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "BlockLease.CodepointCount",
+            "name": "CodepointCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int"
+          },
+          {
+            "id": "BlockLease.Version",
+            "name": "Version",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "int",
+            "summary": "The rope version the lease was taken at."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "DocumentPathRoot",
+      "name": "DocumentPathRoot",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Folder a [[FileDocumentSource]] path is relative to.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "DocumentPathRoot.Absolute",
+            "name": "Absolute",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DocumentPathRoot",
+            "defaultValue": "0",
+            "summary": "The path is complete on its own."
+          },
+          {
+            "id": "DocumentPathRoot.StreamingAssets",
+            "name": "StreamingAssets",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DocumentPathRoot",
+            "defaultValue": "1",
+            "summary": "[[streamingAssetsPath]]: files shipped with the build; a URL inside the package on Android and on the web."
+          },
+          {
+            "id": "DocumentPathRoot.PersistentData",
+            "name": "PersistentData",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DocumentPathRoot",
+            "defaultValue": "2",
+            "summary": "[[persistentDataPath]]: the writable per-user folder."
+          },
+          {
+            "id": "DocumentPathRoot.Data",
+            "name": "Data",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DocumentPathRoot",
+            "defaultValue": "3",
+            "summary": "[[dataPath]]: the Assets folder in the editor, the player\u0027s data folder in a build."
+          },
+          {
+            "id": "DocumentPathRoot.TemporaryCache",
+            "name": "TemporaryCache",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "DocumentPathRoot",
+            "defaultValue": "4",
+            "summary": "[[temporaryCachePath]]: downloads and other disposable files."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "DocumentSource",
+      "name": "DocumentSource",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [
+        "FileDocumentSource",
+        "TextAssetDocumentSource"
+      ],
+      "summary": "Where a text component\u0027s document comes from. A source yields a [[Rope]] built for the scan profile of the text that renders it; the built-in sources read files, streaming assets and text assets, and a custom subclass appears in the inspector picker like any other. Every setting is state: a change publishes through the source, and a loader holding it reloads.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "attributes": [
+        "Serializable",
+        "StateHierarchy",
+        "StateSource",
+        "TypeMenuSuffix(\u0022DocumentSource\u0022, \u0022Source\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "DocumentSource.Load",
+            "name": "Load",
+            "accessModifier": "public",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "IDisposable",
+            "summary": "Starts loading. onLoaded runs on the main thread with the document \u2014 before this call returns when the source is synchronous. A source that cannot load throws (synchronous) or lets the exception surface from its completion (asynchronous); the callback never sees a failed load. Returns a handle whose disposal cancels a pending asynchronous load, or.",
+            "params": [],
+            "paramTypes": [
+              "ScanProfile",
+              "Action\u003CRope\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "DocumentSource.IsEmpty",
+            "name": "IsEmpty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when the source names nothing to load \u2014 an unset path or asset. A loader loads nothing from an empty source; [[Load]] on one throws.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "FileDocumentSource",
+      "name": "FileDocumentSource",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "DocumentSource",
+      "baseTypeChain": [
+        "DocumentSource"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "A file addressed as a root folder plus a relative path. Roots the platform exposes as folders load synchronously through [[FileTextSource]]; roots that are URLs (streaming assets on Android and on the web) download through [[UnityWebRequest]] and deliver later.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "attributes": [
+        "Serializable"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "FileDocumentSource.RootLocation",
+            "name": "RootLocation",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "The root\u0027s folder or URL on this platform; empty for [[Absolute]].",
+            "params": [],
+            "paramTypes": [
+              "DocumentPathRoot"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FileDocumentSource.IsUrl",
+            "name": "IsUrl",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when location is a URL rather than a file system path.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FileDocumentSource.Load",
+            "name": "Load",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "IDisposable",
+            "params": [],
+            "paramTypes": [
+              "ScanProfile",
+              "Action\u003CRope\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "FileDocumentSource.Root",
+            "name": "Root",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "DocumentPathRoot",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty"
+            ],
+            "defaultValue": "DocumentPathRoot.StreamingAssets",
+            "source": "state"
+          },
+          {
+            "id": "FileDocumentSource.Path",
+            "name": "Path",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty",
+              "Tooltip(\u0022Path relative to the root, or the whole path for an absolute root.\u0022)"
+            ],
+            "defaultValue": "string.Empty",
+            "source": "state"
+          },
+          {
+            "id": "FileDocumentSource.Encoding",
+            "name": "Encoding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextFileEncoding",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty"
+            ],
+            "defaultValue": "TextFileEncoding.Auto",
+            "source": "state"
+          },
+          {
+            "id": "FileDocumentSource.Backend",
+            "name": "Backend",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "FileTextBackend",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty"
+            ],
+            "defaultValue": "FileTextBackend.Auto",
+            "source": "state"
+          },
+          {
+            "id": "FileDocumentSource.IsEmpty",
+            "name": "IsEmpty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "FileDocumentSource.ResolvedLocation",
+            "name": "ResolvedLocation",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The full path or URL the source resolves to on this platform; empty without a path, since a root alone names no file.",
+            "seeAlso": []
+          },
+          {
+            "id": "FileDocumentSource.IsRemote",
+            "name": "IsRemote",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when the resolved location is a URL, so the load is asynchronous.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "FileTextBackend",
+      "name": "FileTextBackend",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "How the loader reaches the file\u0027s bytes.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "FileTextBackend.Auto",
+            "name": "Auto",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FileTextBackend",
+            "defaultValue": "0",
+            "summary": "Memory-map when the platform proves it at construction; otherwise chunked reads."
+          },
+          {
+            "id": "FileTextBackend.ChunkedRead",
+            "name": "ChunkedRead",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FileTextBackend",
+            "defaultValue": "1"
+          },
+          {
+            "id": "FileTextBackend.MemoryMapped",
+            "name": "MemoryMapped",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "FileTextBackend",
+            "defaultValue": "2"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "FileTextSource",
+      "name": "FileTextSource",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": true,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Loads a file into a [[Rope]] without decoding it: UTF-8 content stays UTF-8 in the blocks, referencing the loaded chunks (or the memory mapping) directly, so residency is the file size, not twice it. Blocks are cut at paragraph boundaries where possible and never inside a UTF-8 sequence or a CRLF pair; their facts are computed in parallel on [[WorkerPool]].",
+      "remarks": "UTF-16 and UTF-32 files decode to UTF-16 blocks. Invalid UTF-8 bytes decode to U\u002BFFFD one byte at a time; a leading BOM is skipped. The backend is chosen once, at load; a memory mapping that fails to open falls to chunked reads only under [[Auto]], never mid-session.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [
+          {
+            "id": "FileTextSource.Load",
+            "name": "Load",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rope",
+            "summary": "Loads a file into a new rope.",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "ScanProfile",
+              "TextFileEncoding",
+              "FileTextBackend"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FileTextSource.FromBytes",
+            "name": "FromBytes",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rope",
+            "summary": "Builds a rope from bytes already in memory the way [[Load]] reads a file: UTF-8 content stays in bytes, referenced by the blocks, so the memory must stay unmodified for the document\u0027s life; other encodings are decoded into the blocks.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlyMemory\u003Cbyte\u003E",
+              "ScanProfile",
+              "TextFileEncoding"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LayoutEstimate",
+      "name": "LayoutEstimate",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Layout facts the rope estimates a block\u0027s extent from until the block is measured.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LayoutEstimate.lineHeight",
+            "name": "lineHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Vertical advance of one line."
+          },
+          {
+            "id": "LayoutEstimate.codepointsPerLine",
+            "name": "codepointsPerLine",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Codepoints a wrapped line holds on average; [[PositiveInfinity]] without wrapping."
+          },
+          {
+            "id": "LayoutEstimate.codepointWidth",
+            "name": "codepointWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "Average advance of one codepoint."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "Rope",
+      "name": "Rope",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ITextDocument",
+      "baseTypeChain": [
+        "ITextDocument"
+      ],
+      "interfaces": [
+        "IDisposable"
+      ],
+      "derivedTypes": [],
+      "summary": "The document: a flat table of [[TextBlock]] leaves with Fenwick indexes over chars, codepoints, paragraph separators, heights and widths. Every position query \u2014 char\u2194codepoint, char\u2194paragraph, Y\u2194block, X\u2194block \u2014 is O(log blocks); an edit costs O(edited block) plus O(log blocks), or O(blocks) when it changes the block count. Blocks lent to workers through [[Lease]] are immutable for the lease\u0027s lifetime: an edit clones a shared block instead of mutating it.",
+      "remarks": "Main-thread only, except for reads through a [[BlockLease]]. Block boundaries never split a surrogate pair or a CRLF pair; edits may not split a surrogate pair (they throw), matching [[ITextDocument]] consumers\u0027 expectations.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [
+          {
+            "id": "Rope.ctor",
+            "name": "Rope",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "Rope",
+            "summary": "Creates an empty document.",
+            "params": [],
+            "paramTypes": [
+              "ScanProfile"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.FromChars",
+            "name": "FromChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rope",
+            "summary": "Builds a document from UTF-16 text, cutting blocks at paragraph boundaries where possible.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "ScanProfile"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Dispose",
+            "name": "Dispose",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Releases every block reference this document holds and the loaded source, if any.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.ctor",
+            "name": "Rope",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "Rope",
+            "summary": "Creates an empty document; capacity is accepted for call-site compatibility and has no effect on block sizing.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockAtChar",
+            "name": "BlockAtChar",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Block containing logical char charIndex; an index at the end maps to the last block\u0027s end.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockAtCodepoint",
+            "name": "BlockAtCodepoint",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockCharStart",
+            "name": "BlockCharStart",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockCodepointStart",
+            "name": "BlockCodepointStart",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockCharCount",
+            "name": "BlockCharCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockCodepointCount",
+            "name": "BlockCodepointCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockSeparatorCount",
+            "name": "BlockSeparatorCount",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockFlags",
+            "name": "BlockFlags",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextBlockFlags",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockStartsParagraph",
+            "name": "BlockStartsParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when the block begins a paragraph: it is the first block or its predecessor ends with a separator.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockEndsParagraph",
+            "name": "BlockEndsParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockFirstParagraph",
+            "name": "BlockFirstParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Index of the first paragraph that starts inside or continues into the block.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CharToParagraph",
+            "name": "CharToParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Zero-based paragraph containing logical char charIndex.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.ParagraphStartChar",
+            "name": "ParagraphStartChar",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Logical char index where paragraph paragraph starts.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CharToCodepointIndex",
+            "name": "CharToCodepointIndex",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CodepointToCharIndex",
+            "name": "CodepointToCharIndex",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CopyChars",
+            "name": "CopyChars",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies logical chars [start, start\u002Bcount); returns the number copied (clamped to the document and the destination).",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CopyCodepointRange",
+            "name": "CopyCodepointRange",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CopyTo",
+            "name": "CopyTo",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies the whole content; returns the number of chars written.",
+            "params": [],
+            "paramTypes": [
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CopyTo",
+            "name": "CopyTo",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Copies logical chars [start, start\u002Bcount); returns the number written.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "Span\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.GetCodepointRange",
+            "name": "GetCodepointRange",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "The text of a codepoint range as a new string.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.SnapToPairBoundary",
+            "name": "SnapToPairBoundary",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Clamps to [0, Length] and snaps an interior surrogate boundary backward.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.CountCodepoints",
+            "name": "CountCodepoints",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Codepoints in a logical char range.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.GetCodepointAt",
+            "name": "GetCodepointAt",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.ContentEquals",
+            "name": "ContentEquals",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when the content equals other unit for unit; compares block by block without allocating.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.ToString",
+            "name": "ToString",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "string",
+            "summary": "The document as a string; allocates the whole text.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Insert",
+            "name": "Insert",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Delete",
+            "name": "Delete",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.InsertAtCodepoint",
+            "name": "InsertAtCodepoint",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.DeleteAtCodepoint",
+            "name": "DeleteAtCodepoint",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.SetText",
+            "name": "SetText",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "summary": "Replaces the whole content; the returned shape excludes the common prefix and suffix.",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Clear",
+            "name": "Clear",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Replace",
+            "name": "Replace",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "EditShape",
+            "summary": "The one mutation: removes removeCount chars at start and inserts text there. Boundaries may not split a surrogate pair.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int",
+              "ReadOnlySpan\u003Cchar\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.ResetLayout",
+            "name": "ResetLayout",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Resets every block\u0027s extent to an estimate under new layout parameters.",
+            "params": [],
+            "paramTypes": [
+              "LayoutEstimate"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.RefineEstimate",
+            "name": "RefineEstimate",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Updates the estimation parameters without discarding measured blocks; provisional blocks are re-estimated.",
+            "params": [],
+            "paramTypes": [
+              "LayoutEstimate"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.SetBlockMeasured",
+            "name": "SetBlockMeasured",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Records a block\u0027s measured extent; it stays until the block is edited or the layout is reset. A measurement taken with the block\u0027s paragraph cut at a window edge is exact =: it replaces the estimate but leaves the block for the convergence sweep, and it never overwrites an exact measurement.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "float",
+              "float",
+              "bool"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.IsBlockExact",
+            "name": "IsBlockExact",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when the block\u0027s extent was measured with its paragraph intact.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockTop",
+            "name": "BlockTop",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "double",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockHeight",
+            "name": "BlockHeight",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "double",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockWidth",
+            "name": "BlockWidth",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "double",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockLeftInParagraph",
+            "name": "BlockLeftInParagraph",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "double",
+            "summary": "Horizontal offset of the block from the start of its paragraph \u2014 meaningful when the paragraph spans several blocks.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.BlockAtY",
+            "name": "BlockAtY",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "int",
+            "summary": "Block whose vertical span contains y (document space, top-down), clamped to the table.",
+            "params": [],
+            "paramTypes": [
+              "double"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "Rope.Lease",
+            "name": "Lease",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "BlockLease",
+            "summary": "Pins blocks [first, first\u002Bcount) for a worker: their content stays immutable until [[Dispose]] (main thread). Reads through the lease are safe from any thread.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "Rope.Profile",
+            "name": "Profile",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "ScanProfile",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "The scan profile blocks are classified with; changing it re-summarizes every block.",
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.CodepointCount",
+            "name": "CodepointCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.CharCount",
+            "name": "CharCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.Length",
+            "name": "Length",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Logical length in UTF-16 units; the same value as [[CharCount]].",
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.Version",
+            "name": "Version",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.ParagraphCount",
+            "name": "ParagraphCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Paragraphs, counting the (possibly empty) one after the last separator; never zero.",
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.BlockCount",
+            "name": "BlockCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.IsEmpty",
+            "name": "IsEmpty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.MeasuredBlockCount",
+            "name": "MeasuredBlockCount",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Blocks whose extent is an exact measurement rather than an estimate.",
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.TotalHeight",
+            "name": "TotalHeight",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "Rope.ContentWidth",
+            "name": "ContentWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Widest extent seen so far under the current layout; monotonic until [[ResetLayout]].",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ScanProfile",
+      "name": "ScanProfile",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The character classes a document scan records per block. ASCII characters classify through a 128-entry table of [[TextBlockFlags]] bits; non-ASCII triggers make every [[NonAscii]] block count as a potential trigger carrier.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [
+          {
+            "id": "ScanProfile.CreateDefault",
+            "name": "CreateDefault",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "ScanProfile",
+            "summary": "Profile with break-opportunity classes only and no markup triggers.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ScanProfile.SetTriggers",
+            "name": "SetTriggers",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Replaces the markup trigger set; means every character may start a rule.",
+            "params": [],
+            "paramTypes": [
+              "string"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ScanProfile.SameClasses",
+            "name": "SameClasses",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "True when both profiles classify every character identically.",
+            "params": [],
+            "paramTypes": [
+              "ScanProfile"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextDocumentView.StartEdge",
+      "name": "StartEdge",
+      "declaringType": "UniTextDocumentView",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Edge of the document a view shows first.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "UniTextDocumentView.StartEdge.Top",
+            "name": "Top",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "StartEdge",
+            "defaultValue": "0"
+          },
+          {
+            "id": "UniTextDocumentView.StartEdge.Bottom",
+            "name": "Bottom",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "StartEdge",
+            "defaultValue": "1"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "TextAssetDocumentSource",
+      "name": "TextAssetDocumentSource",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "DocumentSource",
+      "baseTypeChain": [
+        "DocumentSource"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "A [[TextAsset]]\u0027s bytes as the document. Unity holds the whole asset in memory, so this suits documents up to a few megabytes; larger files belong in streaming assets behind a [[FileDocumentSource]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "attributes": [
+        "Serializable"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "TextAssetDocumentSource.Load",
+            "name": "Load",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "IDisposable",
+            "params": [],
+            "paramTypes": [
+              "ScanProfile",
+              "Action\u003CRope\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "TextAssetDocumentSource.Asset",
+            "name": "Asset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextAsset",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "TextAssetDocumentSource.Encoding",
+            "name": "Encoding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "TextFileEncoding",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty"
+            ],
+            "defaultValue": "TextFileEncoding.Auto",
+            "source": "state"
+          },
+          {
+            "id": "TextAssetDocumentSource.IsEmpty",
+            "name": "IsEmpty",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "TextBlockFlags",
+      "name": "TextBlockFlags",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Content facts a block carries so document-wide state machines can skip blocks that cannot affect them.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextBlockFlags.None",
+            "name": "None",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextBlockFlags",
+            "defaultValue": "0"
+          },
+          {
+            "id": "TextBlockFlags.NonAscii",
+            "name": "NonAscii",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextBlockFlags",
+            "defaultValue": "1 \u003C\u003C 0",
+            "summary": "At least one codepoint \u2265 U\u002B0080."
+          },
+          {
+            "id": "TextBlockFlags.BidiControls",
+            "name": "BidiControls",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextBlockFlags",
+            "defaultValue": "1 \u003C\u003C 1",
+            "summary": "Contains an explicit bidi embedding, override or isolate control (U\u002B202A\u2013U\u002B202E, U\u002B2066\u2013U\u002B2069)."
+          },
+          {
+            "id": "TextBlockFlags.ParseTriggers",
+            "name": "ParseTriggers",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextBlockFlags",
+            "defaultValue": "1 \u003C\u003C 2",
+            "summary": "Contains a character that can start a markup rule match under the active [[ScanProfile]]."
+          },
+          {
+            "id": "TextBlockFlags.AsciiBreakOpportunity",
+            "name": "AsciiBreakOpportunity",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextBlockFlags",
+            "defaultValue": "1 \u003C\u003C 3",
+            "summary": "Contains an ASCII space, tab or hyphen \u2014 a break opportunity provable without Unicode analysis."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "TextFileEncoding",
+      "name": "TextFileEncoding",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Byte encodings a text file is decoded from.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextFileEncoding.Auto",
+            "name": "Auto",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "0",
+            "summary": "Byte-order mark decides; without one the file is UTF-8."
+          },
+          {
+            "id": "TextFileEncoding.Utf8",
+            "name": "Utf8",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "1"
+          },
+          {
+            "id": "TextFileEncoding.Utf16LittleEndian",
+            "name": "Utf16LittleEndian",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "2"
+          },
+          {
+            "id": "TextFileEncoding.Utf16BigEndian",
+            "name": "Utf16BigEndian",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "3"
+          },
+          {
+            "id": "TextFileEncoding.Utf32LittleEndian",
+            "name": "Utf32LittleEndian",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "4"
+          },
+          {
+            "id": "TextFileEncoding.Utf32BigEndian",
+            "name": "Utf32BigEndian",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextFileEncoding",
+            "defaultValue": "5"
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "TextScanResult",
+      "name": "TextScanResult",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Per-block facts produced by one scan pass.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "members": {
+        "methods": [
+          {
+            "id": "TextScanResult.Combine",
+            "name": "Combine",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TextScanResult",
+            "summary": "Facts for the concatenation a \u002B b: a CR ending a before an LF starting b is one separator, and a high surrogate ending a before a low surrogate starting b is one scalar.",
+            "params": [],
+            "paramTypes": [
+              "TextScanResult",
+              "TextScanResult"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [
+          {
+            "id": "TextScanResult.chars",
+            "name": "chars",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "UTF-16 code units."
+          },
+          {
+            "id": "TextScanResult.codepoints",
+            "name": "codepoints",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Unicode scalar values; an unpaired surrogate or an invalid UTF-8 byte counts as one (it decodes to U\u002BFFFD)."
+          },
+          {
+            "id": "TextScanResult.separators",
+            "name": "separators",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Paragraph separators: LF, NEL, PS, U\u002B001C\u2013U\u002B001E, and CR not followed by LF."
+          },
+          {
+            "id": "TextScanResult.flags",
+            "name": "flags",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "uint"
+          },
+          {
+            "id": "TextScanResult.lastCodepoint",
+            "name": "lastCodepoint",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Last scalar of the block (an unpaired UTF-16 surrogate keeps its unit value), or -1 when empty."
+          },
+          {
+            "id": "TextScanResult.firstCodepoint",
+            "name": "firstCodepoint",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "First scalar of the block (an unpaired UTF-16 surrogate keeps its unit value), or -1 when empty."
+          }
+        ],
+        "events": []
+      }
+    },
+    {
+      "id": "UniTextDocumentLoader",
+      "name": "UniTextDocumentLoader",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "MonoBehaviour",
+      "baseTypeChain": [
+        "MonoBehaviour"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Loads a [[DocumentSource]] into a [[UniTextBase]] \u2014 on enable, whenever the source, any of its settings or the text changes, and on [[Reload]] \u2014 and hands the document over with ownership, so the text disposes it when it is replaced or destroyed. Inside a [[ScrollRect]] or under a mask the document scrolls and windows itself.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "attributes": [
+        "AddComponentMenu(UniTextMenu.AddComponent.DocumentLoader)",
+        "DisallowMultipleComponent",
+        "ExecuteAlways"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextDocumentLoader.Reload",
+            "name": "Reload",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Cancels a pending load and starts over from the current source; a loader without a source, or with an empty one, loads nothing and keeps the document it delivered last.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentLoader.Cancel",
+            "name": "Cancel",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Abandons a pending asynchronous load; a document already delivered stays.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "UniTextDocumentLoader.Text",
+            "name": "Text",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniTextBase",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty(nameof(ApplyTextChange))",
+              "Tooltip(\u0022The text that renders the document; found on this object or below it when empty.\u0022)"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentLoader.Source",
+            "name": "Source",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "DocumentSource",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeReference",
+              "TypeSelector",
+              "StateProperty(nameof(ApplySourceChange), Owned = true)",
+              "StateLink(nameof(OnSourceChanged))",
+              "Tooltip(\u0022Where the document comes from.\u0022)"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentLoader.IsLoading",
+            "name": "IsLoading",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True while an asynchronous load is in flight.",
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": [
+          {
+            "id": "UniTextDocumentLoader.Loaded",
+            "name": "Loaded",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action\u003CRope\u003E",
+            "summary": "Occurs after a loaded document was handed to the text."
+          }
+        ]
+      }
+    },
+    {
+      "id": "UniTextDocumentView",
+      "name": "UniTextDocumentView",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "UIBehaviour",
+      "baseTypeChain": [
+        "UIBehaviour"
+      ],
+      "interfaces": [
+        "IInitializePotentialDragHandler",
+        "IBeginDragHandler",
+        "IDragHandler",
+        "IEndDragHandler",
+        "IScrollHandler"
+      ],
+      "derivedTypes": [],
+      "summary": "Scrolls a document text. This RectTransform is the viewport: the text below it is stretched to fill it, and what scrolls is the text\u0027s own [[DocumentTop]] \u2014 a block and an offset into it, so nothing under the viewport moves when the estimated heights above it are corrected. Drag, wheel, inertia and elastic ends behave as uGUI\u0027s Scroll Rect does; uGUI scrollbars attach as usual, and a [[RectMask2D]] on the viewport clips, as in any scroll view.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "documents",
+      "attributes": [
+        "AddComponentMenu(UniTextMenu.AddComponent.DocumentView)",
+        "DisallowMultipleComponent",
+        "ExecuteAlways",
+        "RequireComponent(typeof(RectTransform))"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "UniTextDocumentView.ScrollToStart",
+            "name": "ScrollToStart",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Shows the document\u0027s start.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.ScrollToEnd",
+            "name": "ScrollToEnd",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Shows the document\u0027s end.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.StopMovement",
+            "name": "StopMovement",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Ends inertia; an overshoot still springs back.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnRectTransformDimensionsChange",
+            "name": "OnRectTransformDimensionsChange",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnInitializePotentialDrag",
+            "name": "OnInitializePotentialDrag",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnBeginDrag",
+            "name": "OnBeginDrag",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnDrag",
+            "name": "OnDrag",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "The content follows the pointer by its movement since the last event, and the velocity a drag leaves behind is measured from that movement, so a block measured meanwhile \u2014 which moves the document\u0027s numbers, not the content \u2014 jolts neither.",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnEndDrag",
+            "name": "OnEndDrag",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextDocumentView.OnScroll",
+            "name": "OnScroll",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "PointerEventData"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "UniTextDocumentView.Text",
+            "name": "Text",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UniText",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty(nameof(ApplyTextChange))",
+              "Tooltip(\u0022The document text this view scrolls; found below this object when empty.\u0022)"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentView.VerticalScrollbar",
+            "name": "VerticalScrollbar",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Scrollbar",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty(nameof(ApplyVerticalScrollbarChange))",
+              "Tooltip(\u0022Scrollbar for the vertical position; optional.\u0022)"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentView.HorizontalScrollbar",
+            "name": "HorizontalScrollbar",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Scrollbar",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty(nameof(ApplyHorizontalScrollbarChange))",
+              "Tooltip(\u0022Scrollbar for the horizontal position of unwrapped text; optional.\u0022)"
+            ],
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentView.StartAt",
+            "name": "StartAt",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "StartEdge",
+            "hasGetter": true,
+            "hasSetter": true,
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "StateProperty(nameof(ApplyStartAtChange))",
+              "Tooltip(\u0022Edge a document is shown from: a newly set document starts there, and changing this moves the current one there.\u0022)"
+            ],
+            "defaultValue": "StartEdge.Top",
+            "source": "state"
+          },
+          {
+            "id": "UniTextDocumentView.Position",
+            "name": "Position",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "double",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Document Y at the viewport\u0027s top edge; setting it teleports there, clamped to the document, and stops any movement.",
             "seeAlso": []
           }
         ],
@@ -16856,6 +20263,7 @@
       "baseTypeChain": [],
       "interfaces": [],
       "derivedTypes": [
+        "Rope",
         "UniTextEditable"
       ],
       "summary": "Read-only view of a text document with codepoint-indexed access. Implemented by [[UniTextEditable]]; consumed by generic text-aware features (find / replace, validators, accessibility readers) that should not depend on the concrete editor type.",
@@ -21263,7 +24671,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Pastes text from the system clipboard at the current caret position, replacing any active selection. Probes the built-in clipboard adapters by [[Priority]] descending \u2014 a cheap [[HasFormat]] availability check, then one payload transfer, then deserialize; the first success wins, so only one format ever crosses the clipboard. UniText source (lossless custom format) wins over HTML / Markdown, which win over plain text. The adapter resolves the payload to visible text and destination formatting spans, then inserts both in one document transaction. A format transfers only when the field has a style that renders it; unmatched formatting degrades to plain text. Plain text inserts verbatim.",
-            "remarks": "Applies a hard upper bound on paste size to prevent out-of-memory conditions: a safety cap of 1,000,000 characters before insertion. Any attached [[LengthLimitBehavior]] then truncates to the real limit. This prevents [[EnsureCapacity]] from doubling to 128MB\u002B when an extremely large clipboard payload (e.g. 100MB\u002B log file) is pasted.",
+            "remarks": "The payload is cut to [[MaxOutputChars]] characters before insertion; an attached [[LengthLimitBehavior]] then truncates to the field\u0027s own limit.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -27642,6 +31050,41 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
+          },
+          {
+            "id": "CameraRangeViewport.RevealDocumentTop",
+            "name": "RevealDocumentTop",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Pans the camera, or the move target, along the text\u0027s plane until the viewport\u0027s top edge is at document Y top.",
+            "params": [],
+            "paramTypes": [
+              "double"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CameraRangeViewport.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
           }
         ],
         "properties": [
@@ -31815,6 +35258,25 @@
               "RectTransform",
               "Rect",
               "RectTransform"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "RangeViewportAdapter.RevealDocumentTop",
+            "name": "RevealDocumentTop",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Brings document Y top to the viewport\u0027s top edge for a text whose position follows this viewport; adapters that cannot scroll a document leave it.",
+            "params": [],
+            "paramTypes": [
+              "double"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -83911,6 +87373,72 @@
       },
       {
         "name": "UniTextWorldRaycaster",
+        "priority": 100
+      }
+    ],
+    "documents": [
+      {
+        "name": "UniTextDocumentView",
+        "priority": 1
+      },
+      {
+        "name": "UniTextDocumentLoader",
+        "priority": 2
+      },
+      {
+        "name": "DocumentSource",
+        "priority": 3
+      },
+      {
+        "name": "FileDocumentSource",
+        "priority": 4
+      },
+      {
+        "name": "TextAssetDocumentSource",
+        "priority": 5
+      },
+      {
+        "name": "Rope",
+        "priority": 6
+      },
+      {
+        "name": "FileTextSource",
+        "priority": 7
+      },
+      {
+        "name": "ScanProfile",
+        "priority": 10
+      },
+      {
+        "name": "BlockLease",
+        "priority": 11
+      },
+      {
+        "name": "LayoutEstimate",
+        "priority": 12
+      },
+      {
+        "name": "TextScanResult",
+        "priority": 13
+      },
+      {
+        "name": "DocumentPathRoot",
+        "priority": 100
+      },
+      {
+        "name": "FileTextBackend",
+        "priority": 100
+      },
+      {
+        "name": "StartEdge",
+        "priority": 100
+      },
+      {
+        "name": "TextBlockFlags",
+        "priority": 100
+      },
+      {
+        "name": "TextFileEncoding",
         "priority": 100
       }
     ],
