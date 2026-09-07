@@ -1,6 +1,6 @@
 {
-  "version": "3.5.11",
-  "generatedAt": "2026-09-06T12:55:24.2815012Z",
+  "version": "3.5.12",
+  "generatedAt": "2026-09-07T02:09:45.8152944Z",
   "namespaces": [],
   "types": [
     {
@@ -1838,7 +1838,9 @@
             "returnType": "void",
             "summary": "Raises the invalidation of a parameter the per-rebuild refresh re-resolves: the mesh regenerates from the current values without re-applying ranges. Every TParams field\u0027s state callback points here.",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "StateMember"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -4551,7 +4553,7 @@
             "attributes": [
               "Tooltip(\u0022Fraction of the text already decoded, from 0 fully scrambled to 1 real text.\u0022)",
               "SerializeField",
-              "SlotlessParameter(Invalidate = nameof(MarkParamsDirty))",
+              "SlotlessParameter(Invalidate = nameof(InvalidateParams))",
               "Range(0f, 1f)",
               "StateProperty(nameof(ApplyProgressChange))"
             ],
@@ -10227,7 +10229,7 @@
             "isConstructor": false,
             "returnType": "T",
             "summary": "Returns the first modifier of type T attached to this component \u2014 local [[Styles]] first, then [[StylePresets]] runtime copies, including [[CompositeModifier]] children \u2014 or if none.",
-            "remarks": "The returned reference is the live runtime instance \u2014 mutating its public properties is the canonical way to retune modifier behavior at runtime; each setter routes through [[SetDirty]] with the minimum-necessary flag.",
+            "remarks": "The returned reference is the live runtime instance \u2014 mutating its public properties is the canonical way to retune modifier behavior at runtime; each setter routes through [[SetDirty]] with the minimum-necessary flag. A preset-sourced instance is this component\u0027s own copy: it survives disable/enable and takes the preset\u0027s later edits in place; only replacing its authored node replaces the copy. A modifier inside a [[ModifierGraphPreset]] is reachable from the first query on, before the first rebuild.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -15976,7 +15978,7 @@
         "IInputBehaviorChangeSink"
       ],
       "derivedTypes": [],
-      "summary": "Shareable, project-asset container of [[InputBehavior]] entries that editors apply in bulk via [[BehaviorPresets]] \u2014 one asset defines a field archetype (chat composer, form field, password) reused across scenes. Each editor instantiates a runtime copy, so per-instance behavior state never leaks into the asset.",
+      "summary": "Shareable, project-asset container of [[InputBehavior]] entries that editors apply in bulk via [[BehaviorPresets]] \u2014 one asset defines a field archetype (chat composer, form field, password) reused across scenes. Each editor runs its own copies of the behaviors, so per-instance behavior state never leaks into the asset.",
       "remarks": "Mutating [[Behaviors]] raises [[Changed]]. Live editors replay leaf members into the matching runtime behavior and rebuild only the affected hook-order suffix for structural changes.",
       "seeAlso": [],
       "typeParameters": [],
@@ -20766,7 +20768,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "T",
-            "summary": "Returns the first attached behavior of type T, or.",
+            "summary": "Returns the first attached behavior of type T, or. A preset-sourced behavior is this editor\u0027s own copy: it survives disable/enable and takes the preset\u0027s later edits in place; only replacing its authored node replaces the copy.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -40316,16 +40318,6 @@
             "summary": "Font size used during shaping (for scaling calculations)."
           },
           {
-            "id": "UniTextBuffers.hasValidGlyphCache",
-            "name": "hasValidGlyphCache",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "bool",
-            "summary": "Indicates whether [[glyphDataCache]] contains valid data."
-          },
-          {
             "id": "UniTextBuffers.isRented",
             "name": "isRented",
             "accessModifier": "public",
@@ -40671,7 +40663,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Raises the current glyph\u0027s atlas pad tier when a modifier asked for more outward rim than the tier reserves \u2014 the glyph is re-rasterized smaller in its shared tile so the extra distance field (outline / shadow / bold) has room, plus [[TierSeamMarginNorm]] of AA-ramp headroom so the effect\u0027s outer edge samples inside computed field, not at the tile seam. Only the request is recorded here; the sweep re-rasterizes the tile and re-meshes every consumer of it at the new tier in the same frame (see UniTextBase_Parallel). Grow-only.",
+            "summary": "Raises the current glyph\u0027s atlas pad tier when a modifier asked for more outward rim than the tier reserves \u2014 the glyph is re-rasterized smaller in its shared tile so the extra distance field (outline / shadow / bold) has room, plus [[TierSeamMarginNorm]] of AA-ramp headroom so the effect\u0027s outer edge samples inside computed field, not at the tile seam. Only the request is recorded here; the sweep re-rasterizes the tile and re-meshes every consumer of it at the new tier in the same frame ([[ProcessUpgrades]]). Grow-only.",
             "remarks": "Call immediately after [[onGlyph]]. The required rim is the face dilate (bold, from [[Uvs1]][[[faceBaseIdx]]].y) plus [[currentMaxGlyphExtent]] (the effects\u0027 outward extent) \u2014 so bold and effects stack regardless of modifier order.",
             "params": [],
             "paramTypes": [
@@ -40698,7 +40690,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Records a grow-only atlas tile-size upgrade for the current glyph when a resolution modifier asked for more detail / a larger tile than the font default. The sweep relocates the shared tile to the larger class and re-meshes its consumers the same frame (see UniTextBase_Parallel). The glyph\u0027s atlas key ignores tile size, so all consumers share one tile at the max requested resolution. Call immediately after [[onGlyph]].",
+            "summary": "Records a grow-only atlas tile-size upgrade for the current glyph when a resolution modifier asked for more detail / a larger tile than the font default. The sweep relocates the shared tile to the larger class and re-meshes its consumers the same frame ([[ProcessUpgrades]]). The glyph\u0027s atlas key ignores tile size, so all consumers share one tile at the max requested resolution. Call immediately after [[onGlyph]].",
             "params": [],
             "paramTypes": [
               "long",
@@ -53104,7 +53096,10 @@
       "isAbstract": true,
       "isSealed": false,
       "isStatic": false,
-      "baseTypeChain": [],
+      "baseType": "IStateIdentity",
+      "baseTypeChain": [
+        "IStateIdentity"
+      ],
       "interfaces": [],
       "derivedTypes": [
         "AlignmentModifier",
@@ -53311,10 +53306,11 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Marks the mesh stage dirty without queueing a range re-apply \u2014 for members whose applied values the modifier re-resolves before each rebuild. Does nothing when hasRanges is; an unowned instance raises the structural mesh notification instead, so authoring-time edits still reach consumers.",
+            "summary": "Marks the mesh stage dirty without queueing a range re-apply \u2014 for members whose applied values the modifier re-resolves before each rebuild. Does nothing when hasRanges is; an unowned instance publishes the mesh change of member instead, so an authoring-time edit replays into every runtime copy rather than replacing it.",
             "params": [],
             "paramTypes": [
-              "bool"
+              "bool",
+              "StateMember"
             ],
             "exceptions": [],
             "seeAlso": [],
