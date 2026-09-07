@@ -25,6 +25,7 @@ import {
   Pencil,
   Plus,
   Puzzle,
+  ScrollText,
   SlidersHorizontal,
   Smile,
   Sparkles,
@@ -579,6 +580,148 @@ function DriverClipDiagram() {
   );
 }
 
+/**
+ * §21.2 a windowed document: only the blocks around the viewport are
+ * materialized, the rest stand at estimates, and the markup open before the
+ * window is re-opened in front of it.
+ */
+function DocumentWindowDiagram() {
+  const blocks = Array.from({ length: 15 }, (_, i) => i);
+  const windowFrom = 5;
+  const windowTo = 9;
+  const viewFrom = 6;
+  const viewTo = 8;
+  const y = (i: number) => 26 + i * 15;
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4 overflow-x-auto">
+      <svg
+        viewBox="0 0 560 260"
+        className="w-full min-w-[480px] h-auto"
+        role="img"
+        aria-label="Only the blocks around the viewport are laid out; the rest stand at estimated heights"
+      >
+        <text
+          x="8"
+          y="16"
+          fill="rgba(255,255,255,0.4)"
+          fontSize="11"
+          letterSpacing="1"
+        >
+          DOCUMENT
+        </text>
+
+        {blocks.map((i) => {
+          const inWindow = i >= windowFrom && i <= windowTo;
+          return (
+            <rect
+              key={i}
+              x="90"
+              y={y(i)}
+              width="180"
+              height="11"
+              rx="3"
+              fill={
+                inWindow ? "rgba(56,189,248,0.28)" : "rgba(255,255,255,0.05)"
+              }
+              stroke={
+                inWindow ? "rgba(56,189,248,0.6)" : "rgba(255,255,255,0.12)"
+              }
+              strokeDasharray={inWindow ? undefined : "3 3"}
+            />
+          );
+        })}
+
+        <rect
+          x="80"
+          y={y(viewFrom) - 5}
+          width="200"
+          height={y(viewTo) - y(viewFrom) + 21}
+          rx="6"
+          fill="none"
+          stroke="#34d399"
+          strokeWidth="2"
+        />
+        <text
+          x="292"
+          y={y(viewFrom) + 6}
+          fill="#34d399"
+          fontSize="12"
+          fontFamily="ui-monospace, monospace"
+        >
+          viewport
+        </text>
+        <text
+          x="292"
+          y={y(viewFrom) + 22}
+          fill="rgba(255,255,255,0.45)"
+          fontSize="11"
+        >
+          what the reader sees
+        </text>
+
+        <line
+          x1="286"
+          y1={y(windowFrom)}
+          x2="286"
+          y2={y(windowTo) + 11}
+          stroke="rgba(56,189,248,0.6)"
+          strokeWidth="1.5"
+        />
+        <text
+          x="292"
+          y={y(windowTo) + 8}
+          fill="#38bdf8"
+          fontSize="12"
+          fontFamily="ui-monospace, monospace"
+        >
+          window — laid out
+        </text>
+
+        <text x="292" y={y(1) + 9} fill="rgba(255,255,255,0.45)" fontSize="11">
+          estimated: lines × line height
+        </text>
+        <text x="292" y={y(12) + 9} fill="rgba(255,255,255,0.45)" fontSize="11">
+          estimates refine as blocks are measured
+        </text>
+
+        <g>
+          <rect
+            x="90"
+            y={y(windowFrom) - 13}
+            width="66"
+            height="11"
+            rx="3"
+            fill="rgba(251,191,36,0.18)"
+            stroke="rgba(251,191,36,0.55)"
+          />
+          <text
+            x="94"
+            y={y(windowFrom) - 4}
+            fill="#fbbf24"
+            fontSize="9"
+            fontFamily="ui-monospace, monospace"
+          >
+            prelude
+          </text>
+          <text
+            x="162"
+            y={y(windowFrom) - 4}
+            fill="rgba(255,255,255,0.45)"
+            fontSize="10"
+          >
+            markup open before the window
+          </text>
+        </g>
+      </svg>
+      <p className="mt-3 text-sm text-white/50">
+        The component stays the size of its viewport. Only the blocks around it
+        are materialized and placed at their document position; everything else
+        stands at an estimate that sharpens as more of the document is measured.
+      </p>
+    </div>
+  );
+}
+
 /** §9 the reactive chain: a signal reaches a modifier parameter without code. */
 function RangeRuleChain() {
   const steps = [
@@ -744,6 +887,16 @@ export default function GettingStartedPage() {
               <code>PaintFit</code>, <code>PaintSpread</code> and{" "}
               <code>LayerBlend</code>. Installing UniText pulls Core
               automatically.
+            </p>
+          </div>
+
+          <div className="mt-4 p-5 rounded-xl bg-white/5 border border-white/10">
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
+              Coming from TextMesh Pro?
+            </div>
+            <p className="text-white/70">
+              <strong>Tools → UniText → Migration</strong> converts an existing
+              project incrementally; <code>TmpMigration.md</code> is its guide.
             </p>
           </div>
         </div>
@@ -996,7 +1149,7 @@ text.color = Color.white;`}
                 <li>
                   <strong>Rasterization</strong> — <code>SDF Detail</code> and{" "}
                   <code>Tile Size Offset</code> pick the raster tile a glyph
-                  lands in (64 or 128 px); raise them for hairline or
+                  lands in (64, 128 or 256 px); raise them for hairline or
                   calligraphic faces. Page size is fixed.
                 </li>
                 <li>
@@ -1026,9 +1179,9 @@ text.color = Color.white;`}
                   <strong>Spacing &amp; Style</strong> —{" "}
                   <code>Spacing Offset</code> and <code>Space Width</code> in
                   design units for faces that render too tight or too loose;{" "}
-                  <code>Italic Style</code> (synthetic slant, degrees) and{" "}
-                  <code>Fake Bold Weight</code> (CSS weight steps) stand in for
-                  a missing italic or bold cut.
+                  <code>Italic Style</code> (synthetic slant, percent of height)
+                  and <code>Fake Bold Weight</code> (CSS weight steps) stand in
+                  for a missing italic or bold cut.
                 </li>
               </ul>
             </div>
@@ -1232,6 +1385,62 @@ text.color = Color.white;`}
                   <code>MaterialModifier</code> (§4.1).
                 </p>
               </div>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">2.8 Pixel-art fonts</h3>
+
+              <p className="text-white/70 mb-4">
+                A font whose outlines sit on a pixel grid is recognized on
+                import and gets a <strong>Pixel Grid</strong> — pixels per em, 8
+                for an 8&nbsp;px font (<code>UniTextFont.PixelsPerEm</code>).
+                Its glyphs rasterize once, one atlas texel per font pixel, and
+                render with nearest sampling and hard edges, so every effect
+                works in whole font pixels:
+              </p>
+
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  a <strong>stroke</strong> takes each pixel whose centre lies
+                  within its width of the glyph — 1&nbsp;px gives the full
+                  one-pixel ring, 2&nbsp;px a rounded two-pixel ring;
+                </li>
+                <li>
+                  a <strong>glow</strong> steps per pixel;
+                </li>
+                <li>
+                  <strong>bold</strong> grows by whole pixels.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                Text sizes that are integer multiples of the grid render
+                pixel-exact; the component inspector warns when they are not.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>Snap To Pixel Grid</strong> rounds every glyph origin to
+                the grid, and every offset an effect or animation applies —
+                shadow, extrude, wave, shake, reveal — to whole font pixels, so
+                columns stay even, neighbouring glyphs share one grid and
+                animations step like sprites; rotation and scaling stay
+                continuous. Turn it off for smooth sub-pixel motion. A canvas
+                with <strong>Pixel Perfect</strong> on aligns the text origin to
+                the device pixel as well.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A font that ships its glyphs as bitmap strikes without outlines
+                renders through the same path at the strike&rsquo;s size.{" "}
+                <strong>Detect Pixel Grid</strong> re-runs the detection on an
+                existing asset; set the field by hand for a font the detector
+                does not recognize.
+              </p>
+
+              <Notice type="info">
+                <code>SDF Detail</code> and <code>Tile Size Offset</code> do not
+                apply to a pixel font.
+              </Notice>
             </div>
           </div>
         </section>
@@ -1769,17 +1978,64 @@ text.RemoveRule(myRule);`}
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">3.5 Style presets</h3>
-              <p className="text-white/70 mb-3">
-                A <code>StylePreset</code> is a project asset holding a
-                configured style list. Assign presets to a component (
-                <code>StylePresets</code>) to share one markup vocabulary across
-                many components; <code>UniTextSettings.GlobalStylePreset</code>{" "}
-                applies project-wide when <code>UseGlobalStylePreset</code> is
-                on. Local styles compose on top.
+
+              <p className="text-white/70 mb-4">
+                A component&rsquo;s <strong>Styles</strong> list is its markup
+                vocabulary: which tags exist and what each one does. A{" "}
+                <code>StylePreset</code> is that same list as a project asset,
+                so many components share one vocabulary and one place to edit
+                it. Create one with{" "}
+                <strong>Create → UniText → Style Preset</strong> (or{" "}
+                <strong>Presets → Style Preset</strong> in the palette), fill
+                its <strong>Styles</strong> exactly as you would on a component,
+                and attach it:
               </p>
-              <p className="text-white/70">
-                Editing a preset asset rebuilds every live component using it.
+
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <strong>Per component</strong> — the{" "}
+                  <strong>Style Presets</strong> list under{" "}
+                  <strong>Styles</strong>; a component can hold several.
+                </li>
+                <li>
+                  <strong>Project-wide</strong> —{" "}
+                  <strong>
+                    Project Settings → UniText → Global Style Preset
+                  </strong>
+                  ; every component applies it while its{" "}
+                  <strong>Use Global Style Preset</strong> toggle is on. Turn
+                  the toggle off on a component whose text must stay unparsed —
+                  a debug overlay, a raw log.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                A component&rsquo;s effective vocabulary is the concatenation,
+                in this order: local <strong>Styles</strong>, then its{" "}
+                <strong>Style Presets</strong> in list order, then the global
+                preset. Order decides collisions — when two rules claim the same
+                syntax, the first registered wins (§3.4) — so a local{" "}
+                <code>&lt;b&gt;</code> overrides a preset&rsquo;s{" "}
+                <code>&lt;b&gt;</code>, and a component preset overrides the
+                global one.
               </p>
+
+              <p className="text-white/70 mb-4">
+                Each component works on its own copies of a preset&rsquo;s
+                styles: <code>GetModifier&lt;T&gt;()</code> and the other
+                queries (§19.6) return that component&rsquo;s instance, and
+                retuning it changes that component alone; the asset changes only
+                when edited as an asset. Editing the asset — in the inspector,
+                or through <code>StylePreset.Styles</code> at runtime — reaches
+                every component that uses it, live, in Edit Mode and Play Mode
+                alike.
+              </p>
+
+              <Notice type="info">
+                The <strong>presets</strong> offered by the style picker (§3.1)
+                are something else: templates that create one <code>Style</code>{" "}
+                in the list you are editing.
+              </Notice>
             </div>
           </div>
         </section>
@@ -1909,6 +2165,19 @@ text.RemoveRule(myRule);`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
+                        <code>&lt;feature&gt;</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>FontFeatureModifier</code>
+                      </td>
+                      <td className="py-2">
+                        OpenType features: <code>kern 0</code>,{" "}
+                        <code>-liga</code>, <code>tnum</code>,{" "}
+                        <code>ss01 2</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
                         <code>&lt;font&gt;</code>
                       </td>
                       <td className="py-2 pr-4">
@@ -1996,6 +2265,30 @@ text.RemoveRule(myRule);`}
 <var=700,80>       weight 700, width 80
 <var=~,~,~,-12>    slant only`}
               />
+
+              <p className="text-white/70 mt-6 mb-3">
+                <strong>OpenType features</strong> are a comma-separated list of
+                four-character tags. A bare tag means on, a <code>-</code>{" "}
+                prefix means off, and a value may follow a space, colon or
+                equals sign:
+              </p>
+
+              <CodeBlock
+                language="text"
+                disableTypeLinks
+                code={`<feature=kern 0>       no kerning
+<feature=-liga>        no standard ligatures
+<feature=tnum>         tabular figures
+<feature=ss01 2>       second alternate of stylistic set 1
+<feature=-kern,+dlig>  several at once`}
+              />
+
+              <p className="text-white/70 mt-4">
+                Feature ranges merge: nesting <code>&lt;feature&gt;</code>{" "}
+                inside <code>&lt;smallcaps&gt;</code> or{" "}
+                <code>&lt;sup&gt;</code> keeps both, and the innermost value
+                wins a tag both set. Tags the font does not carry are ignored.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -2272,7 +2565,8 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">
                         switches layer-major vs glyph-major compositing (
-                        <code>PaintOrder</code>)
+                        <code>PaintOrder</code>); <code>reverse</code> stacks a
+                        glyph-major range front to back
                       </td>
                     </tr>
                   </tbody>
@@ -2347,7 +2641,7 @@ text.RemoveRule(myRule);`}
                 <code>UnderlineModifier</code> and{" "}
                 <code>StrikethroughModifier</code> draw horizontal lines across
                 the text and carry their own paint, <code>LineStyle</code>,
-                thickness, offset and skip-ink parameters.
+                thickness, offset, skip-ink and overlay parameters.
               </p>
             </div>
 
@@ -2668,7 +2962,7 @@ RevealModifier.Param.Front       // ParameterDescriptor<RevealModifier, UnitValu
 public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
 {
     /// <summary>Peak vertical offset in pixels.</summary>
-    [SerializeField, Parameter, StateProperty(nameof(MarkMeshDirty))]
+    [SerializeField, Parameter, StateProperty(nameof(MarkParamsDirty))]
     private float amplitude = 3f;
 }`}
               />
@@ -2936,13 +3230,28 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 glyphs, then the next — the component default, cheapest) or{" "}
                 <strong>glyph-major</strong> (every layer of one glyph, then the
                 next glyph — correct when layers of adjacent glyphs overlap).
-                Glyph-major covers only same-material quads of the base mesh;
-                texture paints and the colour-glyph segment always stack
-                layer-major. <code>LayerBlend</code> sets how a resolved paint
-                composites — <code>Normal</code>, <code>Multiply</code>,{" "}
-                <code>Screen</code>, <code>Additive</code>,{" "}
-                <code>Exclusion</code> — and its <code>Inherit</code> member
-                keeps the mode the swatch authored.
+                Glyph-major stacks later glyphs over earlier ones; the{" "}
+                <code>reverse</code> parameter of{" "}
+                <code>PaintOrderModifier</code> flips that within its range, so
+                the first glyph ends on top. Glyph-major covers only
+                same-material quads of the base mesh; texture paints and the
+                colour-glyph segment always stack layer-major.{" "}
+                <code>LayerBlend</code> sets how a resolved paint composites —{" "}
+                <code>Normal</code>, <code>Multiply</code>, <code>Screen</code>,{" "}
+                <code>Additive</code>, <code>Exclusion</code> — and its{" "}
+                <code>Inherit</code> member keeps the mode the swatch authored.
+              </p>
+
+              <p className="text-white/70 mt-4">
+                A decoration line is drawn as virtual glyphs, so the same layers
+                reach it — and by default each of those layers stacks at its own
+                position, which leaves the line&rsquo;s stroke under every glyph
+                face. The <code>overlay</code> parameter of{" "}
+                <code>UnderlineModifier</code> /{" "}
+                <code>StrikethroughModifier</code> raises the line&rsquo;s whole
+                stack — face, stroke, shadow, glow — above the text it crosses,
+                so the line reads as a separate object with its own outline
+                instead of merging into the glyphs.
               </p>
             </div>
           </div>
@@ -3278,10 +3587,18 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 worker-thread safe, and <strong>must</strong> resolve to
                 identity at <code>Progress = 1</code> — that single rule is what
                 lets every effect serve both directions. A handler that wraps
-                others constructs a <code>RevealGlyphInfo</code> with an
-                explicit progress to give each child its own remapped timeline,
-                the way <code>CompositeRevealHandler</code> does.
+                others calls <code>info.WithProgress(t)</code> to give each
+                child its own remapped timeline, the way{" "}
+                <code>CompositeRevealHandler</code> does.
               </Notice>
+
+              <p className="text-white/70 mt-4">
+                Effects that turn the quad around a fixed point derive from{" "}
+                <code>GeometricRevealHandler</code>, which owns the authored{" "}
+                <code>Pivot</code>; an effect that moves a whole word or line as
+                one body declares <code>SupportedUnits</code> and reads{" "}
+                <code>info.unit</code>.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -3464,10 +3781,25 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">Loop</td>
+                      <td className="py-2 pr-4">Cycles</td>
                       <td className="py-2">
-                        <code>DriverLoop.Once</code>, <code>Loop</code> or{" "}
-                        <code>PingPong</code>
+                        how many times the timeline plays; <code>-1</code>{" "}
+                        repeats until stopped
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">Repeat</td>
+                      <td className="py-2">
+                        <code>MotionCycle</code> — what each pass after the
+                        first does: <code>Restart</code> replays from the
+                        beginning; <code>PingPong</code> runs the timeline back
+                        the way it came, every ramp retracing its own curve;{" "}
+                        <code>Yoyo</code> runs it back too, but reads each
+                        ramp&rsquo;s easing from its own beginning;{" "}
+                        <code>Incremental</code> replays forward with every
+                        clip&rsquo;s <code>From</code>→<code>To</code> travel
+                        added once more per pass, so a value keeps advancing
+                        with no seam
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -3488,16 +3820,25 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 </table>
               </div>
 
+              <Notice type="info" className="mb-4">
+                Under <code>Incremental</code> each clip carries its own travel,
+                so a parameter handed from one <code>Replace</code> clip to the
+                next stays seamless across passes only while their travels are
+                equal; a parameter whose type cannot interpolate holds{" "}
+                <code>To</code> from the second pass on.
+              </Notice>
+
               <p className="text-white/70 mb-4">
                 <code>Speed</code> scales the playhead and runs it backwards
                 when negative. <code>Progress</code> is the normalized playhead,
-                0&ndash;1: setting it renders that exact state, so an Animator,
-                a Timeline track or a scrub bar drives the whole sequence
-                through one float. <code>Playhead</code> is the same position in
-                seconds — a <code>PingPong</code> return reads as the mirrored
-                position, never as a phase past the end — and{" "}
-                <code>TimelineLength</code> reports the resolved length.{" "}
-                <code>Play()</code>, <code>Pause()</code>, <code>Stop()</code>,{" "}
+                0&ndash;1: setting it renders that exact state of the first
+                pass, so an Animator, a Timeline track or a scrub bar drives the
+                whole sequence through one float. <code>Playhead</code> is the
+                same position in seconds — a <code>PingPong</code> or{" "}
+                <code>Yoyo</code> return reads as the mirrored position, never
+                as a phase past the end — and <code>TimelineLength</code>{" "}
+                reports the resolved length. <code>Play()</code>,{" "}
+                <code>Pause()</code>, <code>Stop()</code>,{" "}
                 <code>Seek(normalized)</code> and <code>Advance(seconds)</code>{" "}
                 drive it; <code>Rebind()</code> rebuilds every clip&rsquo;s
                 ownership against the current styles, which a style change does
@@ -3637,7 +3978,13 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 clock routing, allocation-free. A playback of your own drives it
                 through a host implementing <code>IPlaybackHost</code> —{" "}
                 <code>ApplyWeight</code> for the current weight,{" "}
-                <code>ReleaseOutputs</code> after a releasing run completes.
+                <code>ReleaseOutputs</code> after a releasing run completes. The
+                weight is a blend, the cascade at 0 and the rule&rsquo;s target
+                at 1, and a transition in flight carries it past either bound:
+                continuous parameters overshoot under a <code>Back</code> or{" "}
+                <code>Elastic</code> easing, discrete ones take the endpoint the
+                weight lies beyond, and <code>IModifierRuleWeightReceiver</code>{" "}
+                implementations receive it saturated to 0&ndash;1.
               </p>
             </div>
           </div>
@@ -4664,10 +5011,19 @@ editable.ValidationChanged              += state => { };`}
 
               <p className="text-white/70 mb-4">
                 An <code>IClipboardAdapter</code> is one format stage. The
-                built-in set is fixed per field: on copy every adapter
-                contributes its format as one atomic multi-format write; on
-                paste the highest-<code>Priority</code> adapter whose format is
-                present wins.
+                built-in set is fixed: on copy every adapter contributes its
+                format as one atomic multi-format write; on paste the highest-
+                <code>Priority</code> adapter whose format is present wins.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Copy needs no editor: a <code>UniTextSelectable</code> alone
+                writes the same multi-format payload from the formatting the
+                text component parsed, so a styled read-only selection pastes
+                styled. An adapter serving such a copy finds{" "}
+                <code>ClipboardCopyContext.Editable</code> <code>null</code> and{" "}
+                <code>SelectedSource</code> empty, with the component in{" "}
+                <code>TextComponent</code>.
               </p>
 
               <ClipboardLadder />
@@ -4914,8 +5270,9 @@ editable.ValidationChanged              += state => { };`}
               <h3 className="font-semibold mb-4">16.2 Native input</h3>
 
               <p className="text-white/70 mb-4">
-                <code>UniTextNativeInput</code> delivers OS key, text,
-                composition, selection and keyboard-visibility events{" "}
+                On platforms with a native transport (Windows, macOS, iOS,
+                Android, WebGL), <code>UniTextNativeInput</code> delivers OS
+                key, text, composition, selection and keyboard-visibility events{" "}
                 <strong>independently of Unity&rsquo;s input system</strong> —
                 no <code>Event.PopEvent</code>. Editing therefore works whatever
                 Active Input Handling is set to (Legacy, New Input System, or
@@ -4932,7 +5289,11 @@ editable.ValidationChanged              += state => { };`}
 
               <p className="text-white/70">
                 <code>INativeInputBackend</code> is the backend seam;{" "}
-                <code>ManagedInputBackend</code> is the portable fallback.{" "}
+                <code>ManagedInputBackend</code> is the portable fallback for
+                platforms without one — it reads keys and characters from the OS
+                key events Unity queues, the same source Unity&rsquo;s own input
+                fields read, so layout-resolved characters and system key repeat
+                arrive whatever Active Input Handling is set to.{" "}
                 <code>ITextInputContext</code> is the per-field context the
                 backend talks to.
               </p>
@@ -5621,12 +5982,233 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 21. Recipes                                                         */}
+        {/* 21. Large Documents                                                 */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <ScrollText className="w-6 h-6 text-[var(--color-accent)]" />
+            21. Large Documents
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            A text component normally holds its text as one string and lays all
+            of it out. A <strong>document</strong> is the alternative for text
+            too large for that — from a few hundred kilobytes to a memory-mapped
+            multi-megabyte file: the component stays the size of its viewport,
+            renders only the blocks around the scroll position, and measures the
+            rest in the background.
+          </p>
+
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">21.1 Opening a document</h3>
+
+              <p className="text-white/70 mb-4">
+                The shortest path is the menu:{" "}
+                <strong>
+                  GameObject → UI (Canvas) → UniText → Document View
+                </strong>{" "}
+                creates a viewport with a document text and a{" "}
+                <strong>Document Loader</strong> on it. Point the loader&rsquo;s{" "}
+                <code>Source</code> at a file — under Streaming Assets,
+                Persistent Data, Data, Temporary Cache or an absolute path; the
+                Browse button stores the pick relative to the root — or at a{" "}
+                <code>TextAsset</code> for documents up to a few megabytes, and
+                the document is there, in Edit Mode as well.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                The loader (<strong>UniText → Document Loader</strong> on any
+                text) loads on enable and again whenever a setting of the source
+                changes. Streaming assets on Android and on the web are URLs, so
+                those load asynchronously; <code>IsLoading</code> and{" "}
+                <code>Loaded</code> report it. A source with no path or asset
+                loads nothing, and a load that fails is reported on the loader
+                and leaves the document as it was, so a path may name a file
+                that does not exist yet. A custom source subclasses{" "}
+                <code>DocumentSource</code> as a <code>partial</code> class
+                whose serialized fields carry state attributes, as a
+                modifier&rsquo;s parameter fields do, and appears in the picker.
+              </p>
+
+              <p className="text-white/60 text-sm mb-3">
+                From code, any text takes a document directly:
+              </p>
+
+              <CodeBlock
+                code={`var rope = FileTextSource.Load(path, text.ScanProfile);   // UTF-8 stays UTF-8, memory-mapped when the platform allows
+text.SetDocument(rope, takeOwnership: true);              // rendered through a window; the serialized text is untouched`}
+              />
+
+              <p className="text-white/70 mt-4">
+                <code>FileTextSource.Load</code> returns a <code>Rope</code> —
+                the document type — after one pass over the file: blocks of
+                about 4k characters are cut at paragraph boundaries and
+                summarized in parallel (character and paragraph counts, content
+                facts); nothing is decoded up front. A <code>Rope</code> also
+                comes from a string (<code>Rope.FromChars</code>) and is
+                editable (<code>Insert</code>, <code>Delete</code>,{" "}
+                <code>Replace</code>, <code>SetText</code>); every position
+                query — char ↔ codepoint, char ↔ paragraph, height ↔ block — is
+                O(log blocks). Pass the component&rsquo;s{" "}
+                <code>ScanProfile</code> so blocks record whether they can start
+                a markup match; the parser state walk (§21.4) then skips the
+                rest.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                21.2 Scrolling — the Document View
+              </h3>
+
+              <DocumentWindowDiagram />
+
+              <p className="text-white/70 mb-4">
+                A document scrolls in a <strong>Document View</strong> (
+                <strong>
+                  GameObject → UI (Canvas) → UniText → Document View
+                </strong>
+                , or <strong>UniText → Document View</strong> on a
+                RectTransform): the view is the viewport, the document text
+                below it is stretched to fill it, and a <code>RectMask2D</code>{" "}
+                on the viewport clips, as in any scroll view. Drag, wheel,
+                inertia and elastic ends behave as uGUI&rsquo;s Scroll Rect
+                does; uGUI scrollbars go into the view&rsquo;s slots and hide
+                while their axis has nothing to scroll. The prefab the menu
+                instantiates sits in the <code>Document View Prefab</code> slot
+                of the settings, so a project can ship its own.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                What scrolls is not a RectTransform but the text&rsquo;s own
+                position, <code>DocumentTop</code>: the block under the
+                viewport&rsquo;s top edge and the offset into it. Estimated
+                heights above the viewport are corrected as blocks get measured,
+                and that changes the number <code>DocumentTop</code> reports —
+                never what stands under the viewport. The document&rsquo;s
+                extent never becomes the view&rsquo;s RectTransform: the view
+                sizes the text to the viewport, so there is no proxy rect and
+                nothing that depends on the pivot or anchors a designer chooses.
+                Placed under a layout group or a fitter instead, a text reports
+                the document&rsquo;s extent as its preferred size, capped at{" "}
+                <code>UniTextBase.MaxLayoutExtent</code>. A viewport that
+                reaches past the end after a correction is pulled back to the
+                end.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                The text materializes only the blocks under and around the
+                viewport and places them at their document position; the window
+                follows the position and the viewport&rsquo;s size, so resizing
+                the view, changing the font or editing the document keeps the
+                reading position.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Navigation from code: on the view, <code>Position</code>,{" "}
+                <code>ScrollToStart</code>, <code>ScrollToEnd</code>, and{" "}
+                <strong>Start At</strong> in the inspector for a newly set
+                document; on the text, <code>ScrollDocumentTo</code>,{" "}
+                <code>ScrollDocumentBy</code>, <code>RevealDocumentSpan</code>,{" "}
+                <code>ScrollToCodepoint</code>, <code>ScrollToParagraph</code> —
+                all usable the moment a document is set. A world-space text is a
+                plane the camera looks at, so its position follows the camera; a{" "}
+                <code>CameraRangeViewport</code> on it turns those calls into
+                camera moves through <code>DocumentScrollRequested</code>.
+              </p>
+
+              <Notice type="info">
+                A document does not embed into a <code>ScrollRect</code> among
+                other content: it scrolls in its own view.
+              </Notice>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-semibold mb-4">
+                  21.3 Estimates and measurements
+                </h3>
+                <p className="text-white/70">
+                  An unmeasured block stands at an estimate: lines × line
+                  height, with the line height and the codepoints per line
+                  refined from every window measured so far, so the estimate of
+                  a uniform document converges on its own.{" "}
+                  <code>DocumentGeometryChanged</code> fires whenever extents
+                  change; <code>Document.MeasuredBlockCount</code> says how much
+                  is exact. An edit keeps every measurement it does not touch.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-semibold mb-4">
+                  21.4 Markup across window edges
+                </h3>
+                <p className="text-white/70">
+                  A tag open before the window continues into it exactly: the
+                  component records the markup open at the end of each block —
+                  walking from the document start toward the window under a
+                  per-pass budget, block by block, skipping blocks without
+                  markup triggers — and re-opens it as a hidden prelude in front
+                  of the window. After a far jump the window renders with what
+                  is known and re-renders once its start state arrives; blocks
+                  measured under an unknown state stay provisional and are
+                  measured again.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">21.5 Legibility</h3>
+              <p className="text-white/70">
+                When a windowed document is viewed so far away that an em would
+                cover less than <code>LegibilityFloorPixels</code> on screen, it
+                renders as bars (<code>IsGreeked</code>) drawn from the
+                document&rsquo;s block extents: no text is laid out, and lines
+                merge until each bar covers two screen pixels, so the work is
+                bounded by the screen however much text is in view. Canvas text
+                takes the projected size from the canvas; world-space text
+                projects the main camera — or the camera of a{" "}
+                <code>CameraRangeViewport</code> on the text (§10.4), which also
+                makes that camera the viewport.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">21.6 Editing</h3>
+
+              <p className="text-white/70 mb-4">
+                <code>UniTextEditable</code> stores its text as a{" "}
+                <code>Rope</code> and hands that rope to the component as its
+                view, so a field whose text spans more than one block (about 4k
+                characters) and outgrows its mask is windowed like any document,
+                and edits in place; a shorter field lays out whole and scrolls
+                as text: the composition, the display mask and the render
+                attributes are overlays the component applies to the window it
+                materializes. <code>FindAll</code> streams the document and
+                reports document codepoints; Copy caps the clipboard payload at{" "}
+                <code>ClipboardBudget.MaxOutputChars</code>.
+              </p>
+
+              <Notice type="warning">
+                Rich WYSIWYG editing is not windowed: importing markup into the
+                field&rsquo;s annotations is proportional to the source, as is
+                every undo snapshot of them — render very large rich content
+                through <code>SetDocument</code> on a non-editable component
+                instead. A field scrolls its document itself, under its own
+                mask; it is not placed inside a Document View.
+              </Notice>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 22. Recipes                                                         */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <ListChecks className="w-6 h-6 text-[var(--color-accent)]" />
-            21. Recipes
+            22. Recipes
           </h2>
 
           <div className="space-y-6">
