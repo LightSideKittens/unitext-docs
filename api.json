@@ -1,6 +1,6 @@
 {
-  "version": "3.5.12",
-  "generatedAt": "2026-09-07T02:09:45.8152944Z",
+  "version": "3.6.0",
+  "generatedAt": "2026-09-07T15:43:17.3709680Z",
   "namespaces": [],
   "types": [
     {
@@ -9418,7 +9418,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Rect",
-            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop). A negative rect size collapses to zero at the pivot; padding exceeding the size keeps the left and top edges. Main-thread only.",
+            "summary": "The [[rect]] with [[Padding]] applied: origin shifted by (Left, Bottom), size shrunk by (Left\u002BRight, Bottom\u002BTop). A negative rect size collapses to zero at the pivot; padding exceeding the size keeps the left and top edges. On a pixel-perfect canvas the rect is shifted, size untouched, so its top-left corner \u2014 the text origin \u2014 sits on a device pixel ([[PixelAdjustPoint]]). Main-thread only.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -23284,7 +23284,9 @@
               "List\u003CGlyphOverride\u003E",
               "string",
               "List\u003CAxisDefault\u003E",
-              "int"
+              "int",
+              "int",
+              "bool"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -23633,6 +23635,39 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
+            "seeAlso": []
+          },
+          {
+            "id": "Core.PixelsPerEm",
+            "name": "PixelsPerEm",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Native pixel grid in pixels per em; 0 for a distance-field font. Glyphs of a pixel font rasterize once, one atlas texel per font pixel, and render with nearest sampling and hard edges.",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.IsPixel",
+            "name": "IsPixel",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "True when glyphs rasterize on the font\u0027s native pixel grid ([[PixelsPerEm]]).",
+            "seeAlso": []
+          },
+          {
+            "id": "Core.SnapToPixelGrid",
+            "name": "SnapToPixelGrid",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether glyph origins of a pixel font, and every translation an effect or animation applies to its quads, round to whole font pixels; meaningless while [[IsPixel]] is false.",
             "seeAlso": []
           },
           {
@@ -26378,6 +26413,28 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Baseline synthetic bold in CSS weight steps from the font\u0027s own weight (1 \u2248 Regular \u2192 Bold). Renders thicker via SDF dilate and compensates advance to keep layout stable. No effect on color emoji fonts.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.PixelsPerEm",
+            "name": "PixelsPerEm",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Native pixel grid of a pixel-art font in pixels per em; 0 for a distance-field font. Glyphs of a pixel font rasterize once, one atlas texel per font pixel, and render with nearest sampling and hard edges; text sizes that are integer multiples of this value render pixel-exact.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextFont.SnapToPixelGrid",
+            "name": "SnapToPixelGrid",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Whether a pixel font\u0027s glyph origins, and every translation an effect or animation applies to its quads, round to whole font pixels. No effect when [[PixelsPerEm]] is 0.",
             "seeAlso": []
           },
           {
@@ -40543,6 +40600,46 @@
             "params": [],
             "paramTypes": [
               "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextMeshGenerator.SnapStep",
+            "name": "SnapStep",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "float",
+            "summary": "Pixel step the quad at baseIdx rounds translations to; 0 for a quad off any pixel grid.",
+            "params": [],
+            "paramTypes": [
+              "int"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextMeshGenerator.OffsetQuad",
+            "name": "OffsetQuad",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Translates the quad at baseIdx, by whole pixels of its grid when it has one ([[SnapStep]]). Every modifier that moves a quad goes through here.",
+            "params": [],
+            "paramTypes": [
+              "int",
+              "float",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -68261,7 +68358,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Displaces a reserved effect quad\u0027s four vertices in the X/Y plane (Z untouched).",
+            "summary": "Displaces a reserved effect quad\u0027s four vertices in the X/Y plane (Z untouched), on the quad\u0027s pixel grid when it has one.",
             "params": [],
             "paramTypes": [
               "UniTextMeshGenerator",
