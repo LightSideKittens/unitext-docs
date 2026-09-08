@@ -1,6 +1,6 @@
 {
-  "version": "3.7.1",
-  "generatedAt": "2026-09-08T00:07:04.4641256Z",
+  "version": "3.7.2",
+  "generatedAt": "2026-09-08T01:56:31.2587247Z",
   "namespaces": [],
   "types": [
     {
@@ -6766,8 +6766,7 @@
       "derivedTypes": [
         "MarkdownClipboardAdapter",
         "PlainTextClipboardAdapter",
-        "TagHtmlClipboardAdapter",
-        "UniTextSourceClipboardAdapter"
+        "TagHtmlClipboardAdapter"
       ],
       "summary": "Per-format clipboard pipeline stage. Copy adapters translate the canonical attributed selection into an external format; paste adapters translate that format into attributed destination content. The editor\u0027s [[Copy]] walks every registered adapter to build a multi-format clipboard write; on [[Paste]] the highest-[[Priority]] adapter whose [[Format]] is present on the clipboard wins.",
       "remarks": "Format mapping (semantic \u2194 external markup) is declared per modifier type in [[ClipboardModifierBindMap]]; adapters are the orchestration layer that walks the active modifier set \u002B a serializer / parser for the format. This matches the design used by ProseMirror (MarkType.toDOM/parseDOM), Lexical (LexicalNode.exportDOM/importDOM), and CKEditor 5 (model \u2194 view converters): the syntactic shape is per-format, the semantic effect is per-modifier, and the adapter is the bridge. Built-in adapters registered by default on every [[UniTextEditable]]: [[PlainTextClipboardAdapter]] \u2014 universal floor; always wins when nothing richer is present. [[UniTextSourceClipboardAdapter]] \u2014 perfect-fidelity round-trip via the vendor-tree format [[UniTextSource]]. [[TagHtmlClipboardAdapter]] \u2014 HTML channel (paste from browsers / Word / Notion; copy as HTML). [[MarkdownClipboardAdapter]] \u2014 Markdown channel. The built-in set above is fixed per field.",
@@ -8056,106 +8055,6 @@
             "isReadonly": true,
             "isConst": false,
             "type": "TagHtmlClipboardAdapter",
-            "summary": "Shared stateless instance. Map building reads the editor passed in via context."
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "UniTextSourceClipboardAdapter",
-      "name": "UniTextSourceClipboardAdapter",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseType": "IClipboardAdapter",
-      "baseTypeChain": [
-        "IClipboardAdapter"
-      ],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Native UniText round-trip adapter. Carries the selection as a structured [[UniTextClipboardFragment]] (visible text \u002B markup spans keyed by modifier [[Signature]]) under [[UniTextSource]] (application/vnd.lightside.unitext, RFC 6838 vendor tree).",
-      "remarks": "Fidelity is semantic, not byte-for-byte: copy records the attributed document\u0027s visible text and persistent spans; paste resolves each span directly to the destination modifier and rule, dropping it to plain text when the destination has no such modifier and never leaking raw tags. Inline objects round-trip as a one-character Object Replacement Character span. Priority is 100, above HTML (50) and Markdown (40): UniText \u2192 UniText keeps the native fragment. External apps that do not recognise the format fall back to [[PlainTextClipboardAdapter]].",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "clipboard",
-      "attributes": [
-        "HideFromTypeSelector"
-      ],
-      "members": {
-        "methods": [
-          {
-            "id": "UniTextSourceClipboardAdapter.SerializeCopy",
-            "name": "SerializeCopy",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "string",
-            "params": [],
-            "paramTypes": [
-              "ClipboardCopyContext"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextSourceClipboardAdapter.DeserializePaste",
-            "name": "DeserializePaste",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "ClipboardPasteContent",
-            "params": [],
-            "paramTypes": [
-              "string",
-              "ClipboardPasteContext"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [
-          {
-            "id": "UniTextSourceClipboardAdapter.Format",
-            "name": "Format",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "ClipboardFormat",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "UniTextSourceClipboardAdapter.Priority",
-            "name": "Priority",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "int",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          }
-        ],
-        "fields": [
-          {
-            "id": "UniTextSourceClipboardAdapter.Instance",
-            "name": "Instance",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "UniTextSourceClipboardAdapter",
             "summary": "Shared stateless instance. Map building reads the editor passed in via context."
           }
         ],
@@ -87283,10 +87182,6 @@
       },
       {
         "name": "TagHtmlClipboardAdapter",
-        "priority": 100
-      },
-      {
-        "name": "UniTextSourceClipboardAdapter",
         "priority": 100
       }
     ],
