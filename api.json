@@ -1,6 +1,6 @@
 {
-  "version": "3.7.0",
-  "generatedAt": "2026-09-07T23:36:31.2973062Z",
+  "version": "3.7.1",
+  "generatedAt": "2026-09-08T00:07:04.4641256Z",
   "namespaces": [],
   "types": [
     {
@@ -14206,7 +14206,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "A file addressed as a root folder plus a relative path. Roots the platform exposes as folders load synchronously through [[FileTextSource]]; roots that are URLs (streaming assets on Android and on the web) download through [[UnityWebRequest]] and deliver later.",
+      "summary": "A file addressed as a root folder plus a relative path. Roots the platform exposes as folders load synchronously through [[FileTextSource]]; roots that are URLs (streaming assets on Android and on the web) download and deliver later, which needs the built-in Unity Web Request module \u2014 without it a URL location fails to load.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "documents",
