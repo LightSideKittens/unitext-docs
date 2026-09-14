@@ -739,7 +739,7 @@ function RangeRuleChain() {
     },
     {
       name: "ParameterDescriptor",
-      value: "Glow.Param.Color",
+      value: "HighlightModifier.Param.Tint",
       note: "what it drives",
     },
   ];
@@ -778,10 +778,10 @@ function RangeRuleChain() {
     <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-6 overflow-x-auto">
       <div className="flex items-stretch min-w-[640px]">{items}</div>
       <p className="mt-3 text-sm text-white/50">
-        &ldquo;Links glow on hover, animated over 120&nbsp;ms, and the glow is
-        the link&rsquo;s own colour&rdquo; is four serialized objects. Writing
-        an owned parameter changes only that ownership — the serialized modifier
-        field is never mutated.
+        A hover rule fades an existing highlight from transparent to opaque
+        over 120&nbsp;ms. Its Changes list binds the highlight&rsquo;s Tint;
+        every change shares the same condition and playback. Writing an owned
+        parameter never mutates the serialized modifier field.
       </p>
     </div>
   );
@@ -895,7 +895,7 @@ export default function GettingStartedPage() {
               Coming from TextMesh Pro?
             </div>
             <p className="text-white/70">
-              <strong>Tools → UniText → Migration</strong> converts an existing
+              <strong>Tools → LightSide → UniText → Migration</strong> converts an existing
               project incrementally; <code>TmpMigration.md</code> is its guide.
             </p>
           </div>
@@ -911,32 +911,35 @@ export default function GettingStartedPage() {
           </h2>
 
           <div className="space-y-6">
-            <Notice type="warning">
-              If you have a previous version of UniText installed, remove it
-              first via <strong>Window &rarr; Package Manager</strong> before
-              installing {version.replace(/^v/, "")}. This is a major update and
-              cannot be installed over the previous version.
-            </Notice>
-
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">LightSide Hub</h3>
               <ol className="space-y-2 text-white/70 list-decimal list-inside">
                 <li>
-                  Check your license email from Light Side for your <strong>access token</strong>.
+                  Copy your UniText <strong>access token</strong> from your
+                  LightSide account or purchase email.
                 </li>
                 <li>
-                  <a href="https://github.com/LightSideKittens/LightSideEcosystem/releases/latest/download/LightSideHub.unitypackage"
-                    className="text-[var(--color-accent)] hover:underline">Download LightSide Hub</a>
-                  {" "}and import <strong>LightSideHub.unitypackage</strong> into your Unity project.
-                  This link always downloads the latest stable Hub release.
+                  <a
+                    href="https://github.com/LightSideKittens/LightSideEcosystem/releases/latest/download/LightSideHub.unitypackage"
+                    className="text-[var(--color-accent)] hover:underline"
+                  >
+                    Download LightSide Hub
+                  </a>{" "}
+                  and import <strong>LightSideHub.unitypackage</strong> into
+                  your Unity project.
                 </li>
                 <li>
-                  Open <strong>Tools &rarr; LightSide &rarr; Hub</strong>. In <strong>Licences</strong>,
-                  paste your access token and click <strong>Add token</strong>.
+                  Open <strong>Tools &rarr; LightSide &rarr; Hub</strong>.
+                  Select <strong>Licences</strong> under <strong>Account</strong>,
+                  paste the token into <strong>Access token</strong> and click{" "}
+                  <strong>Add token</strong>.
                 </li>
                 <li>
-                  Select <strong>UniText</strong>, choose a version and click <strong>Install</strong>.
-                  Use the same Hub window to manage versions and updates.
+                  Select <strong>UniText</strong> under <strong>Products</strong>.
+                  In <strong>Available versions</strong>, find{" "}
+                  <strong>{version.replace(/^v/, "")}</strong> and click{" "}
+                  <strong>Install</strong>. If UniText is already installed,
+                  use <strong>Switch</strong> beside the version you want.
                 </li>
               </ol>
             </div>
@@ -963,7 +966,7 @@ export default function GettingStartedPage() {
               </h3>
 
               <p className="text-white/70 mb-4">
-                <strong>GameObject → UI (Canvas) → UniText → Text</strong>. The
+                <strong>GameObject → LightSide → UniText → UniText</strong>. The
                 menu instantiates the prefab in{" "}
                 <code>UniTextSettings.TextPrefab</code> — the package ships one
                 — so a designer&rsquo;s configured prefab is what appears, not a
@@ -1011,7 +1014,7 @@ text.color = Color.white;`}
               </h3>
 
               <p className="text-white/70 mb-4">
-                <strong>GameObject → UI (World) → UniText → World Text</strong>.
+                <strong>GameObject → LightSide → UniText → UniTextWorld</strong>.
                 Renders through a mesh batcher rather than a{" "}
                 <code>CanvasRenderer</code>, so it takes part in the
                 scene&rsquo;s normal render queue: sorting layers, sorting
@@ -1032,7 +1035,7 @@ text.color = Color.white;`}
 
               <p className="text-white/70">
                 Pointer input for world text is routed by{" "}
-                <code>UniTextWorldRaycaster</code> — add it to the camera that
+                <code>WorldPointerRaycaster</code> — add it to the camera that
                 should see the text (see §10.4).
               </p>
             </div>
@@ -1120,11 +1123,11 @@ text.color = Color.white;`}
               <h3 className="font-semibold mb-4">2.1 Creating a font asset</h3>
 
               <p className="text-white/70 mb-4">
-                <strong>Tools → UniText → Tools → Create Font Asset</strong>, or
+                <strong>Tools → LightSide → UniText → Utilities → Create Font Asset</strong>, or
                 right-click a <code>.ttf</code>/<code>.otf</code>/
                 <code>.ttc</code>/<code>.otc</code> file — or a Unity{" "}
                 <code>Font</code> — →{" "}
-                <strong>Create → UniText → Font Asset</strong>.
+                <strong>Create → LightSide → UniText → Fonts → Font Asset</strong>.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -1160,7 +1163,7 @@ text.color = Color.white;`}
                   <code>Normalize Size</code> (on by default) keeps the face in
                   font-size normalization, matching its x-height or cap-height
                   to the primary font. The metric itself is a project setting
-                  (Project Settings → UniText → Text Defaults →{" "}
+                  (Project Settings → LightSide → UniText → Text Defaults →{" "}
                   <strong>Font Size Match</strong>,{" "}
                   <code>FontNormalizeMetric</code>);{" "}
                   <code>FontSizeMatchModifier</code> overrides it on a
@@ -1233,9 +1236,9 @@ text.color = Color.white;`}
 
               <p className="text-white/70">
                 Both are created from a font-asset selection:{" "}
-                <strong>Create → UniText → Font Stack (Combined)</strong> merges
+                <strong>Create → LightSide → UniText → Fonts → Font Stack (Combined)</strong> merges
                 two or more fonts into one stack,{" "}
-                <strong>Create → UniText → Font Stack (Per Font)</strong> makes
+                <strong>Create → LightSide → UniText → Fonts → Font Stack (Per Font)</strong> makes
                 one stack per selected font. A stack chains to the next through
                 its <code>Fallback Stack</code> slot.
               </p>
@@ -1256,7 +1259,7 @@ text.color = Color.white;`}
 
               <p className="text-white/70 mb-4">
                 <code>UniTextFontVariant</code> (
-                <strong>Create → UniText → Font Variant</strong>) borrows
+                <strong>Create → LightSide → UniText → Fonts → Font Variant</strong>) borrows
                 another font&rsquo;s bytes and owns everything else — metrics,
                 rasterization, axis defaults, glyph overrides — with its own
                 atlas and shaper cache, so pinned axis defaults give a reusable
@@ -1275,7 +1278,7 @@ text.color = Color.white;`}
               <h3 className="font-semibold mb-4">2.4 Tools window</h3>
 
               <p className="text-white/70 mb-4">
-                <strong>Tools → UniText → Tools</strong>:
+                <strong>Tools → LightSide → UniText → Utilities</strong>:
               </p>
 
               <ul className="space-y-2 text-white/70 list-disc list-inside">
@@ -1296,7 +1299,7 @@ text.color = Color.white;`}
                   without spaces (Thai, Lao, Khmer, Myanmar, Chinese, Japanese)
                   — see <code>WordSegmentationDictionary</code>. A built
                   dictionary takes effect only once it is listed in Project
-                  Settings → UniText → Word Segmentation (
+                  Settings → LightSide → UniText → Word Segmentation (
                   <code>UniTextSettings.Dictionaries</code>).
                 </li>
               </ul>
@@ -1309,7 +1312,7 @@ text.color = Color.white;`}
                 <strong>Automatic OS fallback</strong> is on by default: any
                 codepoint no family in the stack covers is rendered from the OS
                 font, so a project that ships only a Latin font still renders
-                Japanese text pasted by a user. Project Settings → UniText →
+                Japanese text pasted by a user. Project Settings → LightSide → UniText →
                 Fonts → <strong>Disable System Font Fallback</strong> turns it
                 off (<code>UniTextSettings.SystemFontDisabled</code>, runtime
                 mirror <code>SystemFont.Disabled</code>); explicitly assigned{" "}
@@ -1323,13 +1326,13 @@ text.color = Color.white;`}
 
               <p className="text-white/70 mb-4">
                 <strong>Explicit system font</strong> —{" "}
-                <strong>Create → UniText → System Font Asset</strong> makes a{" "}
+                <strong>Create → LightSide → UniText → Fonts → System Font Asset</strong> makes a{" "}
                 <code>UniTextSystemFont</code>: a font whose bytes come from the
                 OS, picked per platform (Common, Windows, macOS, Linux, iOS,
                 Android) with per-platform face-metric (
                 <code>FaceInfoOverride</code>) and rasterization overrides. Put
                 it in a stack to use the OS font as a named family, e.g. to
-                match the platform&rsquo;s UI font. Project Settings → UniText →
+                match the platform&rsquo;s UI font. Project Settings → LightSide → UniText →
                 Fonts → <strong>Default System Font</strong> additionally makes
                 one the primary for components with no <code>Font</code> and no{" "}
                 <code>FontStack</code>.
@@ -1365,7 +1368,7 @@ text.color = Color.white;`}
                 <h3 className="font-semibold mb-4">2.6 Color fonts</h3>
                 <p className="text-white/70">
                   <code>UniTextColorFont</code> (
-                  <strong>Create → UniText → Color Font Asset</strong>) handles
+                  <strong>Create → LightSide → UniText → Fonts → Color Font Asset</strong>) handles
                   color glyph formats: CBDT/sbix bitmap and COLRv0/COLRv1
                   vector. Emoji are the common case (§17) — the always-on emoji
                   font stays the provider for emoji-presentation codepoints —
@@ -1987,8 +1990,8 @@ text.RemoveRule(myRule);`}
                 <code>StylePreset</code> is that same list as a project asset,
                 so many components share one vocabulary and one place to edit
                 it. Create one with{" "}
-                <strong>Create → UniText → Style Preset</strong> (or{" "}
-                <strong>Presets → Style Preset</strong> in the palette), fill
+                <strong>Create → LightSide → UniText → Style Preset</strong> (or{" "}
+                <strong>Style Preset</strong> in the palette), fill
                 its <strong>Styles</strong> exactly as you would on a component,
                 and attach it:
               </p>
@@ -2002,7 +2005,7 @@ text.RemoveRule(myRule);`}
                 <li>
                   <strong>Project-wide</strong> —{" "}
                   <strong>
-                    Project Settings → UniText → Global Style Preset
+                    Project Settings → LightSide → UniText → Global Style Preset
                   </strong>
                   ; every component applies it while its{" "}
                   <strong>Use Global Style Preset</strong> toggle is on. Turn
@@ -2810,7 +2813,7 @@ text.RemoveRule(myRule);`}
                       <td className="py-2 pr-4">Owned value</td>
                       <td className="py-2 pr-4">
                         <code>Own</code> — code (§19.6), a driver clip (§8.5), a{" "}
-                        <code>ParameterRule</code> (§9)
+                        <code>ParameterChange</code> (§9)
                       </td>
                       <td className="py-2">
                         one range, or every range a query matches
@@ -3485,7 +3488,9 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                   OnGlyph(UniTextMeshGenerator gen, int cluster, in TParams p,
                   float phase)
                 </code>{" "}
-                through <code>GlyphQuad</code> (four vertices, order
+                through <code>UniText.Glyph.Offset</code>,{" "}
+                <code>UniText.Glyph.Rotate</code>, and{" "}
+                <code>UniText.Glyph.Scale</code> (four vertices, order
                 BL-TL-TR-BR). Keep it a pure function of the supplied phase and
                 worker-thread safe.
               </p>
@@ -3647,7 +3652,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 ranges its query matches and ramps every match between two
                 endpoint values inside its own window on a shared timeline. Add
                 it to the text&rsquo;s own GameObject —{" "}
-                <strong>Add Component → UniText → UniText Driver</strong>; it
+                <strong>Add Component → LightSide → UniText → UniTextDriver</strong>; it
                 requires a <code>UniTextBase</code> there.
               </p>
 
@@ -3699,8 +3704,10 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                         <code>From</code>, <code>To</code>
                       </td>
                       <td className="py-2">
-                        the endpoint values, both <code>RuleValue</code>s of the
-                        parameter&rsquo;s own type (§9)
+                        the endpoint values, both <code>PropertyValue</code>s of
+                        the parameter&rsquo;s own type;{" "}
+                        <code>Param.&lt;Name&gt;.Values.Write(value)</code> builds
+                        one from code (§9)
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -3906,37 +3913,46 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                   <code>[Parameter]</code> field of a modifier is published as a
                   static descriptor on that modifier&rsquo;s generated{" "}
                   <code>Param</code> class (§5.2), which is what{" "}
-                  <code>ParameterRule.SetTarget</code> binds to. Writing an{" "}
+                  <code>ParameterChange.SetTarget</code> binds to. Writing an{" "}
                   <code>OwnedParameter</code> changes only that ownership; it
                   never mutates the serialized modifier field.
                 </li>
                 <li>
-                  <code>RuleValue</code> — typed targets:{" "}
-                  <code>ColorRuleValue</code>, <code>FloatRuleValue</code>,{" "}
-                  <code>UnitRuleValue</code>, <code>Vector2RuleValue</code>,{" "}
-                  <code>UnitVector2RuleValue</code>, <code>IntRuleValue</code>,{" "}
-                  <code>BoolRuleValue</code>, <code>StringRuleValue</code>,{" "}
-                  <code>EnumRuleValue&lt;TEnum&gt;</code>. Each supplies either
-                  the value authored on it or, with{" "}
-                  <code>RangeValueSource.PayloadMember</code>, a named member
-                  read from the range&rsquo;s payload.{" "}
-                  <code>RuleValue&lt;TValue&gt;</code> is the public base for a
-                  project&rsquo;s own unmanaged value type.
+                  <code>PropertyValue</code> — parameter storage selected by
+                  the same generated accessor used by property drivers. The
+                  Inspector displays the bound parameter&rsquo;s value type
+                  automatically; code passes a typed value to{" "}
+                  <code>ParameterChange.SetTarget</code>. Driver clip endpoints
+                  (§8.5) use the same storage;{" "}
+                  <code>Param.&lt;Name&gt;.Values.Write(value)</code> builds one
+                  from code.
                 </li>
               </ul>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <p className="text-white/70 mb-4">
-                <code>RangeStateRule</code> wires them together;{" "}
-                <code>ModifierRule</code> (applies a transient modifier graph
-                while active) and <code>ParameterRule</code> (drives one
-                parameter of another modifier in the same graph) are the
-                concrete shapes. Rules are authored on{" "}
-                <code>InteractiveModifier.Rules</code>;{" "}
+                <code>RangeStateRule</code> wires them together. Its{" "}
+                <code>Changes</code> list contains <code>ParameterChange</code>{" "}
+                entries that drive parameters of existing modifiers in the same
+                graph. All changes share the rule&rsquo;s condition and
+                playback. Rules are authored on{" "}
+                <code>InteractiveModifierBase.Rules</code>;{" "}
                 <code>UniTextRanges</code> is the per-component runtime that
                 owns their playbacks, reached with{" "}
                 <code>UniTextRanges.For(text)</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Custom conditions derive from <code>RangeStateSelector</code>;
+                custom animation and lifecycle logic derive from{" "}
+                <code>RangeStatePlayback</code>, whose callbacks receive{" "}
+                <code>RangeRuleInstance</code>. <code>GetParameter</code> returns
+                typed handles for bindings declared in <code>Changes</code>;
+                the list may be empty when the playback only handles lifecycle
+                events. Custom interaction behavior can derive from{" "}
+                <code>InteractiveModifierBase</code>. Parameter bindings
+                describe their targets independently of those policies.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -3948,7 +3964,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 <code>ContextRequested</code>) that fires independently of the
                 selector, and a <code>Priority</code> deciding which{" "}
                 <code>Replace</code> contribution wins. A{" "}
-                <code>ParameterRule</code> adds <code>Composition</code> (
+                <code>ParameterChange</code> adds <code>Composition</code> (
                 <code>Replace</code>, <code>Add</code>, <code>Multiply</code>,{" "}
                 <code>Custom</code>), deciding how its contribution combines
                 with the cascade result and with concurrent rules. The default
@@ -3985,9 +4001,17 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 at 1, and a transition in flight carries it past either bound:
                 continuous parameters overshoot under a <code>Back</code> or{" "}
                 <code>Elastic</code> easing, discrete ones take the endpoint the
-                weight lies beyond, and <code>IModifierRuleWeightReceiver</code>{" "}
-                implementations receive it saturated to 0&ndash;1.
+                weight lies beyond.
               </p>
+
+              <Notice type="info" className="mt-4">
+                A rule selects a graph node and one of its declared parameters.
+                The descriptor supplies the value type and invalidation; no
+                effect weight support or dirty-stage setting is needed. For a
+                fading decoration, keep its <code>HighlightModifier</code> in
+                the Composite with a transparent <code>Tint</code>, and target
+                an opaque <code>Tint</code> from the rule.
+              </Notice>
             </div>
           </div>
         </section>
@@ -4006,16 +4030,28 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               <h3 className="font-semibold mb-4">10.1 Interactive ranges</h3>
 
               <p className="text-white/70 mb-4">
-                <code>InteractiveModifier</code> makes a range respond to
-                pointer input. Input, geometry, overlap and pointer state belong
-                to one per-component <code>UniTextInteractions</code> router the
-                modifier registers with; the modifier owns only authored policy,
-                events and default actions. Overlapping ranges resolve to a
+                <code>InteractiveModifierBase</code> supplies range registration,
+                hit policies, events, state rules, and navigation. Its concrete
+                subclasses own their specific behavior:{" "}
+                <code>InteractiveModifier</code> adds a string <code>Value</code>{" "}
+                parameter; <code>LinkModifier</code> adds a <code>Url</code>{" "}
+                parameter and link behavior; <code>SpoilerModifier</code> tracks
+                and toggles reveal state. <code>Value</code> and <code>Url</code>{" "}
+                appear first in each modifier&rsquo;s <code>Parameters</code>,
+                followed by shared hit parameters. Spoilers start directly with
+                the shared parameters. Navigation settings are grouped under{" "}
+                <code>Navigation</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Input, geometry, overlap and pointer state belong to one
+                per-component <code>UniTextInteractions</code> router the
+                modifier registers with. Overlapping ranges resolve to a
                 single target: highest <code>InteractionPriority</code> first,
                 then Style order, then the shorter range, then registration
-                order. A range with <code>PassThrough</code> set emits its
-                events without consuming the pointer, so underlying UI still
-                receives the gesture.
+                order. The <strong>Observe</strong> routing profile emits events
+                without consuming the pointer, so underlying UI still receives
+                the gesture.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -4025,17 +4061,17 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 instance. <code>RangeState</code> is the per-range machine{" "}
                 <code>Normal → Hovered → Pressed</code>, plus{" "}
                 <code>Disabled</code>; read it with{" "}
-                <code>InteractiveModifier.GetRangeState</code>. The router
+                <code>InteractiveModifierBase.GetRangeState</code>. The router
                 publishes the same changes as typed signals —{" "}
                 <code>RangeSignals.Hovered</code>, <code>Pressed</code>,{" "}
                 <code>Focused</code>, <code>Disabled</code> — and those, not{" "}
                 <code>RangeState</code>, are what §9 selectors match.
               </p>
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
                 Code subscribes through the same router:{" "}
-                <code>UniTextInteractions.For(text).Get(channel)</code> returns
-                the <code>RangeInteractionChannel</code> for one{" "}
+                <code>UniTextInteractions.For(text).Get(channel)</code> returns{" "}
+                <code>RangeInteractionEvents</code> for one{" "}
                 <code>RangeChannel</code> asset, with <code>Activated</code>,{" "}
                 <code>ContextRequested</code>, <code>Entered</code>,{" "}
                 <code>Exited</code>, <code>StateChanged</code>,{" "}
@@ -4044,64 +4080,72 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 <code>Interaction</code>. A modifier with no channel of its own
                 inherits the range source&rsquo;s; with neither, routing is
                 modifier-local through{" "}
-                <code>InteractiveModifier.Interaction</code>.
+                <code>InteractiveModifierBase.Events</code>.
+              </p>
+
+              <p className="text-white/70">
+                <code>RangeChannel</code> identifies a group of ranges; it has no
+                payload type or field bindings to configure. The handler reads{" "}
+                <code>interaction.Range.PrimaryValue</code>: a URL, user ID or
+                another application-defined string. Several ranges may carry the
+                same value; <code>RangeIdentity</code> separately identifies each
+                logical range.
               </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">10.2 Actions</h3>
+              <h3 className="font-semibold mb-4">10.2 Application handlers</h3>
 
               <p className="text-white/70 mb-4">
-                A range can carry serialized actions instead of code:
+                Configure the range, value, channel and visual <code>Rules</code>{" "}
+                in the Inspector. Interpret the value, look up objects, validate
+                input and perform application actions in a C# event handler.
+                This component logs the clicked value; assign the text component
+                and the same channel used by its interactive modifier:
               </p>
 
-              <div className="overflow-x-auto mb-4">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="text-left py-2 pr-4 text-white/60">
-                        Action
-                      </th>
-                      <th className="text-left py-2 text-white/60">Effect</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-white/70">
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>OpenUrlAction</code>
-                      </td>
-                      <td className="py-2">opens the range&rsquo;s URL</td>
-                    </tr>
-                    <tr className="border-b border-white/5">
-                      <td className="py-2 pr-4">
-                        <code>CopyRangeTextAction</code>
-                      </td>
-                      <td className="py-2">copies the range text</td>
-                    </tr>
-                    <tr>
-                      <td className="py-2 pr-4">
-                        <code>SetActiveAction</code>
-                      </td>
-                      <td className="py-2">
-                        sets a GameObject active or inactive
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <CodeBlock
+                code={`using LightSide;
+using UnityEngine;
+
+public sealed class RangeValueLogger : MonoBehaviour
+{
+    [SerializeField] private UniTextBase text;
+    [SerializeField] private RangeChannel channel;
+
+    private RangeInteractionEvents events;
+
+    private void OnEnable()
+    {
+        events = UniTextInteractions.For(text).Get(channel);
+        events.Activated += OnActivated;
+    }
+
+    private void OnDisable() => events.Activated -= OnActivated;
+
+    private void OnActivated(RangeInteraction interaction)
+        => Debug.Log(interaction.Range.PrimaryValue, text);
+}`}
+              />
+
+              <p className="text-white/70 mt-4 mb-4">
+                Code-created ranges may also carry an optional object through
+                the source&rsquo;s <code>payload</code> argument. Read it directly
+                with <code>interaction.Payload.Get&lt;T&gt;()</code>, or use{" "}
+                <code>TryGet&lt;T&gt;</code> when the handler accepts several
+                types. This needs neither a channel type declaration nor
+                generated property readers. A payload can also accompany a range
+                routed only through its modifier&rsquo;s events.
+              </p>
 
               <p className="text-white/70">
-                <code>RangeAction</code> is the base — subclass it for your own.{" "}
-                <code>RangeActionContext</code> carries the text component, the
-                entity, the hit segment, the payload and the pointer data, and
-                stays valid after dispatch returns. Each action declares which
-                routed events run it through <code>RangeActionEvents</code> (
-                <code>Activated</code>, <code>ContextRequested</code>, default{" "}
-                <code>Activated</code>) and returns <code>RangeActionFlow</code>{" "}
-                to continue or stop the rest of the list. Actions run in
-                Inspector order after capture, target and bubble handlers, and
-                are skipped when a handler calls{" "}
-                <code>RangeInteraction.PreventDefault</code>.
+                Call <code>Handle()</code> to stop further routed delivery and{" "}
+                <code>PreventDefault()</code> to suppress the modifier&rsquo;s
+                default behavior. Both affect the current dispatch. For reusable
+                custom behavior, override{" "}
+                <code>InteractiveModifierBase.HandleInteraction</code> or{" "}
+                <code>HandleDefaultAction</code>. Copy any values needed by
+                asynchronous work before returning from the callback.
               </p>
             </div>
 
@@ -4110,8 +4154,11 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               <p className="text-white/70">
                 <code>RangeGestureRecognizer</code> and{" "}
                 <code>DragRangeGestureRecognizer</code> turn raw pointer streams
-                into range gestures. <code>RangeGestureCompatibility</code>{" "}
-                decides which recognizers may run together.
+                into range gestures. Override{" "}
+                <code>InteractiveModifierBase.GetGestureRecognizers</code> in a
+                specialized modifier and return a span over stored recognizers.{" "}
+                <code>RangeGestureCompatibility</code> decides which recognizers
+                may run together.
               </p>
             </div>
 
@@ -4140,9 +4187,10 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               </ul>
 
               <p className="text-white/70">
-                For world text, add <code>UniTextWorldRaycaster</code> to the
+                For world text, add <code>WorldPointerRaycaster</code> to the
                 camera so Unity&rsquo;s EventSystem can hit{" "}
-                <code>UniTextWorld</code>.
+                <code>UniTextWorld</code>. One raycaster serves every LightSide
+                world surface on that camera, text and shapes alike.
               </p>
             </div>
 
@@ -4157,18 +4205,30 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                   URL through <code>Application.OpenURL</code> while{" "}
                   <code>AutoOpenUrl</code> is set, and raises{" "}
                   <code>LinkClicked</code>, <code>LinkEntered</code> and{" "}
-                  <code>LinkExited</code>; use <code>OpenUrlAction</code>{" "}
-                  instead when the URL comes from a payload member or a literal.
-                  It carries no colour or underline of its own — compose it with{" "}
-                  <code>ColorModifier</code> (§4.1) and{" "}
-                  <code>UnderlineModifier</code> (§4.4) — and ships two{" "}
-                  <code>ModifierRule</code> entries for pressed and activation
-                  feedback; add a §9 rule for hover feedback.
+                  <code>LinkExited</code>. Its presentation is configured in the
+                  built-in <code>LinkPreset</code>: an ordinary Composite of
+                  link, colour, underline and highlight modifiers, with parameter
+                  rules for feedback. Use the preset through{" "}
+                  <code>ModifierGraphModifier</code>, or copy and edit its graph.{" "}
+                  <code>LinkModifier</code> alone supplies hyperlink behavior.
                 </p>
               </div>
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-                <h3 className="font-semibold mb-4">10.6 Text resolver</h3>
+                <h3 className="font-semibold mb-4">10.6 Spoilers</h3>
+                <p className="text-white/70">
+                  <code>SpoilerModifier</code> toggles the per-entity{" "}
+                  <code>RevealedSignal</code> on activation. The built-in{" "}
+                  <code>SpoilerPreset</code> pairs it with a{" "}
+                  <code>HighlightModifier</code> above the text; a concealed-state
+                  rule animates the cover&rsquo;s <code>Tint</code>. Use that
+                  preset through <code>ModifierGraphModifier</code> for the
+                  complete presentation.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10 md:col-span-2">
+                <h3 className="font-semibold mb-4">10.7 Text resolver</h3>
                 <p className="text-white/70">
                   <code>IUniTextResolver</code> overrides the source text of a
                   component before it is parsed — without touching the
@@ -4241,7 +4301,8 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               </li>
               <li>
                 <code>MediaWrapper</code> — how the entry is presented:{" "}
-                <code>PrefabMediaWrapper</code> instantiates a prefab,{" "}
+                <code>ObjectMediaWrapper</code> clones a prefab or positions a
+                scene object,{" "}
                 <code>SpriteImageWrapper</code> draws a sprite.
               </li>
               <li>
@@ -4255,9 +4316,18 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               </li>
             </ul>
 
+            <p className="text-white/70 mb-4">
+              <code>InlineObject.Source</code> accepts a UI prefab or a scene
+              RectTransform. Scene objects follow the configured pivot every
+              frame while keeping their size, rotation, scale and parent; size
+              reserves layout space. Removing the occurrence restores the
+              object&rsquo;s position. One scene object can occupy one visible
+              occurrence and cannot contain its owning text.
+            </p>
+
             <p className="text-white/70">
               <code>InlineObjectPolicy</code> on{" "}
-              <code>InteractiveModifier</code> (§10) decides whether the U+FFFC
+              <code>InteractiveModifierBase</code> (§10) decides whether the U+FFFC
               clusters of inline media take part in an interactive range&rsquo;s
               hit geometry: <code>Include</code> (default), <code>Exclude</code>
               , <code>Only</code>.
@@ -4278,11 +4348,11 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
             <code>UniTextSelectable</code> adds read-only selection to Canvas or
             world text.{" "}
             <strong>
-              GameObject → UI (Canvas) → UniText → Selectable Text
+              GameObject → LightSide → UniText → UniTextSelectable
             </strong>{" "}
             instantiates the prefab assigned in <code>UniTextSettings</code>,
             already wired with handles and a context menu;{" "}
-            <strong>Add Component → UniText → Selectable</strong> adds the
+            <strong>Add Component → LightSide → UniText → UniTextSelectable</strong> adds the
             component to an existing text object. The text component must be
             there first — <code>RequireComponent</code> validates{" "}
             <code>UniTextBase</code> but cannot auto-add an abstract type. One
@@ -4500,7 +4570,7 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
                 <code>Defaults/Editing/SelectionHandles.prefab</code> is the
                 shipped handles prefab, assigned in the shipped Selectable Text
                 prefab. No loupe prefab ships — build one from{" "}
-                <strong>Add Component → UniText → Magnifier</strong> (
+                <strong>Add Component → LightSide → UniText → UniTextMagnifier</strong> (
                 <code>UniTextMagnifier</code>) and assign it; it captures
                 through a canvas camera, so it stays hidden on a Screen Space -
                 Overlay canvas, which has none. <code>SelectableEntity</code> is
@@ -4522,9 +4592,9 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
           </h2>
 
           <p className="text-white/70 mb-4">
-            <strong>GameObject → UI (Canvas) → UniText → Editable Text</strong>{" "}
+            <strong>GameObject → LightSide → UniText → UniTextEditable</strong>{" "}
             and{" "}
-            <strong>GameObject → UI (Canvas) → UniText → Input Field</strong>{" "}
+            <strong>GameObject → LightSide → UniText → Input Field</strong>{" "}
             add an editable field to a Canvas. Both instantiate the prefab
             assigned in <code>UniTextSettings</code>, so a project&rsquo;s own
             prefab is what appears; with an empty slot the menu item creates
@@ -4818,8 +4888,8 @@ editable.ValidationChanged              += state => { };`}
                   <code>Validate(ITextDocument)</code> and return a{" "}
                   <code>ValidationState</code>; none ship — validators are
                   per-project. <code>Status</code> is an open token, empty when
-                  valid (<code>ValidationStatus.Invalid</code> /{" "}
-                  <code>Pending</code> are the common ones), and{" "}
+                  valid (<code>ValidationState.InvalidStatus</code> /{" "}
+                  <code>ValidationState.PendingStatus</code> are the common ones), and{" "}
                   <code>Message</code> is what a{" "}
                   <code>SupportingTextDecorator</code> shows.
                 </li>
@@ -5183,7 +5253,7 @@ editable.ValidationChanged              += state => { };`}
                   run carrying a matching tag prefers that family during
                   codepoint-to-font resolution. Matching is prefix-wise, so{" "}
                   <code>zh</code> matches <code>zh-Hans</code> (
-                  <code>LanguageMatching</code>).
+                  <code>UniText.LanguageMatches</code>).
                 </li>
               </ol>
 
@@ -5220,7 +5290,7 @@ editable.ValidationChanged              += state => { };`}
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">15.3 Localization</h3>
                 <p className="text-white/70">
-                  <code>IUniTextResolver</code> (§10.6) substitutes text at
+                  <code>IUniTextResolver</code> (§10.7) substitutes text at
                   render time. Combined with <code>&lt;lang&gt;</code> and a
                   per-language font stack, one component serves every locale
                   without scene changes.
@@ -5360,7 +5430,7 @@ editable.ValidationChanged              += state => { };`}
             </p>
 
             <p className="text-white/70">
-              <strong>Project Settings → UniText → Disable Emoji</strong> turns
+              <strong>Project Settings → LightSide → UniText → Disable Emoji</strong> turns
               colour emoji off globally (
               <code>UniTextSettings.EmojiDisabled</code>, mirrored to{" "}
               <code>EmojiFont.Disabled</code>). A <code>UniTextColorFont</code>{" "}
@@ -5414,7 +5484,7 @@ editable.ValidationChanged              += state => { };`}
               </p>
 
               <p className="text-white/70 mb-4">
-                <strong>Assets → Create → UniText → Custom Effect</strong>{" "}
+                <strong>Assets → Create → LightSide → UniText → Custom Effect</strong>{" "}
                 writes three files: the effect include plus its Canvas and World
                 shells, with the package prelude includes already resolved. The
                 visual logic lives in the include — implement{" "}
@@ -5473,7 +5543,7 @@ editable.ValidationChanged              += state => { };`}
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">18.3 Noise</h3>
               <p className="text-white/70">
-                <strong>Tools → LightSide → Noise Generator</strong> produces
+                <strong>Tools → LightSide → Core → Noise Generator</strong> produces
                 noise textures for shader effects.
               </p>
             </div>
@@ -5603,7 +5673,7 @@ text.SetText(charSpan);              // from a span`}
               </p>
 
               <p className="text-white/70">
-                <strong>Tools → UniText → Inspection Mode</strong>{" "}
+                <strong>Tools → LightSide → UniText → Inspection Mode</strong>{" "}
                 (Ctrl/Cmd+Shift+I) toggles it in the editor;{" "}
                 <code>UniTextInspector.ToggleKey</code> (F8) toggles it in play
                 mode and in development builds. <code>PinKey</code> (P) freezes
@@ -5920,7 +5990,7 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
               </Notice>
 
               <p className="text-white/70">
-                <strong>Tools → UniText → Range Debugger</strong> captures a{" "}
+                <strong>Tools → LightSide → UniText → Range Debugger</strong> captures a{" "}
                 <code>UniTextRangeDebugSnapshot</code> — the live range entities
                 of a component and the rule playbacks bound to them — and can
                 push signal values by hand.
@@ -6008,7 +6078,7 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
               <p className="text-white/70 mb-4">
                 The shortest path is the menu:{" "}
                 <strong>
-                  GameObject → UI (Canvas) → UniText → Document View
+                  GameObject → LightSide → UniText → UniTextDocumentView
                 </strong>{" "}
                 creates a viewport with a document text and a{" "}
                 <strong>Document Loader</strong> on it. Point the loader&rsquo;s{" "}
@@ -6020,7 +6090,7 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
               </p>
 
               <p className="text-white/70 mb-4">
-                The loader (<strong>UniText → Document Loader</strong> on any
+                The loader (<strong>LightSide → UniText → UniTextDocumentLoader</strong> on any
                 text) loads on enable and again whenever a setting of the source
                 changes. Streaming assets on Android and on the web are URLs, so
                 those load asynchronously; <code>IsLoading</code> and{" "}
@@ -6069,9 +6139,9 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
               <p className="text-white/70 mb-4">
                 A document scrolls in a <strong>Document View</strong> (
                 <strong>
-                  GameObject → UI (Canvas) → UniText → Document View
+                  GameObject → LightSide → UniText → UniTextDocumentView
                 </strong>
-                , or <strong>UniText → Document View</strong> on a
+                , or <strong>LightSide → UniText → UniTextDocumentView</strong> on a
                 RectTransform): the view is the viewport, the document text
                 below it is stretched to fill it, and a <code>RectMask2D</code>{" "}
                 on the viewport clips, as in any scroll view. Drag, wheel,
@@ -6181,24 +6251,24 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
 
               <p className="text-white/70 mb-4">
                 <code>UniTextEditable</code> stores its text as a{" "}
-                <code>Rope</code> and hands that rope to the component as its
-                view, so a field whose text spans more than one block (about 4k
-                characters) and outgrows its mask is windowed like any document,
-                and edits in place; a shorter field lays out whole and scrolls
-                as text: the composition, the display mask and the render
-                attributes are overlays the component applies to the window it
-                materializes. <code>FindAll</code> streams the document and
-                reports document codepoints; Copy caps the clipboard payload at{" "}
-                <code>ClipboardBudget.MaxOutputChars</code>.
+                <code>Rope</code> and shares the component&rsquo;s viewport,
+                scrolling, and virtualization. <code>UniTextDocumentView</code>{" "}
+                can provide the viewport and scrollbars for an editable field.{" "}
+                <code>FindAll</code> streams the document and reports document
+                codepoints.
               </p>
 
-              <Notice type="warning">
-                Rich WYSIWYG editing is not windowed: importing markup into the
-                field&rsquo;s annotations is proportional to the source, as is
-                every undo snapshot of them — render very large rich content
-                through <code>SetDocument</code> on a non-editable component
-                instead. A field scrolls its document itself, under its own
-                mask; it is not placed inside a Document View.
+              <p className="text-white/70 mb-4">
+                Copy and paste process the complete text supplied by the
+                clipboard provider without a package-wide size cap; attach{" "}
+                <code>LengthLimitBehavior</code> when a field needs a length
+                limit.
+              </p>
+
+              <Notice type="info">
+                Virtualization bounds rendering work; rich-text import and
+                attributed undo snapshots still process the document content
+                and annotations.
               </Notice>
             </div>
           </div>
