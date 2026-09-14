@@ -919,22 +919,24 @@ export default function GettingStartedPage() {
             </Notice>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">Setup Tool</h3>
+              <h3 className="font-semibold mb-4">LightSide Hub</h3>
               <ol className="space-y-2 text-white/70 list-decimal list-inside">
                 <li>
-                  Check your email for a setup email from Light Side with your{" "}
-                  <strong>access token</strong>
+                  Check your license email from Light Side for your <strong>access token</strong>.
                 </li>
                 <li>
-                  Download the <strong>setup tool</strong> from the email and
-                  import it into your Unity project. The setup window opens
-                  automatically — paste your token and click{" "}
-                  <strong>Set Up</strong>
+                  <a href="https://github.com/LightSideKittens/LightSideEcosystem/releases/latest/download/LightSideHub.unitypackage"
+                    className="text-[var(--color-accent)] hover:underline">Download LightSide Hub</a>
+                  {" "}and import <strong>LightSideHub.unitypackage</strong> into your Unity project.
+                  This link always downloads the latest stable Hub release.
                 </li>
                 <li>
-                  Done! UniText is installed. You can manage versions anytime
-                  via <strong>Light Side &rarr; UniText Setup</strong> in the
-                  Unity menu bar
+                  Open <strong>Tools &rarr; LightSide &rarr; Hub</strong>. In <strong>Licences</strong>,
+                  paste your access token and click <strong>Add token</strong>.
+                </li>
+                <li>
+                  Select <strong>UniText</strong>, choose a version and click <strong>Install</strong>.
+                  Use the same Hub window to manage versions and updates.
                 </li>
               </ol>
             </div>
