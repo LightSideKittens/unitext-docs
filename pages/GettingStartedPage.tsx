@@ -912,6 +912,41 @@ export default function GettingStartedPage() {
 
           <div className="space-y-6">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">Bought on the Asset Store?</h3>
+              <p className="text-white/70 mb-4">
+                If you purchased UniText on the Unity Asset Store, you can claim
+                a LightSide license <strong>at no extra cost</strong>. We
+                recommend installing through LightSide Hub: you receive updates
+                directly from LightSide as they are released, and UniText is
+                managed under <code>Packages</code>. Asset Store releases can
+                arrive later because they go through Unity&rsquo;s review.
+              </p>
+              <ol className="space-y-2 text-white/70 list-decimal list-inside">
+                <li>
+                  Open{" "}
+                  <a
+                    href="https://unity.lightside.media/en/unitext/pricing#license"
+                    className="text-[var(--color-accent)] hover:underline"
+                  >
+                    license support
+                  </a>{" "}
+                  and find <strong>Bought on Asset Store?</strong>.
+                </li>
+                <li>
+                  Enter your email and <strong>Invoice number</strong>, then
+                  click <strong>Submit Claim</strong>. Find the invoice number
+                  in Unity&rsquo;s purchase confirmation email or your Asset
+                  Store order history.
+                </li>
+                <li>
+                  After your purchase is verified, follow the activation link
+                  sent by email to get your <strong>access token</strong>. Then
+                  continue with the LightSide Hub steps below.
+                </li>
+              </ol>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">LightSide Hub</h3>
               <ol className="space-y-2 text-white/70 list-decimal list-inside">
                 <li>
