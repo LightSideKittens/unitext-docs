@@ -1,6 +1,6 @@
 {
-  "version": "3.8.2",
-  "generatedAt": "2026-09-15T07:08:59.4252975Z",
+  "version": "3.8.3",
+  "generatedAt": "2026-09-16T00:16:13.6198274Z",
   "namespaces": [],
   "types": [
     {
@@ -8005,24 +8005,14 @@
             "summary": "The padded inner rect ([[GetPaddedRect]]) snapshotted on the main thread."
           },
           {
-            "id": "CachedTransformData.visibleYMin",
-            "name": "visibleYMin",
+            "id": "CachedTransformData.visibleRect",
+            "name": "visibleRect",
             "accessModifier": "public",
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float",
-            "summary": "Local-space visible band from [[VisibleWindow]], padded with the culling hysteresis margin; \u00B1infinity when culling is off."
-          },
-          {
-            "id": "CachedTransformData.visibleYMax",
-            "name": "visibleYMax",
-            "accessModifier": "public",
-            "isStatic": false,
-            "isReadonly": false,
-            "isConst": false,
-            "type": "float",
-            "summary": "Local-space visible band from [[VisibleWindow]], padded with the culling hysteresis margin; \u00B1infinity when culling is off."
+            "type": "Nullable\u003CRect\u003E",
+            "summary": "Mesh-local viewport including the culling hysteresis margin, or null when unbounded."
           }
         ],
         "events": []
@@ -8847,6 +8837,7 @@
         "UniTextBase"
       ],
       "interfaces": [
+        "IClipper",
         "ILayoutController"
       ],
       "derivedTypes": [],
@@ -35182,7 +35173,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Recomputes [[VisibleWindow]] from the configured viewport so glyph, paragraph and decoration emission share the engine\u0027s existing culling path.",
+            "summary": "Recomputes [[VisibleWindow]] from the configured viewport for glyph and decoration culling.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -44350,8 +44341,8 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextMeshGenerator.SetVisibleBand",
-            "name": "SetVisibleBand",
+            "id": "UniTextMeshGenerator.SetVisibleRect",
+            "name": "SetVisibleRect",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
@@ -44359,11 +44350,10 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Bounds quad emission to a local-space vertical band (viewport culling). Geometry queries, selection and hit-testing are untouched \u2014 positioned glyphs exist for every paragraph; only mesh emission skips bands outside the window. Reset to infinite for no culling.",
+            "summary": "Sets the mesh-local rectangle for geometry emission, or null for unbounded emission; selection and layout data remain available outside it.",
             "params": [],
             "paramTypes": [
-              "float",
-              "float"
+              "Nullable\u003CRect\u003E"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -44379,7 +44369,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "True when a local-space vertical span intersects the visible band \u2014 the one culling test every emission site shares (glyph paragraphs, virtual glyphs, decoration lines).",
+            "summary": "Gets whether a mesh-local vertical span intersects the emission window.",
             "params": [],
             "paramTypes": [
               "float",
@@ -57518,7 +57508,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Combines modifiers and splits semicolon-delimited parameters by child order.",
+      "summary": "Combines modifiers and splits semicolon-delimited parameters by child order. A child that splits again takes its own list as one parenthesized segment: (a;b);c.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
