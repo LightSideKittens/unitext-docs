@@ -1,6 +1,6 @@
 {
-  "version": "3.8.5",
-  "generatedAt": "2026-09-16T10:10:42.2550141Z",
+  "version": "3.9.0",
+  "generatedAt": "2026-09-18T00:28:46.7021468Z",
   "namespaces": [],
   "types": [
     {
@@ -151,14 +151,14 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Periodic hops off the baseline: glyphs jump and land with a sharpened half-sine, staying put between hops. Drive [[Phase]] to animate.",
+      "summary": "Periodic hops off the baseline: glyphs jump and land with a sharpened half-sine, staying put between hops.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 4)",
-        "TypeDescription(\u0022Glyphs hop off the baseline; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Glyphs hop off the baseline.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -553,7 +553,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Bends the glyph outline per pixel: covered glyphs sample their distance field through a travelling noise field, so strokes wobble and boil while every layer derived from that field \u2014 fill, stroke, shadow, glow, inner-shadow \u2014 bends with them and the edge keeps its analytic anti-aliasing. Drive [[Phase]] to animate; a fixed phase renders that exact state, which is a still hand-drawn unevenness.",
+      "summary": "Bends the glyph outline per pixel: covered glyphs sample their distance field through a travelling noise field, so strokes wobble and boil while every layer derived from that field \u2014 fill, stroke, shadow, glow, inner-shadow \u2014 bends with them and the edge keeps its analytic anti-aliasing. A phase held still renders that exact state, which is a still hand-drawn unevenness.",
       "remarks": "This deforms the field a glyph is drawn from, not the quad it is drawn on: it composes with the vertex animations (wave, wobble, spin, reveal handlers), which move the glyph as a rigid body. [[Amplitude]] and [[Scale]] are in glyph-height units, so a deformation renders identically at every font size, and the amplitude is reserved as the glyph\u0027s outward reach \u2014 the atlas tile re-rasterizes at a wider rim and the quad expands, exactly as a stroke or glow does. The reach saturates at the atlas\u0027s signed-distance spread ([[Pad]] em); past that the field holds no more distance to displace into. Colour glyphs are left undeformed.",
       "seeAlso": [],
       "typeParameters": [],
@@ -561,7 +561,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 12)",
-        "TypeDescription(\u0022Bends the glyph outline per pixel through a travelling noise field; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Bends the glyph outline per pixel through a travelling noise field.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -1152,7 +1152,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 6)",
-        "TypeDescription(\u0022Smooth hovering drift; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Smooth hovering drift.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -1424,7 +1424,9 @@
       "baseTypeChain": [
         "EffectModifier"
       ],
-      "interfaces": [],
+      "interfaces": [
+        "IPhaseModifier"
+      ],
       "derivedTypes": [],
       "summary": "RGB-split glitch bursts: during a burst the glyph doubles into magenta and cyan copies pushed in opposite directions under a crisp original, with horizontal jerks and rare blink-outs. Re-rolls [[Rate]] times per phase unit; deterministic per phase, so scrubbing reproduces the same bursts. A colour glyph under the Apply policy gets the jerks, the blink-outs and silhouette fringes; its picture stays in its own layer.",
       "seeAlso": [],
@@ -1433,7 +1435,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 9)",
-        "TypeDescription(\u0022RGB-split glitch bursts; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022RGB-split glitch bursts.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -1660,14 +1662,33 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Animation input in abstract time units. Wholly external \u2014 a driver, tween, or Animator writes it; the modifier only renders it.",
+            "summary": "Animation input in abstract time units, weakest stage of every covered range\u0027s phase cascade: a driver, tween, Animator or code writes it, and the seconds [[Clock]] has run add to it.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Animation time input, in abstract units; the effect never advances on its own. Drive it from a driver, tween or Animator.\u0022)",
+              "Tooltip(\u0022Animation time input, in abstract units, added to whatever the clock has advanced. Drive it from a driver, tween or Animator.\u0022)",
               "SerializeField",
               "SlotlessParameter",
-              "StateProperty(nameof(MarkParamsDirty))"
+              "StateProperty(nameof(MarkParamsDirty))",
+              "VisibleWhen(nameof(clock), nameof(PlaybackClock.Manual))"
             ],
+            "source": "state"
+          },
+          {
+            "id": "GlitchModifier.Clock",
+            "name": "Clock",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "PlaybackClock",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Time source the phase advances on, one phase unit per second \u2014 [[Rate]] re-rolls per second. [[Manual]] advances nothing: ranges then render exactly the phase they resolve.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Time source the phase advances on, one phase unit per second; Manual leaves it to a driver, tween or code.\u0022)",
+              "SerializeField",
+              "StateProperty(nameof(ApplyClockChange))"
+            ],
+            "defaultValue": "PlaybackClock.Scaled",
             "source": "state"
           }
         ],
@@ -1813,9 +1834,11 @@
       "baseTypeChain": [
         "PooledAttributeModifier\u003Cbyte\u003E"
       ],
-      "interfaces": [],
+      "interfaces": [
+        "IPhaseModifier"
+      ],
       "derivedTypes": [],
-      "summary": "Base for phase-driven glyph modifiers: resolves each range\u0027s parameters through the cascade into a TParams set and hands it, with the range\u0027s resolved phase, to [[OnGlyph]] for every rendered glyph the range covers. Renders one exact state per phase value; never animates on its own. Parameters re-resolve before every mesh rebuild, so driving them re-renders the mesh without re-applying ranges.",
+      "summary": "Base for phase-driven glyph modifiers: resolves each range\u0027s parameters through the cascade into a TParams set and hands it, with the range\u0027s resolved phase, to [[OnGlyph]] for every rendered glyph the range covers. Renders one exact state per phase value, which [[Clock]] advances by itself unless it is left to an external drive. Parameters re-resolve before every mesh rebuild, so driving them re-renders the mesh without re-applying ranges.",
       "remarks": "Ranges of every modifier sharing the key land in one per-cluster axis \u2014 a cluster renders the parameter set of the range applied last, and the glyph pass runs once for it.",
       "seeAlso": [],
       "typeParameters": [],
@@ -1962,14 +1985,33 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Animation input in abstract time units. Wholly external \u2014 a driver, tween, or Animator writes it; the modifier only renders it. Setting it costs nothing while no range is active.",
+            "summary": "Animation input in abstract time units, weakest stage of every covered range\u0027s phase cascade: a driver, tween, Animator or code writes it, and the seconds [[Clock]] has run add to it. Setting it costs nothing while no range is active.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Animation time input, in abstract units; the effect never advances on its own. Drive it from a driver, tween or Animator.\u0022)",
+              "Tooltip(\u0022Animation time input, in abstract units, added to whatever the clock has advanced. Drive it from a driver, tween or Animator.\u0022)",
               "SerializeField",
               "SlotlessParameter",
-              "StateProperty(nameof(MarkParamsDirty))"
+              "StateProperty(nameof(MarkParamsDirty))",
+              "VisibleWhen(nameof(clock), nameof(PlaybackClock.Manual))"
             ],
+            "source": "state"
+          },
+          {
+            "id": "GlyphParamModifier.Clock",
+            "name": "Clock",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "PlaybackClock",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Time source the phase advances on, one phase unit per second. [[Manual]] advances nothing: ranges then render exactly the phase they resolve.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Time source the phase advances on, one phase unit per second; Manual leaves it to a driver, tween or code.\u0022)",
+              "SerializeField",
+              "StateProperty(nameof(ApplyClockChange))"
+            ],
+            "defaultValue": "PlaybackClock.Scaled",
             "source": "state"
           },
           {
@@ -2071,6 +2113,57 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "IPhaseModifier",
+      "name": "IPhaseModifier",
+      "namespace": "LightSide",
+      "kind": "interface",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [
+        "GlitchModifier",
+        "GlyphParamModifier\u003CTParams\u003E",
+        "ScrambleModifier"
+      ],
+      "summary": "A modifier that renders one exact state per phase value, whatever glyph or effect machinery it is built on \u2014 the surface that reaches the phase of every such effect without naming a concrete modifier type. Collect them with [[GetModifiers{T}]].",
+      "remarks": "Each effect counts its own rate parameter \u2014 frequency, rate, travel \u2014 per phase unit, so one phase unit is one second while [[Clock]] runs.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "animation",
+      "members": {
+        "methods": [],
+        "properties": [
+          {
+            "id": "IPhaseModifier.Phase",
+            "name": "Phase",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Animation input in abstract time units, weakest stage of every covered range\u0027s phase cascade. Seconds [[Clock]] has advanced add to the value a range resolves.",
+            "seeAlso": []
+          },
+          {
+            "id": "IPhaseModifier.Clock",
+            "name": "Clock",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "PlaybackClock",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Time source the phase advances on. [[Manual]] advances nothing: ranges then render exactly the phase they resolve, which is what a driver, tween, Animator or code writes.",
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -2733,7 +2826,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 7)",
-        "TypeDescription(\u0022Glyphs swing from their top edge; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Glyphs swing from their top edge.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -2962,7 +3055,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 3)",
-        "TypeDescription(\u0022Glyphs pulse in scale; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Glyphs pulse in scale.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -4331,16 +4424,18 @@
       "baseTypeChain": [
         "BaseModifier"
       ],
-      "interfaces": [],
+      "interfaces": [
+        "IPhaseModifier"
+      ],
       "derivedTypes": [],
-      "summary": "Decode effect: unresolved characters render as random glyphs from [[Charset]] and settle into the real text left-to-right as [[Progress]] grows. [[Phase]] churns the random picks. Both inputs are external and deterministic; the layout never reflows \u2014 replacements draw in the real glyphs\u0027 cells.",
+      "summary": "Decode effect: unresolved characters render as random glyphs from [[Charset]] and settle into the real text left-to-right as [[Progress]] grows. [[Phase]] churns the random picks, on [[Clock]] or on an external drive. Deterministic per phase; the layout never reflows \u2014 replacements draw in the real glyphs\u0027 cells.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 10)",
-        "TypeDescription(\u0022Characters decode from random glyphs; drive Progress and Phase.\u0022)",
+        "TypeDescription(\u0022Characters decode from random glyphs; drive Progress to decode.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -4494,14 +4589,33 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Animation input in abstract time units churning the random picks. Wholly external \u2014 a driver, tween, or Animator writes it.",
+            "summary": "Animation input in abstract time units churning the random picks, weakest stage of every covered range\u0027s phase cascade: a driver, tween, Animator or code writes it, and the seconds [[Clock]] has run add to it.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Animation time input churning the random picks; it never advances on its own. Drive it from a driver, tween or Animator.\u0022)",
+              "Tooltip(\u0022Animation time input churning the random picks, added to whatever the clock has advanced. Drive it from a driver, tween or Animator.\u0022)",
               "SerializeField",
               "SlotlessParameter",
-              "StateProperty(nameof(MarkParamsDirty))"
+              "StateProperty(nameof(MarkParamsDirty))",
+              "VisibleWhen(nameof(clock), nameof(PlaybackClock.Manual))"
             ],
+            "source": "state"
+          },
+          {
+            "id": "ScrambleModifier.Clock",
+            "name": "Clock",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "PlaybackClock",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Time source the phase advances on, one phase unit per second \u2014 [[Rate]] re-picks per second. [[Manual]] advances nothing: ranges then render exactly the phase they resolve.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Time source the phase advances on, one phase unit per second; Manual leaves it to a driver, tween or code.\u0022)",
+              "SerializeField",
+              "StateProperty(nameof(ApplyClockChange))"
+            ],
+            "defaultValue": "PlaybackClock.Scaled",
             "source": "state"
           }
         ],
@@ -4531,7 +4645,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 5)",
-        "TypeDescription(\u0022Random per-glyph jitter; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Random per-glyph jitter.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -4949,7 +5063,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 8)",
-        "TypeDescription(\u0022Glyphs rotate around their centers; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Glyphs rotate around their centers.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -5670,14 +5784,14 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Vertical sine wave traveling along the text: offset = sin(Phase\u00B7frequency \u002B cluster\u00B7spread)\u00B7amplitude. Drive [[Phase]] to animate; a fixed phase renders that exact wave snapshot.",
+      "summary": "Vertical sine wave traveling along the text: offset = sin(Phase\u00B7frequency \u002B cluster\u00B7spread)\u00B7amplitude. A phase held still renders that exact wave snapshot.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 1)",
-        "TypeDescription(\u0022Vertical sine wave along the text; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Vertical sine wave along the text.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -5924,7 +6038,7 @@
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 2)",
-        "TypeDescription(\u0022Glyphs rock around their centers; drive Phase to animate.\u0022)",
+        "TypeDescription(\u0022Glyphs rock around their centers.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -10477,7 +10591,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Scrolls so the document-space span [top, bottom] (top-down, local units) is inside the viewport, moving as little as possible; usable the moment a document is set. A text whose position follows a camera raises [[DocumentScrollRequested]] instead of moving itself. A document that fits its viewport whole has nowhere to scroll.",
+            "summary": "Scrolls so the document-space span [top, bottom] (top-down, local units) is inside the viewport, moving as little as possible; usable the moment a document is set. A text whose position follows a camera raises [[DocumentScrollRequested]] instead of moving itself. A document that fits its viewport whole has nowhere to scroll, and a span taller than the viewport fills it rather than being shown whole.",
             "params": [],
             "paramTypes": [
               "double",
@@ -10498,7 +10612,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Scrolls so a rect in this RectTransform\u0027s local space (rendered geometry: a caret, a range) is inside the viewport.",
+            "summary": "Scrolls so a rect in this RectTransform\u0027s local space (rendered geometry: a caret, a range) is inside the viewport; on an axis where the rect is larger than the viewport it fills the viewport instead.",
             "params": [],
             "paramTypes": [
               "Rect",
@@ -10556,7 +10670,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Puts document Y top at the viewport\u0027s top edge, clamped to the document; the window follows on the next pass. Whoever scrolls this text calls it: a view from its drag and scrollbars, a camera adapter from the camera.",
+            "summary": "Puts document Y top at the viewport\u0027s top edge, clamped to the document; the window follows on the next pass. A document that fits its viewport stays where alignment placed it. Whoever scrolls this text calls it: a view from its drag and scrollbars, a camera adapter from the camera.",
             "params": [],
             "paramTypes": [
               "double"
@@ -10575,7 +10689,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Moves the viewport by local units, positive right and down; an external scrolling owner receives the request when present.",
+            "summary": "Moves the viewport by local units, positive right and down; an external scrolling owner receives the request when present. An axis whose content fits the viewport keeps the position alignment gave it.",
             "params": [],
             "paramTypes": [
               "double",
@@ -10790,7 +10904,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "T",
-            "summary": "Returns the first modifier of type T attached to this component \u2014 local [[Styles]] first, then [[StylePresets]] runtime copies, including [[CompositeModifier]] children \u2014 or if none.",
+            "summary": "Returns the first modifier of type T attached to this component \u2014 local [[Styles]] first, then [[StylePresets]] runtime copies, including [[CompositeModifier]] children \u2014 or if none. T is a modifier type or an interface modifiers implement, such as [[IPhaseModifier]].",
             "remarks": "The returned reference is the live runtime instance \u2014 mutating its public properties is the canonical way to retune modifier behavior at runtime; each setter routes through [[SetDirty]] with the minimum-necessary flag. A preset-sourced instance is this component\u0027s own copy: it survives disable/enable and takes the preset\u0027s later edits in place; only replacing its authored node replaces the copy. A modifier inside a [[ModifierGraphPreset]] is reachable from the first query on, before the first rebuild.",
             "params": [],
             "paramTypes": [],
@@ -12097,7 +12211,7 @@
             "type": "double",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Largest [[DocumentTop]] that still fills the viewport, from the document\u0027s current extent.",
+            "summary": "Largest [[DocumentTop]] that still fills the viewport, from the document\u0027s current extent; zero while nothing clips this text.",
             "seeAlso": []
           },
           {
@@ -12108,7 +12222,7 @@
             "type": "double",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Largest [[DocumentLeft]] that still fills the viewport; zero for wrapped text.",
+            "summary": "Largest [[DocumentLeft]] that still fills the viewport; zero for wrapped text and while nothing clips this text.",
             "seeAlso": []
           },
           {
@@ -31714,8 +31828,7 @@
       "isStatic": false,
       "baseType": "RangeViewportAdapter",
       "baseTypeChain": [
-        "RangeViewportAdapter",
-        "MonoBehaviour"
+        "RangeViewportAdapter"
       ],
       "interfaces": [],
       "derivedTypes": [],
@@ -35387,8 +35500,7 @@
       "isStatic": false,
       "baseType": "RangeViewportAdapter",
       "baseTypeChain": [
-        "RangeViewportAdapter",
-        "MonoBehaviour"
+        "RangeViewportAdapter"
       ],
       "interfaces": [],
       "derivedTypes": [],
@@ -44305,7 +44417,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Expands a 4-vertex quad outward along its current local axes: UV0 by delta (atlas-space, normalized by glyph height), positions by the matching distance in the quad\u0027s own UV0\u2192pixel scale, so the SDF sample stays attached to the geometry whatever size the quad was built or scaled to.",
+            "summary": "Expands a 4-vertex quad outward along its current local axes: UV0 by delta (atlas-space, normalized by glyph height), positions by the matching distance in the quad\u0027s own UV0\u2192pixel scale, so the SDF sample stays attached to the geometry whatever size the quad was built or scaled to. On a pixel-grid glyph ([[SnapStep]]) the rim reaches the next whole font pixel instead of the requested distance, so no painted pixel is cut by the quad edge.",
             "params": [],
             "paramTypes": [
               "int",
@@ -68428,7 +68540,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Expands a 4-vertex quad outward on all sides by delta UV0 units, moving the positions through the quad\u0027s own UV0\u2192pixel scale. Uses the same deformation-aware position and UV0 expansion as the main mesh.",
+            "summary": "Expands a 4-vertex quad outward on all sides by delta UV0 units, moving the positions through the quad\u0027s own UV0\u2192pixel scale. Uses the same deformation-aware position and UV0 expansion as the main mesh, including the whole-font-pixel rim of the current face\u0027s glyph when that face sits on a pixel grid.",
             "params": [
               {
                 "name": "vertexStart",
@@ -85924,76 +86036,6 @@
       }
     },
     {
-      "id": "VisibleWhenAttribute",
-      "name": "VisibleWhenAttribute",
-      "namespace": "LightSide",
-      "kind": "class",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": true,
-      "isStatic": false,
-      "baseType": "Attribute",
-      "baseTypeChain": [
-        "Attribute"
-      ],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Shows this parameter field only when another parameter field\u0027s value equals [[Label]] \u2014 for enum/variant triggers, the option label; otherwise the token verbatim.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "utilities",
-      "attributes": [
-        "AttributeUsage(AttributeTargets.Field)"
-      ],
-      "members": {
-        "methods": [
-          {
-            "id": "VisibleWhenAttribute.ctor",
-            "name": "VisibleWhenAttribute",
-            "accessModifier": "public",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": true,
-            "returnType": "VisibleWhenAttribute",
-            "params": [],
-            "paramTypes": [
-              "string",
-              "string"
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          }
-        ],
-        "properties": [
-          {
-            "id": "VisibleWhenAttribute.Field",
-            "name": "Field",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "string",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          },
-          {
-            "id": "VisibleWhenAttribute.Label",
-            "name": "Label",
-            "accessModifier": "public",
-            "isStatic": false,
-            "type": "string",
-            "hasGetter": true,
-            "hasSetter": false,
-            "seeAlso": []
-          }
-        ],
-        "fields": [],
-        "events": []
-      }
-    },
-    {
       "id": "WordSegmentationDictionary",
       "name": "WordSegmentationDictionary",
       "namespace": "LightSide",
@@ -86119,6 +86161,10 @@
       },
       {
         "name": "InlineRevealHandlerProvider",
+        "priority": 100
+      },
+      {
+        "name": "IPhaseModifier",
         "priority": 100
       },
       {
@@ -88509,10 +88555,6 @@
       },
       {
         "name": "VariantAttribute",
-        "priority": 100
-      },
-      {
-        "name": "VisibleWhenAttribute",
         "priority": 100
       },
       {
