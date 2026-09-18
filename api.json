@@ -1,6 +1,6 @@
 {
-  "version": "3.9.1",
-  "generatedAt": "2026-09-18T03:26:21.8997789Z",
+  "version": "3.9.2",
+  "generatedAt": "2026-09-18T07:52:39.3726144Z",
   "namespaces": [],
   "types": [
     {
@@ -12354,11 +12354,11 @@
             "isReadonly": false,
             "isConst": false,
             "type": "bool",
-            "summary": "Gets or sets whether text shrinks to fit; virtualized text uses the minimum font size.",
+            "summary": "Gets or sets whether the text takes the largest size between the two bounds that fits the container \u2014 with word wrap, never one wrapping could only place by splitting a word, so a word too wide for the box shrinks the text down to the minimum font size instead of breaking. Virtualized text uses the minimum font size.",
             "attributes": [
               "SerializeField",
               "StateProperty(nameof(MarkLayoutDirty))",
-              "Tooltip(\u0022Automatically adjust font size to fit the container. Virtualized text uses Min Font Size.\u0022)"
+              "Tooltip(\u0022Automatically adjust font size to fit the container. With Word Wrap the size never \u0022 \u002B\n                 \u0022exceeds what keeps every word whole, down to Min Font Size. Virtualized text uses \u0022 \u002B\n                 \u0022Min Font Size.\u0022)"
             ]
           },
           {
@@ -40649,7 +40649,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "The largest font size in minSize\u2013maxSize whose text fits the target box, or minSize when none does. Layout state is restored around the search.",
+            "summary": "The largest font size in minSize\u2013maxSize whose text fits the target box, or minSize when none does. With word wrap, a size wrapping could only place by splitting a word does not fit, whatever height it would save. Layout state is restored around the search.",
             "remarks": "Requires [[HasValidFirstPassData]] to be. Performance: re-breaks lines once per candidate the search cannot answer from the line set it already holds.",
             "params": [
               {
