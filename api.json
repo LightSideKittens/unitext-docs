@@ -1,6 +1,6 @@
 {
-  "version": "3.9.2",
-  "generatedAt": "2026-09-18T07:52:39.3726144Z",
+  "version": "3.10.0",
+  "generatedAt": "2026-09-21T08:49:59.9958627Z",
   "namespaces": [],
   "types": [
     {
@@ -2627,7 +2627,7 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "float"
+            "type": "Vector2"
           },
           {
             "id": "Params.frequency",
@@ -5784,14 +5784,15 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Vertical sine wave traveling along the text: offset = sin(Phase\u00B7frequency \u002B cluster\u00B7spread)\u00B7amplitude. A phase held still renders that exact wave snapshot.",
+      "summary": "Sine wave traveling along the text, with a peak per axis: x = cos(Phase\u00B7frequency \u002B cluster\u00B7spread)\u00B7amplitude.x, y = sin(Phase\u00B7frequency \u002B cluster\u00B7spread)\u00B7amplitude.y. One axis waves along a line, two trace an ellipse and equal ones a circle. A phase held still renders that exact wave snapshot.",
+      "remarks": "The horizontal axis leads the vertical by a quarter turn, which is what makes two axes an orbit rather than a diagonal line; negating one of them reverses the orbit.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "animation",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Animation\u0022, 1)",
-        "TypeDescription(\u0022Vertical sine wave along the text.\u0022)",
+        "TypeDescription(\u0022Sine wave along the text: one axis waves, two orbit.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -5842,18 +5843,18 @@
             "name": "Amplitude",
             "accessModifier": "public",
             "isStatic": false,
-            "type": "float",
+            "type": "Vector2",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Peak vertical offset in pixels.",
+            "summary": "Peak offset per axis in pixels.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Peak vertical offset in pixels.\u0022)",
+              "Tooltip(\u0022Peak offset in pixels per axis: Y alone waves up and down, X alone side to side, both together orbit \u2014 equal values on a circle.\u0022)",
               "SerializeField",
               "Parameter",
               "StateProperty(nameof(MarkParamsDirty))"
             ],
-            "defaultValue": "3f",
+            "defaultValue": "new(0f, 3f)",
             "source": "state"
           },
           {
@@ -8119,6 +8120,16 @@
             "summary": "The padded inner rect ([[GetPaddedRect]]) snapshotted on the main thread."
           },
           {
+            "id": "CachedTransformData.layoutWidth",
+            "name": "layoutWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "The width the text is laid out in ([[LayoutWidth]]), snapshotted with the rect."
+          },
+          {
             "id": "CachedTransformData.visibleRect",
             "name": "visibleRect",
             "accessModifier": "public",
@@ -8480,6 +8491,50 @@
         ],
         "properties": [],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LayoutWidthContext",
+      "name": "LayoutWidthContext",
+      "namespace": "LightSide",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The width the text is laid out in, while it is being resolved.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "components",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "LayoutWidthContext.box",
+            "name": "box",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "Rect",
+            "summary": "The padded rect the text stands in."
+          },
+          {
+            "id": "LayoutWidthContext.width",
+            "name": "width",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "float",
+            "summary": "The width, as the handlers before this one left it; it starts at the box\u0027s own."
+          }
+        ],
         "events": []
       }
     },
@@ -9546,7 +9601,7 @@
             "isConstructor": false,
             "returnType": "int",
             "summary": "Finds every occurrence of query in the rendered text, writing one codepoint range per match into results (left to right, non-overlapping). Returns the number of matches written; stops early when results is full. Ranges feed [[MutableRangeSource]] and [[GetRangeBounds]] directly. Allocation-free for queries up to 64 UTF-16 chars. Main thread.",
-            "remarks": "Case-insensitive comparisons use the engine\u0027s bundled Unicode simple case mappings \u2014 per-codepoint and locale-independent. Multi-codepoint foldings (German \u00DF \u2194 ss) and locale-specific rules (Turkish dotless i) do not match; culture-sensitive [[StringComparison]] values behave as their ordinal counterparts.",
+            "remarks": "See [[TextSearch]] for how case-insensitive comparisons fold.",
             "params": [],
             "paramTypes": [
               "ReadOnlySpan\u003Cchar\u003E",
@@ -12061,6 +12116,18 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextBase.OnResolveLayoutWidth",
+            "name": "OnResolveLayoutWidth",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "OrderedEvent\u003CLayoutWidthContext\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Occurs while the width the text is laid out in is decided, for anything that carries the text into a space of its own \u2014 an arc on a fixed circle offers the arc it has, not the box it was given. Wrapping, auto-sizing and ellipsis all measure against the answer, so text laid on a shape is fitted to that shape.",
+            "remarks": "Raised on the main thread alone \u2014 for the layout pass, the fit pass and the snapshot the workers lay out from \u2014 before anything of the pass exists, so a handler answers from its own serialized state and the box; the workers read the captured answer and never raise it.",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextBase.ViewportRect",
             "name": "ViewportRect",
             "accessModifier": "public",
@@ -12509,6 +12576,14 @@
             "isStatic": false,
             "type": "Action",
             "summary": "Occurs when text is about to be rebuilt."
+          },
+          {
+            "id": "UniTextBase.GlyphsFiled",
+            "name": "GlyphsFiled",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action",
+            "summary": "Occurs on the main thread once a rebuild\u0027s glyphs stand in the atlas and before its mesh is built: the one point in a rebuild where a consumer may file a field of its own in the atlas, so the mesh built next finds it."
           },
           {
             "id": "UniTextBase.RectHeightChanged",
@@ -14326,7 +14401,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "Nullable\u003CRect\u003E",
-            "summary": "A camera\u0027s view on the text\u0027s plane is all it can show: the main camera, or in the editor the scene view\u0027s camera when no main camera exists. A camera adapter that supplies the projected scale owns the display and its window already is the camera\u0027s projection, so nothing narrows it. With no camera at all nothing displays the text and only the document\u0027s top is materialized.",
+            "summary": "A camera\u0027s view on the text\u0027s plane is all it can show: the main camera when it renders this text, otherwise the game camera that draws it last, and in the editor the scene view\u0027s camera when the scene holds none. A camera adapter that supplies the projected scale owns the display and its window already is the camera\u0027s projection, so nothing narrows it. With no camera at all nothing displays the text and only the document\u0027s top is materialized.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -20548,15 +20623,41 @@
             "seeAlso": []
           },
           {
-            "id": "InputCaretRenderer.CaretWidthRatio",
-            "name": "CaretWidthRatio",
+            "id": "InputCaretRenderer.CaretWidthPercent",
+            "name": "CaretWidthPercent",
             "accessModifier": "public",
             "isStatic": false,
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Caret width as a fraction of the caret\u0027s height (which tracks the component\u0027s font size), so the caret keeps the same proportion to the text at any canvas scale or resolution. The default renderer draws the rectangle this wide; custom shapes may ignore or reinterpret it.",
-            "seeAlso": []
+            "summary": "Caret width in percent of the caret\u0027s height (which tracks the component\u0027s font size), so the caret keeps the same proportion to the text at any canvas scale or resolution. The default renderer draws the rectangle this wide; custom shapes may ignore or reinterpret it.",
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "Range(0f, 50f)",
+              "NumberStateProperty(nameof(ApplyShapeChange), Min = 0)",
+              "Tooltip(\u0022Caret thickness in percent of the line height, so the caret keeps its proportion \u0022 \u002B\n                 \u0022to the text at any font size, canvas scale or resolution.\u0022)"
+            ],
+            "defaultValue": "DefaultCaretWidthPercent",
+            "source": "state"
+          },
+          {
+            "id": "InputCaretRenderer.Padding",
+            "name": "Padding",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Vector4",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Per-side adjustment of the drawn caret in percent of the caret\u0027s height: left, bottom, right, top. A positive side trims the caret inward, a negative side extends it past the line box, and an uneven left/right pair shifts the caret off the cluster boundary it stands on. The default renderer applies it to its rectangle; custom shapes may ignore or reinterpret it. A caret trimmed past its own extent draws nothing. An extension is drawn but not scrolled to: the field reveals the line box, so an extended tip can meet the viewport edge.",
+            "seeAlso": [],
+            "attributes": [
+              "SerializeField",
+              "PaddingBox",
+              "StateProperty(nameof(ApplyShapeChange))",
+              "Tooltip(\u0022Per-side adjustment of the caret in percent of the line height: left, bottom, \u0022 \u002B\n                 \u0022right, top. Positive trims that side, negative extends past the line box, and an \u0022 \u002B\n                 \u0022uneven left/right pair shifts the caret sideways.\u0022)"
+            ],
+            "source": "state"
           },
           {
             "id": "InputCaretRenderer.CaretRect",
@@ -26053,7 +26154,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Vector2",
-            "summary": "Screen-space caret position for codepointIndex (document space) \u2014 bottom picks the caret rect\u0027s bottom or top edge. The geometry query selection-UI implementations ([[ISelectionHandles]], [[IMagnifier]], system toolbars) issue against [[ActiveEditor]] to place themselves.",
+            "summary": "Screen-space caret position for codepointIndex (document space) \u2014 bottom picks the caret rect\u0027s bottom or top edge. Caret geometry exists only while a field is being edited, and the sibling selectable publishes it through [[TryGetCaretScreenPoint]] for the selection UI to place a caret handle against.",
             "params": [],
             "paramTypes": [
               "int",
@@ -26332,7 +26433,7 @@
             "type": "UniTextEditable",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Currently active editor across the application \u2014 THE \u0022current editor\u0022 authority. Selection UI ([[ISelectionHandles]] / [[IInsertionHandle]], [[IMagnifier]], [[ITextContextMenu]]) pulls geometry and document state from here at call time \u2014 implementations are never bound to a specific field, so they can never render against a stale one. Set on [[Activate]], cleared when [[Deactivate]] completes.",
+            "summary": "Currently active editor across the application \u2014 THE \u0022current editor\u0022 authority, for code that needs to know which field is being edited rather than to render against one. Selection UI takes its geometry from the [[UniTextSelectable]] presenting it, which exists with or without an editing layer. Set on [[Activate]], cleared when [[Deactivate]] completes.",
             "seeAlso": []
           },
           {
@@ -26702,7 +26803,8 @@
             "seeAlso": [],
             "attributes": [
               "SerializeField",
-              "StateProperty(nameof(ApplyTargetChange))"
+              "StateProperty(nameof(ApplyTargetChange))",
+              "Tooltip(\u0022Editable text that receives the pasted content. Empty takes the UniTextEditable on this object or above it.\u0022)"
             ],
             "source": "state"
           },
@@ -26718,7 +26820,8 @@
             "seeAlso": [],
             "attributes": [
               "SerializeField",
-              "StateProperty(nameof(ApplyFallbackButtonChange))"
+              "StateProperty(nameof(ApplyFallbackButtonChange))",
+              "Tooltip(\u0022Button that pastes where no native paste control exists. Empty takes the first Button among the children; it is hidden while the native control is used.\u0022)"
             ],
             "source": "state"
           },
@@ -26734,7 +26837,8 @@
             "seeAlso": [],
             "attributes": [
               "SerializeField",
-              "StateProperty(nameof(ApplyNativeStyleChange))"
+              "StateProperty(nameof(ApplyNativeStyleChange))",
+              "Tooltip(\u0022Content of the native iOS 16\u002B paste control: glyph, label, or both. No effect on other platforms.\u0022)"
             ],
             "defaultValue": "PasteControlDisplayMode.IconAndLabel",
             "source": "state"
@@ -26751,7 +26855,8 @@
             "seeAlso": [],
             "attributes": [
               "SerializeField",
-              "StateProperty(nameof(ApplyNativeStyleChange))"
+              "StateProperty(nameof(ApplyNativeStyleChange))",
+              "Tooltip(\u0022Corner treatment of the native iOS 16\u002B paste control. No effect on other platforms.\u0022)"
             ],
             "defaultValue": "PasteControlCornerStyle.Capsule",
             "source": "state"
@@ -35627,6 +35732,7 @@
             "seeAlso": [],
             "attributes": [
               "SerializeField",
+              "PaddingBox",
               "StateProperty(nameof(ApplyPaddingChange))",
               "Tooltip(\u0022Viewport inset in pixels: left, bottom, right, top.\u0022)"
             ],
@@ -36531,14 +36637,69 @@
       "isSealed": true,
       "isStatic": false,
       "baseTypeChain": [],
-      "interfaces": [],
+      "interfaces": [
+        "IEquatable\u003CFitBudgets\u003E"
+      ],
       "derivedTypes": [],
       "summary": "Uniform text-fitting adjustments resolved by the auto-size fit ladder and applied on top of shaped advances: extra tracking per non-zero-advance glyph, a horizontal glyph-scale multiplier, and a line-height multiplier.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "layout",
       "members": {
-        "methods": [],
+        "methods": [
+          {
+            "id": "FitBudgets.Equals",
+            "name": "Equals",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "FitBudgets"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FitBudgets.Equals",
+            "name": "Equals",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "object"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "FitBudgets.GetHashCode",
+            "name": "GetHashCode",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
         "properties": [
           {
             "id": "FitBudgets.IsIdentity",
@@ -40004,6 +40165,16 @@
             "isConst": false,
             "type": "byte",
             "summary": "The base BiDi level of the paragraph containing this line."
+          },
+          {
+            "id": "TextLine.alignment",
+            "name": "alignment",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "HorizontalAlignment",
+            "summary": "Alignment this line was actually laid out to, set during layout: the component\u0027s setting after every per-range override, the paragraph-last rule and the justification fallback have had their say. What a pass reads to place something on the edge the text was pinned to; never [[Justify]] on a line that ended up unjustified."
           },
           {
             "id": "TextLine.startMargin",
@@ -44033,7 +44204,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "Height in em of the field a face quad samples: the glyph\u0027s for an outline face, the silhouette\u0027s for a colour face with a field, 0 for a colour face without one.",
+            "summary": "Height in em of the field a face quad samples, and the height its UV0 is normalized by: the glyph\u0027s for an outline face, the silhouette\u0027s for a colour face with a field, 0 for a colour face without one.",
+            "remarks": "The shader dilates against this same height, so every effect sizing quad growth measures its reach through it.",
             "params": [],
             "paramTypes": [
               "int"
@@ -44417,7 +44589,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Expands a 4-vertex quad outward along its current local axes: UV0 by delta (atlas-space, normalized by glyph height), positions by the matching distance in the quad\u0027s own UV0\u2192pixel scale, so the SDF sample stays attached to the geometry whatever size the quad was built or scaled to. On a pixel-grid glyph ([[SnapStep]]) the rim reaches the next whole font pixel instead of the requested distance, so no painted pixel is cut by the quad edge.",
+            "summary": "Expands a 4-vertex quad outward: UV0 by delta (atlas-space, normalized by glyph height) and positions by the matching distance through the quad\u0027s own map, so the SDF sample stays attached to the geometry whatever size the quad was built or scaled to. On a pixel-grid glyph ([[SnapStep]]) the rim reaches the next whole font pixel instead of the requested distance, so no painted pixel is cut by the quad edge. The quad\u0027s recorded boundaries hold the result.",
             "params": [],
             "paramTypes": [
               "int",
@@ -45450,6 +45622,17 @@
             "seeAlso": []
           },
           {
+            "id": "UniTextSettings.CursorDisabled",
+            "name": "CursorDisabled",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Persisted mirror of [[Disabled]]. The setter pushes the value to the runtime flag; the saved value is pushed back on editor load (static constructor).",
+            "seeAlso": []
+          },
+          {
             "id": "UniTextSettings.Dictionaries",
             "name": "Dictionaries",
             "accessModifier": "public",
@@ -45480,6 +45663,28 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Gets the caret blink half-period in seconds, defaulting to 0.5 when no settings asset is available.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.CaretWidthPercent",
+            "name": "CaretWidthPercent",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Gets the caret thickness, in percent of the line height, for carets UniText creates itself.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSettings.CaretPadding",
+            "name": "CaretPadding",
+            "accessModifier": "public",
+            "isStatic": true,
+            "type": "Vector4",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Gets the per-side caret adjustment, in percent of the line height, for carets UniText creates itself.",
             "seeAlso": []
           },
           {
@@ -56072,15 +56277,17 @@
       "isAbstract": false,
       "isSealed": true,
       "isStatic": false,
-      "baseType": "PooledAttributeModifier\u003Cint\u003E",
+      "baseType": "BaselineCurveModifier\u003CShape, Ring\u003E",
       "baseTypeChain": [
-        "PooledAttributeModifier\u003Cint\u003E"
+        "BaselineCurveModifier\u003CShape, Ring\u003E"
       ],
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Places glyphs on concentric circular arcs while preserving each glyph\u0027s shape.",
-      "remarks": "Ranges of every arc modifier resolve into one per-cluster axis, so a glyph rides the arc of the range applied last rather than being bent once per modifier.",
-      "seeAlso": [],
+      "remarks": "The circle is authored one of two ways, and they mean different things. Left at [[Fill]], [[Circle]] says nothing and the sweep decides: the radius becomes the one that makes the range span exactly [[Angle]], the bend happens where the layout put the text, and [[Origin]] chooses the point that stays put. A label then holds its sweep and flattens as its text grows. Given a box of its own, [[Circle]] takes over: the circle inscribed in that box is the rail the text rides, and the text is laid on the near side of it. The box is placed against the text\u0027s layout box the way any [[RectPlacement]] is placed against its parent, so the rail belongs to the artwork rather than to the text \u2014 no change of font size, line metric or line count moves it, which is what a label on a fixed ring needs. Its turn carries the text round the circle, which is what a turn can mean to a shape that has no orientation of its own. [[Angle]] and [[Origin]] are then unused: nothing is bent about a point. The circle is also what the text is laid out in: its circumference is offered as the width, so wrapping, ellipsis and auto-sizing measure against the arc the circle has rather than against a box the text no longer occupies, and the text sits where its alignment puts it along that circumference \u2014 centred at the top of the circle, carried round from there by the turn. A range still wider than the circle laps and crosses itself, which auto-sizing is the cure for; a wrapped tail lands on the next concentric ring. Ranges of every arc modifier resolve into one per-cluster axis, so a glyph rides the arc of the range applied last rather than being bent once per modifier.",
+      "seeAlso": [
+        "CurveModifier"
+      ],
       "typeParameters": [],
       "category": "modifiers",
       "attributes": [
@@ -56092,17 +56299,37 @@
       "members": {
         "methods": [
           {
-            "id": "ArcModifier.CreateChannel",
-            "name": "CreateChannel",
+            "id": "ArcModifier.ResolveShape",
+            "name": "ResolveShape",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "AttributeChannel",
+            "returnType": "Shape",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ArcModifier.Bends",
+            "name": "Bends",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Shape"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -56140,8 +56367,61 @@
             "typeParameters": []
           },
           {
-            "id": "ArcModifier.OnApply",
-            "name": "OnApply",
+            "id": "ArcModifier.BeginPrepare",
+            "name": "BeginPrepare",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ArcModifier.BeginRange",
+            "name": "BeginRange",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "Shape",
+              "BaselineExtent"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ArcModifier.AddLine",
+            "name": "AddLine",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Ring",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ArcModifier.Place",
+            "name": "Place",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -56151,7 +56431,34 @@
             "returnType": "void",
             "params": [],
             "paramTypes": [
-              "RangeApplyContext"
+              "Ring",
+              "float",
+              "float",
+              "Vector2",
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "ArcModifier.Rail",
+            "name": "Rail",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "The rail placement describes inside box: the centre of the rectangle it resolves to and the radius of the circle inscribed in that rectangle. Answered in box\u0027s own coordinates, so an editor drawing the rail and the text riding it read the same circle.",
+            "remarks": "The box is measured upright and the turn is applied to the centre alone. A turned rectangle that must still cover its anchor span has to swell \u2014 which is right for a rectangle and meaningless for a circle, a circle having no orientation to turn. The turn is the angle the text is carried round instead.",
+            "params": [],
+            "paramTypes": [
+              "RectPlacement",
+              "Rect",
+              "Vector2",
+              "float"
             ],
             "exceptions": [],
             "seeAlso": [],
@@ -56167,10 +56474,10 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Arc sweep in degrees: zero is straight, positive arches upward, and negative downward.",
+            "summary": "Arc sweep in degrees: zero is straight, positive arches upward, and negative downward. Unused while [[Circle]] carries a box of its own.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Arc sweep in degrees: zero is straight, positive arches upward, and negative downward.\u0022)",
+              "Tooltip(\u0022Arc sweep in degrees: zero is straight, positive arches upward, and negative downward. Unused once Circle has a box of its own.\u0022)",
               "SerializeField",
               "Parameter",
               "Range(-360f, 360f)",
@@ -56178,6 +56485,54 @@
             ],
             "defaultValue": "90f",
             "source": "state"
+          },
+          {
+            "id": "ArcModifier.Origin",
+            "name": "Origin",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "ArcOrigin",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Which point of the range stays on its straight baseline while the rest turns away from it. Unused while [[Circle]] carries a box of its own.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Which point of the text stays put while the rest bends away. Alignment follows the edge the line was aligned to, so an aligned label keeps its pinned end where it is. Unused once Circle has a box of its own.\u0022)",
+              "SerializeField",
+              "Parameter",
+              "StateProperty(nameof(MarkMeshDirty))"
+            ],
+            "defaultValue": "ArcOrigin.Alignment",
+            "source": "state"
+          },
+          {
+            "id": "ArcModifier.Circle",
+            "name": "Circle",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "RectPlacement",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Box the rail is inscribed in, placed against the text\u0027s layout box; filling it leaves the circle to [[Angle]] instead. Its position offsets the rail, its smaller side gives the diameter.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Box the circle is inscribed in, placed against the text\u0027s own box: the position offsets it, the \u0022 \u002B\n                 \u0022smaller side gives the diameter. Leave it filling the box to derive the circle from Angle instead.\u0022)",
+              "SerializeField",
+              "StateProperty(nameof(MarkMeshDirty))"
+            ],
+            "defaultValue": "RectPlacement.Fill",
+            "source": "state"
+          },
+          {
+            "id": "ArcModifier.Sweep",
+            "name": "Sweep",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "How far around its circle the last rebuild carried this modifier\u0027s widest ring, in degrees. Past 360 the text has lapped and crosses itself, which is the sign that the box it is laid out in is wider than the arc the circle has to give. Zero while the modifier bends nothing.",
+            "seeAlso": []
           },
           {
             "id": "ArcModifier.AttributeKey",
@@ -56191,6 +56546,73 @@
           }
         ],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ArcOrigin",
+      "name": "ArcOrigin",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Which point of a bent range stays on its straight baseline while the rest turns away from it.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "ArcOrigin.Alignment",
+            "name": "Alignment",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ArcOrigin",
+            "defaultValue": "0",
+            "summary": "The edge the line was aligned to: a start-aligned line bends away from its start, an end-aligned one from its end, a centred one from its middle."
+          },
+          {
+            "id": "ArcOrigin.Left",
+            "name": "Left",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ArcOrigin",
+            "defaultValue": "1",
+            "summary": "The left edge of the range; the bend grows to the right."
+          },
+          {
+            "id": "ArcOrigin.Center",
+            "name": "Center",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ArcOrigin",
+            "defaultValue": "2",
+            "summary": "The middle of the range; both ends turn away."
+          },
+          {
+            "id": "ArcOrigin.Right",
+            "name": "Right",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "ArcOrigin",
+            "defaultValue": "3",
+            "summary": "The right edge of the range; the bend grows to the left."
+          }
+        ],
         "events": []
       }
     },
@@ -56521,6 +56943,15 @@
             "type": "string"
           },
           {
+            "id": "AttributeKeys.Curve",
+            "name": "Curve",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": false,
+            "isConst": true,
+            "type": "string"
+          },
+          {
             "id": "AttributeKeys.Wave",
             "name": "Wave",
             "accessModifier": "public",
@@ -56621,6 +57052,238 @@
             "summary": "Per-codepoint silhouette-field request for colour glyphs, written by effects that apply to them (see ColorGlyphField)."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "BaselineCurveModifier\u003CTShape, TLine\u003E",
+      "name": "BaselineCurveModifier\u003CTShape, TLine\u003E",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": true,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "PooledAttributeModifier\u003Cint\u003E",
+      "baseTypeChain": [
+        "PooledAttributeModifier\u003Cint\u003E"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Base class for modifiers that lay a range\u0027s glyphs along a curved baseline: every glyph keeps its shape and is moved and turned as a rigid quad, so the curve bends the line rather than the letters.",
+      "remarks": "A curve is built per line the range covers, so a shape can stand the lines apart as it needs, and every glyph is placed on its own line\u0027s curve from where it stood on the unbent baseline. Ranges of every modifier writing one [[AttributeKey]] resolve into a single per-cluster axis, so a glyph rides the curve of the range applied last rather than being bent once per modifier. Curve modifiers of different keys are separate passes and each places the glyph in turn, so a glyph two of them cover is bent twice; pick one baseline per range. The per-line work runs before mesh generation and the placement during it, both possibly on the rebuild worker \u2014 no Unity API calls from either.",
+      "seeAlso": [
+        "ArcModifier",
+        "CurveModifier"
+      ],
+      "typeParameters": [
+        {
+          "name": "TShape",
+          "description": "Per-range description of the curve, resolved in [[ResolveShape]]."
+        },
+        {
+          "name": "TLine",
+          "description": "Per-line curve built in [[AddLine]] and read back in [[Place]]."
+        }
+      ],
+      "category": "modifiers",
+      "attributes": [
+        "Serializable"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "BaselineCurveModifier.CreateChannel",
+            "name": "CreateChannel",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "AttributeChannel",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.ResolveShape",
+            "name": "ResolveShape",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TShape",
+            "summary": "Resolves the curve this range rides. Runs once per applied range, off the main thread.",
+            "params": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.Bends",
+            "name": "Bends",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Whether shape bends anything. A shape that does not clears its range, so a range laid over a bent one straightens the text it covers instead of inheriting the curve underneath.",
+            "params": [],
+            "paramTypes": [
+              "TShape"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.BeginPrepare",
+            "name": "BeginPrepare",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": true,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Brings state this modifier accumulates across its ranges back to a valid start. Called once per rebuild, before the first range of this modifier is prepared.",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.BeginRange",
+            "name": "BeginRange",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Prepares shape against the extent its range occupies unbent, and reports whether the range rides a curve at all; a range that does not is left straight. Called once per range per rebuild, before that range\u0027s lines.",
+            "params": [],
+            "paramTypes": [
+              "TShape",
+              "BaselineExtent\u003C\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.AddLine",
+            "name": "AddLine",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "TLine",
+            "summary": "Builds the curve one line rides, against the range [[BeginRange]] last prepared.",
+            "params": [
+              {
+                "name": "top",
+                "type": "float",
+                "description": "Top edge of the line box, relative to the text origin."
+              }
+            ],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "BaselineCurveModifier.Place",
+            "name": "Place",
+            "accessModifier": "protected",
+            "isAbstract": true,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Places the pen point of a glyph that stands at x along the unbent baseline of line, and reports the unit tangent the glyph is turned by. Coordinates are relative to the text origin, baselineY being the glyph\u0027s own baseline there. Runs per rendered glyph.",
+            "params": [],
+            "paramTypes": [
+              "TLine",
+              "float",
+              "float",
+              "Vector2",
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -57035,6 +57698,30 @@
             ]
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "CurveModifier.Bend",
+      "name": "Bend",
+      "namespace": "LightSide",
+      "declaringType": "CurveModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The stretch of baseline one line rides: where the curve begins, how far it runs, and how high it stands.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -57735,6 +58422,212 @@
           }
         ],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "CurveModifier",
+      "name": "CurveModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaselineCurveModifier\u003Cfloat, Bend\u003E",
+      "baseTypeChain": [
+        "BaselineCurveModifier\u003Cfloat, Bend\u003E"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Bends the baseline into an authored curve while preserving each glyph\u0027s shape.",
+      "remarks": "[[Curve]] runs across the range, from its start at 0 to its end at 1, and [[Height]] is what one unit of the curve stands for in pixels \u2014 so a shape authored once reads the same however wide the text turns out. Each glyph is lifted to the curve and turned to sit on it, keeping its horizontal place, so letter spacing is untouched. Every line of the range takes the same shape over its own baseline. Ranges of every curve modifier resolve into one per-cluster axis, so a glyph rides the curve of the range applied last rather than being bent once per modifier.",
+      "seeAlso": [
+        "ArcModifier"
+      ],
+      "typeParameters": [],
+      "category": "modifiers",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Layout\u0022, 2)",
+        "TypeDescription(\u0022Bends the baseline into an authored curve.\u0022)",
+        "GenerateParameters"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "CurveModifier.ResolveShape",
+            "name": "ResolveShape",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "float",
+            "params": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CurveModifier.Bends",
+            "name": "Bends",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CurveModifier.BeginPrepare",
+            "name": "BeginPrepare",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CurveModifier.BeginRange",
+            "name": "BeginRange",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "bool",
+            "params": [],
+            "paramTypes": [
+              "float",
+              "BaselineExtent"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CurveModifier.AddLine",
+            "name": "AddLine",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "Bend",
+            "params": [],
+            "paramTypes": [
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "CurveModifier.Place",
+            "name": "Place",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "Bend",
+              "float",
+              "float",
+              "Vector2",
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "CurveModifier.Height",
+            "name": "Height",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "float",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Peak displacement of the baseline in pixels, where the curve stands at one; negative bends the other way.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022What the full height of the curve is worth, in pixels. Negative bends the text the other way, 0 leaves it straight.\u0022)",
+              "SerializeField",
+              "Parameter",
+              "StateProperty(nameof(MarkMeshDirty))"
+            ],
+            "defaultValue": "40f",
+            "source": "state"
+          },
+          {
+            "id": "CurveModifier.Curve",
+            "name": "Curve",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Ease",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Shape the baseline takes across the range, read from its start at 0 to its end at 1.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Shape the baseline takes across the range, from its start to its end.\u0022)",
+              "SerializeField",
+              "StateProperty(nameof(MarkMeshDirty))"
+            ],
+            "defaultValue": "EaseProfiles.Bulge",
+            "source": "state"
+          },
+          {
+            "id": "CurveModifier.Frame",
+            "name": "Frame",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Rect",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The box [[Curve]] is read into, in the text\u0027s own coordinates: the baseline span of the range prepared last by the rebuild that reached this modifier, with its first line\u0027s baseline for y and the height one unit of the curve stood for. Empty until a rebuild has bent one of its ranges \u2014 an editor drawing the curve then has nowhere to put it.",
+            "seeAlso": []
+          },
+          {
+            "id": "CurveModifier.AttributeKey",
+            "name": "AttributeKey",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -66892,6 +67785,30 @@
       }
     },
     {
+      "id": "ArcModifier.Ring",
+      "name": "Ring",
+      "namespace": "LightSide",
+      "declaringType": "ArcModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The circle one line rides, and the turn one unit of its baseline costs on it: where the circle stands across, which point of the baseline lands at the top of it, and how far the line is lifted onto it. No turn at all leaves the line straight, which is what a ring collapsed onto the centre is rendered as.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "RubyModifier.RubyAlign",
       "name": "RubyAlign",
       "declaringType": "RubyModifier",
@@ -67496,6 +68413,30 @@
             "seeAlso": []
           }
         ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "ArcModifier.Shape",
+      "name": "Shape",
+      "namespace": "LightSide",
+      "declaringType": "ArcModifier",
+      "kind": "struct",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "The sweep a range was authored with, and the point it bends from.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
         "fields": [],
         "events": []
       }
@@ -70176,7 +71117,20 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "params": [],
+            "summary": "Returns the line\u0027s signed distance from the baseline, in mesh-local units, for the metrics of the text\u0027s primary font.",
+            "remarks": "One position serves the whole stripe, so it answers for the text\u0027s own font rather than the font of any run beneath it: a stripe taking each run\u0027s metric would step wherever the text changes font, and the shape the line is cut from \u2014 the underscore, which a fallback may own \u2014 is a source of geometry, not a typographic decision.",
+            "params": [
+              {
+                "name": "faceInfo",
+                "type": "FaceInfo",
+                "description": "Face metrics of the primary font, in its design units."
+              },
+              {
+                "name": "scale",
+                "type": "float",
+                "description": "Design units to mesh-local units for that same font."
+              }
+            ],
             "paramTypes": [
               "FaceInfo",
               "float"
@@ -70381,16 +71335,15 @@
             "name": "Offset",
             "accessModifier": "public",
             "isStatic": false,
-            "type": "UnitValue",
+            "type": "float",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Vertical offset from the metric line position. A per-range value overrides it.",
+            "summary": "Vertical shift from the metric line position, in ems; zero leaves the line where the font puts it. A per-range value overrides it.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Vertical shift of the line from the position the font defines.\u0022)",
+              "Tooltip(\u0022Vertical shift of the line from the position the font defines, as a fraction of the font size.\u0022)",
               "SerializeField",
               "Parameter",
-              "Unit(\u0022px|em\u0022)",
               "StateProperty(nameof(MarkMeshDirty))"
             ],
             "source": "state"
@@ -75227,7 +76180,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Renders a horizontal line through the middle of the text (strikethrough effect).",
-      "remarks": "No parameter. The line position is determined by the font\u0027s strikethroughOffset property, or calculated from the x-height if not available. Supports line breaks and color inheritance from the text.",
+      "remarks": "The line position is the primary font\u0027s strikethroughOffset, or half its x-height when the font states none \u2014 one height for the whole stripe whatever fonts the runs beneath it come from. Supports line breaks and color inheritance from the text.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "paint",
@@ -75820,7 +76773,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Renders an underline below text using the font\u0027s underline metrics.",
-      "remarks": "No parameter. The underline position is determined by the font\u0027s underlineOffset property. Supports line breaks and color inheritance from the text.",
+      "remarks": "The underline position is the primary font\u0027s underlineOffset, one height for the whole stripe whatever fonts the runs beneath it come from. Supports line breaks and color inheritance from the text.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "paint",
@@ -76509,289 +77462,6 @@
             "isConst": false,
             "type": "int",
             "summary": "Cursor position (char offset) within the composition string, or -1 while the platform temporarily suppresses the insertion point."
-          }
-        ],
-        "events": []
-      }
-    },
-    {
-      "id": "CursorType",
-      "name": "CursorType",
-      "kind": "enum",
-      "accessModifier": "public",
-      "isAbstract": false,
-      "isSealed": false,
-      "isStatic": false,
-      "baseTypeChain": [],
-      "interfaces": [],
-      "derivedTypes": [],
-      "summary": "Cursor appearance types. Each maps to platform-native cursor IDs via [[UniTextCursor]]\u0027s internal mapping table. If the current platform has no native cursor for a type, the default arrow is used.",
-      "seeAlso": [],
-      "typeParameters": [],
-      "category": "platform",
-      "members": {
-        "methods": [],
-        "properties": [],
-        "fields": [
-          {
-            "id": "CursorType.Default",
-            "name": "Default",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "0"
-          },
-          {
-            "id": "CursorType.Text",
-            "name": "Text",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "1"
-          },
-          {
-            "id": "CursorType.Link",
-            "name": "Link",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "2"
-          },
-          {
-            "id": "CursorType.Crosshair",
-            "name": "Crosshair",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "3"
-          },
-          {
-            "id": "CursorType.Move",
-            "name": "Move",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "4"
-          },
-          {
-            "id": "CursorType.NotAllowed",
-            "name": "NotAllowed",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "5"
-          },
-          {
-            "id": "CursorType.Help",
-            "name": "Help",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "6"
-          },
-          {
-            "id": "CursorType.Wait",
-            "name": "Wait",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "7"
-          },
-          {
-            "id": "CursorType.Progress",
-            "name": "Progress",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "8"
-          },
-          {
-            "id": "CursorType.Grab",
-            "name": "Grab",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "9"
-          },
-          {
-            "id": "CursorType.Grabbing",
-            "name": "Grabbing",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "10"
-          },
-          {
-            "id": "CursorType.ResizeHorizontal",
-            "name": "ResizeHorizontal",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "11"
-          },
-          {
-            "id": "CursorType.ResizeVertical",
-            "name": "ResizeVertical",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "12"
-          },
-          {
-            "id": "CursorType.ResizeNWSE",
-            "name": "ResizeNWSE",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "13"
-          },
-          {
-            "id": "CursorType.ResizeNESW",
-            "name": "ResizeNESW",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "14"
-          },
-          {
-            "id": "CursorType.ColResize",
-            "name": "ColResize",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "15"
-          },
-          {
-            "id": "CursorType.RowResize",
-            "name": "RowResize",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "16"
-          },
-          {
-            "id": "CursorType.ZoomIn",
-            "name": "ZoomIn",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "17"
-          },
-          {
-            "id": "CursorType.ZoomOut",
-            "name": "ZoomOut",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "18"
-          },
-          {
-            "id": "CursorType.ContextMenu",
-            "name": "ContextMenu",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "19"
-          },
-          {
-            "id": "CursorType.Cell",
-            "name": "Cell",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "20"
-          },
-          {
-            "id": "CursorType.Copy",
-            "name": "Copy",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "21"
-          },
-          {
-            "id": "CursorType.Alias",
-            "name": "Alias",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "22"
-          },
-          {
-            "id": "CursorType.NoDrop",
-            "name": "NoDrop",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "23"
-          },
-          {
-            "id": "CursorType.VerticalText",
-            "name": "VerticalText",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "24"
-          },
-          {
-            "id": "CursorType.AllScroll",
-            "name": "AllScroll",
-            "accessModifier": "public",
-            "isStatic": true,
-            "isReadonly": true,
-            "isConst": false,
-            "type": "CursorType",
-            "defaultValue": "25"
           }
         ],
         "events": []
@@ -80532,6 +81202,7 @@
         "ISelectableEntity"
       ],
       "derivedTypes": [
+        "NativeMagnifier",
         "PrefabMagnifier"
       ],
       "summary": "Magnifier entity that appears during long-press cursor placement and selection-handle dragging. The implementation owns its presentation mechanism.",
@@ -80714,7 +81385,7 @@
       "derivedTypes": [
         "PrefabSelectionHandles"
       ],
-      "summary": "Selection-handle capability for touch interaction: two draggable endpoints the user moves to adjust selection boundaries. The entity owns its presentation; the editable only drives it.",
+      "summary": "Selection-handle capability for touch interaction: two draggable endpoints the user moves to adjust selection boundaries. The entity owns its presentation; the selectable \u2014 or the editable that has taken its touch interaction over \u2014 only drives it.",
       "remarks": "[[Show]] is called when a selection is established, [[UpdatePositions]] while it remains visible, and [[Hide]] when the selection collapses or focus is lost.",
       "seeAlso": [],
       "typeParameters": [],
@@ -80825,6 +81496,7 @@
         "ISelectableEntity"
       ],
       "derivedTypes": [
+        "NativeTextContextMenu",
         "PrefabTextContextMenu"
       ],
       "summary": "Text context menu entity owned by a selectable. Implementations receive the complete owner for their attached lifetime and may present Unity UI, native platform UI, or another menu.",
@@ -80921,6 +81593,237 @@
       "members": {
         "methods": [],
         "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "NativeMagnifier",
+      "name": "NativeMagnifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "SelectableEntity",
+      "baseTypeChain": [
+        "SelectableEntity"
+      ],
+      "interfaces": [
+        "IMagnifier"
+      ],
+      "derivedTypes": [],
+      "summary": "Presents the platform\u0027s own text magnifier: android.widget.Magnifier on Android and the system text loupe on iOS, each shaped, sized, zoomed and animated by the running system \u2014 so the loupe matches the device\u0027s current text-selection look instead of imitating it.",
+      "remarks": "The magnified content is the live frame the player renders, sampled by the system from the player\u0027s own surface. The focal point follows the finger horizontally and snaps to the text line under it ([[TryGetLineScreenRect]]), the behavior both platforms use for caret placement and selection-handle dragging. Sampling a surface always trails the frame being built, so each platform re-samples on its own display frame while the loupe is up; this entity sends a focus, never a repaint. A selection the user changes and then holds still therefore catches up behind the glass without the player thread driving the loupe. The system magnifier exists on Android 9.0 and iOS 17 and later. Elsewhere \u2014 every other platform, the Editor, and older devices \u2014 there is no system magnifier to present and this entity shows nothing; assign [[PrefabMagnifier]] for a loupe that exists everywhere.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "selection",
+      "attributes": [
+        "Serializable",
+        "TypeDescription(\u0022System magnifier drawn by the platform (Android magnifier, iOS text loupe)\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "NativeMagnifier.Show",
+            "name": "Show",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeMagnifier.Hide",
+            "name": "Hide",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeMagnifier.UpdatePosition",
+            "name": "UpdatePosition",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeMagnifier.OnAttach",
+            "name": "OnAttach",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeMagnifier.OnDetach",
+            "name": "OnDetach",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "NativeTextContextMenu",
+      "name": "NativeTextContextMenu",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "SelectableEntity",
+      "baseTypeChain": [
+        "SelectableEntity"
+      ],
+      "interfaces": [
+        "ITextContextMenu"
+      ],
+      "derivedTypes": [],
+      "summary": "Presents the platform\u0027s own text edit menu: the floating selection toolbar on Android and the edit menu on iOS, each drawn, styled, ordered, localized, positioned and animated by the system.",
+      "remarks": "The menu carries the standard commands the current [[ContextMenuCapabilities]] allow, and every command the user invokes is routed back through the presenter \u2014 the field that showed the menu \u2014 so the platform UI performs UniText\u0027s own cut, copy, paste and select-all rather than the system\u0027s idea of them. It anchors to the selection rather than to a single point: the whole selection box ([[TryGetSelectionScreenRect]]) is handed to the system, which then places the menu clear of the selected text the way it does in every other app. A collapsed selection anchors at the caret point the caller passed. The system menu exists on Android 6.0 and iOS 13 and later; iOS 16 and later present it through the edit-menu interaction that replaced the older menu controller. Elsewhere \u2014 every other platform, the Editor, and older devices \u2014 there is no system menu to present and this entity shows nothing; assign [[PrefabTextContextMenu]] for a presentation that exists everywhere.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "selection",
+      "attributes": [
+        "Serializable",
+        "TypeDescription(\u0022System edit menu drawn by the platform (Android floating toolbar, iOS edit menu)\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "NativeTextContextMenu.Show",
+            "name": "Show",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "Vector2",
+              "ContextMenuCapabilities",
+              "Action\u003CContextMenuAction\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeTextContextMenu.Hide",
+            "name": "Hide",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeTextContextMenu.OnAttach",
+            "name": "OnAttach",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "NativeTextContextMenu.OnDetach",
+            "name": "OnDetach",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "NativeTextContextMenu.IsVisible",
+            "name": "IsVisible",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -81356,6 +82259,8 @@
         "ISelectableEntity"
       ],
       "derivedTypes": [
+        "NativeMagnifier",
+        "NativeTextContextMenu",
         "PrefabMagnifier",
         "PrefabSelectionHandles",
         "PrefabTextContextMenu"
@@ -82639,7 +83544,7 @@
       ],
       "derivedTypes": [],
       "summary": "Selection capability for [[UniTextBase]]: caret \u002B range state with explicit affinity, gesture interpretation (multi-click promotion, drag-to-select, word-by-word drag, context-menu coordination), and highlight rendering. Sits on the same GameObject as [[UniTextBase]]; requires an existing [[UniText]] or [[UniTextWorld]] \u2014 [[RequireComponent]] validates the dependency but cannot auto-add the abstract base, so add the text component first.",
-      "remarks": "First-class component, not a modifier. The misuse pattern (selection-as-Style, empty OnApply) is gone \u2014 selection is a component-level capability with its own lifecycle, distinct from text-range markup. Add this component for read-only selectable text; combine with UniTextEditable for editable input. See Component Composition Model in the roadmap (D-008, D-011). This component owns the uGUI drag surface for text. Drag policy: mouse / pen drags select; touch drags forward to the enclosing scroll container (the iOS / Android convention \u2014 selection on touch starts from long-press or double-tap, never from a plain drag) unless a selection gesture armed word-drag mode or the editing layer claimed touch drags for a focused field. Handles, magnifier, and context menu are owner-aware serialized entities. Their implementations choose the presentation mechanism; the component never instantiates UI itself. Multi-click thresholds default to desktop conventions ([[MultiClickMaxInterval]], [[MultiClickMaxDistance]]). Single = caret, double = word, triple = paragraph. Touch-side multi-tap thresholds (different from desktop) are fed in via DispatchTap / DispatchDoubleTap / DispatchTripleTap by the gesture recogniser, which applies its own timing.",
+      "remarks": "First-class component, not a modifier. The misuse pattern (selection-as-Style, empty OnApply) is gone \u2014 selection is a component-level capability with its own lifecycle, distinct from text-range markup. Add this component for read-only selectable text; combine with UniTextEditable for editable input. See Component Composition Model in the roadmap (D-008, D-011). This component owns the pointer surface for text \u2014 presses, drags and the touch gesture recogniser \u2014 for editable and read-only fields alike, so one pipeline produces one behaviour. A sibling UniTextEditable plugs into it through [[ITextEditingLayer]] and adds no gestures of its own. Drag policy: mouse / pen drags select; touch drags forward to the enclosing scroll container (the iOS / Android convention \u2014 selection on touch starts from a long-press or a double-tap, never from a plain drag) unless a selection gesture armed word-drag mode or the field itself has content to scroll. Handles, magnifier, and context menu are owner-aware serialized entities. Their implementations choose the presentation mechanism; the component never instantiates UI itself. Multi-click thresholds default to desktop conventions ([[MultiClickMaxInterval]], [[MultiClickMaxDistance]]). Single = caret, double = word, triple = paragraph. Touch-side multi-tap thresholds (different from desktop) are fed in via DispatchTap / DispatchDoubleTap / DispatchTripleTap by the gesture recogniser, which applies its own timing.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "selection",
@@ -83027,8 +83932,14 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Shows the assigned [[ContextMenu]] (if any) with this component as the presenter, then raises [[ContextMenuRequested]].",
-            "params": [],
+            "summary": "Raises the assigned [[ContextMenu]] (if any) over the current selection, then raises [[ContextMenuRequested]]. The menu stays up until the selection, a gesture or a command takes it down.",
+            "params": [
+              {
+                "name": "screenPosition",
+                "type": "Vector2",
+                "description": "Anchor for a collapsed selection, which has no box to sit over."
+              }
+            ],
             "paramTypes": [
               "Vector2"
             ],
@@ -83046,7 +83957,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Hides the assigned [[ContextMenu]] (if any), then raises [[ContextMenuDismissRequested]].",
+            "summary": "Hides the assigned [[ContextMenu]] (if any) and releases it, so it does not return when the current gesture ends; then raises [[ContextMenuDismissRequested]].",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -83064,6 +83975,150 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Repaints the highlight rects backing the selection. Called automatically after each selection change and after the host commits a relayout; expose for consumers that reposition the text out-of-band (manual scroll offsets) without changing [[Selection]].",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSelectable.TryGetSelectionScreenRect",
+            "name": "TryGetSelectionScreenRect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Gets the screen rect enclosing the current selection, clipped to the visible text viewport.",
+            "remarks": "The rect is axis-aligned in Unity screen pixels (Y-up) and spans every line the selection covers, so a menu or toolbar can be placed clear of the whole selection rather than of one endpoint. Platform selection UI that positions itself against a content rectangle \u2014 the Android floating toolbar and the iOS edit menu \u2014 consumes exactly this.",
+            "returns": "for a collapsed selection, before the first layout, and when the selection has scrolled entirely outside the viewport.",
+            "params": [
+              {
+                "name": "screenRect",
+                "type": "Rect",
+                "description": "Receives the enclosing rect when one exists."
+              }
+            ],
+            "paramTypes": [
+              "Rect"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSelectable.TryGetSelectionHandlePoints",
+            "name": "TryGetSelectionHandlePoints",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Gets the screen points the two touch selection handles hang from: the bottom of the line box at each selection endpoint, on the physical side that endpoint lies on.",
+            "remarks": "The points come from the range fragments the highlight is painted from, so a handle lands exactly on the edge of the painted selection. Those fragments carry which one holds the logical start and end and on which physical side each lies, which is what makes the result right for bidirectional text and for endpoints that fall inside a multi-codepoint grapheme \u2014 an emoji, a combining sequence \u2014 where the endpoint index itself names no glyph. Both endpoints are read from one pass because the pair is what a handle presentation places, and resolving the fragments is proportional to the selection: a caller asking twice pays for the whole selection twice, once per displayed frame. The fragments exist while the selection highlight is rendering, which a non-collapsed selection guarantees; a selection with no painted highlight has no handle position either.",
+            "returns": "for a collapsed selection, before the first layout, and when either endpoint lies outside the rendered window of a virtualized document.",
+            "params": [
+              {
+                "name": "anchorPoint",
+                "type": "Vector2",
+                "description": "Receives the point for the endpoint the selection is anchored at."
+              },
+              {
+                "name": "focusPoint",
+                "type": "Vector2",
+                "description": "Receives the point for the endpoint that moves."
+              }
+            ],
+            "paramTypes": [
+              "Vector2",
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSelectable.TryGetCaretScreenPoint",
+            "name": "TryGetCaretScreenPoint",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Gets the screen point at the bottom of the caret at codepointIndex in document space.",
+            "remarks": "Caret geometry belongs to the editing layer, which alone maintains a caret and its affinity; selection alone has none.",
+            "returns": "for read-only selection, which has no caret to place.",
+            "params": [
+              {
+                "name": "codepointIndex",
+                "type": "int",
+                "description": "Document codepoint the caret sits at."
+              },
+              {
+                "name": "screenPoint",
+                "type": "Vector2",
+                "description": "Receives the point while an editing layer is present."
+              }
+            ],
+            "paramTypes": [
+              "int",
+              "Vector2"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSelectable.TryGetLineScreenRect",
+            "name": "TryGetLineScreenRect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "bool",
+            "summary": "Gets the screen rect of the text line under screenPosition, clipped to the visible text viewport.",
+            "remarks": "The rect is the whole line box \u2014 full ascender-to-descender height and the line\u0027s horizontal text extent. A magnifier uses it to lock its focal point to the line the finger is over, which is what the platform loupes do: the focus follows the finger along the line and snaps vertically to it.",
+            "returns": "before the first layout and when the point maps to no line.",
+            "params": [
+              {
+                "name": "screenPosition",
+                "type": "Vector2",
+                "description": "Point in Unity screen pixels."
+              },
+              {
+                "name": "screenRect",
+                "type": "Rect",
+                "description": "Receives the line rect when layout is available."
+              }
+            ],
+            "paramTypes": [
+              "Vector2",
+              "Rect"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "UniTextSelectable.GetViewportScreenRect",
+            "name": "GetViewportScreenRect",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "Rect",
+            "summary": "Gets the screen rect of the visible text viewport in Unity screen pixels.",
+            "remarks": "The box a selection UI element must stay inside; it is the field rect unless an external viewport clips the text.",
             "params": [],
             "paramTypes": [],
             "exceptions": [],
@@ -83098,7 +84153,7 @@
             "type": "ITouchHandles",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Touch handle entity. It may implement [[ISelectionHandles]], [[IInsertionHandle]], or both; shows no handles. The sibling [[UniTextEditable]], when present, drives it.",
+            "summary": "Touch handle entity. It may implement [[ISelectionHandles]], [[IInsertionHandle]], or both; shows no handles. This component drives the selection handles for touch-selected text; a sibling [[UniTextEditable]], when present, takes over and drives the caret handle too.",
             "seeAlso": [],
             "attributes": [
               "SerializeReference",
@@ -83117,7 +84172,7 @@
             "type": "IMagnifier",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Touch magnifier entity. The implementation owns how it is presented; shows no magnifier.",
+            "summary": "Touch magnifier entity. The implementation owns how it is presented; shows no magnifier. It appears while a selection handle is dragged, and a sibling [[UniTextEditable]] additionally raises it for long-press caret placement.",
             "seeAlso": [],
             "attributes": [
               "SerializeReference",
@@ -83212,6 +84267,28 @@
             ],
             "defaultValue": "new PrefabTextContextMenu()",
             "source": "state"
+          },
+          {
+            "id": "UniTextSelectable.IsDragging",
+            "name": "IsDragging",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether a pointer is currently dragging a selection endpoint, a handle or the caret.",
+            "seeAlso": []
+          },
+          {
+            "id": "UniTextSelectable.IsContextMenuVisible",
+            "name": "IsContextMenuVisible",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Whether this component is presenting its context menu.",
+            "seeAlso": []
           }
         ],
         "fields": [],
@@ -83280,7 +84357,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Shipped Unity-UI presentation used by [[PrefabSelectionHandles]]. It instantiates a user-authored prefab for the draggable selection handles (one prefab used for both the anchor and focus carets) and for the collapsed-caret insertion handle, and places each at its caret point. The split of ownership: the prefab owns the look \u2014 sprite, colour, material, and the pivot, which alone decides how the handle sits relative to the caret (a teardrop pivots at its tip); the code owns the size, forcing each handle to a square of [[handleSize]] dp so the touch target stays a constant physical size across canvases, resolutions, and densities (a fingertip is device-independent). Put Preserve Aspect on the prefab\u0027s Image so its sprite fits that square undistorted. Assign its prefab inside a [[PrefabSelectionHandles]] entity; geometry is pulled from [[ActiveEditor]] at call time, the instances live in a canvas-level overlay so the field\u0027s RectMask2D never clips them, and a handle whose caret scrolls outside the field box hides until it returns. A [[SelectionHandleDragger]] (drag routing) and a [[FocusGuard]] (so grabbing a handle never defocuses the field) are ensured on each instance, so the prefab need only carry a raycastable Graphic.",
+      "summary": "Shipped Unity-UI presentation used by [[PrefabSelectionHandles]]. It instantiates a user-authored prefab for the draggable selection handles (one prefab used for both the anchor and focus carets) and for the collapsed-caret insertion handle, and places each at its caret point. The split of ownership: the prefab owns the look \u2014 sprite, colour, material, and the pivot, which alone decides how the handle sits relative to the caret (a teardrop pivots at its tip); the code owns the size, forcing each handle to a square of [[handleSize]] dp so the touch target stays a constant physical size across canvases, resolutions, and densities (a fingertip is device-independent). Put Preserve Aspect on the prefab\u0027s Image so its sprite fits that square undistorted. Assign its prefab inside a [[PrefabSelectionHandles]] entity; geometry is pulled from the [[UniTextSelectable]] presenting them at call time, the instances live in a canvas-level overlay so the field\u0027s RectMask2D never clips them, and a handle whose caret scrolls outside the field box hides until it returns. A [[SelectionHandleDragger]] (drag routing) and a [[FocusGuard]] (so grabbing a handle never defocuses the field) are ensured on each instance, so the prefab need only carry a raycastable Graphic.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "selection",
@@ -86444,6 +87521,10 @@
         "priority": 100
       },
       {
+        "name": "LayoutWidthContext",
+        "priority": 100
+      },
+      {
         "name": "LineHeightFitStep",
         "priority": 100
       },
@@ -87702,11 +88783,23 @@
         "priority": 100
       },
       {
+        "name": "ArcOrigin",
+        "priority": 100
+      },
+      {
         "name": "AttributeChannel",
         "priority": 100
       },
       {
         "name": "AttributeKeys",
+        "priority": 100
+      },
+      {
+        "name": "BaselineCurveModifier\u003CTShape, TLine\u003E",
+        "priority": 100
+      },
+      {
+        "name": "Bend",
         "priority": 100
       },
       {
@@ -87735,6 +88828,10 @@
       },
       {
         "name": "CompositeModifier",
+        "priority": 100
+      },
+      {
+        "name": "CurveModifier",
         "priority": 100
       },
       {
@@ -88030,6 +89127,10 @@
         "priority": 100
       },
       {
+        "name": "Ring",
+        "priority": 100
+      },
+      {
         "name": "RubyAlign",
         "priority": 100
       },
@@ -88055,6 +89156,10 @@
       },
       {
         "name": "SeparatorModifier",
+        "priority": 100
+      },
+      {
+        "name": "Shape",
         "priority": 100
       },
       {
@@ -88318,10 +89423,6 @@
         "priority": 100
       },
       {
-        "name": "CursorType",
-        "priority": 100
-      },
-      {
         "name": "IAsyncClipboardProvider",
         "priority": 100
       },
@@ -88461,6 +89562,14 @@
       },
       {
         "name": "ITouchHandles",
+        "priority": 100
+      },
+      {
+        "name": "NativeMagnifier",
+        "priority": 100
+      },
+      {
+        "name": "NativeTextContextMenu",
         "priority": 100
       },
       {
