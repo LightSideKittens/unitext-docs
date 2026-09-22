@@ -1,6 +1,6 @@
 {
-  "version": "3.10.0",
-  "generatedAt": "2026-09-21T08:49:59.9958627Z",
+  "version": "3.10.1",
+  "generatedAt": "2026-09-22T14:34:57.4925302Z",
   "namespaces": [],
   "types": [
     {
@@ -9125,34 +9125,21 @@
             "typeParameters": []
           },
           {
-            "id": "UniText.ResolveAutomaticViewport",
-            "name": "ResolveAutomaticViewport",
+            "id": "UniText.ResolveViewportBounds",
+            "name": "ResolveViewportBounds",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "Nullable\u003CRect\u003E",
+            "returnType": "void",
+            "summary": "Supplies the clip rect of the [[RectMask2D]] over this text as the viewport and the root canvas rect as the display, both mapped out of root canvas space; neither while this text has no canvas, and an empty viewport while the mask holds no valid rect.",
             "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniText.ResolveDisplayBounds",
-            "name": "ResolveDisplayBounds",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "Nullable\u003CRect\u003E",
-            "summary": "The root canvas is all a Canvas can show.",
-            "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "Nullable\u003CRect\u003E",
+              "Nullable\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -9361,6 +9348,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Culls against the actual rendered mesh bounds rather than the [[RectTransform]] (whose corners serve until a mesh exists). Glyphs can extend beyond the rect (long words, overflow, outline/glow, modifier transforms), so the default rect-corner test would hide still-visible meshes.",
+            "remarks": "A text already outside the clip and still outside it holds its viewport: the window it materializes and [[DocumentPositionChanged]] stand still until it re-enters, which resolves once and publishes the whole movement. A consumer therefore sees fewer notifications while a text is clipped away, never a stale value. A mask that moves its own clip rect reaches every clippable through [[SetClipRect]], which always resolves.",
             "params": [],
             "paramTypes": [
               "Rect",
@@ -10795,35 +10783,22 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextBase.ResolveAutomaticViewport",
-            "name": "ResolveAutomaticViewport",
+            "id": "UniTextBase.ResolveViewportBounds",
+            "name": "ResolveViewportBounds",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": true,
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "Nullable\u003CRect\u003E",
-            "summary": "Gets externally supplied viewport bounds in text-local space, or null when none is available.",
+            "returnType": "void",
+            "summary": "Gets the viewport bounds the backend supplies, both in this RectTransform\u0027s local space: automatic is what clips this text (a mask, a camera\u0027s view), display the bounds of everything able to show it (the root canvas, the camera\u0027s view of the text\u0027s plane). Either is when nothing supplies it.",
+            "remarks": "The pair is resolved in one call because a backend that maps both out of one space must map them through one traversal of the transform chain; this runs per clipped text per frame.",
             "params": [],
-            "paramTypes": [],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "UniTextBase.ResolveDisplayBounds",
-            "name": "ResolveDisplayBounds",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "Nullable\u003CRect\u003E",
-            "summary": "Bounds of what the display can show, in this RectTransform\u0027s local space (the root canvas, a camera\u0027s view of the text\u0027s plane), or when nothing is known to display this text.",
-            "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "Nullable\u003CRect\u003E",
+              "Nullable\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10838,7 +10813,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Rect",
-            "summary": "Axis-aligned bounds of rect (in source\u0027s local space) expressed in target\u0027s local space. Two rects under one root are mapped through their stored anchor data alone \u2014 transforms lag a layout pass within its frame, this does not; rects without a common root, or under a zero scale, go through transforms.",
+            "summary": "Axis-aligned bounds of rect (in source\u0027s local space) expressed in target\u0027s local space. Two rects under one root are mapped through their stored anchor data alone \u2014 transforms lag a layout pass within its frame, this does not; rects without a common root, or separated by a zero scale, go through transforms.",
             "params": [],
             "paramTypes": [
               "RectTransform",
@@ -10859,7 +10834,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "Vector2",
-            "summary": "Position of rect\u0027s pivot in the local space of ancestor \u2014 or of the topmost RectTransform above it when, returned in reached \u2014 with the size of one of its local units there, from stored anchor data alone: anchors, anchored position, pivot, size and local scale of every RectTransform on the way. Rotation is not represented.",
+            "summary": "Position of rect\u0027s pivot in the local space of ancestor \u2014 or of the topmost RectTransform above it when, or when ancestor is not on the chain, returned in reached \u2014 with the size of one of its local units there, from stored anchor data alone: anchors, anchored position, pivot, size and local scale of every RectTransform on the way. Rotation is not represented.",
             "params": [],
             "paramTypes": [
               "RectTransform",
@@ -14392,18 +14367,21 @@
             "typeParameters": []
           },
           {
-            "id": "UniTextWorld.ResolveDisplayBounds",
-            "name": "ResolveDisplayBounds",
+            "id": "UniTextWorld.ResolveViewportBounds",
+            "name": "ResolveViewportBounds",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
             "isStatic": false,
             "isOverride": true,
             "isConstructor": false,
-            "returnType": "Nullable\u003CRect\u003E",
+            "returnType": "void",
             "summary": "A camera\u0027s view on the text\u0027s plane is all it can show: the main camera when it renders this text, otherwise the game camera that draws it last, and in the editor the scene view\u0027s camera when the scene holds none. A camera adapter that supplies the projected scale owns the display and its window already is the camera\u0027s projection, so nothing narrows it. With no camera at all nothing displays the text and only the document\u0027s top is materialized.",
             "params": [],
-            "paramTypes": [],
+            "paramTypes": [
+              "Nullable\u003CRect\u003E",
+              "Nullable\u003CRect\u003E"
+            ],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
