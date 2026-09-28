@@ -401,7 +401,7 @@ function PhaseDrivenDiagram() {
     <div className="rounded-xl border border-white/10 bg-black/20 p-5 mb-4 overflow-x-auto">
       <div className="min-w-[520px]">
         <div className="text-[11px] uppercase tracking-wider text-white/40 mb-3">
-          Phase in — frame out. The modifier never advances time itself.
+          Phase in — frame out.
         </div>
         <div className="flex items-end gap-3">
           {samples.map((p) => {
@@ -425,9 +425,10 @@ function PhaseDrivenDiagram() {
         </div>
       </div>
       <p className="mt-4 text-sm text-white/50">
-        The same input always renders the same frame, so scrubbing, rewinding
-        and deterministic tests all work. Feed the value from{" "}
-        <code>UniTextDriver</code>, a tween library, Timeline, or an Animator.
+        The same phase always renders the same frame. The modifier&rsquo;s own{" "}
+        <code>Clock</code> advances it one unit per second; under{" "}
+        <code>Manual</code>, <code>UniTextDriver</code>, a tween library,
+        Timeline or an Animator writes it instead.
       </p>
     </div>
   );
@@ -899,6 +900,35 @@ export default function GettingStartedPage() {
               project incrementally; <code>TmpMigration.md</code> is its guide.
             </p>
           </div>
+
+          <div className="mt-4 p-5 rounded-xl bg-white/5 border border-white/10">
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
+              Built-in modules
+            </div>
+            <p className="text-white/70 mb-3">
+              The package requires only the UI module, which it declares as a
+              dependency. Four more are optional, and a project that disables
+              one in the Package Manager loses just the feature that needs it:
+            </p>
+            <ul className="space-y-1 text-white/70 list-disc list-inside">
+              <li>
+                <strong>Unity Web Request</strong> — document sources that are
+                URLs (§21.1);
+              </li>
+              <li>
+                <strong>Asset Bundle</strong> — fonts delivered by loaded
+                content;
+              </li>
+              <li>
+                <strong>JSON Serialize</strong> — the UniText clipboard format
+                (§14.1);
+              </li>
+              <li>
+                <strong>Image Conversion</strong> — images on the Windows
+                clipboard.
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
@@ -914,8 +944,15 @@ export default function GettingStartedPage() {
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">Bought on the Asset Store?</h3>
               <p className="text-white/70 mb-4">
-                If you purchased UniText on the Unity Asset Store, you can claim
-                a LightSide license <strong>at no extra cost</strong>. We
+                If you purchased UniText on the{" "}
+                <a
+                  href="https://assetstore.unity.com/packages/tools/gui/unitext-357844"
+                  className="text-[var(--color-accent)] hover:underline"
+                >
+                  Unity Asset Store
+                </a>
+                , you can claim a LightSide license{" "}
+                <strong>at no extra cost</strong>. We
                 recommend installing through LightSide Hub: you receive updates
                 directly from LightSide as they are released, and UniText is
                 managed under <code>Packages</code>. Asset Store releases can
@@ -948,6 +985,16 @@ export default function GettingStartedPage() {
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">LightSide Hub</h3>
+              <p className="text-white/70 mb-4">
+                <a
+                  href="https://github.com/LightSideKittens/LightSideEcosystem#lightside-hub"
+                  className="text-[var(--color-accent)] hover:underline"
+                >
+                  LightSide Hub
+                </a>{" "}
+                installs and updates UniText; the same window switches release
+                channels and checks for updates.
+              </p>
               <ol className="space-y-2 text-white/70 list-decimal list-inside">
                 <li>
                   Copy your UniText <strong>access token</strong> from your
@@ -961,7 +1008,8 @@ export default function GettingStartedPage() {
                     Download LightSide Hub
                   </a>{" "}
                   and import <strong>LightSideHub.unitypackage</strong> into
-                  your Unity project.
+                  your Unity project (
+                  <strong>Assets → Import Package → Custom Package</strong>).
                 </li>
                 <li>
                   Open <strong>Tools &rarr; LightSide &rarr; Hub</strong>.
@@ -1190,7 +1238,8 @@ text.color = Color.white;`}
                   <strong>Rasterization</strong> — <code>SDF Detail</code> and{" "}
                   <code>Tile Size Offset</code> pick the raster tile a glyph
                   lands in (64, 128 or 256 px); raise them for hairline or
-                  calligraphic faces. Page size is fixed.
+                  calligraphic faces. Page size is fixed and the atlas is
+                  shared by every font of a render mode.
                 </li>
                 <li>
                   <strong>Sizing</strong> — <code>Font Scale</code> rescales a
@@ -1386,6 +1435,19 @@ text.color = Color.white;`}
                 so <code>ResolvedFontName</code>, <code>ResolvedPath</code>,{" "}
                 <code>ResolvedPlatform</code> and <code>ResolveFailed</code>{" "}
                 stay unset until then.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>Default Weight</strong> (
+                <code>PlatformConfig.defaultWeight</code>, set on the Common tab
+                or per platform) picks the cut: a CSS weight such as 700 for
+                Bold or 900 for Black, which the OS matches to the closest cut
+                the family has, or to that instance of a variable face. Text
+                that requests no weight renders at it, and so do the faces the
+                OS substitutes for scripts the family does not cover;{" "}
+                <code>&lt;b&gt;</code> and <code>&lt;var wght&gt;</code> still
+                request their own weight. Left unset, the platform&rsquo;s
+                regular cut is used.
               </p>
 
               <p className="text-white/70">
@@ -1657,6 +1719,35 @@ text.Styles.Add(Style.Tag(new ColorModifier(), "warning", "#FF0000"));`}
                 <code>;</code>, one segment per child, before each child reads
                 its own slots. <code>MarkdownWrapRule</code> supports the same
                 field.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>Nested graphs.</strong> A child that splits again —
+                another <code>CompositeModifier</code>, or a{" "}
+                <code>ModifierGraphModifier</code> whose preset root is one —
+                takes its own list as a single parenthesized segment, at any
+                depth:
+              </p>
+
+              <CodeBlock
+                language="text"
+                disableTypeLinks
+                code={`<link=(https://lightside.media);#3B82F6;solid>
+<x=((bold;italic);red);2>`}
+              />
+
+              <p className="text-white/70 mt-4 mb-4">
+                The parent hands the group to that child with one level of
+                parentheses removed, so every node of a graph is addressable
+                from markup and from the Inspector alike. Parentheses group only
+                where <code>;</code> splits: a slot value keeps them as ordinary
+                text (<code>rgb(255,0,0)</code> is one token), an unbalanced{" "}
+                <code>(</code> is ordinary text too, and a literal group is
+                written quoted (<code>&quot;(a;b)&quot;</code>) or escaped (
+                <code>\(a;b\)</code>). A bare value still reaches the first
+                child of a nested graph, so{" "}
+                <code>&lt;link=https://lightside.media&gt;</code> needs no
+                parentheses.
               </p>
 
               <p className="text-white/70">
@@ -2196,6 +2287,20 @@ text.RemoveRule(myRule);`}
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
+                        <code>&lt;alpha&gt;</code>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <code>AlphaModifier</code>
+                      </td>
+                      <td className="py-2">
+                        <code>0.5</code>, <code>50%</code> or <code>#80</code>;
+                        multiplies the text&rsquo;s own alpha, and the
+                        glyph&rsquo;s fill, stroke, shadow and decorations fade
+                        with it. Nested tags do not compound
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
                         <code>&lt;var&gt;</code>
                       </td>
                       <td className="py-2 pr-4">
@@ -2435,7 +2540,9 @@ text.RemoveRule(myRule);`}
                         <code>TruncateModifier</code>
                       </td>
                       <td className="py-2">
-                        same positions, no &hellip; marker
+                        same positions, no &hellip; marker; a{" "}
+                        <em>Fade Length</em> dissolves the text into the cut
+                        instead
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -2896,7 +3003,7 @@ text.RemoveRule(myRule);`}
 
               <CodeBlock
                 code={`ColorModifier.Param.Color        // ParameterDescriptor<ColorModifier, Color32>
-WaveModifier.Param.Amplitude     // ParameterDescriptor<WaveModifier, float>
+WaveModifier.Param.Amplitude     // ParameterDescriptor<WaveModifier, Vector2>
 RevealModifier.Param.Front       // ParameterDescriptor<RevealModifier, UnitValue>`}
               />
 
@@ -3001,9 +3108,9 @@ RevealModifier.Param.Front       // ParameterDescriptor<RevealModifier, UnitValu
 [GenerateParameters]
 public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
 {
-    /// <summary>Peak vertical offset in pixels.</summary>
+    /// <summary>Peak offset per axis in pixels.</summary>
     [SerializeField, Parameter, StateProperty(nameof(MarkParamsDirty))]
-    private float amplitude = 3f;
+    private Vector2 amplitude = new(0f, 3f);
 }`}
               />
 
@@ -3363,26 +3470,42 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               <h3 className="font-semibold mb-4">8.1 Phase-driven modifiers</h3>
 
               <p className="text-white/70 mb-4">
-                Every animated glyph modifier renders from an external input
-                parameter — <code>Phase</code>, or <code>Roll</code> on{" "}
+                Every animated glyph modifier renders from one input parameter
+                — <code>Phase</code>, or <code>Roll</code> on{" "}
                 <code>RollingModifier</code>: its visual state is a pure
-                function of that input. The modifier never advances time itself.
-                The input is a <em>slotless</em> parameter — it takes no
+                function of that input, so the same input always renders the
+                same frame and scrubbing, rewinding and deterministic tests all
+                work. The input is a <em>slotless</em> parameter — it takes no
                 positional markup slot, but it cascades and can be owned per
                 range like any other (§5.1).
               </p>
 
               <PhaseDrivenDiagram />
 
-              <p className="text-white/60 text-sm mb-3">
-                Feed it from whatever owns time:
+              <p className="text-white/70 mb-4">
+                <code>Phase</code> advances on the modifier&rsquo;s own{" "}
+                <code>Clock</code> (<code>PlaybackClock</code>, default{" "}
+                <code>Scaled</code>), one phase unit per second, so a bare{" "}
+                <code>&lt;wave&gt;</code> tag plays with no component and no
+                clip. Speed is each effect&rsquo;s own rate parameter —{" "}
+                <code>frequency</code>, <code>rate</code>, <code>travel</code>{" "}
+                count per phase unit, which is per second while the clock runs
+                — and it rides the tag: <code>&lt;wave=0 8,2,0.25&gt;</code>.
               </p>
-              <ul className="space-y-2 text-white/70 list-disc list-inside mb-6">
+
+              <p className="text-white/70 mb-3">
+                <code>Manual</code> advances nothing, leaving the phase exactly
+                what an external owner writes — the inspector shows the{" "}
+                <code>Phase</code> field under <code>Manual</code> alone, where
+                it is the input rather than an offset the clock adds to:
+              </p>
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>UniTextDriver</code> — a sequencer component on the
                   text&rsquo;s GameObject. Its clips ramp any modifier
                   parameter, <code>Phase</code> included, over a shared timeline
-                  (§8.5).
+                  (§8.5). It is the way to drive one tag out of many, several
+                  parameters at once, or a shaped curve.
                 </li>
                 <li>A tween library, Timeline, or your own code.</li>
                 <li>
@@ -3392,11 +3515,23 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 </li>
               </ul>
 
-              <p className="text-white/60 text-sm mb-3">
+              <p className="text-white/70 mb-4">
+                <code>IPhaseModifier</code> is the non-generic surface of every
+                phase-driven modifier, whatever machinery it is built on:
+              </p>
+
+              <CodeBlock
+                code={`var phased = new List<IPhaseModifier>();
+text.GetModifiers(phased);
+foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
+              />
+
+              <p className="text-white/60 text-sm mt-6 mb-3">
                 Built-ins — all <code>GlyphParamModifier&lt;Params&gt;</code>{" "}
                 subclasses except <code>GlitchModifier</code> (an{" "}
-                <code>EffectModifier</code>) and <code>RollingModifier</code>{" "}
-                and <code>ScrambleModifier</code> (<code>BaseModifier</code>s):
+                <code>EffectModifier</code>) and <code>RollingModifier</code>,{" "}
+                <code>ScrambleModifier</code> and <code>MarqueeModifier</code>{" "}
+                (<code>BaseModifier</code>s):
               </p>
 
               <div className="overflow-x-auto mb-4">
@@ -3415,7 +3550,8 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                         <code>WaveModifier</code>
                       </td>
                       <td className="py-2">
-                        vertical sine travelling along the text
+                        sine travelling along the text: one amplitude axis
+                        waves, two orbit on an ellipse
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -3482,7 +3618,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                         <code>Roll</code> toward 0, not <code>Phase</code>
                       </td>
                     </tr>
-                    <tr>
+                    <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>ScrambleModifier</code>
                       </td>
@@ -3490,6 +3626,15 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                         decode effect settling left to right; driven by{" "}
                         <code>Progress</code>, with <code>Phase</code> churning
                         the random picks
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>MarqueeModifier</code>
+                      </td>
+                      <td className="py-2">
+                        scrolls the whole text through its box: an endless loop
+                        of copies, or back and forth between its ends (§8.6)
                       </td>
                     </tr>
                   </tbody>
@@ -3628,7 +3773,9 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 <code>Apply</code> (<code>RevealGlyphInfo</code>), must be
                 worker-thread safe, and <strong>must</strong> resolve to
                 identity at <code>Progress = 1</code> — that single rule is what
-                lets every effect serve both directions. A handler that wraps
+                lets every effect serve both directions, since{" "}
+                <code>Progress</code> is the settled glyph at 1 either way. A
+                handler that wraps
                 others calls <code>info.WithProgress(t)</code> to give each
                 child its own remapped timeline, the way{" "}
                 <code>CompositeRevealHandler</code> does.
@@ -3894,6 +4041,68 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 is released on disable, returning every range to its cascade.
                 Scrubbing and playback both work in edit mode.
               </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">8.6 Marquee</h3>
+
+              <p className="text-white/70 mb-4">
+                <code>MarqueeModifier</code> scrolls a Canvas text horizontally
+                inside its <code>RectTransform</code> — a news ticker, or a song
+                title wider than its label. Add it as a Whole Text style: every
+                line moves together, and a tag rule would still move the whole
+                text.
+              </p>
+
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <code>Mode</code> — <code>Loop</code> runs on without end:
+                  copies of the text follow one another <code>Gap</code> apart
+                  (pixels, em, or % of the box width), so the text leaves one
+                  edge while its start comes back in at the other.{" "}
+                  <code>PingPong</code> travels from the start-aligned place to
+                  the end-aligned one and back.
+                </li>
+                <li>
+                  <code>Speed</code> — travel per second in pixels or em; a
+                  negative value runs the other way. <code>Pause</code> —
+                  seconds the text rests at its start edge each cycle, and at
+                  its end edge in <code>PingPong</code>.
+                </li>
+                <li>
+                  <code>Always</code> — scroll even when the text fits; by
+                  default only text wider than its padded rect moves.
+                </li>
+                <li>
+                  <code>Fade</code> — soft fade inside the left and right edges.
+                  Padding keeps resting text clear of it.
+                </li>
+                <li>
+                  <code>Phase</code> and <code>Clock</code> work as on every
+                  phase-driven modifier (§8.1); a change of the text restarts
+                  the cycle.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                While the text scrolls, everything it renders — glyphs,
+                highlights and other range decorations, inline objects, every
+                loop copy — is clipped at the rect&rsquo;s left and right edges,
+                without a <code>RectMask2D</code>; vertical overflow stays
+                visible. Moving the text re-places its built mesh without
+                rebuilding it, and clicks and hover reach every copy. The text
+                rests at its start edge — left for a left-to-right paragraph,
+                right for a right-to-left one.
+              </p>
+
+              <Notice type="warning">
+                <code>UniTextWorld</code> has no clip to scroll within and
+                rejects the modifier. A text backed by a document, or one a{" "}
+                <code>UniTextDocumentView</code> or range viewport already
+                scrolls, does not scroll and reports why. An inline scene object
+                in <code>Existing</code> mode keeps its own hierarchy: it follows
+                the laid-out text alone, outside the clip and the copies.
+              </Notice>
             </div>
           </div>
         </section>
@@ -4294,8 +4503,8 @@ public sealed class RangeValueLogger : MonoBehaviour
               advance, line breaking, baseline alignment and every codepoint
               index treat it as a character. Both run on{" "}
               <code>InlineTagRule</code> (§3.3): the <code>/&gt;</code>{" "}
-              shorthand is accepted but not required, and a stray{" "}
-              <code>&lt;/obj&gt;</code> is stripped.
+              shorthand (<code>&lt;obj=name/&gt;</code>) is accepted but not
+              required, and a stray <code>&lt;/obj&gt;</code> is stripped.
             </p>
 
             <p className="text-white/60 text-sm mb-3">
@@ -4344,7 +4553,10 @@ public sealed class RangeValueLogger : MonoBehaviour
                 <code>InlineObjectOverride</code> /{" "}
                 <code>InlineSpriteOverride</code> — rows on the modifier&rsquo;s{" "}
                 <code>Overrides</code> list, each matched to one provider entry
-                by <code>Key</code>. Each field has an unset state — NaN,{" "}
+                by <code>Key</code>: size, bearing offset, advance, line height
+                above and below (em), pivot (normalized), rotation (degrees).{" "}
+                <code>InlineSpriteOverride</code> adds colour and
+                preserve-aspect. Each field has an unset state — NaN,{" "}
                 <code>InheritBool.Inherit</code>,{" "}
                 <code>SpriteColorSource.Original</code> — that falls back to the
                 provider entry.
@@ -4561,8 +4773,27 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
                 it presents nothing.{" "}
                 <code>Defaults/Editing/ContextMenu.prefab</code> is the shipped
                 menu, assigned in the shipped Selectable Text prefab. Implement{" "}
-                <code>ITextContextMenu</code> directly for a native or bespoke
-                menu.
+                <code>ITextContextMenu</code> directly for a bespoke menu.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>NativeTextContextMenu</code> presents the platform&rsquo;s
+                own edit menu instead — the floating selection toolbar on
+                Android and the edit menu on iOS. The system draws, styles,
+                orders, localizes, positions and animates it, so the
+                field&rsquo;s menu is the one every other app on the device
+                shows, down to the shell&rsquo;s theme. It carries the standard
+                commands the current <code>ContextMenuCapabilities</code> allow
+                and routes each one back through the same presenter the prefab
+                menu uses, so cut, copy, paste and select all still run
+                UniText&rsquo;s own pipeline — clipboard adapters, paste
+                filters, copy policy. It anchors to the whole selection box, not
+                to one point, which is how the system decides to sit above or
+                below the selected text. The system menu exists on Android 6.0
+                and iOS 13 and later; anywhere else, including the Editor, it
+                presents nothing and says so once in the console.{" "}
+                <code>ContextMenuItem</code> bindings do not apply to it — the
+                items are the system&rsquo;s.
               </p>
 
               <Notice type="info">
@@ -4576,11 +4807,15 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
               <h3 className="font-semibold mb-4">12.6 Touch affordances</h3>
 
               <p className="text-white/70 mb-4">
-                The entity slots live on <code>UniTextSelectable</code>, but a
-                sibling <code>UniTextEditable</code> (§13) shows and drives them
-                — read-only selection alone presents no handles and no
-                magnifier. The context menu (§12.5) is the one touch affordance{" "}
-                <code>UniTextSelectable</code> presents by itself.
+                The entity slots live on <code>UniTextSelectable</code>. It
+                drives the selection handles itself for text selected by touch —
+                a long press takes the word and arms word-by-word drag, and the
+                two endpoints are then draggable — and raises the magnifier
+                while a handle is dragged. A sibling{" "}
+                <code>UniTextEditable</code> (§13) takes over and adds the rest:
+                the caret handle, long-press caret placement with the loupe, and
+                the tap-the-caret menu. Handles are a touch affordance: a mouse
+                or pen selection shows none.
               </p>
 
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
@@ -4589,7 +4824,8 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
                 </li>
                 <li>
                   <code>IInsertionHandle</code> — a single handle under a
-                  collapsed caret.
+                  collapsed caret. Needs an editable: selection alone has no
+                  caret to place.
                 </li>
                 <li>
                   <code>IMagnifier</code> — the loupe shown during long-press
@@ -4612,6 +4848,29 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
                 the base for your own. Each capability is independent — an
                 entity may implement either or both (<code>ITouchHandles</code>
                 ).
+              </p>
+
+              <p className="text-white/70 mt-4 mb-4">
+                <code>NativeMagnifier</code> presents the platform&rsquo;s own
+                loupe instead — <code>android.widget.Magnifier</code> on Android
+                and the system text loupe on iOS — magnifying the live frame
+                straight from the player&rsquo;s surface, at the shape, size,
+                zoom and animation the running system gives its own text fields.
+                Its focus follows the finger horizontally and snaps to the text
+                line under it, as the platform loupes do. It needs no prefab, no
+                canvas camera and no render pipeline support, and it works on a
+                Screen Space - Overlay canvas. The system magnifier exists on
+                Android 9.0 and iOS 17 and later; anywhere else, including the
+                Editor, it presents nothing and says so once in the console.
+              </p>
+
+              <p className="text-white/70">
+                Both native entities place themselves from published selection
+                geometry —{" "}
+                <code>UniTextSelectable.TryGetSelectionScreenRect</code>,{" "}
+                <code>TryGetLineScreenRect</code> and{" "}
+                <code>GetViewportScreenRect</code> — which your own entity can
+                use for the same purpose without an editing layer present.
               </p>
             </div>
           </div>
@@ -4690,13 +4949,13 @@ editable.DocumentChanged  += reason => { };   // TextChangeReason: input.type, i
 editable.Submitted        += value => { };
 editable.Cancelled        += () => { };
 editable.Focused          += () => { };
-editable.Defocused        += () => { };
-editable.SelectionChanged += (anchor, focus) => { };
+editable.Defocused        += reason => { };   // EditingEndReason
+editable.SelectionChanged += (start, end) => { };
 editable.EditApplied      += shape => { };
 editable.CompositionStateChanged     += composing => { };
-editable.TouchKeyboardVisibilityChanged += visible => { };
 editable.CaretContextChanged            += context => { };
-editable.ValidationChanged              += state => { };`}
+editable.ValidationChanged              += state => { };
+UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by every editor`}
               />
 
               <p className="text-white/70 mt-4">
@@ -4926,7 +5185,9 @@ editable.ValidationChanged              += state => { };`}
                   valid (<code>ValidationState.InvalidStatus</code> /{" "}
                   <code>ValidationState.PendingStatus</code> are the common ones), and{" "}
                   <code>Message</code> is what a{" "}
-                  <code>SupportingTextDecorator</code> shows.
+                  <code>SupportingTextDecorator</code> shows.{" "}
+                  <code>AutoValidateBehavior</code> publishes the result to{" "}
+                  <code>UniTextEditable.Validation</code>.
                 </li>
               </ul>
 
@@ -5386,6 +5647,20 @@ editable.ValidationChanged              += state => { };`}
                 Both), which removes the biggest friction point of every Unity
                 input-field asset.
               </p>
+
+              <Notice type="warning" className="mb-4">
+                On WebGL, UniText turns off{" "}
+                <code>WebGLInput.captureAllKeyboardInput</code>, so Unity reads
+                the keyboard only while its canvas has focus. An active editor
+                keeps keyboard focus in UniText&rsquo;s page input element,
+                including across clicks on the canvas, and returns it to the
+                canvas when editing ends. While a field is being edited,
+                Unity&rsquo;s input system receives no key events — Enter
+                included — so handle <code>Submitted</code>,{" "}
+                <code>Cancelled</code> and <code>Defocused</code> instead of
+                polling <code>Keyboard.current</code> or{" "}
+                <code>Input.GetKey</code>.
+              </Notice>
 
               <p className="text-white/70 mb-4">
                 Control keys arrive only via key-down; printable text arrives
@@ -6128,8 +6403,11 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
                 The loader (<strong>LightSide → UniText → UniTextDocumentLoader</strong> on any
                 text) loads on enable and again whenever a setting of the source
                 changes. Streaming assets on Android and on the web are URLs, so
-                those load asynchronously; <code>IsLoading</code> and{" "}
-                <code>Loaded</code> report it. A source with no path or asset
+                those load asynchronously — <code>IsLoading</code> and{" "}
+                <code>Loaded</code> report it — and need the built-in{" "}
+                <strong>Unity Web Request</strong> module, which the Package
+                Manager lists under built-in packages. A source with no path or
+                asset
                 loads nothing, and a load that fails is reported on the loader
                 and leaves the document as it was, so a path may name a file
                 that does not exist yet. A custom source subclasses{" "}
