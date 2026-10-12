@@ -1,6 +1,6 @@
 {
-  "version": "3.20.2",
-  "generatedAt": "2026-10-08T18:10:49.5235166Z",
+  "version": "3.30.0",
+  "generatedAt": "2026-10-12T14:18:08.9274785Z",
   "namespaces": [],
   "types": [
     {
@@ -12974,7 +12974,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action",
-            "summary": "Occurs on the main thread after measured block extents changed the document\u0027s geometry (total height, block tops)."
+            "summary": "Occurs on the main thread after the document\u0027s geometry (total height, block tops) changed: blocks were measured, or the document was edited."
           },
           {
             "id": "UniTextBase.DocumentPositionChanged",
@@ -14545,7 +14545,9 @@
       "baseTypeChain": [
         "UniTextBase"
       ],
-      "interfaces": [],
+      "interfaces": [
+        "IWorldDecorationHost"
+      ],
       "derivedTypes": [],
       "summary": "World-space text component. Renders via [[WorldBatcher]] with full Unicode support \u2014 bidirectional scripts, complex shaping, color emoji, markup.",
       "remarks": "For Canvas-space (UI) text, use [[UniText]].",
@@ -16092,6 +16094,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
+            "summary": "True when a paragraph ends at the block\u0027s end: it is the last block or it ends with a separator.",
             "params": [],
             "paramTypes": [
               "int"
@@ -16548,7 +16551,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Updates the estimation parameters without discarding measured blocks; provisional blocks are re-estimated.",
+            "summary": "Updates the estimation parameters without discarding measured blocks; estimated blocks are re-estimated, and edited blocks re-estimate their height.",
             "params": [],
             "paramTypes": [
               "LayoutEstimate"
@@ -16567,7 +16570,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Records a block\u0027s measured extent; it stays until the block is edited or the layout is reset. A measurement taken with the block\u0027s paragraph cut at a window edge is exact =: it replaces the estimate but leaves the block for the convergence sweep, and it never overwrites an exact measurement.",
+            "summary": "Records a block\u0027s measured extent until the layout is reset. An edit of the block returns its height to an estimate and leaves its widths at this measurement until the block is measured again. A measurement taken with the block\u0027s paragraph cut at a window edge is exact =: it replaces an estimate or an earlier inexact measurement, never an exact one.",
             "params": [],
             "paramTypes": [
               "int",
@@ -39736,6 +39739,37 @@
             "typeParameters": []
           },
           {
+            "id": "TextLayout.SetInkExtents",
+            "name": "SetInkExtents",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "void",
+            "summary": "Sets the outline extents the [[Ink]] and [[Ink]] edges trim to; required before [[Layout]] whenever either edge is selected.",
+            "params": [
+              {
+                "name": "firstLineAscent",
+                "type": "float",
+                "description": "Height of the first line\u0027s highest outline above its baseline."
+              },
+              {
+                "name": "lastLineDescent",
+                "type": "float",
+                "description": "Offset of the last line\u0027s lowest outline from its baseline, negative when below."
+              }
+            ],
+            "paramTypes": [
+              "float",
+              "float"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "TextLayout.Layout",
             "name": "Layout",
             "accessModifier": "public",
@@ -39876,6 +39910,16 @@
                 "name": "xHeight",
                 "type": "float",
                 "description": "x-height for the XHeight over-edge (0 to skip)."
+              },
+              {
+                "name": "inkAscent",
+                "type": "float",
+                "description": "First line\u0027s outline height above its baseline, required by the Ink over-edge."
+              },
+              {
+                "name": "inkDescent",
+                "type": "float",
+                "description": "Last line\u0027s lowest outline offset from its baseline, negative when below; required by the Ink under-edge."
               }
             ],
             "paramTypes": [
@@ -39885,6 +39929,8 @@
               "TextOverEdge",
               "TextUnderEdge",
               "LeadingDistribution",
+              "float",
+              "float",
               "float",
               "float",
               "float",
@@ -40211,6 +40257,17 @@
             "type": "TextOverEdge",
             "defaultValue": "4",
             "summary": "Top edge at x-height (CSS text-box-edge: ex) \u2014 trims to the top of lowercase letters."
+          },
+          {
+            "id": "TextOverEdge.Ink",
+            "name": "Ink",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextOverEdge",
+            "defaultValue": "5",
+            "summary": "Top edge at the highest glyph outline of the first line, so alignment places the drawn letters themselves; a first line without outlines keeps the ascent line."
           }
         ],
         "events": []
@@ -41361,6 +41418,17 @@
             "type": "TextUnderEdge",
             "defaultValue": "3",
             "summary": "Bottom edge at the typographic descent (OS/2 sTypo, CSS text-box-edge: text). Falls back to the descent line when the font has no typo metrics."
+          },
+          {
+            "id": "TextUnderEdge.Ink",
+            "name": "Ink",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "TextUnderEdge",
+            "defaultValue": "4",
+            "summary": "Bottom edge at the lowest glyph outline of the last line, so alignment places the drawn letters themselves; a last line without outlines keeps the descent line."
           }
         ],
         "events": []
@@ -46816,6 +46884,125 @@
       }
     },
     {
+      "id": "LatexAlignmentRule",
+      "name": "LatexAlignmentRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Matches LaTeX alignment for the paired alignment modifier: the center, flushleft, flushright and justify environments, each set on lines of its own, and the declarations \\centering, \\raggedright, \\raggedleft, \\justifying and \\justify, which hold until the group, environment or table cell around them closes.",
+      "remarks": "flushleft and \\raggedright align to the start of the writing direction, flushright and \\raggedleft to its end; the capitalized ragged2e forms such as \\Centering read the same. Tables and other blocks standing in an aligned group align with it, while their cells keep their own alignment. A \\\\ right after the end of an environment ends no line and goes with it. Pair it with [[AlignmentModifier]]. Registered beside [[TabularParseRule]], it takes these environments and declarations over, tables aligning with them as with any aligned paragraph.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022LaTeX\u0022, 4)",
+        "TypeDescription(\u0022Matches LaTeX center, flushleft, flushright and \\\\centering for AlignmentModifier.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "LatexAlignmentRule.Reset",
+            "name": "Reset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexAlignmentRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexAlignmentRule.Finalize",
+            "name": "Finalize",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LatexAlignmentRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexAlignmentRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexAlignmentRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "LatexCommandRule",
       "name": "LatexCommandRule",
       "namespace": "LightSide",
@@ -47035,6 +47222,328 @@
       }
     },
     {
+      "id": "LatexListRule",
+      "name": "LatexListRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Matches LaTeX lists for the paired list modifier: the itemize and enumerate environments and their \\items, each item a paragraph of its own and a list inside an item one level deeper.",
+      "remarks": "itemize items take bullets and enumerate items numbers counted from 1 in each list. An \\item[label] shows its label as the marker, uncounted as in LaTeX, in plain text: groups and commands give their content, escapes, text symbols and math symbols their characters, and an empty label leaves the item unmarked. Environment options are read and ignored. A \\\\ right after the end of a list ends no line and goes with it. Pair it with [[ListModifier]], whose settings per level pick the markers and the indentation.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022LaTeX\u0022, 5)",
+        "TypeDescription(\u0022Matches LaTeX itemize and enumerate lists for ListModifier.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "LatexListRule.Reset",
+            "name": "Reset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexListRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexListRule.Finalize",
+            "name": "Finalize",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LatexListRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexListRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexListRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LatexSizeRule",
+      "name": "LatexSizeRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Matches LaTeX size declarations for the paired size modifier: \\tiny, \\scriptsize, \\footnotesize, \\small, \\normalsize, \\large, \\Large, \\LARGE, \\huge and \\Huge, each holding until the group, environment or table cell around it closes, and their environment forms such as \\begin{small}\u2026\\end{small}.",
+      "remarks": "Sizes follow the standard classes for a 10pt body, relative to the text\u0027s font size: \\small is 90% and \\Large 144%. A later declaration of the same group replaces an earlier one, and the size around a group returns where the group closes. A declaration standing alone on its line takes the line with it. Pair it with [[SizeModifier]]; formulas read their own size declarations.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022LaTeX\u0022, 3)",
+        "TypeDescription(\u0022Matches LaTeX size declarations such as \\\\small for SizeModifier.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "LatexSizeRule.Reset",
+            "name": "Reset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexSizeRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LatexSizeRule.Finalize",
+            "name": "Finalize",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LatexSizeRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexSizeRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexSizeRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "LatexSpacingRule",
+      "name": "LatexSpacingRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Matches LaTeX vertical space for the paired line gap modifier: \\vspace{length}, \\vspace*{length}, \\addvspace{length}, \\smallskip, \\medskip, \\bigskip and \\vfill, and the length of a \\\\[length] line break, whose line it breaks as well.",
+      "remarks": "Space at the start of a line opens between that line and the one above, and in the middle of a line below that line, as LaTeX puts it. Negative lengths pull the lines together. Lengths take a 10pt body as 1em; one relative to the page, such as \\fill or \\textheight, adds nothing, as \\vfill does. A command standing alone on its line takes the line with it. A \\\\ breaks no line before a block, before the end of an environment or right after the end of a block other than a display, as with [[LatexTextRule]], which reads every \\\\ without a readable length; its length still opens space there. Pair it with [[LineGapModifier]].",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022LaTeX\u0022, 6)",
+        "TypeDescription(\u0022Matches LaTeX \\\\vspace and \\\\\\\\[length] for LineGapModifier.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "LatexSpacingRule.TryMatch",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [],
+            "paramTypes": [
+              "ReadOnlySpan\u003Cchar\u003E",
+              "int",
+              "PooledList\u003CParsedRange\u003E"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LatexSpacingRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexSpacingRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "LatexSpacingRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "LatexTextRule",
       "name": "LatexTextRule",
       "namespace": "LightSide",
@@ -47049,8 +47558,8 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Renders the LaTeX syntax that stands for characters and line breaks in text: \\\\, \\newline and \\linebreak as line breaks, the escapes \\# \\$ \\% \\\u0026 \\_ \\{ \\}, the tie ~ as a no-break space, -- and --- as en and em dashes, \u0060\u0060 and \u0027\u0027 as curly quotes, and a few named characters (\\ldots, \\textbackslash, \\,, \\quad, \\-).",
-      "remarks": "A line break ends its source line too, as the line end after \\\\ is only a space in LaTeX: the line end and the next line\u0027s indentation are dropped, and the optional * and [length] are read across them. A named character takes the spaces after it and an empty {}, as LaTeX does. A backslash escapes only the characters LaTeX reserves; \\\\ is a line break, never a backslash. As the literal escape of an editable text, this rule replaces [[BackslashEscapeRule]], which would read \\\\ as a backslash. Standalone: register it without a modifier.",
+      "summary": "Renders the LaTeX syntax that stands for characters and breaks in text: \\\\, \\newline and \\linebreak as line breaks and \\par as a paragraph break, the escapes \\# \\$ \\% \\\u0026 \\_ \\{ \\}, the tie ~ as a no-break space, -- and --- as en and em dashes, \u0060\u0060 and \u0027\u0027 as curly quotes, a few named characters (\\ldots, \\textbackslash, \\,, \\quad, \\-), and grouping braces, \\noindent, \\indent and \\label{\u2026} as nothing.",
+      "remarks": "A line break ends its source line too, as the line end after \\\\ is only a space in LaTeX: the line end and the next line\u0027s indentation are dropped, and the optional * and [length] are read across them. A line break before a block such as a table, a list or a display, before the end of an environment, right after the end of a block other than a display, or at the end of the text breaks no line, since that block or end ends the line itself; after a display it ends an empty line, as in LaTeX. A named character takes the spaces after it and an empty {}, as LaTeX does. A backslash escapes only the characters LaTeX reserves; \\\\ is a line break, never a backslash. As the literal escape of an editable text, this rule replaces [[BackslashEscapeRule]], which would read \\\\ as a backslash. Standalone: register it without a modifier.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "markup",
@@ -47745,7 +48254,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Replaces a formula with one layout placeholder while preserving its source as the modifier parameter: from \u003Cmath\u003E...\u003C/math\u003E tags or LaTeX math delimiters, as [[Delimiters]] selects.",
-      "remarks": "A display formula takes the line it starts and ends, and a \\\\ right after it, which in LaTeX would end no line; spaces around it vanish as LaTeX ignores them. A formula without a closing delimiter stays text.",
+      "remarks": "A display formula stands in a paragraph of its own, and a \\\\ right after it ends an empty line, as in LaTeX, where the paragraph resumes after a display; spaces around it vanish as LaTeX ignores them. An environment such as align reaches the formula whole, its \u0026 and \\\\ aligning the lines and its name deciding the numbering. A formula without a closing delimiter stays text.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "markup",
@@ -47824,7 +48333,7 @@
             "summary": "Gets or sets the syntax formulas are read from.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Syntax formulas are read from: \u003Cmath\u003E tags, LaTeX inline math \\\\(...\\\\) and $...$, or LaTeX display math \\\\[...\\\\], $$...$$ and equation environments.\u0022)",
+              "Tooltip(\u0022Syntax formulas are read from: \u003Cmath\u003E tags, LaTeX inline math \\\\(...\\\\), $...$, \\\\ce{...} and \\\\pu{...}, or LaTeX display math \\\\[...\\\\], $$...$$ and equation or align environments.\u0022)",
               "StateProperty(nameof(NotifyChanged))",
               "SerializeField"
             ],
@@ -48790,7 +49299,11 @@
         "BackslashEscapeRule",
         "CodeSpanRule",
         "CompositeParseRule",
+        "LatexAlignmentRule",
         "LatexCommandRule",
+        "LatexListRule",
+        "LatexSizeRule",
+        "LatexSpacingRule",
         "LatexTextRule",
         "LineBreakParseRule",
         "MarkdownLinkParseRule",
@@ -49007,7 +49520,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Whether a matched occurrence is complete enough to become persistent document markup.",
+            "summary": "Whether a matched occurrence is complete: complete markup becomes persistent document markup and, in an editable text that hides completed markup, strips and styles; incomplete markup, such as a tag still being typed, stays literal there.",
             "params": [],
             "paramTypes": [
               "ParsedRange"
@@ -51506,8 +52019,8 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Parses LaTeX tables for [[TableModifier]]: tabular, tabular*, tabularx, tabulary and longtable, on their own or inside table, center, flushleft, flushright, threeparttable and adjustbox environments.",
-      "remarks": "Every cell becomes a paragraph of the text, so other rules keep parsing cell content: bold, colour, links and formulas inside cells work as anywhere else. Column specifications take l c r p m b w W X L C R J S D |: @ ! \u003E \u003C *; rows take \u0026, \\\\ with * and [length], \\tabularnewline, \\kill, \\hline, \\cline, \\hhline, the booktabs rules, \\multicolumn, \\multirow and the longtable head and foot sections, of which the continuation head and foot are dropped and the last foot moves under the body. A \\caption becomes a paragraph above or below its table led by [[CaptionFormat]], one number per table. \\centering, center and longtable centre the table; \\renewcommand{\\arraystretch}{x} stretches the rows of later tables, inside its environment only when it stands in one. Inside a table a line break is a space and a blank line a paragraph break, a % comment is dropped, grouping braces vanish and \\\u0026 \\% \\{ \\} are their characters, as in LaTeX. Malformed input renders as well as it can, each distinct problem reported once: a missing \\end closes the table at the end of the text, missing trailing cells of a row stay empty slots, extra cells add columns, and unknown column letters become left-aligned columns. [[BackslashEscapeRule]] reads \\\\ as an escaped backslash ahead of every other rule, so a text holding LaTeX tables must not register it.",
+      "summary": "Parses LaTeX tables for [[TableModifier]]: tabular, tabular*, tabularx, tabulary and longtable, on their own or inside table, center, flushleft, flushright, threeparttable and adjustbox environments, and minipage boxes.",
+      "remarks": "Every cell becomes a paragraph of the text, so other rules keep parsing cell content: bold, colour, links and formulas inside cells work as anywhere else. Column specifications take l c r p m b w W X L C R J S D |: @ ! \u003E \u003C *; rows take \u0026, \\\\ with * and [length], \\tabularnewline, \\kill, \\hline, \\cline, \\hhline, the booktabs rules, \\multicolumn, \\multirow, \\makecell, whose lines break at \\\\ and centre unless its option says l or r, and the longtable head and foot sections, of which the continuation head and foot are dropped and the last foot moves under the body. A \\caption becomes a paragraph above or below its table led by [[CaptionFormat]], one number per table. \\centering, center and longtable centre the table. \\setlength{\\tabcolsep}{length} sets the padding beside cell content and \\renewcommand{\\arraystretch}{x} stretches the rows of the tables that follow, until the group or environment around the setting closes. A minipage sets its content in a box of its width on a line of its own. Boxes separated only by spaces, \\hfill, \\hspace or \\quad stand side by side, \\hfill spreading them across the line, and line up by their [t], [c] or [b] option. Inside a table a line break is a space and a blank line a paragraph break, a % comment is dropped, grouping braces vanish and \\\u0026 \\% \\{ \\} are their characters, as in LaTeX. Malformed input renders as well as it can, each distinct problem reported once: a missing \\end closes the table at the end of the text, missing trailing cells of a row stay empty slots, extra cells add columns, and unknown column letters become left-aligned columns. [[BackslashEscapeRule]] reads \\\\ as an escaped backslash ahead of every other rule, so a text holding LaTeX tables must not register it.",
       "seeAlso": [
         "TableModifier"
       ],
@@ -56208,6 +56721,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Sets horizontal alignment, justify mode, and last-line alignment for the paragraphs it covers. Apply whole-text or per range/tag \u2014 each paragraph can differ.",
+      "remarks": "A table or other block standing wholly in a range aligns with it as a whole, unless its owner sets its own placement. Lines inside a block\u0027s cells keep the alignment the block gives them; only a range starting inside a cell aligns its lines.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -57761,6 +58275,7 @@
         "GlyphResolutionModifier",
         "InlineMediaModifier\u003CTEntry\u003E",
         "InteractiveModifierBase",
+        "LineGapModifier",
         "LineHeightModifier",
         "ListModifier",
         "LowercaseModifier",
@@ -61843,6 +62358,143 @@
       }
     },
     {
+      "id": "LineGapModifier",
+      "name": "LineGapModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "BaseModifier",
+      "baseTypeChain": [
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Opens vertical space at the end of each range: below the line that holds the range\u0027s last character, which for a range ending at the start of a line is the space between that line and the one above.",
+      "remarks": "Parameter: the space \u2014 10 (pixels), 50% or 1.2em (of the font size). Spaces opened at one place add up; negative ones pull the lines together, down to full overlap. A range ending at the start of the text, or space below the last line, adds nothing. Space below the last line of a table or other block opens below the block.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Layout\u0022, 3)",
+        "TypeDescription(\u0022Opens vertical space between lines at the end of each range.\u0022)",
+        "GenerateParameters"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "LineGapModifier.OnEnable",
+            "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LineGapModifier.OnDisable",
+            "name": "OnDisable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LineGapModifier.OnDestroy",
+            "name": "OnDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LineGapModifier.BeforeApply",
+            "name": "BeforeApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "LineGapModifier.OnApply",
+            "name": "OnApply",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "paramTypes": [
+              "RangeApplyContext"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "LineGapModifier.Gap",
+            "name": "Gap",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UnitValue",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Space opened at the end of each range. A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Space opened at the end of each range, in pixels or as % / em of the font size. Negative pulls the lines together.\u0022)",
+              "SerializeField",
+              "Parameter",
+              "Essential",
+              "Unit(\u0022px|%|em\u0022)",
+              "StateProperty(nameof(MarkLayoutDirty))"
+            ],
+            "source": "state"
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "LineHeightModifier",
       "name": "LineHeightModifier",
       "namespace": "LightSide",
@@ -62099,7 +62751,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Renders list markers (bullets or numbers) for text items with automatic indentation.",
-      "remarks": "Parameter: optional level:number for numbered lists. Without parameter, renders a bullet. Features: - Supports nested lists with configurable indentation per level - Bullet markers are customizable per nesting level - Ordered lists support decimal, alphabetic, and Roman numeral styles - Automatically handles RTL text direction",
+      "remarks": "Parameter: optional level,number,marker. Without a number, renders a bullet; a marker text replaces the bullet or number. Features: - Supports nested lists with configurable indentation per level - Bullet markers are customizable per nesting level - Ordered lists support decimal, alphabetic, and Roman numeral styles - Automatically handles RTL text direction",
       "seeAlso": [
         "MarkdownListParseRule",
         "OrderedMarkerStyle"
@@ -62233,6 +62885,24 @@
               "StateProperty(nameof(MarkTextDirty))"
             ],
             "defaultValue": "-1",
+            "source": "state"
+          },
+          {
+            "id": "ListModifier.Marker",
+            "name": "Marker",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Text shown as the marker instead of the bullet or number, as LaTeX\u0027s \\item[label] gives it; empty for the bullet or number. A per-range value overrides it; this is the default for a bare tag or whole-text use.",
+            "seeAlso": [],
+            "attributes": [
+              "Tooltip(\u0022Text shown as the marker instead of the bullet or number. Empty shows the bullet or number.\u0022)",
+              "SerializeField",
+              "Parameter",
+              "StateProperty(nameof(MarkTextDirty))"
+            ],
             "source": "state"
           },
           {
@@ -62880,7 +63550,7 @@
             "isConst": false,
             "type": "MathDelimiters",
             "defaultValue": "1",
-            "summary": "LaTeX inline math, \\(...\\) and $...$. A dollar sign opens before a non-space and closes after a non-space that no digit follows, within one paragraph, as Pandoc reads it, so $20 and $30 stays text."
+            "summary": "LaTeX inline math, \\(...\\) and $...$, and mhchem chemistry and quantities, \\ce{...} and \\pu{...}. A dollar sign opens before a non-space and closes after a non-space that no digit follows, within one paragraph, as Pandoc reads it, so $20 and $30 stays text."
           },
           {
             "id": "MathDelimiters.LatexDisplay",
@@ -62891,7 +63561,7 @@
             "isConst": false,
             "type": "MathDelimiters",
             "defaultValue": "2",
-            "summary": "LaTeX display math, \\[...\\], $$...$$ and the equation, equation* and displaymath environments, each set in display style on a centred line of its own."
+            "summary": "LaTeX display math, \\[...\\], $$...$$ and the equation, displaymath, align, gather, multline, flalign, alignat and eqnarray environments with their starred forms, each set in display style on a centred line of its own. The unstarred environments other than displaymath number their equations, and \\tag tags any display formula."
           }
         ],
         "events": []
@@ -62958,7 +63628,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Typesets formulas captured by [[MathParseRule]] with metrics and stretchy glyphs from a dedicated OpenType MATH font.",
-      "remarks": "A formula fails on its own, never the rest of the text: one that does not parse shows its source text between vertical bars and rules, and each distinct such formula logs one warning. Characters the math font lacks render upright in the text\u0027s fonts; white space and default-ignorable code points such as bidi controls are skipped. A missing or unusable math font still fails the text. A formula from LaTeX display delimiters is set in display style whatever mode says, on a centred line of its own.",
+      "remarks": "A formula fails on its own, never the rest of the text: one that does not parse shows its source text between vertical bars and rules, and each distinct such formula logs one warning. Characters the math font lacks render upright in the text\u0027s fonts; white space and default-ignorable code points such as bidi controls are skipped. A missing or unusable math font still fails the text. A formula from LaTeX display delimiters is set in display style whatever mode says, on a centred line of its own, its equation numbers and \\tag texts at the right edge of the line on the baselines of their rows; the numbers count from 1 through the display formulas of the text in its order.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -70017,7 +70687,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Lays out the tables [[TabularParseRule]] captures: every cell is a paragraph of the text, wrapped in its column and placed in its row, with the rules the markup asks for drawn between them.",
-      "remarks": "Column widths follow the automatic table layout of CSS: columns take their natural widths when the table fits and give up the shortfall in proportion to how much they can wrap when it does not. Fixed-width columns keep their width, and a declared table width (tabular*, tabularx) is filled, X columns first. A table never extends past the width of the text: when its columns cannot fit at their narrowest they shrink further, and cell lines break inside words as the text\u0027s own lines do. LaTeX lengths are relative to the text\u0027s font size, a 10pt body taken as 1em. Rules take the colour of the text around the table. A table that sets no placement of its own aligns as the text does. A table whose markup stays visible while editing lays out as its source text.",
+      "remarks": "Column widths follow the automatic table layout of CSS: columns take their natural widths when the table fits and give up the shortfall in proportion to how much they can wrap when it does not. Fixed-width columns keep their width, and a declared table width (tabular*, tabularx) is filled, X columns first. A table never extends past the width of the text: when its columns cannot fit at their narrowest they shrink further, and cell lines break inside words as the text\u0027s own lines do. LaTeX lengths are relative to the text\u0027s font size, a 10pt body taken as 1em, and px lengths are pixels at it. Rules take the colour of the text around the table. A table that sets no placement of its own aligns as the paragraphs around it do. A table whose markup stays visible while editing lays out as its source text.",
       "seeAlso": [
         "TabularParseRule"
       ],
@@ -70209,14 +70879,14 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "Trims vertical space above/below text to chosen metrics (CSS text-box-trim/text-box-edge): e.g. cap-height \u002B baseline for optically centered UI labels. Apply whole-text.",
+      "summary": "Trims vertical space above/below text to chosen metrics (CSS text-box-trim/text-box-edge) or to the drawn glyphs: e.g. cap-height \u002B baseline for optically centered UI labels, Ink on both edges to align the letters themselves. Apply whole-text.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Layout\u0022, 2)",
-        "TypeDescription(\u0022Trims space above/below text to chosen metrics (cap-height, baseline) for optical fit.\u0022)",
+        "TypeDescription(\u0022Trims space above/below text to chosen metrics (cap-height, baseline) or to the drawn glyphs for optical fit.\u0022)",
         "GenerateParameters"
       ],
       "members": {
@@ -70284,7 +70954,7 @@
             "summary": "Top trim metric. A per-range value overrides it; this is the default for a bare tag or whole-text use.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Metric the top of the text box is trimmed to, such as the ascent line or cap height.\u0022)",
+              "Tooltip(\u0022Metric the top of the text box is trimmed to, such as the ascent line, cap height or the top of the drawn glyphs (Ink).\u0022)",
               "SerializeField",
               "Parameter",
               "Essential",
@@ -70304,7 +70974,7 @@
             "summary": "Bottom trim metric. A per-range value overrides it; this is the default for a bare tag or whole-text use.",
             "seeAlso": [],
             "attributes": [
-              "Tooltip(\u0022Metric the bottom of the text box is trimmed to, such as the descent line or baseline.\u0022)",
+              "Tooltip(\u0022Metric the bottom of the text box is trimmed to, such as the descent line, baseline or the bottom of the drawn glyphs (Ink).\u0022)",
               "SerializeField",
               "Parameter",
               "Essential",
@@ -75315,6 +75985,27 @@
       ],
       "members": {
         "methods": [
+          {
+            "id": "PaintSwatch.LinearGradient",
+            "name": "LinearGradient",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": true,
+            "isOverride": false,
+            "isConstructor": false,
+            "returnType": "PaintSwatch",
+            "summary": "A swatch named name of a linear gradient through stops, mixed perceptually, its axis turned by angle degrees and stretched across each range it paints.",
+            "params": [],
+            "paramTypes": [
+              "string",
+              "float",
+              "GradientStop[]"
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "PaintSwatch.CaptureStateSnapshot",
             "name": "CaptureStateSnapshot",
@@ -89963,7 +90654,23 @@
         "priority": 100
       },
       {
+        "name": "LatexAlignmentRule",
+        "priority": 100
+      },
+      {
         "name": "LatexCommandRule",
+        "priority": 100
+      },
+      {
+        "name": "LatexListRule",
+        "priority": 100
+      },
+      {
+        "name": "LatexSizeRule",
+        "priority": 100
+      },
+      {
+        "name": "LatexSpacingRule",
         "priority": 100
       },
       {
@@ -90404,6 +91111,10 @@
       },
       {
         "name": "LetterSpacingModifier",
+        "priority": 100
+      },
+      {
+        "name": "LineGapModifier",
         "priority": 100
       },
       {
