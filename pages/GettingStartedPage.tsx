@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Clipboard,
   Code,
+  Cuboid,
   Download,
   FileCode,
   Globe,
@@ -929,6 +930,18 @@ export default function GettingStartedPage() {
               </li>
             </ul>
           </div>
+
+          <div className="mt-4 p-5 rounded-xl bg-white/5 border border-white/10">
+            <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
+              UniText 3D
+            </div>
+            <p className="text-white/70">
+              Extruded 3D text is an optional module of the package: it compiles
+              only once Project Settings → LightSide → UniText → Modules →{" "}
+              <strong>UniText 3D</strong> is on, so a project that never enables
+              it compiles, loads and ships none of its code (§22).
+            </p>
+          </div>
         </div>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
@@ -1124,7 +1137,25 @@ text.color = Color.white;`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">1.3 Which one to use</h3>
+              <h3 className="font-semibold mb-4">
+                1.3 Extruded 3D text — <code>UniText3D</code>
+              </h3>
+
+              <p className="text-white/70">
+                <strong>GameObject → LightSide → UniText → UniText3D</strong>,
+                once the UniText 3D module is enabled — while it is off, the
+                same item offers to enable it (§22.1). Every outline glyph
+                becomes a closed, lit solid with bevelled edges, laid out,
+                styled and animated by the same pipeline as{" "}
+                <code>UniTextWorld</code>. The menu instantiates the prefab in{" "}
+                <code>UniTextSettings.Text3DPrefab</code>. The text renders
+                through the <code>MeshRenderer</code> on its GameObject, which
+                owns shadow casting, light probes, layers and sorting.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">1.4 Which one to use</h3>
 
               <div className="overflow-x-auto mb-4">
                 <table className="w-full text-sm">
@@ -1134,8 +1165,11 @@ text.color = Color.white;`}
                       <th className="text-left py-2 pr-4 text-white/60">
                         <code>UniText</code>
                       </th>
-                      <th className="text-left py-2 text-white/60">
+                      <th className="text-left py-2 pr-4 text-white/60">
                         <code>UniTextWorld</code>
+                      </th>
+                      <th className="text-left py-2 text-white/60">
+                        <code>UniText3D</code>
                       </th>
                     </tr>
                   </thead>
@@ -1143,6 +1177,7 @@ text.color = Color.white;`}
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4 text-white/50">Parent</td>
                       <td className="py-2 pr-4">Canvas</td>
+                      <td className="py-2 pr-4">any Transform</td>
                       <td className="py-2">any Transform</td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -1152,35 +1187,44 @@ text.color = Color.white;`}
                       <td className="py-2 pr-4">
                         Canvas mask, <code>RectMask2D</code>
                       </td>
+                      <td className="py-2 pr-4">frustum, camera layers</td>
                       <td className="py-2">frustum, camera layers</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4 text-white/50">Sorting</td>
                       <td className="py-2 pr-4">canvas draw order</td>
-                      <td className="py-2">
+                      <td className="py-2 pr-4">
                         <code>SortingLayerID</code>, <code>SortingOrder</code>
                       </td>
+                      <td className="py-2">opaque, by depth</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4 text-white/50">Batching</td>
                       <td className="py-2 pr-4">per canvas</td>
-                      <td className="py-2">
+                      <td className="py-2 pr-4">
                         per sorting context; <code>Standalone</code> opts out
+                      </td>
+                      <td className="py-2">
+                        its own <code>MeshRenderer</code>
                       </td>
                     </tr>
                     <tr>
                       <td className="py-2 pr-4 text-white/50">Lighting</td>
                       <td className="py-2 pr-4">unlit</td>
-                      <td className="py-2">unlit or lit shaders</td>
+                      <td className="py-2 pr-4">unlit or lit shaders</td>
+                      <td className="py-2">lit solids that cast shadows</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
               <p className="text-white/70">
-                Everything else — markup, fonts, paints, animation, selection,
-                editing — is identical; both derive from{" "}
-                <code>UniTextBase</code>.
+                Markup, fonts, paints and animation are the same for all three,
+                which derive from <code>UniTextBase</code>. Selection and
+                editing (§12, §13) belong to <code>UniText</code> and{" "}
+                <code>UniTextWorld</code>; <code>UniText3D</code> draws outlines
+                and plates as solid layers (§22.4) in place of the 2D strokes,
+                shadows and glows.
               </p>
             </div>
           </div>
@@ -3428,13 +3472,13 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
 
             <p className="text-white/70">
               <code>GeometryMapping</code> chooses how a logical range becomes
-              visual figures: <code>Glyph</code> (one rounded figure per shaped
+              visual figures: <code data-nolink>Glyph</code> (one rounded figure per shaped
               cluster), <code>Line</code> (one per line/BiDi fragment),{" "}
               <code>Range</code> (fragments rounded only at the logical
               endpoints — the default), <code>Block</code> (one connected
               multi-line contour with no internal seams).{" "}
               <code>RangePaintMapping</code> picks the paint frame independently
-              of that topology: <code>InheritGeometry</code>, <code>Glyph</code>
+              of that topology: <code>InheritGeometry</code>, <code data-nolink>Glyph</code>
               , <code>Line</code>, <code>Range</code>, <code>TextBlock</code>.{" "}
               <code>RangeDecorationCorners</code> masks which corners round.{" "}
               <code>RangeDecorationOrder</code> places a decoration{" "}
@@ -6588,12 +6632,656 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
         </section>
 
         {/* ──────────────────────────────────────────────────────────────────── */}
-        {/* 22. Recipes                                                         */}
+        {/* 22. UniText 3D                                                      */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <Cuboid className="w-6 h-6 text-[var(--color-accent)]" />
+            22. UniText 3D
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            <code>UniText3D</code> extrudes text into lit solids: every outline
+            glyph becomes a closed mesh — front face, bevelled edges, side
+            walls, back face — laid out by the same pipeline as{" "}
+            <code>UniTextWorld</code>, so markup, modifiers, paints and
+            animations move and colour the solids as they move and colour flat
+            glyphs. Depth, bevels and tolerances are in em of the font size.
+          </p>
+
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.1 Enabling the module</h3>
+
+              <p className="text-white/70 mb-4">
+                Project Settings → LightSide → UniText → Modules →{" "}
+                <strong>UniText 3D</strong> compiles the module for every
+                platform at once, after a confirmation, since toggling
+                recompiles scripts. While it is on, the same section shows the{" "}
+                <strong>Default 3D Material</strong>, which draws every surface
+                no material slot fills (§22.3), and{" "}
+                <strong>Import UniText 3D Sample</strong>, which copies the
+                sample slideshow into{" "}
+                <code>Assets/Samples/UniText/UniText 3D</code> — each of its
+                slides builds one feature from code in a few lines. Turning the
+                module off empties the Default 3D Material, so the
+                module&rsquo;s shader stays out of builds.
+              </p>
+
+              <p className="text-white/70">
+                Three packages unlock parts of the module when present: the
+                built-in <strong>Physics</strong> module for{" "}
+                <code>UniText3DColliders</code> (§22.9),{" "}
+                <strong>Splines</strong> 2.0 or newer for path deformation
+                (§22.6), and the <strong>FBX Exporter</strong> for FBX export
+                (§22.11).
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.2 Extrusion and edges</h3>
+
+              <p className="text-white/70 mb-4">
+                <code>Depth</code> (0.15 em by default) is the distance from the
+                front face to the back face, and <code>Pivot</code>{" "}
+                (<code>Text3DPivot</code>) says whether the front face, the
+                middle or the back face lies on the transform.{" "}
+                <code>FrontFace</code>, <code>BackFace</code> and{" "}
+                <code>Sides</code> close the solids or leave them open; turning{" "}
+                <code>Glyphs</code> off keeps only the layers, as for a stencil
+                or engraved plate (§22.4). Outline corners sharper than{" "}
+                <code>SmoothingAngle</code> (30°) keep a hard edge and softer
+                ones shade smoothly; <code>CurveTolerance</code> (0.001 em) is
+                how far flattened curves may stray from the outline — lower is
+                smoother and heavier.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>FrontBevel</code> and <code>BackBevel</code> are{" "}
+                <code>Text3DBevel</code> values, and <code>MirrorBevel</code>{" "}
+                (on by default) gives the back edge the front&rsquo;s bevel. A
+                bevel runs inward from the outline by <code>width</code> while
+                it recedes from the face by <code>height</code>;{" "}
+                <code>shape</code> picks the cross-section —{" "}
+                <code>Chamfer</code>, <code>Round</code> (its{" "}
+                <code>roundness</code> from hollow to nearly square),{" "}
+                <code>Cove</code>, <code>Bead</code>, <code>Step</code>,{" "}
+                <code>TwoSteps</code>, <code>Ogee</code>, <code>Engraved</code>,
+                or <code>Custom</code>, whose <code>curve</code> climbs from the
+                side to the face — and <code>segments</code> sample the curved
+                ones. A width beyond half a stroke meets the opposite edge and
+                closes the stroke in a ridge. New texts start from{" "}
+                <code>Text3DBevel.Default</code>, a round bevel of a fiftieth of
+                an em.
+              </p>
+
+              <CodeBlock
+                code={`var bevel = Text3DBevel.Default;
+bevel.shape = Text3DBevelShape.Chamfer;
+bevel.width = bevel.height = 0.03f;
+text.FrontBevel = bevel;
+text.Depth = 0.3f;`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.3 Materials and looks</h3>
+
+              <p className="text-white/70 mb-4">
+                Each surface (<code>Text3DSurface</code>) draws with a material
+                of its own: <code>FaceMaterial</code> the front face,{" "}
+                <code>BevelMaterial</code> the front bevel,{" "}
+                <code>SideMaterial</code> the side walls,{" "}
+                <code>BackBevelMaterial</code> and <code>BackMaterial</code> the
+                back. An empty slot falls back — the back bevel to the bevel
+                material, every other slot to the face material, the face
+                material to the Default 3D Material of the settings — and{" "}
+                <code>GetSurfaceMaterial</code> returns the material a surface
+                ends up with. Colours, gradients and paints (§6) tint the solids
+                through their vertex colours.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>LightSide/Text 3D</code> is the package&rsquo;s shader for
+                URP and the Built-in pipeline: a physically based opaque surface
+                with <code>Tint</code>, a <code>Texture</code> mapped per
+                surface or across the text (<code>Texture Space</code>),{" "}
+                <code>Metallic</code>, <code>Smoothness</code>,{" "}
+                <code>Emission</code>, <code>Light Influence</code> (0 unlit, 1
+                fully lit) and <code>Dither Fade</code>, which fades glyphs
+                through a screen dither while they stay opaque. In an HDRP
+                project the editor copies its counterpart, the{" "}
+                <code>LightSide/Text 3D HDRP</code> Shader Graph, into{" "}
+                <code>Assets/LightSide/HDRP</code>; it draws the placed mesh, so
+                under HDRP animated glyphs are placed on the CPU (§22.7).
+              </p>
+
+              <p className="text-white/70">
+                A <strong>look</strong> — a <code>Text3DLook</code> asset —
+                holds a depth, edges, materials and whole-text layers that go
+                together. <strong>Apply Look…</strong> in the inspector applies
+                one of the project&rsquo;s looks to the selected texts, and{" "}
+                <code>look.ApplyTo(text)</code> does the same from code: it
+                replaces the text&rsquo;s whole-text{" "}
+                <code>Layer3DModifier</code> styles with the look&rsquo;s layers
+                and keeps the text, its fonts and its other styles. The package
+                ships Plain, Candy, Chrome, Comic, Engraved Stone, Gold and
+                Neon, each material with an HDRP counterpart.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.4 Layers</h3>
+
+              <p className="text-white/70 mb-3">
+                <code>Layer3DModifier</code> draws an extra solid for the glyphs
+                of its range, or for the whole text in a style without a source
+                (<code>Style.WholeText</code>); layers draw in the order of
+                their modifiers. Its <code>Layer</code> is a{" "}
+                <code>Text3DLayer</code>:
+              </p>
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <code>shape</code> — <code>Outline</code>, the glyph outlines
+                  grown or shrunk by <code>offset</code>; <code>Box</code>, a
+                  box with rounded corners (<code>radius</code>) around each
+                  unit; or <code>Tube</code>, a round tube along the middle of
+                  every stroke, as thick as the layer&rsquo;s{" "}
+                  <code>depth</code>, like the glass of a neon sign.
+                </li>
+                <li>
+                  <code>unit</code> — one shape per <code data-nolink>Glyph</code>, which
+                  follows its glyph&rsquo;s motion, per <code>Word</code>, per{" "}
+                  <code>Line</code>, or for the whole <code>Text</code>.
+                </li>
+                <li>
+                  <code>width</code> keeps only a band that wide inside the
+                  shape&rsquo;s edge; zero fills the shape.
+                </li>
+                <li>
+                  <code>cut</code> — <code>Stencil</code> cuts holes through
+                  the layer where the glyphs are, <code>Engrave</code> recesses
+                  them <code>engraveDepth</code> into its front;{" "}
+                  <code>cutOffset</code> grows the cut.
+                </li>
+                <li>
+                  <code>position</code> — how far the layer&rsquo;s front
+                  stands behind the text&rsquo;s front, negative bringing it
+                  forward; <code>depth</code> and <code>bevel</code> are the
+                  layer&rsquo;s own.
+                </li>
+                <li>
+                  <code>color</code> tints its materials;{" "}
+                  <code>faceMaterial</code>, <code>bevelMaterial</code> and{" "}
+                  <code>sideMaterial</code> fall back to the layer&rsquo;s face
+                  material, then to the text&rsquo;s.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                <strong>Apply Preset…</strong> on a layer fills it from a preset
+                — an outline behind the text or each glyph, a rim, a raised
+                core, a plate behind each line, a highlight plate, a chip behind
+                each word, a stencil or engraved plate, or a neon tube. Code
+                takes the same presets as static values:{" "}
+                <code>Text3DLayer.Default</code>, <code>GlyphOutline</code>,{" "}
+                <code>GlyphRim</code>, <code>RaisedCore</code>,{" "}
+                <code>LinePlate</code>, <code>HighlightPlate</code> (what a new{" "}
+                <code>Layer3DModifier</code> starts with),{" "}
+                <code>WordChip</code>, <code>StencilPlate</code>,{" "}
+                <code>EngravedPlate</code> and <code>NeonTube</code>.
+              </p>
+
+              <CodeBlock
+                code={`text.Styles.Add(Style.WholeText(new Layer3DModifier { Layer = Text3DLayer.GlyphOutline }));
+text.Styles.Add(Style.Tag(new Layer3DModifier { Layer = Text3DLayer.WordChip }, "chip"));`}
+              />
+
+              <Notice type="info" className="mt-4">
+                The 2D effect layers of modifiers — strokes, shadows, glows —
+                are not drawn on extruded text; layers are their solid
+                counterpart. Underlines and strikethroughs extrude with their
+                glyphs, while range decorations (§7) stay flat on the front of
+                the extrusion and deform with the solids.
+              </Notice>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.5 Ranges</h3>
+
+              <p className="text-white/70 mb-4">
+                These modifiers act on the glyphs of their range in extruded
+                text and leave flat text alone:
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Modifier
+                      </th>
+                      <th className="text-left py-2 text-white/60">
+                        Gives the range
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Bevel3DModifier</code>
+                      </td>
+                      <td className="py-2">front and back bevels of its own</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Depth3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        a multiple of the text&rsquo;s depth: <code>2</code>{" "}
+                        doubles it, <code>0.5</code> halves it
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Surface3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        materials of its own, surface by surface; an empty slot
+                        keeps the text&rsquo;s
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Transform3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        a fixed pose: pitch, yaw and roll in degrees, a lift
+                        toward the viewer in em, and a scale
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.6 Deformation</h3>
+
+              <p className="text-white/70 mb-3">
+                <code>Deform3DModifier</code> reshapes each range of its style
+                on its own — the whole text in a style without a source — and
+                deformations apply in the order of their modifiers, each to the
+                result of the one before. Angles, tapers and arcs spread over
+                the laid-out range, so a deformation keeps its look as the text
+                changes size. Its <code>Deformer</code>{" "}
+                (<code>Text3DDeformer</code>) picks the <code>kind</code>:
+              </p>
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <code data-nolink>Bend</code> turns the range by <code>angle</code>{" "}
+                  degrees along its <code>axis</code> —{" "}
+                  <code>Horizontal</code> along the lines,{" "}
+                  <code>Vertical</code> across them — toward the viewer or
+                  within the plane of the text (<code>direction</code>); a bend
+                  of 360 closes into a ring.
+                </li>
+                <li>
+                  <code>Twist</code> turns the range by <code>angle</code>{" "}
+                  degrees over its length, about its axis.
+                </li>
+                <li>
+                  <code>Taper</code> makes the end of the range taller than its
+                  start by <code>taper</code>, a fraction of the range&rsquo;s
+                  size; negative shrinks it.
+                </li>
+                <li>
+                  <code>Wave</code> ripples the range with crests{" "}
+                  <code>amplitude</code> em high and <code>wavelength</code> em
+                  apart, travelling <code>speed</code> crests a second on the
+                  text&rsquo;s clock; drive <code>phase</code> to move the wave
+                  yourself.
+                </li>
+                <li>
+                  <code>Sphere</code> wraps the range onto a sphere whose arc
+                  across the range&rsquo;s width is <code>angle</code> degrees.
+                </li>
+                <li>
+                  <code>Path</code> runs the range along a spline:{" "}
+                  <code>path</code> takes a <code>SplineContainer</code> of the
+                  Splines package, and <code>position</code> is where along it
+                  the range&rsquo;s pivot lands, from its start (0) to its end
+                  (1).
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                <code>pivot</code> is the point of the range the deformation
+                leaves in place, from its start (0) to its end (1). Glyphs,
+                stickers and per-glyph layers take the deformation of their own
+                glyph; layers spanning glyphs and decoration bars take that of
+                the glyph nearest them. A path names a scene object, so only a
+                style of a text in the same scene reaches it.
+              </p>
+
+              <CodeBlock
+                code={`var bend = Text3DDeformer.Default;
+bend.kind = Text3DDeformerKind.Bend;
+bend.angle = 120f;
+text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
+              />
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.7 Motion and reveal</h3>
+
+              <p className="text-white/70 mb-4">
+                The 2D animation modifiers (§8.1) move, turn and scale whole
+                solids. Five phase-driven modifiers move glyphs in depth;{" "}
+                <code>frequency</code> counts cycles per phase unit and{" "}
+                <code>spread</code> offsets neighbouring glyphs:
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Modifier
+                      </th>
+                      <th className="text-left py-2 text-white/60">Motion</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Spin3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        continuous rotation about an <code>axis</code> through
+                        each glyph&rsquo;s centre
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Swing3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        a swing back and forth by up to <code>angle</code>{" "}
+                        degrees about an <code>axis</code>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Wave3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        a wave travelling along the text, moving glyphs{" "}
+                        <code>amplitude</code> em toward and away from the
+                        viewer
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <code>Orbit3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        glyphs circling their places, <code>radius</code> em
+                        wide, in the plane of the text
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <code>Tumble3DModifier</code>
+                      </td>
+                      <td className="py-2">
+                        glyphs tumbling about axes of their own
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70 mb-4">
+                <code>RevealModifier</code> (§8.3) takes four handlers made for
+                depth: <code>Flip3DRevealHandler</code> turns each glyph into
+                place from edge-on, <code>FlyIn3DRevealHandler</code> flies it
+                in from <code>distance</code> em toward the viewer,{" "}
+                <code>Extrude3DRevealHandler</code> grows its depth from flat to
+                full, and <code>Tumble3DRevealHandler</code> tumbles it into
+                place while it grows. On flat text only their fade applies, and
+                a tumble&rsquo;s growth.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A custom modifier or reveal handler moves a glyph in depth
+                through <code>UniText3D.CurrentGlyphPose</code>, a{" "}
+                <code>Text3DGlyphPose</code> it accumulates with{" "}
+                <code>Rotate</code>, <code>Translate</code>, <code>Scale</code>{" "}
+                and <code>Stretch</code>. The pose is valid only inside the
+                glyph callbacks of a mesh build, on the build&rsquo;s worker
+                thread.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                While glyphs animate under <code>LightSide/Text 3D</code>{" "}
+                materials and <code>AnimateInShader</code> is on, as it is by
+                default, the shader places them: a frame of animation costs per
+                glyph instead of per vertex, and the mesh holds the unplaced
+                layout until the text rests. Turn it off when something reads
+                the mesh itself, such as the mesh shape of a particle system.
+                Pointer queries, colliders, shattering and baking see the placed
+                text either way. A custom shader places glyphs the same way by
+                declaring the <code>Text3DShaders.PlacementTag</code> SubShader
+                tag and calling <code>Text3DPlace</code> of{" "}
+                <code>Packages/media.lightside.unitext/3D/Shaders/Text3DPlacement.hlsl</code>{" "}
+                on every vertex; a text animates in its vertex programs only
+                while every material it draws with does.
+              </p>
+
+              <p className="text-white/70">
+                <code>UniText3DFieldsAnimationHandler</code> on a{" "}
+                <code>UniTextAnimationBridge</code> (§8.4) lets an Animator
+                drive depth, pivot, edges, faces, smoothing, curve tolerance and
+                materials.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.8 Colour glyphs</h3>
+              <p className="text-white/70">
+                <code>ColorGlyphs</code> (<code>Text3DColorGlyphs</code>) draws
+                emoji and other colour glyphs as <code>Flat</code> images on the
+                front of the extrusion, or as <code>Sticker</code>s — the
+                glyph&rsquo;s shape cut out along its image, grown by{" "}
+                <code>StickerBorder</code> (0.04 em) and extruded with the text,
+                the image on its front.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                22.9 Objects, fields and physics
+              </h3>
+
+              <p className="text-white/70 mb-4">
+                <code>Attach3DModifier</code> places copies of prefabs on the
+                glyphs of a range — candles on top, gems on the faces, snow on
+                the upper sides — and each copy keeps its place on its glyph as
+                poses, animations and deformations move it. Prefabs are measured
+                in em: a copy is its prefab&rsquo;s size times the glyph&rsquo;s
+                em where it sits. <code data-nolink>Placement</code>{" "}
+                (<code>Text3DAttachPlacement</code>) is <code>Top</code>,{" "}
+                <code>Bottom</code> or <code>Front</code>, with{" "}
+                <code>Count</code> copies spread across each glyph;{" "}
+                <code>Centerline</code>, along the middle of every stroke about{" "}
+                <code>Spacing</code> apart; or <code>Surface</code>, scattered
+                at random over the <code>Surfaces</code> that face up by at
+                least <code>Facing</code>, at least <code>Spacing</code> apart.{" "}
+                <code>Scale</code>, <code>ScaleJitter</code>, <code>Spin</code>,{" "}
+                <code>AlignToSurface</code> and <code>Seed</code> vary the
+                copies. Copies live under a hidden child of the text and are
+                never saved; glyphs of colour fonts take none.
+              </p>
+
+              <CodeBlock
+                code={`var candles = new Attach3DModifier { Placement = Text3DAttachPlacement.Top };
+candles.Prefabs.ReplaceAll(candlePrefabs);
+text.Styles.Add(Style.Tag(candles, "candles"));`}
+              />
+
+              <p className="text-white/70 mt-4 mb-4">
+                <code>Field3DModifier</code> moves, turns, scales and tints the
+                glyphs of its range by how strongly <code>UniText3DField</code>{" "}
+                volumes of the scene reach their centres — the game-world
+                counterpart of a proximity effect. A field is a component: a
+                ball (<code>Sphere</code>, <code>Radius</code>), a{" "}
+                <code>Box</code> (<code>Size</code>) or the space behind a
+                plane across its forward axis (<code>Linear</code>), fading out
+                over its <code>Softness</code>, or reaching everything outside
+                the volume with <code>Invert</code>. A fully reached glyph takes
+                the modifier&rsquo;s <code>Offset</code>, its <code>Push</code>{" "}
+                away from the field, <code>Rotation</code>, <code>Scale</code>,{" "}
+                <code>Depth</code> multiplier and <code>Color</code> by its
+                alpha, easing toward new weights over <code>Smoothing</code>{" "}
+                seconds in Play Mode. Fields are scene objects, so only a style
+                of a text in the same scene reaches them.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <code>UniText3DColliders</code>, with the Physics module, keeps
+                colliders matching the drawn text on a hidden child — a box{" "}
+                (<code>Boxes</code>, the default) or a convex hull{" "}
+                (<code>ConvexHulls</code>) around each glyph, or one{" "}
+                <code>Mesh</code> collider — updated whenever the mesh changes,
+                so a rigidbody on the text&rsquo;s object takes them as one
+                compound body. A mesh collider cannot be a trigger; use boxes or
+                convex hulls for triggers. <code>Shatter(copies)</code> takes
+                the text as last drawn apart into objects — one per glyph with
+                its per-glyph layers, one per shape across glyphs or decoration
+                bar — each drawing its own mesh with the text&rsquo;s materials;
+                the objects take the text&rsquo;s parent, the text&rsquo;s
+                object turns inactive, and with <code>UniText3DColliders</code>{" "}
+                each piece gets its own collider. The meshes, and the material
+                copies added to <code>copies</code>, belong to the caller.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>Places on the solids.</strong> <code>Raycast</code>{" "}
+                finds the nearest point where a world-space ray meets the text
+                as last drawn — glyphs, layers, plates, bars and stickers — as
+                a <code>Text3DRaycastHit</code>: distance, point, normal and{" "}
+                <code>surfacePoint</code>, the <code>Text3DSurfacePoint</code>{" "}
+                it names on a glyph. <code>TryGetPose</code> reports where such
+                a place lies now, in world space — a{" "}
+                <code>Text3DSurfacePose</code> with <code>position</code>,{" "}
+                <code>normal</code>, <code>up</code>, <code>forward</code>,{" "}
+                <code>em</code>, <code>SurfaceRotation</code> and{" "}
+                <code>GlyphRotation</code> — following its glyph through poses,
+                animations and deformers; it returns false once the text
+                changes its layout.
+              </p>
+
+              <CodeBlock
+                code={`if (text.Raycast(camera.ScreenPointToRay(pointer), out var hit) && hit.surfacePoint.IsValid)
+    pin = hit.surfacePoint;
+if (text.TryGetPose(in pin, out var pose))
+    gem.SetPositionAndRotation(pose.position, pose.SurfaceRotation);`}
+              />
+
+              <p className="text-white/70 mt-4">
+                Pointer input reaches the solids through{" "}
+                <code>WorldPointerRaycaster</code> on the camera, as for world
+                text (§10.4): links, hover and interactive ranges resolve to the
+                glyph under the pointer, posed or not. Turn{" "}
+                <code>RaycastTarget</code> off for purely decorative text.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.10 Building glyphs</h3>
+
+              <p className="text-white/70 mb-3">
+                A glyph&rsquo;s solid is built once and shared by every text
+                that shows it with the same font and edges. Four settings keep
+                new glyphs from holding up a frame:
+              </p>
+              <ul className="space-y-2 text-white/70 list-disc list-inside">
+                <li>
+                  <code>BuildInBackground</code> builds glyphs the text has not
+                  shown before on worker threads — on the web, in slices of the
+                  coming frames — and shows each once it is built.
+                </li>
+                <li>
+                  <code>WarmCharacters</code> lists characters built with the
+                  text and kept ready, for text that changes at runtime: the
+                  digits of a counter, the letters of a name.
+                </li>
+                <li>
+                  <code>BakedSolids</code> takes a{" "}
+                  <code>Text3DBakedSolids</code> asset filled by{" "}
+                  <strong>Bake Solids</strong> in the inspector. While a text
+                  that references it is enabled, every text copies the solids it
+                  holds instead of building them; a solid is matched by its
+                  font&rsquo;s bytes, variation, glyph and everything its shape
+                  is built from, so after any of them changes the glyph is built
+                  until the asset is baked again.
+                </li>
+                <li>
+                  <code>AdaptiveDetail</code> lowers curve and bevel detail in
+                  Play Mode as the text gets smaller on screen, keeping outlines
+                  within half a pixel of their curves.
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">22.11 Baking and export</h3>
+              <p className="text-white/70">
+                The context menu of <code>UniText3D</code> turns its current
+                mesh into assets: <strong>Bake To Mesh Asset…</strong>,{" "}
+                <strong>Bake To Static Object…</strong>,{" "}
+                <strong>Bake To Static Object With Lightmap UVs…</strong> (the
+                lightmap UVs take the second UV channel, which otherwise
+                carries the text-space texture mapping),{" "}
+                <strong>Bake Level Of Detail Group…</strong> (each level
+                doubling the curve tolerance and halving the bevel segments),{" "}
+                <strong>Shatter Into Glyphs…</strong>,{" "}
+                <strong>Export OBJ…</strong>, and <strong>Export FBX…</strong>{" "}
+                with the FBX Exporter package. Materials that exist only at
+                runtime, such as the copies texture fills draw with, are saved
+                beside the mesh. Only the extruded mesh is baked: range
+                decorations and flat colour glyphs are left out, stickers kept.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">
+                22.12 Converting world text
+              </h3>
+              <p className="text-white/70">
+                <strong>Convert To UniText 3D</strong>, in the context menu of{" "}
+                <code>UniTextWorld</code>, turns world text into extruded text
+                as one undo step: the text, fonts, size, layout, colour, styles
+                and their modifiers carry over, sorting and shadow casting move
+                to the mesh renderer, components that require the text come back
+                with their values, and every reference the scene or prefab holds
+                to them moves to the replacement. A text with{" "}
+                <code>UniTextSelectable</code>, or with a component that
+                requires <code>UniTextWorld</code>, does not convert —{" "}
+                <code>UniText3D</code> has no selection.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 23. Recipes                                                         */}
         {/* ──────────────────────────────────────────────────────────────────── */}
         <section>
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             <ListChecks className="w-6 h-6 text-[var(--color-accent)]" />
-            22. Recipes
+            23. Recipes
           </h2>
 
           <div className="space-y-6">

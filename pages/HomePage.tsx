@@ -17,6 +17,7 @@ import {
   MousePointer,
   ScanText,
   Box,
+  Cuboid,
   Package,
   Wrench,
 } from 'lucide-react';
@@ -104,7 +105,13 @@ const HIGHLIGHTS: Highlight[] = [
   {
     icon: Box,
     title: 'UniTextWorld',
-    description: '3D text without Canvas — full pipeline via MeshRenderer',
+    description: 'World-space text without Canvas — full pipeline via MeshRenderer',
+  },
+  {
+    icon: Cuboid,
+    title: 'UniText 3D',
+    description:
+      'Extruded text: every outline glyph a lit, bevelled solid that casts shadows, styled and animated by the same pipeline. Optional module',
   },
   {
     icon: Package,
