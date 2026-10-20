@@ -1,6 +1,6 @@
 {
-  "version": "3.31.0",
-  "generatedAt": "2026-10-17T11:31:26.8661365Z",
+  "version": "3.31.1",
+  "generatedAt": "2026-10-20T11:17:37.3420489Z",
   "namespaces": [],
   "types": [
     {
@@ -10368,7 +10368,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one, so every cross-fade reaches the sub-mesh renderers, which follow the root renderer\u0027s colour each frame while it changes.",
+            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one. The tween keeps uGUI\u0027s timing and lifetime and writes each step to the root renderer and to every renderer the text is drawn with together; a renderer the text adds later takes the root renderer\u0027s colour.",
             "params": [
               {
                 "name": "targetColor",
@@ -10391,22 +10391,6 @@
                 "type": "bool"
               }
             ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "M:LightSide.UniText.OnFrameTick",
-            "name": "OnFrameTick",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Runs the component\u0027s per-frame work from [[Updating]] while [[P:LightSide.UniTextBase.NeedsFrameTick|NeedsFrameTick]] holds. Overrides run their own work after the base call.",
-            "params": [],
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
@@ -10649,17 +10633,6 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "True when [[M:LightSide.UniTextBase.ApplyWindowScroll(Vector2)|ApplyWindowScroll]] re-places built geometry, so mesh space excludes the window offset.",
-            "seeAlso": []
-          },
-          {
-            "id": "P:LightSide.UniText.NeedsFrameTick",
-            "name": "NeedsFrameTick",
-            "accessModifier": "protected",
-            "isStatic": false,
-            "type": "bool",
-            "hasGetter": true,
-            "hasSetter": false,
-            "summary": "Gets whether the component currently requires a per-frame tick. Overrides extend the demand with their own per-frame state and call [[M:LightSide.UniTextBase.RefreshFrameTick|RefreshFrameTick]] whenever that state changes.",
             "seeAlso": []
           },
           {
@@ -33297,6 +33270,7 @@
             "isConstructor": false,
             "returnType": "int",
             "summary": "Finds the best font id to render codepoint via the fallback chain; result is cached in [[SharedFontCache]].",
+            "remarks": "U\u002BFFFC, the placeholder of inline media, resolves to the primary font without a search: its owner draws it, so no face needs to cover it.",
             "params": [
               {
                 "name": "codepoint",
