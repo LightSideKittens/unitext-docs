@@ -369,7 +369,7 @@ function PaintOrderDiagram() {
 
         <div>
           <div className="text-[11px] uppercase tracking-wider text-white/40 mb-2">
-            glyph-major — correct when neighbours overlap
+            glyph-major — correct when neighbors overlap
           </div>
           <div className="flex gap-3">
             {glyphs.map((g) => (
@@ -1026,7 +1026,7 @@ export default function GettingStartedPage() {
                 </li>
                 <li>
                   Open <strong>Tools &rarr; LightSide &rarr; Hub</strong>.
-                  Select <strong>Licences</strong> under <strong>Account</strong>,
+                  Select <strong>Licenses</strong> under <strong>Account</strong>,
                   paste the token into <strong>Access token</strong> and click{" "}
                   <strong>Add token</strong>.
                 </li>
@@ -1145,7 +1145,7 @@ text.color = Color.white;`}
                 <strong>GameObject → LightSide → UniText → UniText3D</strong>,
                 once the UniText 3D module is enabled — while it is off, the
                 same item offers to enable it (§22.1). Every outline glyph
-                becomes a closed, lit solid with bevelled edges, laid out,
+                becomes a closed, lit solid with beveled edges, laid out,
                 styled and animated by the same pipeline as{" "}
                 <code>UniTextWorld</code>. The menu instantiates the prefab in{" "}
                 <code>UniTextSettings.Text3DPrefab</code>. The text renders
@@ -1547,7 +1547,7 @@ text.color = Color.white;`}
 
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
-                  a <strong>stroke</strong> takes each pixel whose centre lies
+                  a <strong>stroke</strong> takes each pixel whose center lies
                   within its width of the glyph — 1&nbsp;px gives the full
                   one-pixel ring, 2&nbsp;px a rounded two-pixel ring;
                 </li>
@@ -1568,7 +1568,7 @@ text.color = Color.white;`}
                 <strong>Snap To Pixel Grid</strong> rounds every glyph origin to
                 the grid, and every offset an effect or animation applies —
                 shadow, extrude, wave, shake, reveal — to whole font pixels, so
-                columns stay even, neighbouring glyphs share one grid and
+                columns stay even, neighboring glyphs share one grid and
                 animations step like sprites; rotation and scaling stay
                 continuous. Turn it off for smooth sub-pixel motion. A canvas
                 with <strong>Pixel Perfect</strong> on aligns the text origin to
@@ -2326,7 +2326,7 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">
                         <code>#RGB</code>, <code>#RRGGBB</code>,{" "}
-                        <code>#RRGGBBAA</code>, or a named colour
+                        <code>#RRGGBBAA</code>, or a named color
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -2434,7 +2434,7 @@ text.RemoveRule(myRule);`}
               </div>
 
               <p className="text-white/70 mb-4">
-                <strong>Named colours:</strong> white, black, red, green, blue,
+                <strong>Named colors:</strong> white, black, red, green, blue,
                 yellow, cyan, magenta, orange, purple, gray, lime, brown, pink,
                 navy, teal, olive, maroon, silver, gold.
               </p>
@@ -2767,10 +2767,10 @@ text.RemoveRule(myRule);`}
               <p className="text-white/70">
                 <code>FillModifier</code>, <code>StrokeModifier</code>,{" "}
                 <code>ShadowModifier</code>, <code>GlowModifier</code> and{" "}
-                <code>InnerShadowModifier</code> each take a colour, a gradient
+                <code>InnerShadowModifier</code> each take a color, a gradient
                 or a texture through the same <code>PaintRef</code> (§6).{" "}
                 <code>ExtrudeModifier</code> shades its slices across a near→far
-                colour pair, and <code>PaintOrderModifier</code> carries no
+                color pair, and <code>PaintOrderModifier</code> carries no
                 paint.
               </p>
             </div>
@@ -3276,7 +3276,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
           </h2>
 
           <p className="text-white/70 mb-6">
-            One model drives every coloured surface: fills, strokes, shadows,
+            One model drives every colored surface: fills, strokes, shadows,
             glows, inner shadows, decorations and selection.
           </p>
 
@@ -3285,16 +3285,16 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               <h3 className="font-semibold mb-4">6.1 What a paint is</h3>
               <p className="text-white/70 mb-3">
                 A <code>TextPaint</code> is the resolved runtime paint — a solid
-                colour, a gradient or a texture, plus how it projects and
+                color, a gradient or a texture, plus how it projects and
                 composites. It is resolved per application and is never
                 serialized. The authored form is <code>Paint</code> (source,
                 projection, blend); a <code>PaintSwatch</code> is a named{" "}
                 <code>Paint</code> plus its <code>PaintMapping</code>, held in a
-                catalogue.
+                catalog.
               </p>
               <p className="text-white/70">
                 A layer&rsquo;s authored choice is a <code>PaintRef</code>: an
-                inline colour, a named swatch, or the layer default (
+                inline color, a named swatch, or the layer default (
                 <code>PaintRefKind</code>).
               </p>
             </div>
@@ -3378,7 +3378,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 <li>
                   <code>PaintProjectionKind</code> — <code>Linear</code>{" "}
                   (project onto an axis), <code>Radial</code> (distance from
-                  centre), <code>Angular</code> (conic sweep).
+                  center), <code>Angular</code> (conic sweep).
                 </li>
                 <li>
                   <code>PaintSpread</code> — how a gradient continues past the
@@ -3426,7 +3426,7 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 <code>PaintOrderModifier</code> flips that within its range, so
                 the first glyph ends on top. Glyph-major covers only
                 same-material quads of the base mesh; texture paints and the
-                colour-glyph segment always stack layer-major.{" "}
+                color-glyph segment always stack layer-major.{" "}
                 <code>LayerBlend</code> sets how a resolved paint composites —{" "}
                 <code>Normal</code>, <code>Multiply</code>, <code>Screen</code>,{" "}
                 <code>Additive</code>, <code>Exclusion</code> — and its{" "}
@@ -3594,7 +3594,7 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
                         <code>WaveModifier</code>
                       </td>
                       <td className="py-2">
-                        sine travelling along the text: one amplitude axis
+                        sine traveling along the text: one amplitude axis
                         waves, two orbit on an ellipse
                       </td>
                     </tr>
@@ -3612,14 +3612,14 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
                         <code>SpinModifier</code>
                       </td>
                       <td className="py-2">
-                        continuous rotation about the glyph centre
+                        continuous rotation about the glyph center
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>PulseModifier</code>
                       </td>
-                      <td className="py-2">scale pulsation about the centre</td>
+                      <td className="py-2">scale pulsation about the center</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
@@ -3686,7 +3686,7 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
               </div>
 
               <p className="text-white/70">
-                <code>spread</code> decorrelates neighbouring glyphs;{" "}
+                <code>spread</code> decorrelates neighboring glyphs;{" "}
                 <code>frequency</code> sets cycles per phase unit.{" "}
                 <code>ShakeModifier</code>, <code>GlitchModifier</code> and{" "}
                 <code>ScrambleModifier</code> carry neither — their{" "}
@@ -3789,7 +3789,7 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
               </p>
 
               <p className="text-white/70 mb-4">
-                Handlers are named entries in a catalogue (
+                Handlers are named entries in a catalog (
                 <code>RevealHandlerEntry</code>), resolved per range by the tag
                 parameter, from <code>InlineRevealHandlerProvider</code> (edited
                 on the modifier) or <code>AssetRevealHandlerProvider</code> /{" "}
@@ -3848,7 +3848,7 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
               <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
                 <li>
                   <code>UniTextFieldsAnimationHandler</code> — the
-                  component&rsquo;s own fields (size, colour, wrap, auto-size,
+                  component&rsquo;s own fields (size, color, wrap, auto-size,
                   alignment). <code>UniTextWorldFieldsAnimationHandler</code>{" "}
                   adds sorting and shadow casting.
                 </li>
@@ -4495,7 +4495,7 @@ public sealed class RangeValueLogger : MonoBehaviour
                   <code>LinkClicked</code>, <code>LinkEntered</code> and{" "}
                   <code>LinkExited</code>. Its presentation is configured in the
                   built-in <code>LinkPreset</code>: an ordinary Composite of
-                  link, colour, underline and highlight modifiers, with parameter
+                  link, color, underline and highlight modifiers, with parameter
                   rules for feedback. Use the preset through{" "}
                   <code>ModifierGraphModifier</code>, or copy and edit its graph.{" "}
                   <code>LinkModifier</code> alone supplies hyperlink behavior.
@@ -4565,10 +4565,10 @@ public sealed class RangeValueLogger : MonoBehaviour
             <p className="text-white/70 mt-4 mb-6">
               Size, offset, advance and line height are em units (1 = font
               size); pivot is normalized; rotation is degrees.{" "}
-              <code>color</code> is empty for the entry&rsquo;s own colour,{" "}
-              <code>i</code> to inherit the component&rsquo;s colour (CSS{" "}
+              <code>color</code> is empty for the entry&rsquo;s own color,{" "}
+              <code>i</code> to inherit the component&rsquo;s color (CSS{" "}
               <code>currentColor</code>), or <code>#RGB</code> /{" "}
-              <code>#RRGGBB</code> / <code>#RRGGBBAA</code> / a named colour;{" "}
+              <code>#RRGGBB</code> / <code>#RRGGBBAA</code> / a named color;{" "}
               <code>aspect</code> is <code>true</code> / <code>false</code>.
               Values resolve weakest → strongest: provider entry → keyed
               override → default parameter (§3.2) → tag argument.
@@ -4599,7 +4599,7 @@ public sealed class RangeValueLogger : MonoBehaviour
                 <code>Overrides</code> list, each matched to one provider entry
                 by <code>Key</code>: size, bearing offset, advance, line height
                 above and below (em), pivot (normalized), rotation (degrees).{" "}
-                <code>InlineSpriteOverride</code> adds colour and
+                <code>InlineSpriteOverride</code> adds color and
                 preserve-aspect. Each field has an unset state — NaN,{" "}
                 <code>InheritBool.Inherit</code>,{" "}
                 <code>SpriteColorSource.Original</code> — that falls back to the
@@ -5295,7 +5295,7 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                       </td>
                       <td className="py-2">
                         <code>count</code> or <code>count/limit</code>,
-                        recoloured at the cap
+                        recolored at the cap
                       </td>
                     </tr>
                   </tbody>
@@ -5749,7 +5749,7 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10">
             <p className="text-white/70 mb-4">
-              Colour emoji render from the OS emoji font by default — nothing to
+              Color emoji render from the OS emoji font by default — nothing to
               configure. Flags, ZWJ sequences (family, profession) and skin-tone
               modifiers form single glyph clusters as the Unicode spec requires.
             </p>
@@ -5767,12 +5767,12 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 …).
               </li>
               <li>
-                <code>UniTextColorFont</code> — a colour-font asset (CBDT/sbix
+                <code>UniTextColorFont</code> — a color-font asset (CBDT/sbix
                 bitmap or COLRv0/COLRv1 vector) added to a stack like any other
                 font.
               </li>
               <li>
-                <code>ColorFontCore</code> — the shared colour-font runtime
+                <code>ColorFontCore</code> — the shared color-font runtime
                 behind <code>EmojiFont</code> and <code>UniTextColorFont</code>.
               </li>
             </ul>
@@ -5785,10 +5785,10 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
 
             <p className="text-white/70">
               <strong>Project Settings → LightSide → UniText → Disable Emoji</strong> turns
-              colour emoji off globally (
+              color emoji off globally (
               <code>UniTextSettings.EmojiDisabled</code>, mirrored to{" "}
               <code>EmojiFont.Disabled</code>). A <code>UniTextColorFont</code>{" "}
-              in the stack ships a colour font of your own; the system emoji
+              in the stack ships a color font of your own; the system emoji
               font stays the privileged provider for emoji-presentation
               codepoints.
             </p>
@@ -5843,7 +5843,7 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 shells, with the package prelude includes already resolved. The
                 visual logic lives in the include — implement{" "}
                 <code>half4 UniTextEffect(UniTextFrag i)</code> and return a
-                premultiplied colour; the shells are touched only to declare
+                premultiplied color; the shells are touched only to declare
                 Properties. <code>UniTextFrag</code> carries{" "}
                 <code>sdfAlpha</code>, <code>signedDist</code>,{" "}
                 <code>glyphUV</code>, <code>atlasUV</code>,{" "}
@@ -6642,10 +6642,10 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
 
           <p className="text-white/70 mb-6">
             <code>UniText3D</code> extrudes text into lit solids: every outline
-            glyph becomes a closed mesh — front face, bevelled edges, side
+            glyph becomes a closed mesh — front face, beveled edges, side
             walls, back face — laid out by the same pipeline as{" "}
             <code>UniTextWorld</code>, so markup, modifiers, paints and
-            animations move and colour the solids as they move and colour flat
+            animations move and color the solids as they move and color flat
             glyphs. Depth, bevels and tolerances are in em of the font size.
           </p>
 
@@ -6737,8 +6737,8 @@ text.Depth = 0.3f;`}
                 material, every other slot to the face material, the face
                 material to the Default 3D Material of the settings — and{" "}
                 <code>GetSurfaceMaterial</code> returns the material a surface
-                ends up with. Colours, gradients and paints (§6) tint the solids
-                through their vertex colours.
+                ends up with. Colors, gradients and paints (§6) tint the solids
+                through their vertex colors.
               </p>
 
               <p className="text-white/70 mb-4">
@@ -6938,7 +6938,7 @@ text.Styles.Add(Style.Tag(new Layer3DModifier { Layer = Text3DLayer.WordChip }, 
                 <li>
                   <code>Wave</code> ripples the range with crests{" "}
                   <code>amplitude</code> em high and <code>wavelength</code> em
-                  apart, travelling <code>speed</code> crests a second on the
+                  apart, traveling <code>speed</code> crests a second on the
                   text&rsquo;s clock; drive <code>phase</code> to move the wave
                   yourself.
                 </li>
@@ -6979,7 +6979,7 @@ text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
                 The 2D animation modifiers (§8.1) move, turn and scale whole
                 solids. Five phase-driven modifiers move glyphs in depth;{" "}
                 <code>frequency</code> counts cycles per phase unit and{" "}
-                <code>spread</code> offsets neighbouring glyphs:
+                <code>spread</code> offsets neighboring glyphs:
               </p>
 
               <div className="overflow-x-auto mb-4">
@@ -6999,7 +6999,7 @@ text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
                       </td>
                       <td className="py-2">
                         continuous rotation about an <code>axis</code> through
-                        each glyph&rsquo;s centre
+                        each glyph&rsquo;s center
                       </td>
                     </tr>
                     <tr className="border-b border-white/5">
@@ -7016,7 +7016,7 @@ text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
                         <code>Wave3DModifier</code>
                       </td>
                       <td className="py-2">
-                        a wave travelling along the text, moving glyphs{" "}
+                        a wave traveling along the text, moving glyphs{" "}
                         <code>amplitude</code> em toward and away from the
                         viewer
                       </td>
@@ -7088,10 +7088,10 @@ text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h3 className="font-semibold mb-4">22.8 Colour glyphs</h3>
+              <h3 className="font-semibold mb-4">22.8 Color glyphs</h3>
               <p className="text-white/70">
                 <code>ColorGlyphs</code> (<code>Text3DColorGlyphs</code>) draws
-                emoji and other colour glyphs as <code>Flat</code> images on the
+                emoji and other color glyphs as <code>Flat</code> images on the
                 front of the extrusion, or as <code>Sticker</code>s — the
                 glyph&rsquo;s shape cut out along its image, grown by{" "}
                 <code>StickerBorder</code> (0.04 em) and extruded with the text,
@@ -7121,7 +7121,7 @@ text.Styles.Add(Style.WholeText(new Deform3DModifier { Deformer = bend }));`}
                 <code>Scale</code>, <code>ScaleJitter</code>, <code>Spin</code>,{" "}
                 <code>AlignToSurface</code> and <code>Seed</code> vary the
                 copies. Copies live under a hidden child of the text and are
-                never saved; glyphs of colour fonts take none.
+                never saved; glyphs of color fonts take none.
               </p>
 
               <CodeBlock
@@ -7133,7 +7133,7 @@ text.Styles.Add(Style.Tag(candles, "candles"));`}
               <p className="text-white/70 mt-4 mb-4">
                 <code>Field3DModifier</code> moves, turns, scales and tints the
                 glyphs of its range by how strongly <code>UniText3DField</code>{" "}
-                volumes of the scene reach their centres — the game-world
+                volumes of the scene reach their centers — the game-world
                 counterpart of a proximity effect. A field is a component: a
                 ball (<code>Sphere</code>, <code>Radius</code>), a{" "}
                 <code>Box</code> (<code>Size</code>) or the space behind a
@@ -7251,7 +7251,7 @@ if (text.TryGetPose(in pin, out var pose))
                 with the FBX Exporter package. Materials that exist only at
                 runtime, such as the copies texture fills draw with, are saved
                 beside the mesh. Only the extruded mesh is baked: range
-                decorations and flat colour glyphs are left out, stickers kept.
+                decorations and flat color glyphs are left out, stickers kept.
               </p>
             </div>
 
@@ -7262,7 +7262,7 @@ if (text.TryGetPose(in pin, out var pose))
               <p className="text-white/70">
                 <strong>Convert To UniText 3D</strong>, in the context menu of{" "}
                 <code>UniTextWorld</code>, turns world text into extruded text
-                as one undo step: the text, fonts, size, layout, colour, styles
+                as one undo step: the text, fonts, size, layout, color, styles
                 and their modifiers carry over, sorting and shadow casting move
                 to the mesh renderer, components that require the text come back
                 with their values, and every reference the scene or prefab holds
@@ -7323,7 +7323,7 @@ for (float t = 0; t < duration; t += Time.deltaTime)
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
               <h3 className="font-semibold mb-4">
-                Whole-text colour without markup
+                Whole-text color without markup
               </h3>
               <CodeBlock
                 code={`text.Styles.Add(Style.WholeText(new ColorModifier(), "#FF0000"));

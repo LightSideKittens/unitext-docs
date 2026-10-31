@@ -111,7 +111,7 @@ const HIGHLIGHTS: Highlight[] = [
     icon: Cuboid,
     title: 'UniText 3D',
     description:
-      'Extruded text: every outline glyph a lit, bevelled solid that casts shadows, styled and animated by the same pipeline. Optional module',
+      'Extruded text: every outline glyph a lit, beveled solid that casts shadows, styled and animated by the same pipeline. Optional module',
   },
   {
     icon: Package,
