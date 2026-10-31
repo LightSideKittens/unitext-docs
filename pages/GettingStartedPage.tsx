@@ -898,7 +898,15 @@ export default function GettingStartedPage() {
             </div>
             <p className="text-white/70">
               <strong>Tools → LightSide → UniText → Migration</strong> converts an existing
-              project incrementally; <code>TmpMigration.md</code> is its guide.
+              project incrementally;{" "}
+              <a
+                href="https://unity.lightside.media/unitext/solutions/migrate-from-textmeshpro"
+                className="text-[var(--color-accent)] hover:underline"
+              >
+                the migration guide
+              </a>{" "}
+              covers each stage, and the package ships the full reference as{" "}
+              <code>TmpMigration.md</code>.
             </p>
           </div>
 
