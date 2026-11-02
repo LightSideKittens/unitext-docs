@@ -1,6 +1,6 @@
 {
-  "version": "3.41.1",
-  "generatedAt": "2026-11-02T07:12:08.1325754Z",
+  "version": "3.41.2",
+  "generatedAt": "2026-11-02T12:13:14.3720754Z",
   "namespaces": [],
   "types": [
     {
@@ -64286,7 +64286,7 @@
       ],
       "derivedTypes": [],
       "summary": "Bends the baseline into an authored curve while preserving each glyph\u0027s shape.",
-      "remarks": "[[P:LightSide.CurveModifier.Curve|Curve]] runs across the range, from its start at 0 to its end at 1, and [[P:LightSide.CurveModifier.Height|Height]] is what one unit of the curve stands for in pixels \u2014 so a shape authored once reads the same however wide the text turns out. Each glyph is lifted to the curve and turned to sit on it, keeping its horizontal place, so letter spacing is untouched. Every line of the range takes the same shape over its own baseline. Ranges of every curve modifier resolve into one per-cluster axis, so a glyph rides the curve of the range applied last rather than being bent once per modifier.",
+      "remarks": "[[P:LightSide.CurveModifier.Curve|Curve]] runs from its start at 0 to its end at 1 across what [[P:LightSide.CurveModifier.Span|Span]] names, and [[P:LightSide.CurveModifier.Height|Height]] is what one unit of the curve stands for in pixels. Across [[F:LightSide.CurveSpan.Range|CurveSpan.Range]] the shape is fitted to the text it bends; across [[F:LightSide.CurveSpan.Box|CurveSpan.Box]] it stays put in the text\u0027s box whatever the text\u0027s length, and text running past the box rides level at the curve\u0027s end value. Each glyph is lifted to the curve and turned to sit on it, keeping its horizontal place, so letter spacing is untouched. Every line of the range takes the same shape over its own baseline. Ranges of every curve modifier resolve into one per-cluster axis, so a glyph rides the curve of the range applied last rather than being bent once per modifier.",
       "seeAlso": [
         "ArcModifier"
       ],
@@ -64452,7 +64452,7 @@
             "type": "Rect",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "The box [[P:LightSide.CurveModifier.Curve|Curve]] is read into, in the text\u0027s own coordinates: the baseline span of the range prepared last by the rebuild that reached this modifier, with its first line\u0027s baseline for y and the height one unit of the curve stood for. Empty until a rebuild has bent one of its ranges \u2014 an editor drawing the curve then has nowhere to put it.",
+            "summary": "The box [[P:LightSide.CurveModifier.Curve|Curve]] is read into, in the text\u0027s own coordinates: the span it was stretched across for the range prepared last by the rebuild that reached this modifier, with that range\u0027s first baseline for y and the height one unit of the curve stood for. Empty until a rebuild has bent one of its ranges \u2014 an editor drawing the curve then has nowhere to put it.",
             "seeAlso": []
           },
           {
@@ -64487,7 +64487,21 @@
             "type": "Ease",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Shape the baseline takes across the range, read from its start at 0 to its end at 1.",
+            "summary": "Shape the baseline takes across [[P:LightSide.CurveModifier.Span|Span]], read from its start at 0 to its end at 1.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.CurveModifier.Span",
+            "name": "Span",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "CurveSpan",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "What [[P:LightSide.CurveModifier.Curve|Curve]] is stretched across: the text it bends, or the box that text is laid out in.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -64509,6 +64523,51 @@
           }
         ],
         "fields": [],
+        "events": []
+      }
+    },
+    {
+      "id": "CurveSpan",
+      "name": "CurveSpan",
+      "kind": "enum",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseTypeChain": [],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "What a [[CurveModifier]] stretches its curve across.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "members": {
+        "methods": [],
+        "properties": [],
+        "fields": [
+          {
+            "id": "F:LightSide.CurveSpan.Range",
+            "name": "Range",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "CurveSpan",
+            "defaultValue": "0",
+            "summary": "The text the range covers, from its first glyph to its last: text of any length takes the whole shape."
+          },
+          {
+            "id": "F:LightSide.CurveSpan.Box",
+            "name": "Box",
+            "accessModifier": "public",
+            "isStatic": true,
+            "isReadonly": true,
+            "isConst": false,
+            "type": "CurveSpan",
+            "defaultValue": "1",
+            "summary": "The box the text is laid out in: the curve belongs to the box, and text of any length rides the part of it standing under the text."
+          }
+        ],
         "events": []
       }
     },
@@ -105448,6 +105507,10 @@
       },
       {
         "name": "CurveModifier",
+        "priority": 100
+      },
+      {
+        "name": "CurveSpan",
         "priority": 100
       },
       {
