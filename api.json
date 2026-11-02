@@ -1,6 +1,6 @@
 {
-  "version": "3.40.0",
-  "generatedAt": "2026-10-31T15:28:09.5993121Z",
+  "version": "3.41.0",
+  "generatedAt": "2026-11-02T06:27:34.7746759Z",
   "namespaces": [],
   "types": [
     {
@@ -10312,6 +10312,7 @@
       "interfaces": [
         "ICanvasClipSource",
         "IClipper",
+        "ICanvasClipTarget",
         "ILayoutElement"
       ],
       "derivedTypes": [],
@@ -10367,7 +10368,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]] and the scene-visibility eye share one allocation-free, non-structural path.",
+            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]], the scene-visibility eye and enabling or disabling the text share one allocation-free, non-structural path.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -10472,7 +10473,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Supplies the clip rect of the [[RectMask2D]] over this text as the viewport and the root canvas rect as the display, each as the part of this text\u0027s plane that lands inside it on the canvas; neither while this text has no canvas, and an empty viewport while the mask holds no valid rect.",
+            "summary": "Supplies the clip rect of the mask over this text \u2014 a [[LightSideRectMask]] or a [[RectMask2D]] \u2014 as the viewport and the root canvas rect as the display, each as the part of this text\u0027s plane that lands inside it on the canvas; neither while this text has no canvas, and an empty viewport while the mask holds no valid rect.",
             "params": [
               {
                 "name": "automatic",
@@ -10560,6 +10561,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "remarks": "Hands the object\u0027s [[CanvasRenderer]] back unculled and opaque for the component that draws through it next.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -10590,6 +10592,22 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "M:LightSide.UniText.RecalculateClipping",
+            "name": "RecalculateClipping",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "remarks": "Finds the [[LightSideRectMask]] clipping this text as well.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -10643,7 +10661,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Sets the clipping rectangle for masking, applying to all sub-mesh renderers. Mask removal reaches a clippable only through this call (never [[M:LightSide.UniText.Cull(UnityEngine.Rect,System.Boolean)|Cull]]), so an invalid rect also resets [[P:LightSide.UniTextBase.VisibleWindow|UniTextBase.VisibleWindow]] and the clip-cull state \u2014 otherwise the mesh would stay windowed and culled with no mask to excuse it.",
-            "remarks": "A valid rect wholly off a screen-space root canvas reaches the renderers but defers the viewport, as [[M:LightSide.UniText.Cull(UnityEngine.Rect,System.Boolean)|Cull]] describes.",
+            "remarks": "A valid rect wholly off a screen-space root canvas reaches the renderers but defers the viewport, as [[M:LightSide.UniText.Cull(UnityEngine.Rect,System.Boolean)|Cull]] describes. While a [[LightSideRectMask]] clips this text, the call is ignored: that mask hands over the clip.",
             "params": [
               {
                 "name": "clipRect",
@@ -10668,7 +10686,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Sets soft clipping edges for smooth mask transitions on all sub-mesh renderers; a content clip\u0027s own softness takes their place while it is set.",
+            "summary": "Sets soft clipping edges for smooth mask transitions on all sub-mesh renderers; a content clip\u0027s own softness takes their place while it is set. Ignored while a [[LightSideRectMask]] clips this text.",
             "params": [
               {
                 "name": "clipSoftness",
@@ -10690,7 +10708,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Culls against the actual rendered mesh bounds rather than the [[RectTransform]] (whose corners serve until a mesh exists). Glyphs can extend beyond the rect (long words, overflow, outline/glow, modifier transforms), so the default rect-corner test would hide still-visible meshes.",
-            "remarks": "Text of up to 1024 UTF-16 characters whose viewport nothing follows \u2014 no scroll, window, document, editing host or viewport subscriber \u2014 emits whole and resolves its viewport on its next rebuild or read instead of at each clip. Any other text defers its viewport while it cannot show: one already outside the clip whose clip still misses its laid-out text, and any whose clip lies wholly off a screen-space root canvas. The window it materializes and [[E:LightSide.UniTextBase.DocumentPositionChanged|UniTextBase.DocumentPositionChanged]] stand still until it can show again, rebuilds or something reads the viewport, which resolves once and publishes the whole movement. A consumer therefore sees fewer notifications while a text cannot show, never a stale value. The cull state and [[onCullStateChanged]] keep following the clip throughout, measured against the mesh last emitted. A mask that moves its own clip rect reaches every clippable through [[M:LightSide.UniText.SetClipRect(UnityEngine.Rect,System.Boolean)|SetClipRect]], which resolves unless the new clip lies wholly off a screen-space root canvas.",
+            "remarks": "Text of up to 1024 UTF-16 characters whose viewport nothing follows \u2014 no scroll, window, document, editing host or viewport subscriber \u2014 emits whole and resolves its viewport on its next rebuild or read instead of at each clip. Any other text defers its viewport while it cannot show: one already outside the clip whose clip still misses its laid-out text, and any whose clip lies wholly off a screen-space root canvas. The window it materializes and [[E:LightSide.UniTextBase.DocumentPositionChanged|UniTextBase.DocumentPositionChanged]] stand still until it can show again, rebuilds or something reads the viewport, which resolves once and publishes the whole movement. A consumer therefore sees fewer notifications while a text cannot show, never a stale value. The cull state and [[onCullStateChanged]] keep following the clip throughout, measured against the mesh last emitted. A mask that moves its own clip rect reaches every clippable through [[M:LightSide.UniText.SetClipRect(UnityEngine.Rect,System.Boolean)|SetClipRect]], which resolves unless the new clip lies wholly off a screen-space root canvas. While a [[LightSideRectMask]] clips this text, the call is ignored: that mask culls it again whenever the text moves against its clip.",
             "params": [
               {
                 "name": "clipRect",
@@ -11666,7 +11684,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]] and the scene-visibility eye share one allocation-free, non-structural path.",
+            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]], the scene-visibility eye and enabling or disabling the text share one allocation-free, non-structural path.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -16171,7 +16189,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]] and the scene-visibility eye share one allocation-free, non-structural path.",
+            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]], the scene-visibility eye and enabling or disabling the text share one allocation-free, non-structural path.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -16506,7 +16524,7 @@
             "accessModifier": "public",
             "isStatic": false,
             "type": "Action\u003CUniTextWorld\u003E",
-            "summary": "Occurs when [[RenderSuppressed]] has toggled (user Hide/Show or scene-visibility). The batcher reads the live state and flips this component\u0027s batch membership without a structural rebuild."
+            "summary": "Occurs when [[RenderSuppressed]] has toggled (user Hide/Show, scene-visibility, or the text enabled or disabled). The batcher reads the live state and flips this component\u0027s batch membership without a structural rebuild."
           },
           {
             "id": "E:LightSide.UniTextWorld.AlphaChanged",
@@ -22743,6 +22761,52 @@
             "typeParameters": []
           },
           {
+            "id": "M:LightSide.InputCaretRenderer.SetClipSoftness(UnityEngine.Vector2)",
+            "name": "SetClipSoftness",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "remarks": "While a [[LightSideRectMask]] clips the edited text, the caret keeps that text\u0027s softness.",
+            "params": [
+              {
+                "name": "clipSoftness",
+                "type": "Vector2"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "M:LightSide.InputCaretRenderer.Cull(UnityEngine.Rect,System.Boolean)",
+            "name": "Cull",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "remarks": "The caret stays culled while the mask clipping the edited text holds no area.",
+            "params": [
+              {
+                "name": "clipRect",
+                "type": "Rect"
+              },
+              {
+                "name": "validRect",
+                "type": "bool"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "M:LightSide.InputCaretRenderer.OnDestroy",
             "name": "OnDestroy",
             "accessModifier": "protected",
@@ -27544,7 +27608,7 @@
       ],
       "derivedTypes": [],
       "summary": "Editing capability for [[UniTextSelectable]]: text storage (gap buffer), undo/redo, IME composition, validators, caret rendering, input intents, touch gesture pipeline, keyboard / clipboard handling, and the public mutation API (InsertText, Cut/Copy/Paste, Undo/Redo, etc.).",
-      "remarks": "The component requires [[UniTextSelectable]] on the same GameObject as [[UniTextBase]]; form-field policies are composed through input behaviors. Add a [[ContentSizeFitter]] or place it under a layout group to size its RectTransform from the text; sizing is measured through the [[UniTextBase]] component\u0027s own [[ILayoutElement]] implementation. A pointer click activates it and places the caret; Unity UI navigation reaches it through the GameObject\u0027s [[Selectable]] \u2014 the hidden [[UniTextFocusable]] the editor manages automatically, or one already present on the GameObject. Put it directly under a [[RectMask2D]] to make that parent the clipping viewport and enable internal scrolling when content overflows.",
+      "remarks": "The component requires [[UniTextSelectable]] on the same GameObject as [[UniTextBase]]; form-field policies are composed through input behaviors. Add a [[ContentSizeFitter]] or place it under a layout group to size its RectTransform from the text; sizing is measured through the [[UniTextBase]] component\u0027s own [[ILayoutElement]] implementation. A pointer click activates it and places the caret; Unity UI navigation reaches it through the GameObject\u0027s [[Selectable]] \u2014 the hidden [[UniTextFocusable]] the editor manages automatically, or one already present on the GameObject. Put it directly under a [[LightSideRectMask]] or a [[RectMask2D]] to make that parent the clipping viewport and enable internal scrolling when content overflows.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "editing",
@@ -47251,8 +47315,8 @@
             "typeParameters": []
           },
           {
-            "id": "M:LightSide.UniTextMeshGenerator.GlyphScale(System.Int32)",
-            "name": "GlyphScale",
+            "id": "M:LightSide.UniTextMeshGenerator.GlyphMetricFactor(System.Int32)",
+            "name": "GlyphMetricFactor",
             "accessModifier": "public",
             "isAbstract": false,
             "isVirtual": false,
@@ -47260,7 +47324,8 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "float",
-            "summary": "Per-glyph scale for the face quad starting at baseIdx (1 when the glyph was never scaled). Read by paint layers at emit time.",
+            "summary": "Em \u2192 pixels of the face quad starting at baseIdx: [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] of the font that built it times its final [[F:LightSide.UniTextMeshGenerator.currentGlyphScale|currentGlyphScale]], recorded when its glyph completes.",
+            "remarks": "Geometry emitted after the glyph pass \u2014 effect duplicates flushed at main-pass finalization \u2014 converts its px sizes through this factor of the face it copies, since [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] then holds whichever font was current last. Defined for a face quad of the current generation whose glyph has completed, in a generation that began with a handler subscribed to [[P:LightSide.UniTextMeshGenerator.onMainPassComplete|onMainPassComplete]] or [[P:LightSide.UniTextMeshGenerator.onMainPassFinalize|onMainPassFinalize]]: only those phases emit after the glyph pass, and only for them is it recorded.",
             "params": [
               {
                 "name": "baseIdx",
@@ -48118,7 +48183,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Product of every per-glyph scale applied to the current face quad (size, small-caps, sub/superscript, ruby, font metric overrides) via [[M:LightSide.UniTextMeshGenerator.ScaleFace(System.Int32,System.Single,System.Single,System.Single,System.Single,System.Single)|ScaleFace]]. Reset to 1 before each [[P:LightSide.UniTextMeshGenerator.onGlyph|onGlyph]]; [[M:LightSide.UniTextMeshGenerator.GlyphScale(System.Int32)|GlyphScale]] reads it back per quad once the glyph completes. Em \u2192 pixels for an emitted quad is [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] times this: em geometry multiplies by it and absolute (px) geometry divides by it, so a px value keeps a constant on-screen size while the glyph scales."
+            "summary": "Product of every per-glyph scale applied to the current face quad (size, small-caps, sub/superscript, ruby, font metric overrides) via [[M:LightSide.UniTextMeshGenerator.ScaleFace(System.Int32,System.Single,System.Single,System.Single,System.Single,System.Single)|ScaleFace]]. Reset to 1 before each [[P:LightSide.UniTextMeshGenerator.onGlyph|onGlyph]]; [[M:LightSide.UniTextMeshGenerator.GlyphMetricFactor(System.Int32)|GlyphMetricFactor]] keeps its product with the font factor per quad once the glyph completes. Em \u2192 pixels for an emitted quad is [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] times this: em geometry multiplies by it and absolute (px) geometry divides by it, so a px value keeps a constant on-screen size while the glyph scales."
           },
           {
             "id": "F:LightSide.UniTextMeshGenerator.fillClaimedThisGlyph",
@@ -60577,7 +60642,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [],
-      "summary": "The process-wide color font whose glyphs are sprites. Every inline sprite of every component is a glyph of this runtime, so it takes a glyph\u0027s place in the text mesh \u2014 the layer stack in order, world-space text, effects through its silhouette field \u2014 while drawing from its own texture at native resolution through the sub-mesh its component keeps per texture; nothing is copied into an atlas. A silhouette field is derived from a read-back of the sprite\u0027s pixels only when an effect asks for one. Glyph ids are issued per [[Sprite]] object, hold until the sprite is unregistered and are never reissued. The nominal glyph box is 1 em tall on the baseline, its width the sprite\u0027s aspect.",
+      "summary": "The process-wide color font whose glyphs are sprites. Every inline sprite of every component is a glyph of this runtime, so it takes a glyph\u0027s place in the text mesh \u2014 the layer stack in order, world-space text, effects through its silhouette field \u2014 while drawing from its own texture at native resolution through the sub-mesh its component keeps per texture; nothing is copied into an atlas. A silhouette field is derived from a read-back of the sprite\u0027s pixels only when an effect asks for one. Glyph ids are issued per [[Sprite]] object, hold until the font lets go of the sprite ([[M:LightSide.SpriteFont.Unregister(UnityEngine.Sprite)|Unregister]], or a change of its region) and are never reissued. The nominal glyph box is 1 em tall on the baseline, its width the sprite\u0027s aspect.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "media",
@@ -60640,7 +60705,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "A registered sprite is always drawable: its pixels are its own texture.",
+            "summary": "A sprite the font holds with its texture is always drawable: its pixels are its own texture.",
             "params": [
               {
                 "name": "glyphIndex",
@@ -60665,7 +60730,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "uint",
-            "summary": "Glyph id of a sprite, issued on first sight. The font holds the sprite and its texture until [[M:LightSide.SpriteFont.Unregister(UnityEngine.Sprite)|Unregister]]. Main thread \u2014 reads the sprite\u0027s rect, texture and mesh.",
+            "summary": "Glyph id of a sprite, issued on first sight. The font holds the sprite and its texture until [[M:LightSide.SpriteFont.Unregister(UnityEngine.Sprite)|Unregister]]. A sprite whose Sprite Atlas is not loaded yet is held without pixels and draws nothing ([[M:LightSide.SpriteFont.TryGetGlyph(UnityEngine.Sprite,System.UInt32@,System.Single@)|TryGetGlyph]] answers false for it); once the atlas registers, the font lets go of it and advances [[RegistrationEpoch]], so registrants register it again. Main thread \u2014 reads the sprite\u0027s rect, texture and mesh.",
             "params": [
               {
                 "name": "sprite",
@@ -60723,7 +60788,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Glyph id and width-over-height aspect of a registered sprite; false for one the font does not hold. Safe on worker threads.",
+            "summary": "Glyph id and width-over-height aspect of a registered sprite; false for one the font does not hold or holds while its Sprite Atlas is not loaded yet. Safe on worker threads.",
             "params": [
               {
                 "name": "sprite",
@@ -60934,7 +60999,7 @@
       ],
       "derivedTypes": [],
       "summary": "Embeds [[Sprite]] assets inline with text as glyphs of the text mesh. The set of named sprites available to \u003Csprite=name\u003E tags is supplied by an [[ISpriteProvider]].",
-      "remarks": "Tag syntax: \u003Csprite=name[,colorArg][,aspect][,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the keyed override when present, otherwise the provider entry\u0027s own [[P:LightSide.InlineSprite.Color|InlineSprite.Color]]. i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. aspect (true/false) and the shared presentation overrides (size, bearing offset, advance, line space above/below \u2014 em units; pivot \u2014 normalized; rotation \u2014 degrees) resolve through the override hierarchy, weakest \u2192 strongest: provider entry \u2192 keyed override \u2192 default parameters \u2192 tag attribute. Every sprite is a glyph of the process-wide [[SpriteFont]]: it takes its place in the layer stack, renders in world-space text, and receives the layer effects (shadow, glow, stroke, \u2026) whose color-glyph policy applies to it. It draws from its own texture at native resolution \u2014 one sub-mesh per distinct texture, so the sprites of one atlas share a draw call \u2014 and a tightly packed sprite draws by its own outline mesh. The sprite name resolves through [[P:LightSide.SpriteModifier.Provider|Provider]]; a matching keyed override changes only its presentation. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localization, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
+      "remarks": "Tag syntax: \u003Csprite=name[,colorArg][,aspect][,size][,offset][,advance][,lineHeightAbove][,lineHeightBelow][,pivot][,rotation]\u003E. The optional second positional argument controls the rendered color of this occurrence: omitted \u2014 use the keyed override when present, otherwise the provider entry\u0027s own [[P:LightSide.InlineSprite.Color|InlineSprite.Color]]. i \u2014 inherit the host UniText component\u0027s [[color]]. Equivalent to CSS currentColor. #RGB/#RRGGBB/#RRGGBBAA or a named color (red, blue, \u2026) \u2014 explicit per-occurrence override. Examples: \u003Csprite=heart\u003E, \u003Csprite=heart,i\u003E, \u003Csprite=heart,#FF0000\u003E. aspect (true/false) and the shared presentation overrides (size, bearing offset, advance, line space above/below \u2014 em units; pivot \u2014 normalized; rotation \u2014 degrees) resolve through the override hierarchy, weakest \u2192 strongest: provider entry \u2192 keyed override \u2192 default parameters \u2192 tag attribute. Every sprite is a glyph of the process-wide [[SpriteFont]]: it takes its place in the layer stack, renders in world-space text, and receives the layer effects (shadow, glow, stroke, \u2026) whose color-glyph policy applies to it. It draws from its own texture at native resolution \u2014 one sub-mesh per distinct texture, so the sprites of one atlas share a draw call \u2014 and a sprite packed into an atlas draws by its own mesh, so its atlas neighbors never show and a flip or turn the atlas gave it is undone. A sprite whose Sprite Atlas is not loaded yet (late binding) draws nothing until the atlas registers. The sprite name resolves through [[P:LightSide.SpriteModifier.Provider|Provider]]; a matching keyed override changes only its presentation. Built-in providers: [[InlineSpriteProvider]] (default \u2014 inline list on the modifier), [[AssetSpriteProvider]] (shared [[UniTextSprites]] asset). For dynamic catalogs \u2014 input-prompt icon services, localization, item icons \u2014 implement [[ISpriteProvider]] directly and raise its [[Changed]] event when the resolution result changes.",
       "seeAlso": [
         "ObjModifier",
         "ISpriteProvider",
@@ -85270,8 +85335,8 @@
             "isStatic": false,
             "isReadonly": false,
             "isConst": false,
-            "type": "Texture2D",
-            "summary": "Resolved texture when [[F:LightSide.TextPaint.kind|kind]] is [[Texture]]."
+            "type": "Texture",
+            "summary": "Resolved texture when [[F:LightSide.TextPaint.kind|kind]] is [[Texture]]: the authored texture, or the page of an authored sprite, whose region then bounds the sampling."
           },
           {
             "id": "F:LightSide.TextPaint.dither",
@@ -85321,7 +85386,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Texture pixel dimensions, populated on the main thread before parallel layout; consumed by worker-thread aspect-fit."
+            "summary": "Texture pixel dimensions \u2014 a sprite\u0027s own rect for a sprite paint \u2014 populated on the main thread before parallel layout; consumed by worker-thread aspect-fit."
           },
           {
             "id": "F:LightSide.TextPaint.texHeight",
@@ -85331,7 +85396,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Texture pixel dimensions, populated on the main thread before parallel layout; consumed by worker-thread aspect-fit."
+            "summary": "Texture pixel dimensions \u2014 a sprite\u0027s own rect for a sprite paint \u2014 populated on the main thread before parallel layout; consumed by worker-thread aspect-fit."
           }
         ],
         "events": []
@@ -94443,7 +94508,7 @@
         "IPropertySource"
       ],
       "derivedTypes": [],
-      "summary": "Shipped Unity-UI presentation used by [[PrefabSelectionHandles]]. It instantiates a user-authored prefab for the draggable selection handles (one prefab used for both the anchor and focus carets) and for the collapsed-caret insertion handle, and places each at its caret point. The split of ownership: the prefab owns the look \u2014 sprite, color, material, and the pivot, which alone decides how the handle sits relative to the caret (a teardrop pivots at its tip); the code owns the size, forcing each handle to a square of [[handleSize]] dp so the touch target stays a constant physical size across canvases, resolutions, and densities (a fingertip is device-independent). Put Preserve Aspect on the prefab\u0027s Image so its sprite fits that square undistorted. Assign its prefab inside a [[PrefabSelectionHandles]] entity; geometry is pulled from the [[UniTextSelectable]] presenting them at call time, the instances live in a canvas-level overlay so the field\u0027s RectMask2D never clips them, and a handle whose caret scrolls outside the field box hides until it returns. A [[SelectionHandleDragger]] (drag routing) and a [[FocusGuard]] (so grabbing a handle never defocuses the field) are ensured on each instance, so the prefab need only carry a raycastable Graphic.",
+      "summary": "Shipped Unity-UI presentation used by [[PrefabSelectionHandles]]. It instantiates a user-authored prefab for the draggable selection handles (one prefab used for both the anchor and focus carets) and for the collapsed-caret insertion handle, and places each at its caret point. The split of ownership: the prefab owns the look \u2014 sprite, color, material, and the pivot, which alone decides how the handle sits relative to the caret (a teardrop pivots at its tip); the code owns the size, forcing each handle to a square of [[handleSize]] dp so the touch target stays a constant physical size across canvases, resolutions, and densities (a fingertip is device-independent). Put Preserve Aspect on the prefab\u0027s Image so its sprite fits that square undistorted. Assign its prefab inside a [[PrefabSelectionHandles]] entity; geometry is pulled from the [[UniTextSelectable]] presenting them at call time, the instances live in a canvas-level overlay so the field\u0027s mask never clips them, and a handle whose caret scrolls outside the field box hides until it returns. A [[SelectionHandleDragger]] (drag routing) and a [[FocusGuard]] (so grabbing a handle never defocuses the field) are ensured on each instance, so the prefab need only carry a raycastable Graphic.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "selection",
@@ -99950,7 +100015,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]] and the scene-visibility eye share one allocation-free, non-structural path.",
+            "summary": "Applies the current [[RenderSuppressed]] state to the rendering backend. Must only toggle drawing \u2014 cull for Canvas, batch membership (degenerate indices) for world \u2014 never tear down or rebuild, so the user [[M:LightSide.UniTextBase.Show|Show]]/[[M:LightSide.UniTextBase.Hide|Hide]], the scene-visibility eye and enabling or disabling the text share one allocation-free, non-structural path.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -106584,7 +106649,6 @@
     "StringBuilder": "https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder",
     "Task": "https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task",
     "Texture": "https://docs.unity3d.com/ScriptReference/Texture.html",
-    "Texture2D": "https://docs.unity3d.com/ScriptReference/Texture2D.html",
     "Transform": "https://docs.unity3d.com/ScriptReference/Transform.html",
     "Type": "https://learn.microsoft.com/en-us/dotnet/api/system.type",
     "ValueTuple": "https://learn.microsoft.com/en-us/dotnet/api/system.valuetuple",
