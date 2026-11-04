@@ -1,6 +1,6 @@
 {
-  "version": "3.41.2",
-  "generatedAt": "2026-11-02T12:13:14.3720754Z",
+  "version": "3.42.0",
+  "generatedAt": "2026-11-04T14:22:51.6738814Z",
   "namespaces": [],
   "types": [
     {
@@ -10994,6 +10994,7 @@
       ],
       "interfaces": [
         "IPointerRoutingTarget",
+        "IAccessibleText",
         "IPointerDownHandler",
         "IPointerUpHandler",
         "IPointerEnterHandler",
@@ -13583,7 +13584,7 @@
             "type": "float",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "Gets the current effective font size (accounts for auto-sizing).",
+            "summary": "Gets the current effective font size, auto-sizing and [[P:LightSide.UniTextBase.FollowTextScale|FollowTextScale]] applied.",
             "seeAlso": []
           },
           {
@@ -14142,6 +14143,20 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Gets or sets the maximum font size for auto-sizing.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.UniTextBase.FollowTextScale",
+            "name": "FollowTextScale",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Gets or sets whether the text is drawn at [[TextScale]], the player\u0027s text size: font sizes and the pixel values of line height, line gaps, paragraph spacing, letter and word spacing and indents grow with it, and the layout around it makes room. Strokes, shadows, highlights and other decoration keep their pixels; a value in em follows the text anywhere.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -22950,7 +22965,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Application-wide accessibility flag: when true, caret renderers suppress the blink animation and keep the caret continuously visible. Mirrors iOS 17\u002B \u0022Prefer Non-Blinking Cursor\u0022 and the macOS Reduce Motion cursor sub-setting \u2014 surface the platform pref here from your integration layer, alongside [[PrefersReducedMotion]].",
+            "summary": "Application-wide accessibility flag: when true, caret renderers suppress the blink animation and keep the caret continuously visible. Mirrors iOS 17\u002B \u0022Prefer Non-Blinking Cursor\u0022 and the macOS Reduce Motion cursor sub-setting \u2014 surface the platform pref here from your integration layer: [[FollowSystem]] does not reach it.",
             "seeAlso": []
           },
           {
@@ -29240,7 +29255,8 @@
         "IInitializePotentialDragHandler",
         "IBeginDragHandler",
         "IDragHandler",
-        "IEndDragHandler"
+        "IEndDragHandler",
+        "IAccessibleControl"
       ],
       "derivedTypes": [],
       "summary": "Navigation / focus primitive for an interactive UniText surface \u2014 the EventSystem tab stop that lets the GameObject hold focus. Created and owned at runtime (hidden, not serialized) by [[Sync]]; never added manually.",
@@ -44141,6 +44157,16 @@
             "isConst": false,
             "type": "TextDirection",
             "summary": "Base paragraph direction for bidirectional text processing."
+          },
+          {
+            "id": "F:LightSide.TextProcessSettings.rightToLeftFallback",
+            "name": "rightToLeftFallback",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "bool",
+            "summary": "Whether a paragraph [[F:LightSide.TextDirection.Auto|TextDirection.Auto]] finds no strong character in, an empty one included, runs right to left, as the interface around the text does; left to right otherwise."
           },
           {
             "id": "F:LightSide.TextProcessSettings.enableWordWrap",
@@ -66631,7 +66657,7 @@
       ],
       "derivedTypes": [],
       "summary": "Adds left indentation that begins where the tag opens and persists across wrapped lines until the tag closes.",
-      "remarks": "Two complementary mechanisms produce a continuous visual indent: Every line whose first codepoint falls inside the tagged range is pushed right by the resolved value (line-start margin). If the tag opens in the middle of a line (i.e. the codepoint preceding the tag is not a mandatory line break), the advance of that previous codepoint is widened by the indent so that content following the open boundary visibly shifts right within the current line. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20 or 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text. 1.5em \u2014 multiplied by the current shaping font size. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5 / -5 \u2014 explicit delta. Functionally identical to the unsigned form because indents always compose additively.",
+      "remarks": "Two complementary mechanisms produce a continuous visual indent: Every line whose first codepoint falls inside the tagged range is pushed right by the resolved value (line-start margin). If the tag opens in the middle of a line (i.e. the codepoint preceding the tag is not a mandatory line break), the advance of that previous codepoint is widened by the indent so that content following the open boundary visibly shifts right within the current line. As soon as the tag closes, subsequent codepoints carry no extra indent, so the next line wraps back to the container edge. Indents from overlapping or nested ranges accumulate, so writing \u003Cindent=1em\u003Eouter \u003Cindent=1em\u003Einner\u003C/indent\u003E\u003C/indent\u003E indents the inner content by two ems. Negative values pull the line back, which can be used to outdent a nested run or to balance an outer indent. Parameter \u2014 single value with optional unit: 20px \u2014 layout units; like every other UniText geometric modifier these scale together with auto-sized text, and with the text scale under [[P:LightSide.UniTextBase.FollowTextScale|UniTextBase.FollowTextScale]]. 1.5em \u2014 multiplied by the current shaping font size. A number without a unit takes the unit of the modifier\u0027s own value, em by default. 10% \u2014 fraction of the host RectTransform\u0027s width, resolved into render space using the active glyph scale so the on-screen indent stays at the requested percentage with or without auto-size. Ignored when the rect has no finite width. \u002B5px / -5px \u2014 functionally identical to the unsigned form because indents always compose additively.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -78450,7 +78476,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Whether built-in drivers collapse decorative timing to an immediate result.",
+            "summary": "Whether built-in drivers collapse decorative timing to an immediate result on this text; [[PrefersReducedMotion]] does the same on every text.",
             "seeAlso": []
           }
         ],
@@ -79220,7 +79246,7 @@
       ],
       "derivedTypes": [],
       "summary": "Adjusts the gap at spaces between words (the regular space and no-break space), leaving letter-to-letter spacing untouched. The CSS word-spacing analog.",
-      "remarks": "Parameter: spacing with a unit \u2014 0.25em (relative to font size) or a raw pixel amount such as 4; negative values tighten. Applies at the regular space and no-break space; tabs and fixed-width spaces (U\u002B2000\u2013U\u002B200A, U\u002B3000) are left alone. Overlapping ranges resolve innermost-wins and never compound, across modifiers as well as across nested tags.",
+      "remarks": "Parameter: spacing with a unit \u2014 0.25em (relative to font size) or a pixel amount such as 4px; a number without a unit takes the unit of the modifier\u0027s own value, em by default. Negative values tighten. Applies at the regular space and no-break space; tabs and fixed-width spaces (U\u002B2000\u2013U\u002B200A, U\u002B3000) are left alone. Overlapping ranges resolve innermost-wins and never compound, across modifiers as well as across nested tags.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
