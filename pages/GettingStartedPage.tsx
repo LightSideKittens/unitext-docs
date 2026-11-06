@@ -22,6 +22,7 @@ import {
   Layers,
   ListChecks,
   MousePointerClick,
+  Package,
   Palette,
   Pencil,
   Plus,
@@ -937,6 +938,10 @@ export default function GettingStartedPage() {
                 clipboard.
               </li>
             </ul>
+            <p className="text-white/70 mt-3">
+              Disabling a module the project does not use also makes its builds
+              smaller (§24).
+            </p>
           </div>
 
           <div className="mt-4 p-5 rounded-xl bg-white/5 border border-white/10">
@@ -1427,18 +1432,46 @@ text.color = Color.white;`}
                   font to shrink the build. Pick <strong>Keep</strong> or{" "}
                   <strong>Remove</strong>, give it character sets, ranges or a
                   text corpus, and it emits either a reduced <code>.ttf</code>{" "}
-                  file or a <code>UniTextFont</code> asset built from it.
+                  file or a <code>UniTextFont</code> asset built from it. A
+                  subset keeps every OpenType feature of the font, so small
+                  capitals, numeral styles and stylistic sets still work on it,
+                  and it keeps the font&rsquo;s names and glyph names. HarfBuzz
+                  cannot subset a legacy <code>kern</code> table: a font that
+                  kerns only through one gives a subset without kerning, and a
+                  warning says so. A font with no outlines and no color glyphs,
+                  only plain bitmaps, cannot be subset.
                 </li>
                 <li>
-                  <strong>Dictionary Builder</strong> — builds the
-                  word-segmentation dictionary used for line breaking in scripts
-                  without spaces (Thai, Lao, Khmer, Myanmar, Chinese, Japanese)
-                  — see <code>WordSegmentationDictionary</code>. A built
-                  dictionary takes effect only once it is listed in Project
-                  Settings → LightSide → UniText → Word Segmentation (
+                  <strong>Dictionary Builder</strong> — builds a
+                  word-segmentation dictionary — see{" "}
+                  <code>WordSegmentationDictionary</code>. Thai, Lao, Khmer and
+                  Myanmar write words without spaces, so a dictionary&rsquo;s
+                  word boundaries are where their lines break. Chinese and
+                  Japanese already break between characters without one; there a
+                  dictionary sets only the words that selection, navigation and
+                  word-by-word animation use. A built dictionary takes effect
+                  only once it is listed in Project Settings → LightSide →
+                  UniText → Word Segmentation (
                   <code>UniTextSettings.Dictionaries</code>).
                 </li>
               </ul>
+
+              <p className="text-white/70 mt-4 mb-4">
+                Editor scripts reach the same subsetting through{" "}
+                <code>UniTextFontEditorUtility.Subset</code>, and{" "}
+                <code>UniTextFontEditorUtility.ReplaceFontData</code> puts new
+                font data into an existing font asset in place. The asset keeps
+                its GUID, everything that references it and its settings; face
+                metrics follow the new file unless they were edited, glyph
+                overrides follow their characters, or their glyph names where no
+                character reaches them, and the replacement is one Undo step:
+              </p>
+
+              <CodeBlock
+                code={`var source = File.ReadAllBytes("Assets/Fonts/NotoSans-Regular.ttf");
+var subset = UniTextFontEditorUtility.Subset(source, charactersTheGameShows);
+UniTextFontEditorUtility.ReplaceFontData(font, subset);`}
+              />
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -1524,8 +1557,9 @@ text.color = Color.white;`}
                   but the same path renders any color font.{" "}
                   <strong>Color Pixel Size</strong> sets the rasterization size
                   in the shared color atlas; bitmap faces snap to the nearest
-                  strike. SVG-in-OT is detected but not rendered, and WebGL
-                  rasterizes no embedded color font.
+                  strike. The first color font loaded, normally the system emoji
+                  font, sets the atlas tile size, and larger glyphs are
+                  downscaled to it. SVG-in-OT is detected but not rendered.
                 </p>
               </div>
 
@@ -2661,7 +2695,9 @@ text.RemoveRule(myRule);`}
                       </td>
                       <td className="py-2">
                         trims space above and below to chosen metrics (CSS{" "}
-                        <code>text-box-trim</code>)
+                        <code>text-box-trim</code>) or to the drawn glyphs —{" "}
+                        <code>Ink</code> on both edges with <code>Middle</code>{" "}
+                        centers the letters themselves
                       </td>
                     </tr>
                     <tr>
@@ -3210,8 +3246,9 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                       <td className="py-2">
                         flattens a <code>[SerializeReference]</code>{" "}
                         object&rsquo;s own <code>[Parameter]</code> fields into
-                        the owner&rsquo;s schema; it must name{" "}
-                        <code>Invalidate</code>, and containers do not nest
+                        the owner&rsquo;s schema, where they take the
+                        container&rsquo;s place in declaration order; it must
+                        name <code>Invalidate</code>, and containers do not nest
                       </td>
                     </tr>
                   </tbody>
@@ -3227,7 +3264,9 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 source in <code>tools~/ParamCodeGen</code>. Authoring mistakes
                 are compiler errors: a type that is not <code>partial</code>{" "}
                 (UTP001), a marked type with no parameter fields (UTP002), a
-                container naming no invalidation (UTP003).
+                container naming no invalidation (UTP003), a modifier declaring{" "}
+                <code>[Parameter]</code> or <code>[ParameterContainer]</code>{" "}
+                fields without <code>[GenerateParameters]</code> (UTP004).
               </p>
 
               <p className="text-white/70 mb-4">
@@ -3258,15 +3297,22 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
               </p>
 
               <p className="text-white/70">
-                Four further attributes shape only the inspector:{" "}
+                Five further attributes shape only the inspector:{" "}
                 <code>[Unit(&quot;%|abs&quot;)]</code> lists the unit choices of
                 a <code>UnitValue</code> / <code>UnitVector2</code>,{" "}
                 <code>[Options(&quot;@paints&quot;)]</code> fills a{" "}
                 <code>string</code> parameter&rsquo;s dropdown from a registered
-                provider, <code>[Variant]</code> renders a discriminated union,
-                and <code>[VisibleWhen]</code> hides a field until another
-                parameter holds a given value. A provider whose catalog lives
-                outside Unity&rsquo;s object graph calls{" "}
+                provider, <code>[Variant]</code> renders a discriminated union,{" "}
+                <code>[VisibleWhen]</code> hides a field until another parameter
+                holds a given value, and <code>[Essential]</code> marks one of
+                the few parameters that characterize a modifier and are adjusted
+                most often: a newly added style shows it at its default, where
+                other parameters stay hidden until they differ from their
+                defaults or are added from the list&rsquo;s menu. A new style
+                keeps its essential parameters in view while the inspector that
+                added it stays open, except a tag-rule style, whose tags write
+                the values. A provider whose catalog lives outside Unity&rsquo;s
+                object graph calls{" "}
                 <code>ParameterProviders.Invalidate</code> to make open
                 inspectors rebuild their dropdowns.
               </p>
@@ -3304,6 +3350,17 @@ public partial class WaveModifier : GlyphParamModifier<WaveModifier.Params>
                 A layer&rsquo;s authored choice is a <code>PaintRef</code>: an
                 inline color, a named swatch, or the layer default (
                 <code>PaintRefKind</code>).
+              </p>
+              <p className="text-white/70 mt-3">
+                A gradient finer than the screen&rsquo;s 8-bit color steps can
+                show bands, most of all a large, slow gradient or a translucent
+                one over a bright background. A gradient swatch&rsquo;s{" "}
+                <strong>Dither</strong> toggle (<code>PaintSource.dither</code>)
+                breaks the bands up with a per-pixel grain. It is off by
+                default: a text that paints a dithered gradient draws through a
+                heavier shader program, in a batch apart from undithered text,
+                and on a low-end phone that costs GPU time on every pixel it
+                covers. Lit world text and 3D text draw gradients undithered.
               </p>
             </div>
 
@@ -4201,7 +4258,9 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
                   over time: <code>TransitionPlayback</code> (enter/exit
                   duration, <code>Ease</code>, <code>PlaybackClock</code>),{" "}
                   <code>InstantPlayback</code>, <code>ManualPlayback</code>,{" "}
-                  <code>SignalProgressPlayback</code>.
+                  <code>SignalProgressPlayback</code>. Transitions resolve at
+                  once under <code>Accessibility.PrefersReducedMotion</code>, or{" "}
+                  <code>UniTextRanges.PrefersReducedMotion</code> for one text.
                 </li>
                 <li>
                   <code>ParameterDescriptor</code> /{" "}
@@ -4219,7 +4278,7 @@ foreach (var modifier in phased) modifier.Clock = PlaybackClock.Manual;`}
                   Inspector displays the bound parameter&rsquo;s value type
                   automatically; code passes a typed value to{" "}
                   <code>ParameterChange.SetTarget</code>. Driver clip endpoints
-                  (§8.5) use the same storage;{" "}
+                  (§8.5) are <code>PropertyValue</code>s too;{" "}
                   <code>Param.&lt;Name&gt;.Values.Write(value)</code> builds one
                   from code.
                 </li>
@@ -4795,64 +4854,322 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
               <h3 className="font-semibold mb-4">12.5 Context menu</h3>
 
               <p className="text-white/70 mb-4">
-                The menu is <strong>your scene UI</strong>.{" "}
-                <code>ContextMenuItem</code> binds a control you built (a
-                Button, a Toggle) to an action; the menu wires the event and
-                shows or hides the control by <code>IsApplicable</code>. Items
-                carry no visuals.
+                <strong>Commands.</strong>{" "}
+                <code>UniTextSelectable.Commands</code> is what the menu offers:
+                an ordered list of commands edited in the inspector. Each command
+                applies or not — to the selection, the clipboard, read-only mode
+                and the copy policy of a password field; the system menu shows
+                the ones that apply in list order, and the Unity-UI menu shows
+                each on its own item (below). Removing a command removes it from
+                every menu of the field, and an empty list leaves the field
+                without a menu.
               </p>
 
               <p className="text-white/70 mb-4">
-                Built-in items: <code>CopyContextMenuItem</code>,{" "}
-                <code>CutContextMenuItem</code>,{" "}
-                <code>PasteContextMenuItem</code>,{" "}
-                <code>SelectAllContextMenuItem</code>, plus{" "}
-                <code>ActionContextMenuItem</code> (a Button raising{" "}
-                <code>Invoked</code>) and <code>ToggleContextMenuItem</code> (a
-                Toggle raising <code>ValueChanged</code>); both hide on a bare
-                caret when their Only With Selection flag is set.{" "}
-                <code>CommandContextMenuItem</code> /{" "}
-                <code>ButtonContextMenuItem</code> are the bases.{" "}
-                <code>ContextMenuCapabilities</code> reports which standard
-                actions apply right now — <code>CanCut</code>,{" "}
-                <code>CanCopy</code>, <code>CanPaste</code>,{" "}
-                <code>CanSelectAll</code>, <code>HasSelection</code>.
+                A new field lists one entry, <code>ProjectCommands</code>, which
+                stands for the project&rsquo;s list in Project Settings →
+                LightSide → UniText → Selection UI → <strong>Commands</strong>:
+                one change there reaches every field that lists it. A new
+                project&rsquo;s list holds Cut, Copy, Paste, Paste as plain text,
+                Select All, the platform&rsquo;s own actions and Share; a
+                settings asset saved before the list existed holds Cut, Copy,
+                Paste and Select All. Put commands of the field&rsquo;s own
+                before or after it, or replace it with the field&rsquo;s own
+                list. The built-in commands:
+              </p>
+
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  <code>CutCommand</code>, <code>CopyCommand</code>,{" "}
+                  <code>PasteCommand</code>, <code>SelectAllCommand</code> — the
+                  standard edit set, run through the field&rsquo;s own pipeline:
+                  clipboard adapters, paste filters, copy policy. Select All
+                  leaves the menu up over the new selection.
+                </li>
+                <li>
+                  <code>PastePlainCommand</code> — pastes the clipboard&rsquo;s
+                  plain text; it shows only while a paste would carry formatting,
+                  so it never repeats Paste.
+                </li>
+                <li>
+                  <code>UndoCommand</code>, <code>RedoCommand</code> — the
+                  field&rsquo;s undo history.
+                </li>
+                <li>
+                  <code>ToggleStyleCommand</code> — toggles one of the
+                  field&rsquo;s styles on the selection, or as the typing style
+                  at a caret: bold by default, any style through its{" "}
+                  <code>IFormatStyleSource</code>. It applies only on a field
+                  that carries that style, and its default title is the
+                  style&rsquo;s name. <code>ClearFormattingCommand</code> strips
+                  every style from the selection; at a caret, the next typed text
+                  is plain.
+                </li>
+                <li>
+                  <code>ShareCommand</code> — the system share sheet, on Android
+                  and iOS.
+                </li>
+                <li>
+                  <code>SearchWebCommand</code> — a web search in the default
+                  browser; its Search Url holds <code>{"{0}"}</code> where the
+                  selected text goes, so the same command opens a dictionary, a
+                  translator or a map under its own title.
+                </li>
+                <li>
+                  <code>SystemTextActions</code> — the platform&rsquo;s own
+                  actions on the selected text, at the command&rsquo;s place in
+                  the list. On Android they are the apps that act on selected
+                  text, such as Translate, one entry per app under the app&rsquo;s
+                  own name, in either menu; the selection stays while the app is
+                  open, the replacement an app returns for editable text replaces
+                  it the way a paste does, and an app that returns none — as every
+                  app opened from read-only text does — leaves it collapsed, as
+                  Android&rsquo;s text view does. On iOS 16 and later they are the
+                  system&rsquo;s own text actions — Look Up, Translate, Share and
+                  whatever else the system offers — which only the system menu
+                  shows.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                A command of your own derives from <code>TextCommand</code>:
+              </p>
+
+              <CodeBlock
+                code={`[Serializable]
+public sealed partial class UppercaseCommand : TextCommand
+{
+    public override bool IsApplicable(in TextCommandContext context)
+        => context.CanEdit && !context.Selectable.Selection.IsCollapsed;
+
+    public override void Execute(in TextCommandContext context)
+        => context.Editable.InsertText(context.Selectable.GetSelectedText().ToUpperInvariant());
+}`}
+              />
+
+              <p className="text-white/70 mt-4 mb-4">
+                A command is a <code>partial</code> class whose own serialized
+                fields carry state attributes — <code>[StatePassive]</code> for a
+                plain setting — as every UniText extension&rsquo;s do. Its{" "}
+                <strong>Title</strong> is the menu label in the current language:
+                a fixed text, an entry of a Unity Localization string table (with
+                the Localization package installed), or a source of your own
+                implementing <code>ICommandTitle</code>. With none set it shows{" "}
+                <code>DefaultTitle</code>, the type name in sentence case unless
+                the command overrides it (<code>UppercaseCommand</code> reads
+                &ldquo;Uppercase&rdquo;). A language switch updates an open menu;
+                the system menus show Cut, Copy, Paste and Select All — and
+                Android 8.0 and later Paste as plain text — under the
+                system&rsquo;s localized titles, and a command with a title of
+                its own shows the same system item under its title — except Paste
+                on iOS, which always keeps the system&rsquo;s title.
               </p>
 
               <p className="text-white/70 mb-4">
-                <code>PrefabTextContextMenu</code> presents a Unity-UI menu from
-                a prefab shared through the touch overlay; with the slot empty
-                it presents nothing.{" "}
-                <code>Defaults/Editing/ContextMenu.prefab</code> is the shipped
-                menu, assigned in the shipped Selectable Text prefab. Implement{" "}
-                <code>ITextContextMenu</code> directly for a bespoke menu.
+                <code>KeepsMenu</code> leaves the menu up after the command;{" "}
+                <code>IsActive</code> reports whether the command&rsquo;s effect
+                is on at the selection, which a toggle shows;{" "}
+                <code>Matches</code> decides which of the field&rsquo;s commands
+                a menu item bound to the command presents (below). Where no menu
+                shows a command — a shortcut&rsquo;s, a toolbar control&rsquo;s —
+                the inspector leaves out its title.
               </p>
 
               <p className="text-white/70 mb-4">
-                <code>NativeTextContextMenu</code> presents the platform&rsquo;s
-                own edit menu instead — the floating selection toolbar on
-                Android and the edit menu on iOS. The system draws, styles,
-                orders, localizes, positions and animates it, so the
-                field&rsquo;s menu is the one every other app on the device
-                shows, down to the shell&rsquo;s theme. It carries the standard
-                commands the current <code>ContextMenuCapabilities</code> allow
-                and routes each one back through the same presenter the prefab
-                menu uses, so cut, copy, paste and select all still run
-                UniText&rsquo;s own pipeline — clipboard adapters, paste
-                filters, copy policy. It anchors to the whole selection box, not
-                to one point, which is how the system decides to sit above or
-                below the selected text. The system menu exists on Android 6.0
-                and iOS 13 and later; anywhere else, including the Editor, it
-                presents nothing and says so once in the console.{" "}
-                <code>ContextMenuItem</code> bindings do not apply to it — the
-                items are the system&rsquo;s.
+                <code>TextCommandContext</code> is the field at that moment:{" "}
+                <code>Selectable</code>, <code>Editable</code> (null for
+                read-only text), <code>CanCopy</code> — false in a password
+                field, so a command that hands the text to anything else checks
+                it — and <code>CanEdit</code>. A command whose result arrives
+                later — a translation service, a rewrite request — captures the
+                selection first and replaces it when the result lands; the
+                replacement is dropped when the text changed meanwhile:
               </p>
 
-              <Notice type="info">
-                An item whose control is not assigned never counts as applicable
-                — an unwired menu cannot open as an invisible input-blocking
-                panel.
-              </Notice>
+              <CodeBlock
+                code={`public override void Execute(in TextCommandContext context)
+{
+    var captured = context.CaptureSelection();
+    translator.Translate(context.Selectable.GetSelectedText(), result => captured.Replace(result));
+}`}
+              />
+
+              <p className="text-white/70 mt-4 mb-4">
+                <strong>Toolbars and shortcuts.</strong> The same commands run
+                outside the menu. <code>TextCommandButton</code> (
+                <strong>Add Component → LightSide → UniText → TextCommandButton</strong>
+                ) goes on a Button or a Toggle: pick its command and, if the
+                toolbar belongs to one field, its <strong>Target</strong> —
+                without one it acts on the field being edited (
+                <code>UniTextEditable.ActiveEditor</code>). The control is
+                interactable while its command applies, a Toggle shows the
+                command&rsquo;s <code>IsActive</code> state, and pressing it keeps
+                the field focused. It refreshes when UniText writes the clipboard
+                and when the app regains focus, so a Paste control follows the
+                clipboard. Keyboard shortcuts are{" "}
+                <code>TextFormattingBehavior.Shortcuts</code> (§13): each binds a
+                key, combined with the platform&rsquo;s primary modifier and
+                optionally Shift, to a command, and passes the key on while its
+                command does not apply. Code runs a command through{" "}
+                <code>new TextCommandContext(selectable)</code>.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>Which menu.</strong> On Android and iOS a field presents
+                the system&rsquo;s edit menu or the Unity-UI menu; everywhere else
+                — desktop, WebGL, the Editor — the Unity-UI menu. Project Settings
+                → LightSide → UniText → Selection UI chooses for every field:{" "}
+                <strong>Android Menu</strong> and <strong>iOS Menu</strong> —
+                System Menu or Unity UI — and <strong>Unity UI Menu</strong>, the
+                menu prefab, <code>Defaults/Editing/ContextMenu.prefab</code>{" "}
+                unless you change it. A new project presents the system menu on
+                phones; a settings asset saved before these choices existed
+                presents the Unity-UI menu there. A device without the system
+                menu, before Android 6.0 or iOS 13, presents the Unity-UI menu.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                A field follows the project while its own{" "}
+                <strong>Android Menu</strong> and <strong>iOS Menu</strong> are
+                Project Default and its <strong>Unity UI Menu</strong> is empty.
+                Set them on one field — or once on a prefab of fields — to present
+                another menu there: a game terminal shows its own styled menu on
+                phones, while chat fields keep the system one. Every field
+                presenting the same prefab shares one instance of it through the
+                touch overlay.
+              </p>
+
+              <p className="text-white/70 mb-3">
+                How the menu opens follows what opened it, on every platform and
+                build.
+              </p>
+
+              <ul className="space-y-2 text-white/70 list-disc list-inside mb-4">
+                <li>
+                  Touch — a long press, a double tap, a tap on the caret, letting
+                  a handle go — raises it clear of the selection, above it or
+                  below where only that fits, and the menu follows the selection:
+                  it goes while a gesture runs or the text moves on screen,
+                  carried by a scrolling container or an animation, and comes
+                  back over what is selected once things settle. A command picked
+                  from it takes it down — Select All keeps it up over the new
+                  selection — and on Android ends the selection too, collapsed at
+                  its focus as Android&rsquo;s text view leaves it; iOS keeps the
+                  selection.
+                </li>
+                <li>
+                  A right-click or a pen press opens it at the pointer instead,
+                  and it then holds the keyboard until it closes: Escape closes
+                  it, typed text and keys no longer reach the field, a Unity-UI
+                  menu moves through its entries with the arrows, Home and End
+                  and runs the highlighted one on Enter, and a press anywhere
+                  outside it closes it.
+                </li>
+                <li>
+                  The Menu key, and Shift+F10 everywhere but macOS, open it from
+                  the keyboard: under the caret — above the caret&rsquo;s line
+                  where it does not fit below — holding the keyboard the same
+                  way, with a Unity-UI menu&rsquo;s first entry highlighted.
+                </li>
+                <li>
+                  <code>RequestContextMenu</code> opens it the way the
+                  field&rsquo;s current input does — over the selection during a
+                  touch session, at the given point otherwise.
+                </li>
+              </ul>
+
+              <p className="text-white/70 mb-4">
+                <strong>Unity-UI menu.</strong> The menu is{" "}
+                <strong>your scene UI</strong>: a panel with{" "}
+                <code>UniTextContextMenu</code> and the objects its items show on,
+                laid out, styled and localized however you like. Each of its{" "}
+                <strong>Items</strong> binds a <strong>Target</strong> object of
+                the layout to a <strong>Command</strong>: the menu shows the
+                object while the field offers that command — the field&rsquo;s
+                command of that type, with the same settings where they decide
+                the effect, such as a style toggle&rsquo;s style — and runs the
+                command when the object is clicked. The object&rsquo;s own Button
+                or Toggle runs it, and an object with neither runs it on a click
+                anywhere inside it, so items need no components of their own. A
+                Toggle shows whether the command&rsquo;s effect is on, a style
+                toggle over styled text. <strong>Label</strong>, when set, is a
+                UniText inside the object that receives the command&rsquo;s title;
+                without one the object&rsquo;s text is entirely yours — a fixed
+                text, a Unity Localization component, an icon alone.{" "}
+                <strong>When Unavailable</strong> hides the object while its
+                command does not apply, or keeps it shown with its Selectables not
+                interactable, as desktop menus gray out a command. The objects
+                keep their places in the layout, and an object whose command the
+                field does not offer is hidden.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                An item without a command is the row for{" "}
+                <strong>every other command</strong>: those the field offers that
+                no item binds — added to the field or the project, the apps of{" "}
+                <code>SystemTextActions</code>. The menu shows a copy of its object
+                for each, right after the object in the field&rsquo;s order, with
+                each title written into the copy of its Label; the object itself
+                stays hidden. Without such an item those commands are not shown,
+                and every command needs an item of its own.{" "}
+                <code>Defaults/Editing/ContextMenu.prefab</code> holds just this
+                row, so every command shows as a row with its title, in a panel as
+                wide as its widest title; bind a command to an object of its own
+                for an icon or a look of its own. A menu that shows nothing stays
+                hidden. The keyboard highlight moves through the items in the
+                layout&rsquo;s order and shows through the hover state of the
+                Selectables inside an object, so a Button or Toggle highlights the
+                way it does under the pointer. <code>UniTextContextMenu</code>{" "}
+                requires a <code>FocusGuard</code>, added with it, so pressing an
+                item keeps the field focused.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                <strong>System menu.</strong> The system menu — the floating
+                selection toolbar on Android, the edit menu on iOS — is drawn,
+                styled, localized, positioned and animated by the system, so the
+                field&rsquo;s menu is the one every other app on the device shows,
+                down to the shell&rsquo;s theme. It shows the commands that apply
+                in list order: Cut, Copy, Paste and Select All as the system&rsquo;s
+                own localized items unless they have a title of their own, every
+                other command under its title. Each invoked command runs on the
+                field that showed the menu, so cut, copy, paste and select all
+                still run UniText&rsquo;s own pipeline. Opened by touch, it anchors
+                to the whole selection box together with the touch handles shown
+                on it, not to one point, which is how the system decides to sit
+                above or below the selected text; opened by the keyboard, to the
+                caret&rsquo;s line; opened by a mouse or a pen, at the pointer. On
+                iOS 16 and later <code>SystemTextActions</code> places the
+                system&rsquo;s own text actions — Look Up, Translate, Share — among
+                the commands; they act on the selected text, read-only text
+                included, and iOS offers them while no other field holds the
+                keyboard. A <code>ShareCommand</code> in the list takes the place
+                of the system&rsquo;s Share, under the system&rsquo;s title unless
+                it has its own. Below iOS 16 the menu lists the other commands
+                after the standard ones and shows none of the system&rsquo;s own
+                actions.
+              </p>
+
+              <p className="text-white/70">
+                <strong>Your own menu.</strong> Derive from{" "}
+                <code>TextContextMenu</code> for a menu of your own — radial,
+                animated, anything — and assign its prefab as the{" "}
+                <strong>Unity UI Menu</strong> of the project or of a field.{" "}
+                <code>Show</code> receives a <code>TextMenuPlacement</code> — the
+                point the menu was asked for, the box it keeps clear of when there
+                is one, and what opened it (<code>TextMenuTrigger</code>: touch, a
+                pointer or the keyboard) — the entries — <code>TextMenuEntry</code>
+                : title, the command that contributed it, whether it applies (
+                <code>IsEnabled</code>), the standard command it runs if any,
+                whether it keeps the menu up, whether its effect is on — and the
+                callback that runs an invoked entry by its index. A disabled entry
+                shows disabled or not at all and is never invoked.{" "}
+                <code>Hide</code> takes the menu down and <code>IsVisible</code>{" "}
+                reports it; <code>HandleKey</code> receives the keys pressed while
+                a menu a mouse, a pen or the keyboard opened is up, for the
+                menu&rsquo;s own navigation — the field closes the menu on Escape
+                itself and keeps every key from its text meanwhile.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -4886,34 +5203,33 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
               </ul>
 
               <p className="text-white/70">
-                <code>PrefabSelectionHandles</code> and{" "}
-                <code>PrefabMagnifier</code> present Unity-UI entities from a
-                prefab shared through the touch overlay; an entity whose prefab
-                slot is empty presents nothing.{" "}
-                <code>Defaults/Editing/SelectionHandles.prefab</code> is the
-                shipped handles prefab, assigned in the shipped Selectable Text
-                prefab. No loupe prefab ships — build one from{" "}
-                <strong>Add Component → LightSide → UniText → UniTextMagnifier</strong> (
-                <code>UniTextMagnifier</code>) and assign it; it captures
-                through a canvas camera, so it stays hidden on a Screen Space -
-                Overlay canvas, which has none. <code>SelectableEntity</code> is
-                the base for your own. Each capability is independent — an
-                entity may implement either or both (<code>ITouchHandles</code>
-                ).
+                <code>PrefabSelectionHandles</code> presents Unity-UI handles
+                from a prefab shared through the touch overlay. An empty prefab
+                slot presents the project&rsquo;s handles prefab — Project
+                Settings → LightSide → UniText → Selection UI →{" "}
+                <strong>Selection Handles</strong>,{" "}
+                <code>Defaults/Editing/SelectionHandles.prefab</code> unless you
+                change it. <code>SelectableEntity</code> is the base for your
+                own. Each capability is independent — an entity may implement
+                either or both (<code>ITouchHandles</code>). Handles that
+                implement <code>ITouchHandleBounds</code> report where they are
+                on screen, so a menu raised by touch keeps clear of them as it
+                does of the selection; <code>PrefabSelectionHandles</code> does.
               </p>
 
               <p className="text-white/70 mt-4 mb-4">
-                <code>NativeMagnifier</code> presents the platform&rsquo;s own
-                loupe instead — <code>android.widget.Magnifier</code> on Android
-                and the system text loupe on iOS — magnifying the live frame
-                straight from the player&rsquo;s surface, at the shape, size,
-                zoom and animation the running system gives its own text fields.
-                Its focus follows the finger horizontally and snaps to the text
-                line under it, as the platform loupes do. It needs no prefab, no
-                canvas camera and no render pipeline support, and it works on a
-                Screen Space - Overlay canvas. The system magnifier exists on
-                Android 9.0 and iOS 17 and later; anywhere else, including the
-                Editor, it presents nothing and says so once in the console.
+                <code>NativeMagnifier</code> — the default magnifier — presents
+                the platform&rsquo;s own loupe:{" "}
+                <code>android.widget.Magnifier</code> on Android and the system
+                text loupe on iOS, magnifying the live frame straight from the
+                player&rsquo;s surface, at the shape, size, zoom and animation
+                the running system gives its own text fields. Its focus follows
+                the finger horizontally and snaps to the text line under it, as
+                the platform loupes do. It needs no prefab, no canvas camera and
+                no render pipeline support, and it works on a Screen Space -
+                Overlay canvas. The system magnifier exists on Android 9.0 and
+                iOS 17 and later; elsewhere, including the Editor and desktop
+                platforms, no loupe is shown.
               </p>
 
               <p className="text-white/70">
@@ -4974,7 +5290,7 @@ source.SetRanges(source.Snapshot.Revision, ranges);   // replace everything in o
 
           <CodeBlock
             code={`editable.Text = "value";              // serialized source; preserved byte-for-byte until an edit
-var visible = editable.VisibleText;   // the same document without markup
+var visible = editable.VisibleText;   // the text the field shows: no markup, composition included
 editable.InsertText("abc");
 editable.DeletePrevious();
 editable.DeleteWordNext();
@@ -5010,7 +5326,16 @@ editable.ValidationChanged              += state => { };
 UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by every editor`}
               />
 
-              <p className="text-white/70 mt-4">
+              <p className="text-white/70 mt-4 mb-4">
+                <code>TextChanged</code> follows the text the field shows — every
+                committed edit and every change of a word the keyboard is still
+                composing — so a Send button or a search box that reads{" "}
+                <code>VisibleText</code> keeps up as the user types.{" "}
+                <code>ValueChanged</code> and <code>DocumentChanged</code> report
+                committed edits only.
+              </p>
+
+              <p className="text-white/70">
                 <code>EditShape</code> describes one mutation — removed
                 codepoints replaced by inserted codepoints at a start index — so
                 consumers patch derived state instead of recomputing it.
@@ -5113,17 +5438,21 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                         <code>SubmitKeyBehavior</code>,{" "}
                         <code>TabKeyBehavior</code>
                       </td>
-                      <td className="py-2">key bindings</td>
+                      <td className="py-2">
+                        key bindings; <code>TabKeyBehavior</code> makes Tab type
+                        a tab character instead of moving focus
+                      </td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-2 pr-4">
                         <code>TextFormattingBehavior</code>
                       </td>
                       <td className="py-2">
-                        style commands over the selection or as a typing style —
-                        bold (B), italic (I), underline (U), clear formatting (
-                        <code>{"`"}</code>) — and the field&rsquo;s markup
-                        policy: <code>MarkupVisibility</code>,{" "}
+                        keyboard shortcuts that run commands (§12.5) — bold (B),
+                        italic (I), underline (U) and clear formatting (
+                        <code>{"\\"}</code>) with the primary modifier by default
+                        — and the field&rsquo;s markup policy:{" "}
+                        <code>MarkupVisibility</code>,{" "}
                         <code>MarkupChrome</code>, <code>RichPaste</code>,{" "}
                         <code>PlainTextPaste</code>, <code>TypingMarkup</code>
                       </td>
@@ -5186,6 +5515,19 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
               </div>
 
               <p className="text-white/70 mb-4">
+                <strong>Tab.</strong> In a field whose behaviors leave Tab alone,
+                Tab and Shift+Tab move focus to the next and the previous control
+                in hierarchy order — uGUI selectables and LightSide interactables
+                alike — and wrap at the ends, inside the innermost focus scope (
+                <code>FocusNavigation</code>). Text with interactive ranges walks
+                its ranges first and then leaves the same way. In a field Ctrl+Tab
+                moves focus as well, the way out of a field whose{" "}
+                <code>TabKeyBehavior</code> types tabs; Tab with Alt or Command is
+                left to the application. While the EventSystem sends no navigation
+                events, Tab moves no focus.
+              </p>
+
+              <p className="text-white/70 mb-4">
                 <code>InputBehaviorPreset</code> is a project asset holding a
                 behavior list — one asset defines a field archetype (chat
                 composer, password field, form field) reused across scenes. Each
@@ -5222,9 +5564,13 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                   <code>DecimalFilter</code>, <code>EmailFilter</code>,{" "}
                   <code>NameFilter</code>. Override{" "}
                   <code>Allows(in EditProposal)</code> and judge the post-state:
-                  replacing a selection is legal whenever the result is legal.
-                  Pure deletions never reach it — a character filter cannot
-                  block deleting. <code>PreferredKeyboardType</code> supplies a
+                  replacing a selection is legal whenever the result is legal. A
+                  paste or any other insertion refused whole keeps the characters
+                  the filter accepts, asked one at a time in order —{" "}
+                  <code>12a3</code> pasted into an <code>IntegerFilter</code>{" "}
+                  field types <code>123</code>. Pure deletions never reach it — a
+                  character filter cannot block deleting.{" "}
+                  <code>PreferredKeyboardType</code> supplies a
                   mobile keyboard when no <code>NativeKeyboardBehavior</code>{" "}
                   overrides it.
                 </li>
@@ -5345,8 +5691,8 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                   suppresses the blink entirely; the integration layer sets it
                   from the platform preference — iOS 17+ &ldquo;Prefer
                   Non-Blinking Cursor&rdquo;, the macOS Reduce Motion cursor
-                  setting — alongside{" "}
-                  <code>Accessibility.PrefersReducedMotion</code>.
+                  setting — since <code>Accessibility.FollowSystem</code> does
+                  not reach it.
                 </p>
               </div>
 
@@ -5380,10 +5726,12 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 <code>SpellChecking</code>, <code>AutofillHint</code>. iOS-only:{" "}
                 <code>SmartQuotes</code>, <code>SmartDashes</code>,{" "}
                 <code>SmartInsertDelete</code> (each a{" "}
-                <code>SmartFeatureMode</code>), <code>KeyboardAppearance</code>,{" "}
+                <code>SmartFeatureMode</code>),{" "}
                 <code>EnablesReturnKeyAutomatically</code>,{" "}
-                <code>ShowDoneToolbar</code>, <code>PasswordRules</code>.
-                Android-only: <code>ImeFlags</code> (
+                <code>PasswordRules</code>, and the raw{" "}
+                <code>IOSKeyboardTypeOverride</code> and{" "}
+                <code>IOSReturnKeyOverride</code>. Android-only:{" "}
+                <code>ImeFlags</code> (
                 <code>AndroidImeFlags</code>).
               </p>
 
@@ -5405,8 +5753,11 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 action key as an open vocabulary (<code>Submit</code> /{" "}
                 <code>Next</code> / <code>Previous</code> / <code>Newline</code>
                 , with Go/Search/Send/Done all arriving as <code>Submit</code>),
-                so a chat composer submits and a form field advances focus. With
-                no subscriber it degrades to a synthesized Return.
+                so a chat composer submits and a form field advances focus — Next
+                and Previous move it in the same order as Tab (
+                <code>FocusNavigation</code>), also while the EventSystem sends
+                no navigation events, since the application asked the keyboard for
+                them. With no subscriber it degrades to a synthesized Return.
               </p>
             </div>
           </div>
@@ -5440,10 +5791,7 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 Copy needs no editor: a <code>UniTextSelectable</code> alone
                 writes the same multi-format payload from the formatting the
                 text component parsed, so a styled read-only selection pastes
-                styled. An adapter serving such a copy finds{" "}
-                <code>ClipboardCopyContext.Editable</code> <code>null</code> and{" "}
-                <code>SelectedSource</code> empty, with the component in{" "}
-                <code>TextComponent</code>.
+                styled.
               </p>
 
               <ClipboardLadder />
@@ -5637,11 +5985,27 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
 
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h3 className="font-semibold mb-4">15.3 Localization</h3>
-                <p className="text-white/70">
+                <p className="text-white/70 mb-3">
                   <code>IUniTextResolver</code> (§10.7) substitutes text at
                   render time. Combined with <code>&lt;lang&gt;</code> and a
                   per-language font stack, one component serves every locale
                   without scene changes.
+                </p>
+                <p className="text-white/70">
+                  With the Unity Localization package installed, both of its
+                  workflows drive a UniText. <strong>Localize</strong> in the
+                  component&rsquo;s context menu adds a{" "}
+                  <code>LocalizeStringEvent</code> that hands each translation to{" "}
+                  <code>SetText</code>, leaving the serialized text untouched.{" "}
+                  <strong>Localize Property</strong> on a field, or recording in{" "}
+                  <strong>Track Changes</strong> mode, makes the field a property
+                  variant: the <code>GameObjectLocalizer</code> tracks the
+                  component with <code>TrackedUniText</code>, and the value of the
+                  selected locale takes effect as if assigned through the
+                  component&rsquo;s property — on first show, on a locale switch
+                  and once a translation still loading arrives: text, font, font
+                  stack, size, color, alignment, padding and the other fields of
+                  the component itself.
                 </p>
               </div>
             </div>
@@ -5679,7 +6043,29 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 <code>CaretAffinity</code> exists (§12.2).
               </p>
 
-              <p className="text-white/70">
+              <p className="text-white/70 mb-4">
+                A paragraph with no strong character — digits, punctuation, an
+                empty field — takes the interface direction,{" "}
+                <code>InlineDirection.InterfaceRightToLeft</code>: in a
+                right-to-left interface <code>3 / 10</code> reads{" "}
+                <code>10 / 3</code> and <code>Start</code> alignment places it at
+                the right. A <code>DirectionModifier</code> fixes such a text to
+                one direction. The interface direction follows the locale Unity
+                Localization selects when that package is installed and set up.
+                That locale is requested once the first scene has loaded, after
+                its <code>Awake</code> and <code>OnEnable</code>, which starts
+                Localization&rsquo;s initialization; a project that defers it, or
+                sets the direction itself, sets{" "}
+                <code>InlineDirection.FollowLocale = false</code> by then. A game
+                with its own localization sets the direction when the language
+                changes:
+              </p>
+
+              <CodeBlock
+                code={`InlineDirection.InterfaceRightToLeft = InlineDirection.IsRightToLeftLanguage(languageTag);`}
+              />
+
+              <p className="text-white/70 mt-4">
                 Cursive joining is handled by the shaper, so{" "}
                 <code>LetterSpacingModifier</code> renders tatweel rather than
                 breaking joins.
@@ -5737,10 +6123,22 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
               <h3 className="font-semibold mb-4">16.3 IME</h3>
               <p className="text-white/70">
                 Composition is first-class: <code>CompositionStateChanged</code>{" "}
-                reports when a composition is in flight, composition clauses
-                carry their own styling (<code>CompositionClause</code>,{" "}
-                <code>CompositionClauseStyle</code>), and filters never see
-                in-progress composition text.
+                reports when a composition is in flight, the field underlines
+                each composition clause in the text color — thin under input and
+                converted clauses, thick under the clause being converted (
+                <code>CompositionClause</code>,{" "}
+                <code>CompositionClauseStyle</code>) — and filters never see
+                in-progress composition text. <code>VisibleText</code> and{" "}
+                <code>TextChanged</code> include it because the field shows it;{" "}
+                <code>Text</code>, <code>ValueChanged</code>,{" "}
+                <code>DocumentChanged</code> and the positional reads{" "}
+                <code>CharCount</code>, <code>CopyTextTo</code> and{" "}
+                <code>TextEquals</code> cover committed text only. An input method
+                that marks text the field already holds — some Android keyboards
+                do around the caret and when input starts — changes nothing until
+                its composition differs from that text: committed unchanged, it
+                records no edit, raises no change event and keeps the text&rsquo;s
+                formatting.
               </p>
             </div>
           </div>
@@ -5850,19 +6248,17 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 writes three files: the effect include plus its Canvas and World
                 shells, with the package prelude includes already resolved. The
                 visual logic lives in the include — implement{" "}
-                <code>half4 UniTextEffect(UniTextFrag i)</code> and return a
+                <code>half4 LightSideEffect(LightSideFrag i)</code> and return a
                 premultiplied color; the shells are touched only to declare
-                Properties. <code>UniTextFrag</code> carries{" "}
+                Properties. <code>LightSideFrag</code> carries{" "}
                 <code>sdfAlpha</code>, <code>signedDist</code>,{" "}
                 <code>glyphUV</code>, <code>atlasUV</code>,{" "}
                 <code>atlasColor</code>, <code>color</code>,{" "}
                 <code>glyphMeta</code>, <code>lineFlow</code>,{" "}
                 <code>tileId</code>, <code>tileHash</code>, <code>userA</code> /{" "}
                 <code>userB</code> and <code>positionWS</code>;{" "}
-                <code>UniText_EffectLib.hlsl</code> supplies the building
-                blocks. A material bound through <code>MaterialModifier</code>{" "}
-                must declare <code>_MainTex</code> as a <code>2DArray</code> —
-                the atlas is bound automatically.
+                <code>LightSide_EffectLib.hlsl</code> supplies the building
+                blocks. The glyph atlases are bound automatically.
               </p>
 
               <Notice type="warning" className="mb-4">
@@ -5871,21 +6267,21 @@ UniTextNativeInput.KeyboardVisibilityChanged += visible => { };   // shared by e
                 they hold the coverage and paint contract (
                 <code>CoverageMode</code>, written by{" "}
                 <code>CoverageQuadOps</code>, read with the{" "}
-                <code>UniTextCoverage</code> helpers). On a{" "}
+                <code>LightSideCoverage</code> helpers). On a{" "}
                 <code>MaterialModifier</code> sub-mesh they are user channels A
                 and B — filled from <code>ConstantUv2</code> /{" "}
-                <code>ConstantUv3</code>, the <code>glyphDataWriter</code>{" "}
-                delegate, or an <code>OnWriteGlyphUV</code> override — and reach
-                the fragment as <code>UniTextFrag.userA</code> /{" "}
-                <code>userB</code>.
+                <code>ConstantUv3</code> or the <code>glyphDataWriter</code>{" "}
+                delegate — and reach the fragment as{" "}
+                <code>LightSideFrag.userA</code> / <code>userB</code>.
               </Notice>
 
               <p className="text-white/70 mb-4">
                 The prelude&rsquo;s own interpolators are fully claimed (
                 <code>meta.w</code> carries the packed tile hash), so per-glyph
                 custom data rides the <code>MaterialModifier</code> user
-                channels or is produced in the <code>UNITEXT_EFFECT_VERT</code>{" "}
-                vertex hook. The paint interpolator&rsquo;s fourth channel packs
+                channels or is produced in the{" "}
+                <code>LIGHTSIDE_EFFECT_VERT</code> vertex hook. The paint
+                interpolator&rsquo;s fourth channel packs
                 the gradient&rsquo;s <code>PaintSpread</code> alongside the
                 paint kind, so a hand-written shader reading it directly must
                 unpack both.
@@ -5945,6 +6341,16 @@ text.SetText(charSpan);              // from a span`}
                 differs from the serialized field — a runtime buffer, a
                 resolver, or both.
               </p>
+
+              <p className="text-white/70 mt-4">
+                Handing <code>SetText</code> a string, span or{" "}
+                <code>StringBuilder</code> with the characters the text already
+                holds changes nothing — no parse, layout or mesh pass runs — so
+                it can be called every frame with a value that rarely changes.
+                The <code>char[]</code> and{" "}
+                <code>ReadOnlyMemory&lt;char&gt;</code> overloads always read
+                their buffer again, since the caller may have edited it in place.
+              </p>
             </div>
 
             <div className="p-6 rounded-xl bg-white/5 border border-white/10">
@@ -5995,8 +6401,15 @@ text.SetText(charSpan);              // from a span`}
                 <code>Buffers.orderedRuns</code> the runs in visual order (
                 <code>ShapedRun</code>); <code>TextRun</code> is the pre-shaping
                 itemization run. <code>TextRange</code> addresses a span as
-                start plus length. All of these are pooled — copy what must
-                outlive the next rebuild.
+                start plus length. These buffers hold data inside a rebuild — in
+                modifier callbacks and the pass events. A text no rebuild has used
+                for 30 frames returns their storage, and between rebuilds they are
+                then empty, so copy what you need inside the pass. Outside it,
+                read layout through the queries that rebuild what they read:{" "}
+                <code>CodepointCount</code>, <code>GlyphCount</code>,{" "}
+                <code>Units</code>, <code>GetRangeBounds</code>,{" "}
+                <code>HitTestRange</code>, <code>HitTestCaret</code> and{" "}
+                <code>IsOverText</code>.
               </p>
             </div>
 
@@ -6063,8 +6476,10 @@ text.SetText(charSpan);              // from a span`}
               </p>
 
               <CodeBlock
-                code={`var ranges = new List<ModifierRange>();
-text.GetModifier<LinkModifier>().GetRanges(ranges);   // text order`}
+                code={`var ranges = new PooledList<ModifierRange>();
+text.GetModifier<LinkModifier>().GetRanges(ranges);   // text order
+// …
+ranges.Return();                                       // gives its storage back to the pool`}
               />
 
               <div className="overflow-x-auto my-4">
@@ -6248,7 +6663,8 @@ text.GetModifier<LinkModifier>().GetRanges(ranges);   // text order`}
               <p className="text-white/70 mb-6">
                 A query carries at most one parameter filter —{" "}
                 <code>WhereParameter</code> and <code>WhereToken</code> exclude
-                each other. <code>Collect(list)</code> materializes the matches;{" "}
+                each other. <code>Collect(list)</code> fills a{" "}
+                <code>PooledList&lt;ModifierRange&gt;</code> with the matches;{" "}
                 <code>Matches(in range)</code> tests one range against the
                 filters. <code>RangeQueryDefinition</code> is the serialized
                 form of the same filter set, rebuilt into a live query on every
@@ -6358,6 +6774,66 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
                 push signal values by hand.
               </p>
             </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">19.7 Hiding and fading</h3>
+
+              <p className="text-white/70 mb-4">
+                Texts that come and go — pooled list items, damage numbers,
+                tooltips — are best taken off screen with <code>Hide()</code> and
+                brought back with <code>Show()</code> (or <code>IsVisible</code>
+                ): the text keeps its layout, mesh and atlas glyphs, can still
+                take <code>SetText</code> while hidden, and comes back without
+                rebuilding. Disabling the component instead releases all of that,
+                and the next enable builds it again from scratch. A hidden Canvas
+                text also hides its range decorations and cloned inline objects,
+                and none of them takes pointer events until the text shows again.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                The alpha of <code>color</code> fades everything the text draws as
+                one element — glyphs and the layers painted from them, emoji,
+                sprites and range decorations, and on a Canvas text its cloned
+                inline objects — the way a <code>CanvasGroup</code> fades its
+                children. Changing the alpha alone rebuilds nothing, so it is the
+                value to animate for a fade: a Canvas text hands it to a{" "}
+                <code>CanvasGroup</code> on its render root, and a world text
+                multiplies it into its vertex alpha in the shared batch.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                Changing the red, green or blue rebuilds the mesh the first time.
+                From then on a Canvas or world text draws them as a tint of the
+                glyphs and decoration lines that take the text color, so a color
+                animation costs no mesh pass either; those parts then draw apart
+                from the rest, which gives a text with an outline or a shadow one
+                more renderer. A text still rebuilds on every such change when its
+                styles copy or transform the color — a <code>FilterModifier</code>
+                , a <code>MaterialModifier</code> or a reveal tint over its glyphs,
+                a sprite that inherits the color, united glyphs, glyph-major paint
+                order, or a custom modifier reading{" "}
+                <code>UniTextMeshGenerator.Colors</code> or{" "}
+                <code>UniTextMeshGenerator.DefaultColor</code> — and so does a{" "}
+                <code>UniText3D</code>.
+              </p>
+
+              <Notice type="info" className="mb-4">
+                Each layer still blends on its own, so where the fill covers an
+                outline or a shadow, a half-faded text shows them through the
+                fill. Inline objects of a world text, and inline objects in
+                Existing mode (§11), are the scene&rsquo;s own objects and keep
+                their own opacity. The alpha changes only how the text looks: at
+                zero the text is still drawn and still takes pointer events, so{" "}
+                <code>Hide()</code> it once a fade-out ends.
+              </Notice>
+
+              <p className="text-white/70">
+                With MoveIt installed, <code>text.FadeTo(0f, timing)</code>{" "}
+                animates the alpha on <code>UniText</code> and{" "}
+                <code>UniTextWorld</code> alike. An Animator reaches it through{" "}
+                <code>UniTextFieldsAnimationHandler</code> (§8.4).
+              </p>
+            </div>
           </div>
         </section>
 
@@ -6372,9 +6848,22 @@ alert.SetValue(0, new Color32(255, 160, 0, 255));   // the first one, until the 
 
           <div className="p-6 rounded-xl bg-white/5 border border-white/10">
             <p className="text-white/70 mb-4">
-              <code>UniTextSemantics.For(text)</code> returns the semantic tree
-              of one component; the static <code>TryGet</code> finds an existing
-              one without creating it. <code>Nodes</code> lists the live{" "}
+              <strong>Text size.</strong> A text that ticks{" "}
+              <strong>Text Scale</strong> (<code>FollowTextScale</code>) draws at{" "}
+              <code>Accessibility.TextScale</code>: its font sizes and the pixel
+              values of line height, line gaps, paragraph spacing, letter and
+              word spacing and indents grow with it. Strokes, shadows, highlights
+              and other decoration keep their pixels; a value in <code>em</code>{" "}
+              follows the text anywhere. The game writes <code>TextScale</code>,
+              or <code>Accessibility.FollowSystem</code> takes it from the
+              operating system.
+            </p>
+
+            <p className="text-white/70 mb-4">
+              <strong>Semantics.</strong> <code>UniTextSemantics.For(text)</code>{" "}
+              returns the semantic tree of one component; the static{" "}
+              <code>TryGet</code> finds an existing one without creating it.{" "}
+              <code>Nodes</code> lists the live{" "}
               <code>TextSemanticNode</code>s in logical codepoint order, each
               carrying <code>Identity</code>, <code>Role</code> (
               <code>TextSemanticRole</code>), <code>Label</code>,{" "}
@@ -6486,7 +6975,7 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
                 comes from a string (<code>Rope.FromChars</code>) and is
                 editable (<code>Insert</code>, <code>Delete</code>,{" "}
                 <code>Replace</code>, <code>SetText</code>); every position
-                query — char ↔ codepoint, char ↔ paragraph, height ↔ block — is
+                query — char ↔ codepoint, paragraph → char, height ↔ block — is
                 O(log blocks). Pass the component&rsquo;s{" "}
                 <code>ScanProfile</code> so blocks record whether they can start
                 a markup match; the parser state walk (§21.4) then skips the
@@ -6673,7 +7162,11 @@ text.SetDocument(rope, takeOwnership: true);              // rendered through a 
                 <code>Assets/Samples/UniText/UniText 3D</code> — each of its
                 slides builds one feature from code in a few lines. Turning the
                 module off empties the Default 3D Material, so the
-                module&rsquo;s shader stays out of builds.
+                module&rsquo;s shader stays out of builds, and deletes the
+                project&rsquo;s copies of the default 3D prefab and looks that
+                still match the package&rsquo;s, at once and at every script
+                reload while the module stays off; a copy the project changed
+                stays.
               </p>
 
               <p className="text-white/70">
@@ -6757,8 +7250,9 @@ text.Depth = 0.3f;`}
                 <code>Metallic</code>, <code>Smoothness</code>,{" "}
                 <code>Emission</code>, <code>Light Influence</code> (0 unlit, 1
                 fully lit) and <code>Dither Fade</code>, which fades glyphs
-                through a screen dither while they stay opaque. In an HDRP
-                project the editor copies its counterpart, the{" "}
+                through a screen dither while they stay opaque. Under HDRP{" "}
+                <code>LightSide/Text 3D</code> itself draws unlit; in an HDRP
+                project the editor copies its lit counterpart, the{" "}
                 <code>LightSide/Text 3D HDRP</code> Shader Graph, into{" "}
                 <code>Assets/LightSide/HDRP</code>; it draws the placed mesh, so
                 under HDRP animated glyphs are placed on the CPU (§22.7).
@@ -6774,7 +7268,12 @@ text.Depth = 0.3f;`}
                 <code>Layer3DModifier</code> styles with the look&rsquo;s layers
                 and keeps the text, its fonts and its other styles. The package
                 ships Plain, Candy, Chrome, Comic, Engraved Stone, Gold and
-                Neon, each material with an HDRP counterpart.
+                Neon, each material with an HDRP counterpart. Enabling the module
+                copies these looks into the project&rsquo;s UniText folder (
+                <code>Looks</code>), where they are the project&rsquo;s own: a
+                package update does not change a copy the project holds, and a
+                look the project deletes comes back the next time Unity reloads
+                scripts.
               </p>
             </div>
 
@@ -7387,6 +7886,297 @@ text.Styles.Add(Style.Range(new ColorModifier(), 0, 5, "#FF0000"));   // a fixed
                   regular <code>UniTextFont</code> in the stack.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        {/* 24. Build Size                                                      */}
+        {/* ──────────────────────────────────────────────────────────────────── */}
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+            <Package className="w-6 h-6 text-[var(--color-accent)]" />
+            24. Build Size
+          </h2>
+
+          <p className="text-white/70 mb-6">
+            UniText with uGUI adds roughly 16 MiB to an empty Android arm64
+            IL2CPP release APK at <strong>Minimal</strong> stripping, on Unity
+            2022.3 and on Unity 6.6 alike. Three settings lower that without
+            giving up a feature the project uses:
+          </p>
+
+          <div className="space-y-6">
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Setting
+                      </th>
+                      <th className="text-right py-2 pr-4 text-white/60 whitespace-nowrap">
+                        Unity 2022.3
+                      </th>
+                      <th className="text-right py-2 pr-4 text-white/60 whitespace-nowrap">
+                        Unity 6.6
+                      </th>
+                      <th className="text-left py-2 text-white/60">Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>Managed Stripping Level</strong>: Medium
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −4.5 MiB
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −7.4 MiB
+                      </td>
+                      <td className="py-2">
+                        Project code reached only through reflection needs a{" "}
+                        <code>link.xml</code> entry
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>IL2CPP Code Generation</strong>: smaller code
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −3.6 MiB
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −3.6 MiB
+                      </td>
+                      <td className="py-2">Generic code can run slower</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        Unused built-in modules disabled
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −2.0 MiB
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −0.7 MiB
+                      </td>
+                      <td className="py-2">The features below stop working</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <Notice type="info">
+                These figures come from a one-scene project, and the settings
+                overlap, so together they save less than their sum. Measure the
+                frame time of a build with smaller code on the target device
+                before shipping it.
+              </Notice>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-semibold mb-4">Managed Stripping Level</h3>
+                <p className="text-white/70">
+                  <strong>Project Settings → Player → Other Settings</strong>.
+                  Minimal and Low keep every assembly a scene references whole,
+                  so at those levels all of UniText ships. Medium removes what
+                  the project cannot reach, and High saves little beyond it.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h3 className="font-semibold mb-4">IL2CPP Code Generation</h3>
+                <p className="text-white/70">
+                  On Unity 2022.3 the option is in{" "}
+                  <strong>File → Build Settings</strong>:{" "}
+                  <strong>Faster (smaller) builds</strong>. On Unity 6 it is in{" "}
+                  <strong>Project Settings → Player → Other Settings</strong>:{" "}
+                  <strong>Optimize for code size and build time</strong>. The{" "}
+                  <strong>Master</strong> C++ compiler configuration is not a way
+                  to save size: it changes nothing on Unity 2022.3 and adds about
+                  2 MiB on Unity 6.6.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">Built-in modules</h3>
+
+              <p className="text-white/70 mb-4">
+                UniText and LightSide Core call these modules only when the
+                project lists them, and a new Unity project lists them all. At
+                Minimal and Low those calls stay in the build even if nothing runs
+                them, and they keep the module&rsquo;s native code with them. Most
+                of the saving is 3D physics.
+              </p>
+
+              <p className="text-white/70 mb-4">
+                In the Package Manager, under <strong>Built-in</strong>, select a
+                module and click <strong>Disable</strong>. A module stays while
+                another listed package requires it, so disable its group together.
+                The groups below are those of Unity 2022.3:
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Module
+                      </th>
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        What stops working
+                      </th>
+                      <th className="text-left py-2 text-white/60">
+                        Disable with it
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>Physics</strong>
+                      </td>
+                      <td className="py-2 pr-4">
+                        3D hits of <code>LightSidePhysicsRaycaster</code>,{" "}
+                        <code>WorldPointerRaycaster.Blocking</code> against 3D
+                        colliders, <code>UniText3DColliders</code> (§22.9)
+                      </td>
+                      <td className="py-2">
+                        Cloth, Terrain Physics, Vehicles, VR, XR
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>Physics 2D</strong>
+                      </td>
+                      <td className="py-2 pr-4">
+                        2D hits of <code>LightSidePhysicsRaycaster</code>,{" "}
+                        <code>WorldPointerRaycaster.Blocking</code> against 2D
+                        colliders
+                      </td>
+                      <td className="py-2">Tilemap</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>Unity Web Request</strong>
+                      </td>
+                      <td className="py-2 pr-4">
+                        Document sources that are URLs, including streaming assets
+                        on Android and on the web (§21.1)
+                      </td>
+                      <td className="py-2">
+                        Unity Analytics, Unity Web Request Asset Bundle, Unity Web
+                        Request Audio, Unity Web Request Texture, Unity Web
+                        Request WWW, Video
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <strong>Asset Bundle</strong>
+                      </td>
+                      <td className="py-2 pr-4">
+                        Fonts delivered by loaded content
+                      </td>
+                      <td className="py-2">
+                        Unity Web Request Asset Bundle, Unity Web Request WWW
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70">
+                Some packages require these modules themselves. uGUI 2.6, which
+                comes with Unity 6.6, requires Physics and Physics 2D, so neither
+                can be disabled on that version, while Core RP Library, which URP
+                and HDRP build on, requires Physics on Unity 2022.3.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <h3 className="font-semibold mb-4">LightSide Lean</h3>
+
+              <p className="text-white/70 mb-4">
+                The free{" "}
+                <a
+                  href="https://github.com/LightSideKittens/media.lightside.leanbuild"
+                  className="text-[var(--color-accent)] hover:underline"
+                >
+                  Lean
+                </a>{" "}
+                package adds two switches under{" "}
+                <strong>Project Settings → LightSide → Lean</strong>. Both are off
+                by default, because their failures show only at run time:
+              </p>
+
+              <div className="overflow-x-auto mb-4">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-2 pr-4 text-white/60">
+                        Switch
+                      </th>
+                      <th className="text-right py-2 pr-4 text-white/60 whitespace-nowrap">
+                        Unity 2022.3
+                      </th>
+                      <th className="text-right py-2 pr-4 text-white/60 whitespace-nowrap">
+                        Unity 6.6
+                      </th>
+                      <th className="text-left py-2 text-white/60">Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/70">
+                    <tr className="border-b border-white/5">
+                      <td className="py-2 pr-4">
+                        <strong>Strip UI Toolkit</strong>
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −2.9 MiB
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −3.8 MiB
+                      </td>
+                      <td className="py-2">
+                        Players cannot use UI Toolkit, and a{" "}
+                        <code>UIDocument</code> in a scene draws nothing
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4">
+                        <strong>Trim LightSide Code</strong>, at Minimal
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −3.5 MiB
+                      </td>
+                      <td className="py-2 pr-4 text-right whitespace-nowrap">
+                        −3.1 MiB
+                      </td>
+                      <td className="py-2">See below</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-white/70">
+                <strong>Trim LightSide Code</strong> strips LightSide&rsquo;s
+                assemblies as Medium does and keeps your own assemblies whole, for
+                a project that stays on Minimal because of its own code. Two things
+                can then need a <code>link.xml</code> entry: a LightSide type that
+                a player meets only inside a plain AssetBundle, since the linker
+                does not see what a separately built bundle holds, and members of
+                .NET or engine assemblies reached only through reflection, since
+                those assemblies follow Medium&rsquo;s rules. Addressables records
+                the types of its own content by itself.{" "}
+                <code>
+                  &lt;assembly fullname=&quot;LightSide.UniText&quot;
+                  preserve=&quot;all&quot;/&gt;
+                </code>{" "}
+                keeps a whole assembly.
+              </p>
             </div>
           </div>
         </section>
