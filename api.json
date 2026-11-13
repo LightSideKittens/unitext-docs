@@ -1,6 +1,6 @@
 {
-  "version": "3.42.3",
-  "generatedAt": "2026-11-11T02:44:35.6172182Z",
+  "version": "3.43.0",
+  "generatedAt": "2026-11-13T17:35:29.0699552Z",
   "namespaces": [],
   "types": [
     {
@@ -10623,7 +10623,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one. The tween keeps uGUI\u0027s timing and lifetime and writes each step to the root renderer and to every renderer the text is drawn with together; a renderer the text adds later takes the root renderer\u0027s color.",
+            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one. The tween keeps uGUI\u0027s timing and lifetime and fades every renderer the text is drawn with together, on top of the alpha of [[P:LightSide.UniTextBase.color|UniTextBase.color]]; a renderer the text adds later takes the faded color. [[canvasRenderer]] carries the faded color, with the text\u0027s alpha multiplied in while it draws glyphs itself. A color written to that renderer directly is no fade: it reaches no other renderer, a tween does not start from it, and the next cross-fade or change of the text\u0027s alpha, visibility or faded color overwrites it.",
             "params": [
               {
                 "name": "targetColor",
@@ -34514,8 +34514,8 @@
         "IPropertySource"
       ],
       "derivedTypes": [],
-      "summary": "UniTextFont that resolves its font bytes from the host OS at runtime from a per-platform pick (Common / Windows / macOS / Linux / iOS / Android). WebGL is unsupported.",
-      "remarks": "A regular font: it participates only when added to a font stack. Automatic gap-filling for codepoints no font covers is a separate, always-on mechanism \u2014 [[SystemFont]] \u2014 independent of this asset. The font and the weight of its cut are picked per platform; FaceInfo, SDF detail multiplier and tile-size offset can be overridden per platform. Each override defaults to an \u0022unset\u0022 sentinel; unset overrides use values extracted from the loaded font. Glyph overrides are not supported \u2014 they reference indices specific to a particular font file, which a system font does not pin.",
+      "summary": "UniTextFont that resolves its font from the host OS at runtime from a per-platform pick (Common / Windows / macOS / Linux / iOS / Android).",
+      "remarks": "A regular font: it participates only when added to a font stack. Automatic gap-filling for codepoints no font covers is a separate, always-on mechanism \u2014 [[SystemFont]] \u2014 independent of this asset. In a WebGL build the pick follows the operating system the page runs on, and the browser draws the font: the asset then has no font bytes ([[P:LightSide.UniTextFont.HasFontData|UniTextFont.HasFontData]] is false). The font and the weight of its cut are picked per platform; FaceInfo, SDF detail multiplier and tile-size offset can be overridden per platform. Each override defaults to an \u0022unset\u0022 sentinel; unset overrides use values extracted from the loaded font. Glyph overrides are not supported \u2014 they reference indices specific to a particular font file, which a system font does not pin.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "fonts",
