@@ -1,6 +1,6 @@
 {
-  "version": "3.43.0",
-  "generatedAt": "2026-11-13T17:35:29.0699552Z",
+  "version": "3.44.0",
+  "generatedAt": "2026-11-16T10:53:59.3048923Z",
   "namespaces": [],
   "types": [
     {
@@ -10623,7 +10623,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one. The tween keeps uGUI\u0027s timing and lifetime and fades every renderer the text is drawn with together, on top of the alpha of [[P:LightSide.UniTextBase.color|UniTextBase.color]]; a renderer the text adds later takes the faded color. [[canvasRenderer]] carries the faded color, with the text\u0027s alpha multiplied in while it draws glyphs itself. A color written to that renderer directly is no fade: it reaches no other renderer, a tween does not start from it, and the next cross-fade or change of the text\u0027s alpha, visibility or faded color overwrites it.",
+            "remarks": "uGUI routes the four-argument overload and [[CrossFadeAlpha]] through this one. The tween keeps uGUI\u0027s timing and lifetime and fades every renderer the text is drawn with together, on top of the alpha of [[P:LightSide.UniTextBase.color|UniTextBase.color]]; a renderer the text adds later takes the faded color. [[canvasRenderer]] carries the faded color, with the text\u0027s alpha, and the red, green and blue of [[P:LightSide.UniTextBase.color|UniTextBase.color]] when its first layer takes them as a tint, multiplied in while it draws glyphs itself. A color written to that renderer directly is no fade: it reaches no other renderer, a tween does not start from it, and the next cross-fade or change of the text\u0027s alpha, visibility or faded color overwrites it.",
             "params": [
               {
                 "name": "targetColor",
@@ -25550,7 +25550,16 @@
           }
         ],
         "fields": [],
-        "events": []
+        "events": [
+          {
+            "id": "E:LightSide.PasswordBehavior.RevealedChanged",
+            "name": "RevealedChanged",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "Action\u003Cbool\u003E",
+            "summary": "Raised with [[P:LightSide.PasswordBehavior.Revealed|Revealed]]\u0027s new value each time it changes, whoever changes it."
+          }
+        ]
       }
     },
     {
@@ -38876,7 +38885,19 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "P:LightSide.SpoilerModifier.ConcealedLabel",
+            "name": "ConcealedLabel",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "The name a screen reader reads for a concealed spoiler in place of the text it hides.",
+            "seeAlso": []
+          }
+        ],
         "fields": [
           {
             "id": "F:LightSide.SpoilerModifier.RevealedSignal",
@@ -50085,6 +50106,111 @@
       }
     },
     {
+      "id": "EscapeSequenceRule",
+      "name": "EscapeSequenceRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule",
+        "RangeSource"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Replaces escape sequences written as plain text with the characters they name: \\n a line feed, \\r a carriage return, \\t a tab, \\v a soft line break (U\u002B2028, as \u003Cbr\u003E), \\\\ one backslash, \\uXXXX the UTF-16 code unit and \\UXXXXXXXX the Unicode scalar their four or eight hex digits give. A backslash that starts none of these stays as written.",
+      "remarks": "Text from spreadsheet, CSV and JSON localization tables often carries these sequences as characters. TextMesh Pro reads the same set under Parse Escape Characters, except that it turns \\v into U\u002B000B, also a soft line break. The TMP migrator adds this rule only where the installed TMP read the sequences in text set from code too; elsewhere it decodes them into the serialized text. The rule outranks every rule but the protection ones. Text-mode LaTeX loses with it: \\textbf, \\newline, \\noindent, \\tiny, \\vspace, \\raggedright and \\toprule lose their first letter to a tab, line feed or carriage return, and \\\\, a line break and a table row end there, becomes one backslash. Formulas inside math spans and protected ranges keep their content. Standalone rule \u2014 register via [[M:LightSide.UniTextBase.AddRule(LightSide.ParseRule)|UniTextBase.AddRule]] without a modifier.",
+      "seeAlso": [
+        "ParseRule"
+      ],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Utility\u0022, 3)",
+        "TypeDescription(\u0022Replaces escape sequences written as text (\\\\n, \\\\t, \\\\u00A9 \u2026) with the characters they name.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "M:LightSide.EscapeSequenceRule.TryMatch(System.ReadOnlySpan{System.Char},System.Int32,LightSide.PooledList{LightSide.ParsedRange})",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [
+              {
+                "name": "text",
+                "type": "ReadOnlySpan\u003Cchar\u003E"
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "results",
+                "type": "PooledList\u003CParsedRange\u003E"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "P:LightSide.EscapeSequenceRule.Priority",
+            "name": "Priority",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.EscapeSequenceRule.IsStandalone",
+            "name": "IsStandalone",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.EscapeSequenceRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.EscapeSequenceRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "FixedRangeSource",
       "name": "FixedRangeSource",
       "namespace": "LightSide",
@@ -53182,6 +53308,7 @@
         "BackslashEscapeRule",
         "CodeSpanRule",
         "CompositeParseRule",
+        "EscapeSequenceRule",
         "LatexAlignmentRule",
         "LatexCommandRule",
         "LatexListRule",
@@ -105145,6 +105272,10 @@
       },
       {
         "name": "Entry",
+        "priority": 100
+      },
+      {
+        "name": "EscapeSequenceRule",
         "priority": 100
       },
       {
