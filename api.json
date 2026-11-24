@@ -1,6 +1,6 @@
 {
-  "version": "3.44.0",
-  "generatedAt": "2026-11-16T10:53:59.3048923Z",
+  "version": "3.50.0",
+  "generatedAt": "2026-11-24T17:33:59.1031188Z",
   "namespaces": [],
   "types": [
     {
@@ -2103,6 +2103,7 @@
             "isConstructor": false,
             "returnType": "void",
             "summary": "Transforms the current glyph quad for the resolved parameter set and phase. May run on a worker thread \u2014 no Unity API calls.",
+            "remarks": "cluster is the first codepoint of the glyph\u0027s grapheme cluster, shared by a letter and its marks: an effect keyed on it moves them as one.",
             "params": [
               {
                 "name": "gen",
@@ -11047,14 +11048,19 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "string",
-            "summary": "Copies one validated rendered-codepoint range into a stable UTF-16 string. This is the shared representation used by range actions and external export adapters.",
+            "summary": "Copies one validated range of [[P:LightSide.UniTextBase.RenderedCodepoints|RenderedCodepoints]] into a stable UTF-16 string. This is the shared representation used by range actions and external export adapters.",
             "params": [
               {
                 "name": "range",
                 "type": "TextRange"
               }
             ],
-            "exceptions": [],
+            "exceptions": [
+              {
+                "type": "ArgumentOutOfRangeException",
+                "description": "range lies outside the rendered codepoints."
+              }
+            ],
             "seeAlso": [],
             "typeParameters": []
           },
@@ -11068,7 +11074,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "int",
-            "summary": "Finds every occurrence of query in the rendered text, writing one codepoint range per match into results (left to right, non-overlapping). Returns the number of matches written; stops early when results is full. Ranges feed [[MutableRangeSource]] and [[M:LightSide.UniTextBase.GetRangeBounds(System.Int32,System.Int32,System.Collections.Generic.IList{UnityEngine.Rect})|GetRangeBounds]] directly. Allocation-free for queries up to 64 UTF-16 chars. Main thread.",
+            "summary": "Finds every occurrence of query in the rendered text, writing one codepoint range per match into results (left to right, non-overlapping). A case-mapped codepoint matches as its simple mapping, never as the several letters it is drawn as: under [[UppercaseModifier]] \u0022STRASSE\u0022 does not find a drawn \u00DF. Returns the number of matches written; stops early when results is full. Ranges feed [[MutableRangeSource]] and [[M:LightSide.UniTextBase.GetRangeBounds(System.Int32,System.Int32,System.Collections.Generic.IList{UnityEngine.Rect})|GetRangeBounds]] directly. Allocation-free for queries up to 64 UTF-16 chars. Main thread.",
             "remarks": "See [[TextSearch]] for how case-insensitive comparisons fold.",
             "params": [
               {
@@ -11097,8 +11103,8 @@
             "isStatic": false,
             "isOverride": false,
             "isConstructor": false,
-            "returnType": "void",
-            "summary": "Restores the serialized text as the current source before initialization.",
+            "returnType": "bool",
+            "summary": "Takes the serialized text as the current source and returns whether it differs from the input it replaces; the caller schedules the text work a changed input needs.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -13517,7 +13523,7 @@
             "type": "ReadOnlySpan\u003Cint\u003E",
             "hasGetter": true,
             "hasSetter": false,
-            "summary": "The rendered text as Unicode codepoints \u2014 the codepoint space highlight layers and range geometry index into. Zero-alloc. The backing buffer is pooled and rewritten on the next rebuild \u2014 do not store the span. For the UTF-16 form use [[P:LightSide.UniTextBase.CleanText|CleanText]].",
+            "summary": "The rendered text as Unicode codepoints \u2014 the codepoint space highlight layers and range geometry index into. A codepoint a case modifier maps holds its simple case mapping: under [[UppercaseModifier]] \u00DF stays \u00DF while it is drawn as SS. Zero-alloc. The backing buffer is pooled and rewritten on the next rebuild \u2014 do not store the span. For the UTF-16 form use [[P:LightSide.UniTextBase.CleanText|CleanText]].",
             "seeAlso": []
           },
           {
@@ -20380,6 +20386,7 @@
       ],
       "derivedTypes": [],
       "summary": "Forces typed and pasted text to a fixed letter case as it is entered \u2014 uppercase for codes and serials, lowercase for emails / usernames / tags, title case for names. Changes the stored value, not just the rendering.",
+      "remarks": "Uses the full Unicode case mappings, so the stored text can grow (\u00DF uppercases to SS), under the language of the text where it is inserted \u2014 a \u003Clang\u003E range, [[P:LightSide.UniTextBase.Language|UniTextBase.Language]], then [[P:LightSide.UniTextSettings.Language|UniTextSettings.Language]]: Turkish and Azeri map i and I to \u0130 and \u0131, Lithuanian keeps the dot of an accented i, Greek uppercase drops accents. Context rules read the document around the insertion, so a sigma ending the inserted word lowercases to \u03C2, and a letter typed after a final \u03C2 turns it back into \u03C3. Filters the input ahead of the behaviors that measure or mask it, such as [[LengthLimitBehavior]], so they judge the text as stored.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "editing",
@@ -29288,7 +29295,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Whether the text takes focus and presses: the uGUI flags allow it and no LightSide state host above its GameObject holds Disabled, so a field inside a disabled control refuses input as one under a non-interactable CanvasGroup does.",
+            "summary": "Whether the text takes focus and presses: the uGUI flags allow it and no LightSide state host above its GameObject holds Disabled or Disabled Above, so a field inside a disabled control refuses input as one under a non-interactable CanvasGroup does.",
             "remarks": "A host on the text\u0027s own GameObject describes the text itself (its sources may read this focusable), so it is not consulted; only the control the text sits in is.",
             "params": [],
             "exceptions": [],
@@ -29905,72 +29912,6 @@
               {
                 "name": "mode",
                 "type": "UniTextRenderMode"
-              }
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "M:LightSide.ColorFontCore.FitBitmapToAtlas(System.Byte[]@,System.Int32@,System.Int32@,System.Int32)",
-            "name": "FitBitmapToAtlas",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": true,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "void",
-            "summary": "Downscales a bitmap larger than the atlas content size in place (pooled buffers swapped), preserving its aspect.",
-            "params": [
-              {
-                "name": "pixels",
-                "type": "byte[]",
-                "modifiers": "ref"
-              },
-              {
-                "name": "width",
-                "type": "int",
-                "modifiers": "ref"
-              },
-              {
-                "name": "height",
-                "type": "int",
-                "modifiers": "ref"
-              },
-              {
-                "name": "maxSize",
-                "type": "int"
-              }
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
-          },
-          {
-            "id": "M:LightSide.ColorFontCore.ComputeGlyphMetrics(System.UInt32,LightSide.ColorFontCore.RenderedGlyphData,System.Boolean)",
-            "name": "ComputeGlyphMetrics",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": true,
-            "isStatic": false,
-            "isOverride": false,
-            "isConstructor": false,
-            "returnType": "GlyphMetrics",
-            "summary": "Design-unit metrics of a rendered bitmap. The bitmap\u0027s pixel-to-design ratio follows the color format: the COLRv1 render size, the sbix strike, the CBDT advance, or the requested pixel size. The advance is the font\u0027s own, or the rasterizer\u0027s measured advance for a font with no face to measure.",
-            "params": [
-              {
-                "name": "glyphIndex",
-                "type": "uint"
-              },
-              {
-                "name": "rendered",
-                "type": "ColorFontCore.RenderedGlyphData"
-              },
-              {
-                "name": "renderedByCOLRv1",
-                "type": "bool",
-                "defaultValue": "false"
               }
             ],
             "exceptions": [],
@@ -41735,7 +41676,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Index of the source codepoint cluster."
+            "summary": "Index of the first codepoint of the grapheme the glyph belongs to, as [[F:LightSide.ShapedGlyph.cluster|ShapedGlyph.cluster]]; the codepoint it renders is the [[F:LightSide.ShapedGlyph.character|ShapedGlyph.character]] of its [[F:LightSide.PositionedGlyph.shapedGlyphIndex|shapedGlyphIndex]]."
           },
           {
             "id": "F:LightSide.PositionedGlyph.x",
@@ -41785,7 +41726,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Index into the shaped glyphs buffer."
+            "summary": "Index into the shaped glyphs buffer, or -1 for a glyph injected after layout."
           },
           {
             "id": "F:LightSide.PositionedGlyph.left",
@@ -42049,7 +41990,17 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "Absolute index into the codepoints array of the first codepoint this glyph renders; codepoints shaping removes, such as default-ignorables, start no cluster and belong to the logically preceding one."
+            "summary": "Absolute index into the codepoints array of the first codepoint of the grapheme (UAX #29) this glyph belongs to: the letter a combining mark shares with its base."
+          },
+          {
+            "id": "F:LightSide.ShapedGlyph.character",
+            "name": "character",
+            "accessModifier": "public",
+            "isStatic": false,
+            "isReadonly": false,
+            "isConst": false,
+            "type": "int",
+            "summary": "Absolute index into the codepoints array of the first codepoint this glyph renders: [[F:LightSide.ShapedGlyph.cluster|cluster]] for a letter\u0027s base, its own index for a mark shaped as a glyph of its own; codepoints shaping removes, such as default-ignorables, belong to the logically preceding one."
           },
           {
             "id": "F:LightSide.ShapedGlyph.advanceX",
@@ -43000,7 +42951,7 @@
             "typeParameters": []
           },
           {
-            "id": "M:LightSide.TextLayout.ComputeTrimAmount(System.Single,System.Single,System.Single,LightSide.TextOverEdge,LightSide.TextUnderEdge,LightSide.LeadingDistribution,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)",
+            "id": "M:LightSide.TextLayout.ComputeTrimAmount(System.Single,System.Single,System.Single,LightSide.TextOverEdge,LightSide.TextUnderEdge,LightSide.LeadingDistribution,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)",
             "name": "ComputeTrimAmount",
             "accessModifier": "public",
             "isAbstract": false,
@@ -43081,6 +43032,18 @@
                 "type": "float",
                 "defaultValue": "0f",
                 "description": "Last line\u0027s lowest outline offset from its baseline, negative when below; required by the Ink under-edge."
+              },
+              {
+                "name": "firstLineScale",
+                "type": "float",
+                "defaultValue": "1f",
+                "description": "Font-size factor the first line is measured at; its ascender, descender, cap height, x-height and typographic ascent are the font\u0027s times it."
+              },
+              {
+                "name": "lastLineScale",
+                "type": "float",
+                "defaultValue": "1f",
+                "description": "Font-size factor the last line is measured at; its ascender, descender and typographic descent are the font\u0027s times it."
               }
             ],
             "exceptions": [],
@@ -43253,7 +43216,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Top of the line\u0027s hit band, at the primary font\u0027s ascender above [[F:LightSide.TextLine.baseline|baseline]]. Bands of consecutive lines share edges, so every vertical position over the text belongs to exactly one line. Valid only while [[P:LightSide.UniTextBuffers.HasLineGeometry|UniTextBuffers.HasLineGeometry]] holds."
+            "summary": "Top of the line\u0027s hit band, at the primary font\u0027s ascender at the line\u0027s own size above [[F:LightSide.TextLine.baseline|baseline]]. Bands of consecutive lines share edges, so every vertical position over the text belongs to exactly one line. Valid only while [[P:LightSide.UniTextBuffers.HasLineGeometry|UniTextBuffers.HasLineGeometry]] holds."
           },
           {
             "id": "F:LightSide.TextLine.bottom",
@@ -43263,7 +43226,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "float",
-            "summary": "Bottom of the line\u0027s hit band: the next line\u0027s [[F:LightSide.TextLine.top|top]], or for the last line the primary font\u0027s descender below [[F:LightSide.TextLine.baseline|baseline]]. Valid only while [[P:LightSide.UniTextBuffers.HasLineGeometry|UniTextBuffers.HasLineGeometry]] holds."
+            "summary": "Bottom of the line\u0027s hit band: the next line\u0027s [[F:LightSide.TextLine.top|top]], or for the last line the primary font\u0027s descender at the line\u0027s own size below [[F:LightSide.TextLine.baseline|baseline]]. Valid only while [[P:LightSide.UniTextBuffers.HasLineGeometry|UniTextBuffers.HasLineGeometry]] holds."
           },
           {
             "id": "F:LightSide.TextLine.boxLeft",
@@ -43948,6 +43911,7 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "Runs after shaping, before run and codepoint widths are summed from the glyph advances its subscribers may rewrite.",
+            "remarks": "A soft hyphen (U\u002B00AD) holds a glyph of [[F:LightSide.ShapedGlyph.NoGlyph|ShapedGlyph.NoGlyph]] in its own cluster whose advance, while the handlers run, is that of the hyphen a line breaking there draws, so a handler that scales or spaces the soft hyphen scales and spaces the hyphen. The slot advances nothing once the handlers return; a handler that measures text leaves it out.",
             "seeAlso": []
           },
           {
@@ -46955,7 +46919,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "NativeBuffer\u003Cfloat\u003E",
-            "summary": "Width of each codepoint for line breaking calculations."
+            "summary": "Advance width per codepoint for line breaking: a grapheme\u0027s glyph advances sum at its first codepoint, and its other codepoints are zero-width."
           },
           {
             "id": "F:LightSide.UniTextBuffers.breakOpportunities",
@@ -47372,7 +47336,7 @@
             "isConstructor": false,
             "returnType": "float",
             "summary": "Em \u2192 pixels of the face quad starting at baseIdx: [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] of the font that built it times its final [[F:LightSide.UniTextMeshGenerator.currentGlyphScale|currentGlyphScale]], recorded when its glyph completes.",
-            "remarks": "Geometry emitted after the glyph pass \u2014 effect duplicates flushed at main-pass finalization \u2014 converts its px sizes through this factor of the face it copies, since [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] then holds whichever font was current last. Defined for a face quad of the current generation whose glyph has completed, in a generation that began with a handler subscribed to [[P:LightSide.UniTextMeshGenerator.onMainPassComplete|onMainPassComplete]] or [[P:LightSide.UniTextMeshGenerator.onMainPassFinalize|onMainPassFinalize]]: only those phases emit after the glyph pass, and only for them is it recorded.",
+            "remarks": "Geometry emitted after the glyph pass \u2014 effect duplicates flushed at main-pass finalization \u2014 converts its px sizes through this factor of the face it copies, since [[F:LightSide.UniTextMeshGenerator.fontMetricFactor|fontMetricFactor]] then holds whichever font was current last. Defined while a generation runs, for a face quad of it whose glyph has completed, in a generation that began with a handler subscribed to [[P:LightSide.UniTextMeshGenerator.onMainPassComplete|onMainPassComplete]] or [[P:LightSide.UniTextMeshGenerator.onMainPassFinalize|onMainPassFinalize]]: only those phases emit after the glyph pass, and only for them is it recorded.",
             "params": [
               {
                 "name": "baseIdx",
@@ -47766,6 +47730,18 @@
         ],
         "properties": [
           {
+            "id": "P:LightSide.UniTextMeshGenerator.currentCharacter",
+            "name": "currentCharacter",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "int",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "Index of the codepoint the glyph currently being processed renders: a combining mark shaped as a glyph of its own reports its own index; a base glyph and a quad with no shaped glyph behind it report [[F:LightSide.UniTextMeshGenerator.currentCluster|currentCluster]].",
+            "remarks": "Valid during [[P:LightSide.UniTextMeshGenerator.onGlyph|onGlyph]] callback. Appearance keys on it, so a range may paint a single mark.",
+            "seeAlso": []
+          },
+          {
             "id": "P:LightSide.UniTextMeshGenerator.DefaultColor",
             "name": "DefaultColor",
             "accessModifier": "public",
@@ -48040,7 +48016,7 @@
             "isReadonly": false,
             "isConst": false,
             "type": "int",
-            "summary": "The cluster index of the glyph currently being processed."
+            "summary": "First codepoint of the grapheme the glyph currently being processed belongs to ([[F:LightSide.PositionedGlyph.cluster|PositionedGlyph.cluster]]): the key a letter and its marks share."
           },
           {
             "id": "F:LightSide.UniTextMeshGenerator.currentGlyphId",
@@ -51730,6 +51706,116 @@
       }
     },
     {
+      "id": "MarkdownTableParseRule",
+      "name": "MarkdownTableParseRule",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "ParseRule",
+      "baseTypeChain": [
+        "ParseRule",
+        "RangeSource"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "A parse rule reading GitHub Flavored Markdown pipe tables for [[TableModifier]].",
+      "remarks": "A table is a header line, the delimiter row under it with as many cells, each a run of dashes with an optional colon at either end, and the rows after it up to a blank line, the end of the text or a line starting another block: an ATX heading, a block quote, a code fence, a thematic break, a list item or a line indented four columns. A colon on the left aligns the column to the start, on the right to the end, on both sides to the center; a column without colons aligns to the start. Leading and trailing pipes are optional and \\| is a pipe inside a cell, within code spans and after another backslash too, as on github.com. Spaces after a cell\u0027s text stay in its paragraph and hang at the line end. A shorter row leaves its last cells empty, cells past the header\u0027s count are dropped, and a line of dashes alone, without a pipe or a colon, is a heading underline that starts no table. Every cell becomes a paragraph of the text, so other rules keep parsing cell content: bold, code spans and links inside cells work as anywhere else, though a marker left open in one cell pairs with a marker in a later cell. A horizontal line separates the header row from the body. HTML blocks do not end a table, since tags in the text are inline markup.",
+      "seeAlso": [
+        "TableModifier"
+      ],
+      "typeParameters": [],
+      "category": "markup",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Markdown\u0022, 1)",
+        "TypeDescription(\u0022Parses Markdown pipe tables for TableModifier.\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "M:LightSide.MarkdownTableParseRule.Reset",
+            "name": "Reset",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "M:LightSide.MarkdownTableParseRule.TryMatch(System.ReadOnlySpan{System.Char},System.Int32,LightSide.PooledList{LightSide.ParsedRange})",
+            "name": "TryMatch",
+            "accessModifier": "public",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "int",
+            "params": [
+              {
+                "name": "text",
+                "type": "ReadOnlySpan\u003Cchar\u003E"
+              },
+              {
+                "name": "index",
+                "type": "int"
+              },
+              {
+                "name": "results",
+                "type": "PooledList\u003CParsedRange\u003E"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "P:LightSide.MarkdownTableParseRule.MarkupTriggers",
+            "name": "MarkupTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.MarkdownTableParseRule.ScanTriggers",
+            "name": "ScanTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.MarkdownTableParseRule.TypingTriggers",
+            "name": "TypingTriggers",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "MarkdownWrapRule",
       "name": "MarkdownWrapRule",
       "namespace": "LightSide",
@@ -53318,6 +53404,7 @@
         "LineBreakParseRule",
         "MarkdownLinkParseRule",
         "MarkdownListParseRule",
+        "MarkdownTableParseRule",
         "MarkdownWrapRule",
         "MathParseRule",
         "NoparseTagRule",
@@ -60961,36 +61048,6 @@
             "exceptions": [],
             "seeAlso": [],
             "typeParameters": []
-          },
-          {
-            "id": "M:LightSide.SpriteFont.ComputeGlyphMetrics(System.UInt32,LightSide.ColorFontCore.RenderedGlyphData,System.Boolean)",
-            "name": "ComputeGlyphMetrics",
-            "accessModifier": "protected",
-            "isAbstract": false,
-            "isVirtual": false,
-            "isStatic": false,
-            "isOverride": true,
-            "isConstructor": false,
-            "returnType": "GlyphMetrics",
-            "summary": "A sprite glyph is its rect\u0027s aspect wide and one em tall, standing on the baseline.",
-            "params": [
-              {
-                "name": "glyphIndex",
-                "type": "uint"
-              },
-              {
-                "name": "rendered",
-                "type": "ColorFontCore.RenderedGlyphData"
-              },
-              {
-                "name": "renderedByCOLRv1",
-                "type": "bool",
-                "defaultValue": "false"
-              }
-            ],
-            "exceptions": [],
-            "seeAlso": [],
-            "typeParameters": []
           }
         ],
         "properties": [
@@ -62649,8 +62706,8 @@
             "type": "string"
           },
           {
-            "id": "F:LightSide.AttributeKeys.SmallCaps",
-            "name": "SmallCaps",
+            "id": "F:LightSide.AttributeKeys.LetterCase",
+            "name": "LetterCase",
             "accessModifier": "public",
             "isStatic": true,
             "isReadonly": false,
@@ -62812,6 +62869,64 @@
             "summary": "Per-codepoint silhouette-field request for color glyphs, written by effects that apply to them (see ColorGlyphField)."
           }
         ],
+        "events": []
+      }
+    },
+    {
+      "id": "BalanceModifier",
+      "name": "BalanceModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": false,
+      "isStatic": false,
+      "baseType": "RangeCollectingModifier",
+      "baseTypeChain": [
+        "RangeCollectingModifier",
+        "BaseModifier"
+      ],
+      "interfaces": [],
+      "derivedTypes": [],
+      "summary": "Wraps the paragraphs of the range balanced: as many lines as greedy wrapping takes, each about as long.",
+      "remarks": "The CSS text-wrap: balance of headings, titles, buttons and captions: the last line no longer holds one lonely word. A paragraph the range touches is balanced when greedy wrapping breaks it into two to six lines; a longer paragraph, a paragraph inside a table and text that does not wrap keep greedy wrapping. Lines keep their alignment in the full width of the text box, and auto-size chooses its font size before balancing. With an [[EllipsisModifier]] or [[TruncateModifier]] on the component the text wraps greedy, so a cut keeps as much text as greedy wrapping shows; a line-based reveal counts the balanced lines. Pair with a [[TagRule]] (conventional tag name balance) or apply it to the whole text.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "modifiers",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Layout\u0022, 3)",
+        "TypeDescription(\u0022Balances line lengths so the last line is not left with a lone word (text-wrap: balance).\u0022)"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "M:LightSide.BalanceModifier.ApplyRange(LightSide.UniTextBuffers,LightSide.TextRange)",
+            "name": "ApplyRange",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [
+              {
+                "name": "buffers",
+                "type": "UniTextBuffers"
+              },
+              {
+                "name": "range",
+                "type": "TextRange"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [],
+        "fields": [],
         "events": []
       }
     },
@@ -63113,7 +63228,6 @@
         "LineGapModifier",
         "LineHeightModifier",
         "ListModifier",
-        "LowercaseModifier",
         "MarqueeModifier",
         "MathModifier",
         "ModifierGraphModifier",
@@ -63129,8 +63243,7 @@
         "SubMeshModifier",
         "TableModifier",
         "TextBoxTrimModifier",
-        "UnionModifier",
-        "UppercaseModifier"
+        "UnionModifier"
       ],
       "summary": "Base class for logic that alters the appearance, layout, semantics, or behavior of ranges emitted by a [[RangeSource]].",
       "remarks": "Subclass and override the protected hooks ([[M:LightSide.BaseModifier.OnEnable|OnEnable]], [[M:LightSide.BaseModifier.OnDisable|OnDisable]], [[M:LightSide.BaseModifier.OnDestroy|OnDestroy]], [[M:LightSide.BaseModifier.OnApply(LightSide.RangeApplyContext@)|OnApply]], optionally [[M:LightSide.BaseModifier.PrepareForParallel|PrepareForParallel]]). Lifecycle dispatching is driven by the framework ([[Style]], the parse pipeline, [[CompositeModifier]]) \u2014 user code instantiates modifiers and hands them to [[Style]]; it should not invoke the lifecycle itself. Cycle (per parse pass on a UniText component): [[M:LightSide.BaseModifier.OnEnable|OnEnable]] runs when the modifier starts to participate, at the first parse that gives it ranges \u2014 allocate pooled buffers and subscribe to UniText events here. The modifier stays enabled through later parses while it keeps ranges, so a text change does not run it again. [[M:LightSide.BaseModifier.OnApply(LightSide.RangeApplyContext@)|OnApply]] runs for every tag/range matched in the current text. [[M:LightSide.BaseModifier.OnDisable|OnDisable]] runs at the first parse that leaves the modifier without ranges, to unsubscribe event handlers; allocated buffers should stay alive so the next [[M:LightSide.BaseModifier.OnEnable|OnEnable]] can reuse them. A change to the modifier that needs a re-parse, or to the style graph, restarts it at that parse: [[M:LightSide.BaseModifier.OnDisable|OnDisable]], then [[M:LightSide.BaseModifier.OnEnable|OnEnable]] where it still has ranges, so state derived from configuration in [[M:LightSide.BaseModifier.OnEnable|OnEnable]] stays current. [[M:LightSide.BaseModifier.OnDestroy|OnDestroy]] runs when the modifier is removed from the component (style changed, font reload, component destroyed) \u2014 release pooled buffers and any other resources [[M:LightSide.BaseModifier.OnEnable|OnEnable]] acquired. Guaranteed to run exactly once per [[M:LightSide.BaseModifier.OnEnable|OnEnable]]-initiated resource acquisition, even when an intervening [[M:LightSide.BaseModifier.OnDisable|OnDisable]] has already cleared the subscription state. Every parse and every granular reapplication re-runs [[M:LightSide.BaseModifier.OnApply(LightSide.RangeApplyContext@)|OnApply]] over the spans, once per span and without [[M:LightSide.BaseModifier.OnEnable|OnEnable]] \u2014 so accumulators [[M:LightSide.BaseModifier.OnApply(LightSide.RangeApplyContext@)|OnApply]] appends to must be cleared once per cycle, never at the start of [[M:LightSide.BaseModifier.OnApply(LightSide.RangeApplyContext@)|OnApply]] itself. Override [[M:LightSide.BaseModifier.BeforeApply|BeforeApply]] for that: the framework compares the host\u0027s apply-cycle stamp on each dispatch and calls it lazily before the modifier\u0027s first range of a new cycle (full parse and granular re-apply alike). There is no separate reset phase.",
@@ -64879,6 +64992,21 @@
       "members": {
         "methods": [
           {
+            "id": "M:LightSide.EffectModifier.#ctor",
+            "name": "EffectModifier",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "EffectModifier",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "M:LightSide.EffectModifier.OnGlyphEffect",
             "name": "OnGlyphEffect",
             "accessModifier": "protected",
@@ -64888,7 +65016,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Called once per glyph during mesh generation. The subclass decides whether the current glyph ([[F:LightSide.UniTextMeshGenerator.currentCluster|UniTextMeshGenerator.currentCluster]]) needs an effect quad and invokes [[M:LightSide.EffectModifier.EnqueueDuplicate(System.Int32,System.Int32,LightSide.LayerBlend)|EnqueueDuplicate]] if so. A color glyph (font.IsColor) may be decorated only when [[P:LightSide.UniTextMeshGenerator.HasColorFaceField|UniTextMeshGenerator.HasColorFaceField]] holds and the range\u0027s color-glyph policy is [[F:LightSide.ColorGlyphPolicy.Apply|ColorGlyphPolicy.Apply]]; its duplicates then sample the silhouette field instead of the bitmap.",
+            "summary": "Called once per glyph during mesh generation. The subclass decides whether the current glyph ([[P:LightSide.UniTextMeshGenerator.currentCharacter|UniTextMeshGenerator.currentCharacter]]) needs an effect quad and invokes [[M:LightSide.EffectModifier.EnqueueDuplicate(System.Int32,System.Int32,LightSide.LayerBlend)|EnqueueDuplicate]] if so. A color glyph (font.IsColor) may be decorated only when [[P:LightSide.UniTextMeshGenerator.HasColorFaceField|UniTextMeshGenerator.HasColorFaceField]] holds and the range\u0027s color-glyph policy is [[F:LightSide.ColorGlyphPolicy.Apply|ColorGlyphPolicy.Apply]]; its duplicates then sample the silhouette field instead of the bitmap.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -65332,6 +65460,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "The color-glyph policy an unresolved [[F:LightSide.ColorGlyphPolicy.Inherit|ColorGlyphPolicy.Inherit]] chain resolves to: skip, unless the effect reads naturally on a silhouette (a shadow, a glow).",
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.EffectModifier.PendingEmits",
+            "name": "PendingEmits",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "ReadOnlySpan\u003CEffectModifier.EmitRecord\u003E",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The duplicates queued since the rebuild started, in queue order.",
             "seeAlso": []
           },
           {
@@ -68601,14 +68740,15 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "BaseModifier",
+      "baseType": "PooledAttributeModifier\u003Cbyte\u003E",
       "baseTypeChain": [
+        "PooledAttributeModifier\u003Cbyte\u003E",
         "BaseModifier"
       ],
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Transforms text to lowercase within marked ranges.",
-      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for lowercase characters. Uses the bundled UCD case mapping table rather than char.ToLowerInvariant to avoid runtime gaps in Mono/IL2CPP.",
+      "remarks": "No parameter. Applies the full Unicode case mappings with their contexts: a Greek capital sigma ending a word becomes the final \u03C2. The language of each character \u2014 a \u003Clang\u003E range, [[P:LightSide.UniTextBase.Language|UniTextBase.Language]], then [[P:LightSide.UniTextSettings.Language|UniTextSettings.Language]] \u2014 adds its own rules: Turkish and Azeri lowercase I to \u0131 and \u0130 to i, and Lithuanian keeps the dot of an accented i. A character that maps to several keeps one place in the text.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -68619,6 +68759,21 @@
       ],
       "members": {
         "methods": [
+          {
+            "id": "M:LightSide.LowercaseModifier.CreateChannel",
+            "name": "CreateChannel",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "AttributeChannel",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "M:LightSide.LowercaseModifier.OnApply(LightSide.RangeApplyContext@)",
             "name": "OnApply",
@@ -68641,7 +68796,18 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "P:LightSide.LowercaseModifier.AttributeKey",
+            "name": "AttributeKey",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -68799,7 +68965,8 @@
             "isStatic": false,
             "isReadonly": true,
             "isConst": false,
-            "type": "int"
+            "type": "int",
+            "summary": "First codepoint of the grapheme the glyph belongs to ([[F:LightSide.UniTextMeshGenerator.currentCluster|UniTextMeshGenerator.currentCluster]])."
           },
           {
             "id": "F:LightSide.MaterialModifier.MaterialGlyphContext.glyphIndexInSelection",
@@ -73141,11 +73308,13 @@
         "ItalicModifier",
         "LanguageModifier",
         "LetterSpacingModifier",
+        "LowercaseModifier",
         "ScriptPositionModifier",
         "SizeModifier",
         "SmallCapsModifier",
         "Surface3DModifier",
         "Text3DRangeModifier\u003CT\u003E",
+        "UppercaseModifier",
         "VariationModifier",
         "WordSpacingModifier"
       ],
@@ -73294,6 +73463,7 @@
       ],
       "interfaces": [],
       "derivedTypes": [
+        "BalanceModifier",
         "NoBreakModifier",
         "SeparatorModifier"
       ],
@@ -76056,7 +76226,7 @@
       ],
       "derivedTypes": [],
       "summary": "Applies superscript or subscript formatting to text ranges.",
-      "remarks": "Two-tier approach: Native: activates OpenType \u0027sups\u0027/\u0027subs\u0027 feature via HarfBuzz (proper glyphs). Synthesis: scales down and shifts vertically using OS/2 metrics (fallback). Attribute sbyte encoding: 0 = unchanged, \u002B1 = native super, -1 = native sub, \u002B2 = synth super, -2 = synth sub. Create two styles to support both tags: Style 1: ScriptPositionModifier \u002B TagRule(\u0022sup\u0022) with defaultParameter = \u0022super\u0022 Style 2: ScriptPositionModifier \u002B TagRule(\u0022sub\u0022) with defaultParameter = \u0022sub\u0022",
+      "remarks": "Two-tier approach, decided per grapheme after shaping: Native: the OpenType \u0027sups\u0027/\u0027subs\u0027 feature, where the font substitutes the grapheme\u0027s first character under the script and language its run shapes in (proper glyphs); its marks stay with it. Synthesis: scales down and shifts vertically using OS/2 metrics, for every other grapheme, whole, and for a letter with marks that shaping composed into one glyph. Attribute sbyte encoding: 0 = unchanged, \u002B1 = super, -1 = sub. Shaping settles each grapheme native or synthesized. Create two styles to support both tags: Style 1: ScriptPositionModifier \u002B TagRule(\u0022sup\u0022) with defaultParameter = \u0022super\u0022 Style 2: ScriptPositionModifier \u002B TagRule(\u0022sub\u0022) with defaultParameter = \u0022sub\u0022",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -76537,7 +76707,7 @@
       ],
       "derivedTypes": [],
       "summary": "Applies font size changes to text ranges.",
-      "remarks": "Parameter: size value with optional unit. 24 \u2014 absolute size in pixels 150% \u2014 percentage of base font size \u002B10 \u2014 relative increase in pixels -5 \u2014 relative decrease in pixels Percentages and deltas are relative to the component font size, never to an enclosing tag \u2014 nested ranges overwrite, they do not compound (unlike CSS), and so do overlapping ranges of separate size modifiers. A line\u0027s height follows the largest size on it, in both directions, so a line whose visible content is entirely scaled grows or shrinks with it while a line that also carries unscaled text keeps its base height; an absolute \u003Clh\u003E in pixels pins the line regardless.",
+      "remarks": "Parameter: size value with optional unit. 24 \u2014 absolute size in pixels 150% \u2014 percentage of base font size \u002B10 \u2014 relative increase in pixels -5 \u2014 relative decrease in pixels Percentages and deltas are relative to the component font size, never to an enclosing tag \u2014 nested ranges overwrite, they do not compound (unlike CSS), and so do overlapping ranges of separate size modifiers. A line is measured at the largest size on its visible content \u2014 its height, ascender and descender alike \u2014 so an enlarged range grows its line, and with it the text\u0027s height and alignment, while a line shrinks only when all of its visible content is scaled down; an absolute \u003Clh\u003E in pixels pins the line\u0027s height regardless.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -76663,7 +76833,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Renders lowercase letters as small capitals.",
-      "remarks": "Two-tier approach: Native: activates OpenType \u0027smcp\u0027 feature via HarfBuzz (proper small cap glyphs). Synthesis: converts lowercase to uppercase and scales down (fallback for fonts without smcp). Attribute byte encoding: 0 = unchanged (also under native smcp), 2 = synthesis. The synthesis scale is applied once per character however many ranges or modifiers marked it.",
+      "remarks": "Two-tier approach, decided per grapheme at its first letter in the font the range selects \u2014 a [[FontModifier]] family, else the primary font: Native: the OpenType \u0027smcp\u0027 feature, where that font substitutes the letter under its script and language (proper small cap glyphs); one feature covers each run of native small caps. Synthesis: the grapheme uppercased with the full, language-aware mapping [[UppercaseModifier]] uses, then scaled down with its marks \u2014 for fonts whose \u0027smcp\u0027 does not cover the letter, such as Cyrillic in a font with Latin small caps only. The synthesis scale is applied once per character however many ranges or modifiers marked it. Small caps apply to the letters as [[LowercaseModifier]] or [[UppercaseModifier]] leave them: under lowercase every cased letter becomes a small capital, under uppercase the letters stay capitals.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -77239,7 +77409,7 @@
             "isOverride": false,
             "isConstructor": false,
             "returnType": "bool",
-            "summary": "Tells the base class whether the glyph currently being emitted by the generator should be copied into this modifier\u0027s sub-mesh. Inspect uniText.MeshGenerator fields (currentCluster, faceBaseIdx, font.IsColor, etc.) for the decision.",
+            "summary": "Tells the base class whether the glyph currently being emitted by the generator should be copied into this modifier\u0027s sub-mesh. Inspect uniText.MeshGenerator fields (currentCharacter, faceBaseIdx, font.IsColor, etc.) for the decision.",
             "params": [],
             "exceptions": [],
             "seeAlso": [],
@@ -77581,17 +77751,18 @@
         "IPropertySource"
       ],
       "derivedTypes": [],
-      "summary": "Lays out the tables [[TabularParseRule]] captures: every cell is a paragraph of the text, wrapped in its column and placed in its row, with the rules the markup asks for drawn between them.",
+      "summary": "Lays out the tables [[TabularParseRule]] and [[MarkdownTableParseRule]] capture: every cell is a paragraph of the text, wrapped in its column and placed in its row, with the rules the markup asks for drawn between them.",
       "remarks": "Column widths follow the automatic table layout of CSS: columns take their natural widths when the table fits and give up the shortfall in proportion to how much they can wrap when it does not. Fixed-width columns keep their width, and a declared table width (tabular*, tabularx) is filled, X columns first. A table never extends past the width of the text: when its columns cannot fit at their narrowest they shrink further, and cell lines break inside words as the text\u0027s own lines do. LaTeX lengths are relative to the text\u0027s font size, a 10pt body taken as 1em, and px lengths are pixels at it. Rules take the color of the text around the table. A table that sets no placement of its own aligns as the paragraphs around it do. A table whose markup stays visible while editing lays out as its source text.",
       "seeAlso": [
-        "TabularParseRule"
+        "TabularParseRule",
+        "MarkdownTableParseRule"
       ],
       "typeParameters": [],
       "category": "modifiers",
       "attributes": [
         "Serializable",
         "TypeGroup(\u0022Layout\u0022, 20)",
-        "TypeDescription(\u0022Lays out tables from TabularParseRule: column widths, rows, rules and captions.\u0022)"
+        "TypeDescription(\u0022Lays out tables from TabularParseRule and MarkdownTableParseRule: column widths, rows, rules and captions.\u0022)"
       ],
       "members": {
         "methods": [
@@ -79104,14 +79275,15 @@
       "isAbstract": false,
       "isSealed": false,
       "isStatic": false,
-      "baseType": "BaseModifier",
+      "baseType": "PooledAttributeModifier\u003Cbyte\u003E",
       "baseTypeChain": [
+        "PooledAttributeModifier\u003Cbyte\u003E",
         "BaseModifier"
       ],
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Transforms text to uppercase within marked ranges.",
-      "remarks": "No parameter. The transformation happens during Apply, after parsing but before shaping, ensuring correct glyph rendering for uppercase characters. Uses the bundled UCD case mapping table rather than char.ToUpperInvariant to avoid runtime gaps in Mono/IL2CPP (e.g. Greek final sigma U\u002B03C2 \u2192 \u03A3).",
+      "remarks": "No parameter. Applies the full Unicode case mappings: \u00DF becomes SS and the ligatures and Armenian letters SpecialCasing.txt expands split into their letters. The language of each character \u2014 a \u003Clang\u003E range, [[P:LightSide.UniTextBase.Language|UniTextBase.Language]], then [[P:LightSide.UniTextSettings.Language|UniTextSettings.Language]] \u2014 adds its own rules: Turkish and Azeri uppercase i to \u0130, and Greek drops accents while keeping or adding the dialytika. A character that maps to several keeps one place in the text: caret, selection and attributes treat \u00DF shown as SS as one character.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "modifiers",
@@ -79122,6 +79294,21 @@
       ],
       "members": {
         "methods": [
+          {
+            "id": "M:LightSide.UppercaseModifier.CreateChannel",
+            "name": "CreateChannel",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "AttributeChannel",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
           {
             "id": "M:LightSide.UppercaseModifier.OnApply(LightSide.RangeApplyContext@)",
             "name": "OnApply",
@@ -79144,7 +79331,18 @@
             "typeParameters": []
           }
         ],
-        "properties": [],
+        "properties": [
+          {
+            "id": "P:LightSide.UppercaseModifier.AttributeKey",
+            "name": "AttributeKey",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "string",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          }
+        ],
         "fields": [],
         "events": []
       }
@@ -79557,6 +79755,21 @@
       "members": {
         "methods": [
           {
+            "id": "M:LightSide.BaseLineModifier.#ctor",
+            "name": "BaseLineModifier",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "BaseLineModifier",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "M:LightSide.BaseLineModifier.GetLineOffset(LightSide.FaceInfo,System.Single)",
             "name": "GetLineOffset",
             "accessModifier": "protected",
@@ -79808,7 +80021,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Break the line where descenders/ascenders cross it. A per-range value overrides it.",
+            "summary": "Interrupts an underline where glyph ink crosses it, clearing the line\u0027s thickness (at most a fifth of an em) on each side of the ink; CJK text and color glyphs leave it continuous, and a strikethrough always is. A per-range value overrides it.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -79902,10 +80115,11 @@
         "IPropertySource"
       ],
       "derivedTypes": [
-        "HighlightModifier"
+        "HighlightModifier",
+        "StickerModifier"
       ],
       "summary": "Base class for modifier-authored geometry attached to final visual text ranges. It owns range accumulation, paint resolution, renderer handles and main-thread rebuild timing; subclasses only translate one immutable [[RangeDecorationContext]] into a [[RangeMeshWriter]].",
-      "remarks": "[[M:LightSide.BaseRangeDecorationModifier.OnBuildDecoration(LightSide.RangeDecorationContext@,LightSide.RangeMeshWriter@)|OnBuildDecoration]] runs synchronously after final layout. Fragment spans and the writer are borrowed for that call and must not be retained. Vertices, indices and render-key batches are copied into modifier-owned pooled buffers. Modifier apply may run on a rebuild worker, so Unity objects are neither created nor destroyed there. Backend handles are acquired lazily by the writer on the layout commit and released by a post-commit action or by the owning UniText component\u0027s main-thread teardown.",
+      "remarks": "[[M:LightSide.BaseRangeDecorationModifier.OnBuildDecoration(LightSide.RangeDecorationContext@,LightSide.RangeMeshWriter@)|OnBuildDecoration]] runs synchronously after final layout, and again only when the applied ranges, the visual geometry or the decoration\u0027s presentation change; state of its own that shapes the output is reported through [[M:LightSide.BaseRangeDecorationModifier.DecorationPresentationChanged|DecorationPresentationChanged]]. Fragment spans and the writer are borrowed for that call and must not be retained. Vertices, indices and render-key batches are copied into modifier-owned pooled buffers. Modifier apply may run on a rebuild worker, so Unity objects are neither created nor destroyed there. Backend handles are acquired lazily by the writer on the layout commit and released by a post-commit action or by the owning UniText component\u0027s main-thread teardown.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "paint",
@@ -80320,7 +80534,7 @@
             "type": "int",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Draw priority among decorations emitted by this modifier.",
+            "summary": "Draw priority among the decorations on the same side of the text; equal priorities draw in style order.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -80654,6 +80868,16 @@
             "seeAlso": []
           },
           {
+            "id": "P:LightSide.FillModifier.InheritsTextColor",
+            "name": "InheritsTextColor",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
             "id": "P:LightSide.FillModifier.ClaimsFill",
             "name": "ClaimsFill",
             "accessModifier": "public",
@@ -80700,6 +80924,21 @@
             "hasGetter": true,
             "hasSetter": true,
             "summary": "Outward dilation of the fill. A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.FillModifier.InheritTextColor",
+            "name": "InheritTextColor",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Multiplies the fill by the component\u0027s color, so a gradient takes each text\u0027s own color and follows its changes the way unfilled text does.",
+            "remarks": "A change of the component color reaches a gradient with a white tint, or a white solid paint, without rebuilding the mesh; with any other paint or under a color filter, such a change rebuilds it.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -80964,7 +81203,7 @@
             "isConst": false,
             "type": "GeometryMapping",
             "defaultValue": "0",
-            "summary": "One independently rounded figure per shaped glyph cluster."
+            "summary": "One independently rounded figure per grapheme cluster: a letter and its marks share one."
           },
           {
             "id": "F:LightSide.GeometryMapping.Line",
@@ -81869,7 +82108,8 @@
         "BaseLineModifier",
         "HighlightModifier",
         "HighlightPresentation",
-        "PaintLayerModifier"
+        "PaintLayerModifier",
+        "StickerModifier"
       ],
       "summary": "Implemented by modifiers that expose an [[IPaintProvider]], so the editor can populate the @paints swatch dropdown.",
       "seeAlso": [],
@@ -82411,6 +82651,21 @@
             "typeParameters": []
           },
           {
+            "id": "M:LightSide.PaintLayerModifier.#ctor",
+            "name": "PaintLayerModifier",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": false,
+            "isConstructor": true,
+            "returnType": "PaintLayerModifier",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
             "id": "M:LightSide.PaintLayerModifier.OnEnable",
             "name": "OnEnable",
             "accessModifier": "protected",
@@ -82626,6 +82881,17 @@
             "hasGetter": true,
             "hasSetter": false,
             "summary": "When true, the first hit on a glyph recolors the suppressed default base quad instead of emitting a duplicate (fill behavior).",
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.PaintLayerModifier.InheritsTextColor",
+            "name": "InheritsTextColor",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "bool",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "When true, the paint is multiplied by the component\u0027s color as well as by the tint.",
             "seeAlso": []
           },
           {
@@ -82885,8 +83151,8 @@
         "IPropertySource"
       ],
       "derivedTypes": [],
-      "summary": "Sets the painter order of a range\u0027s paint layers ([[PaintOrder]]): layer-major (the component default) draws each layer across all glyphs before the next layer; glyph-major composites every layer of one glyph before the next glyph, so a later glyph\u0027s stroke or shadow overlaps earlier glyphs\u0027 fill; reverse stacks a glyph-major range front to back instead, so earlier glyphs overlap later ones. The axis is a single per-component channel \u2014 all layer modifiers follow it, overlapping ranges resolve innermost-wins, and unmarked text stays layer-major. Characters connected by the Unicode cursive joining algorithm (Arabic, Syriac, N\u0027Ko, Mongolian, \u2026) never split: each connected stretch keeps layer order and composites as one unit, so glyph-major Arabic stacks per word rather than per letter.",
-      "remarks": "Applies to same-material quads of the base mesh. Separate-material output (texture paints, the color-glyph segment) always stacks layer-major, and a blend-mode change between adjacent glyph-major quads splits the draw. Stylistic connected Latin fonts (script typefaces joining via ligatures and contextual alternates) carry no data signal that marks them cursive; their connections are not detected.",
+      "summary": "Sets the painter order of a range\u0027s paint layers ([[PaintOrder]]): layer-major (the component default) draws each layer across all glyphs before the next layer; glyph-major composites every layer of one glyph before the next glyph, so a later glyph\u0027s stroke or shadow overlaps earlier glyphs\u0027 fill; reverse stacks a glyph-major range front to back instead, so earlier glyphs overlap later ones. The axis is a single per-component channel \u2014 all layer modifiers follow it, overlapping ranges resolve innermost-wins, and unmarked text stays layer-major. Glyphs the font draws touching never split: a mark and its base, the letters of a connected script and the letters a script typeface joins composite as one unit in layer order, judged by their ink where shaping places them, before any spacing, offset or animation, so glyph-major Arabic or Devanagari stacks per connected stretch rather than per letter.",
+      "remarks": "Applies to same-material quads of the base mesh. Separate-material output (texture paints, the color-glyph segment) always stacks layer-major, and a blend-mode change between adjacent glyph-major quads splits the draw.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "paint",
@@ -82900,6 +83166,21 @@
           {
             "id": "M:LightSide.PaintOrderModifier.OnEnable",
             "name": "OnEnable",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "M:LightSide.PaintOrderModifier.OnDisable",
+            "name": "OnDisable",
             "accessModifier": "protected",
             "isAbstract": false,
             "isVirtual": false,
@@ -82953,7 +83234,7 @@
             "isOverride": true,
             "isConstructor": false,
             "returnType": "void",
-            "summary": "Stamps the range\u0027s resolved order into the shared per-codepoint axis ([[paintOrders]]); overlapping ranges resolve innermost-wins through packed (start, end) winner entries. Glyph-major stamping is joining-aware: a character cursively connected to a neighbor (Transparent characters skipped, edges probed past the range bounds) keeps layer order, and Transparent characters inherit their base\u0027s mode so a connected stretch stays one contiguous composition group. A reversed range carries [[PaintOrderReversed]] on every stamp, connected stretches included, so the mesh generator mirrors the range as a whole.",
+            "summary": "Stamps the range\u0027s resolved order into the shared per-codepoint axis ([[paintOrders]]); overlapping ranges resolve innermost-wins through packed (start, end) winner entries. A reversed range carries [[PaintOrderReversed]] on every stamp, so the mesh generator mirrors the range as a whole.",
             "params": [
               {
                 "name": "context",
@@ -83003,7 +83284,7 @@
             "type": "bool",
             "hasGetter": true,
             "hasSetter": true,
-            "summary": "Composites each glyph-major glyph\u0027s layers in one quad and one fragment instead of a quad per layer, when the markup carries no value: the stacking order and every layer stay, a later glyph still overlaps an earlier one, and the GPU draws a third of the quads of a stroke and a shadow. It applies to Canvas text whose every glyph can merge \u2014 an SDF glyph (not MSDF or pixel) with its face and at most two fills, strokes, shadows or glows in solid paint with normal blend, at most one of the two off the face \u2014 and otherwise the text keeps its separate quads. A layer covers the rect its own quad would, so the image differs from separate quads only by the rounding of the intermediate blends. Layer order ignores it.",
+            "summary": "Composites each glyph-major glyph\u0027s layers in one quad and one fragment instead of a quad per layer, when the markup carries no value: the GPU draws a third of the quads of a stroke and a shadow. It applies on Canvas and unlit world text to every SDF glyph (not MSDF or pixel) with its face and at most two fills, strokes, shadows or glows in solid paint with normal blend, at most one of the two off the face, that touches no other glyph. Glyphs that touch and glyphs that cannot merge keep their separate quads, drawn before the merged ones, so a merged glyph\u0027s layers overlap theirs where they meet. Within one glyph a merged quad differs from its separate quads only by the rounding of the intermediate blends; its stroke and shadow also paint over the faces of untouching neighbors they reach, which layer order keeps on top. Layer order ignores it.",
             "seeAlso": [],
             "attributes": [
               "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
@@ -84981,6 +85262,182 @@
       }
     },
     {
+      "id": "StickerModifier",
+      "name": "StickerModifier",
+      "namespace": "LightSide",
+      "kind": "class",
+      "accessModifier": "public",
+      "isAbstract": false,
+      "isSealed": true,
+      "isStatic": false,
+      "baseType": "BaseRangeDecorationModifier",
+      "baseTypeChain": [
+        "BaseRangeDecorationModifier",
+        "BaseModifier"
+      ],
+      "interfaces": [
+        "IHasPaintProvider",
+        "IStateLinkGraph",
+        "IStateAccessSource",
+        "IPropertySource"
+      ],
+      "derivedTypes": [],
+      "summary": "Draws a sticker plate behind the text: one shape following the silhouette of every glyph in a range, grown by [[P:LightSide.StickerModifier.Width|Width]], with its inner corners rounded by [[P:LightSide.StickerModifier.Smoothing|Smoothing]] and every enclosed hole \u2014 counters, closed bays, gaps the letters surround \u2014 filled.",
+      "remarks": "Plates stack in the order of their styles: a wider dark plate under a white one draws a rim, an offset copy under both a drop. The paint spans the text block under a [[F:LightSide.PaintMapping.Block|PaintMapping.Block]] mapping, moved with the plate, and the plate itself under any other. The plate is rebuilt from the final glyph faces whenever they change, so it follows deformed and animated glyphs at the cost of a rebuild per change; each glyph\u0027s share of [[P:LightSide.StickerModifier.Width|Width]] follows the scale animations and deformers give its face, an em width also the glyph\u0027s size (size markup, sub- and superscripts, small caps), while a pixel width keeps its size and stretching a sprite\u0027s box changes neither. A color glyph or an inline sprite contributes the ink of its picture, a procedural decoration shape its face.",
+      "seeAlso": [],
+      "typeParameters": [],
+      "category": "paint",
+      "attributes": [
+        "Serializable",
+        "TypeGroup(\u0022Appearance\u0022, 4)",
+        "TypeDescription(\u0022Draws a sticker plate behind the text.\u0022)",
+        "GenerateParameters"
+      ],
+      "members": {
+        "methods": [
+          {
+            "id": "M:LightSide.StickerModifier.OnDecorationDestroy",
+            "name": "OnDecorationDestroy",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          },
+          {
+            "id": "M:LightSide.StickerModifier.OnBuildDecoration(LightSide.RangeDecorationContext@,LightSide.RangeMeshWriter@)",
+            "name": "OnBuildDecoration",
+            "accessModifier": "protected",
+            "isAbstract": false,
+            "isVirtual": false,
+            "isStatic": false,
+            "isOverride": true,
+            "isConstructor": false,
+            "returnType": "void",
+            "params": [
+              {
+                "name": "context",
+                "type": "RangeDecorationContext",
+                "modifiers": "in"
+              },
+              {
+                "name": "writer",
+                "type": "RangeMeshWriter",
+                "modifiers": "ref"
+              }
+            ],
+            "exceptions": [],
+            "seeAlso": [],
+            "typeParameters": []
+          }
+        ],
+        "properties": [
+          {
+            "id": "P:LightSide.StickerModifier.DecorationPaintProvider",
+            "name": "DecorationPaintProvider",
+            "accessModifier": "protected",
+            "isStatic": false,
+            "type": "IPaintProvider",
+            "hasGetter": true,
+            "hasSetter": false,
+            "seeAlso": []
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Provider",
+            "name": "Provider",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "IPaintProvider",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Source of named solid, gradient and texture paints.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Paint",
+            "name": "Paint",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "PaintRef",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Plate paint (inline color, named swatch, or default white). A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Width",
+            "name": "Width",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UnitValue",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "How far the plate reaches past the glyph outlines. A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Smoothing",
+            "name": "Smoothing",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UnitValue",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Radius of the plate\u0027s inner corners: where the grown outlines of neighboring glyphs come within twice it, the plate closes over the gap. Zero keeps the plain grown outline. A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Offset",
+            "name": "Offset",
+            "accessModifier": "public",
+            "isStatic": false,
+            "type": "UnitVector2",
+            "hasGetter": true,
+            "hasSetter": true,
+            "summary": "Displacement of the plate from the text. A per-range value overrides it.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.StateCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          },
+          {
+            "id": "P:LightSide.StickerModifier.Descriptors",
+            "name": "Descriptors",
+            "accessModifier": "protected internal",
+            "isStatic": false,
+            "type": "ParameterDescriptorSet",
+            "hasGetter": true,
+            "hasSetter": false,
+            "summary": "The parameter surface this modifier declares: descriptors, inherited ones first, and the markup slots of each level of its type. Override with the type\u0027s generated Param.All set; the default declares none.",
+            "seeAlso": [],
+            "attributes": [
+              "global::System.CodeDom.Compiler.GeneratedCodeAttribute(\u0022LightSide.UniText.ParamCodeGen\u0022, \u00221.0\u0022)"
+            ]
+          }
+        ],
+        "fields": [],
+        "events": []
+      }
+    },
+    {
       "id": "StrikethroughModifier",
       "name": "StrikethroughModifier",
       "namespace": "LightSide",
@@ -85688,7 +86145,7 @@
       "interfaces": [],
       "derivedTypes": [],
       "summary": "Draws the overlapping letters of a range as one shape: neighboring glyphs of one paint layer in the same size and color, or under one gradient running across them, fill, stroke, shade and glow as a single outline, so a stroke does not run across a join and translucent fills, shadows and glows of overlapping letters do not add up.",
-      "remarks": "A text that unites at least one pair of glyphs draws with the heavier union variant of the text shader, so apply the modifier where joins or overlaps would show: connected scripts such as Arabic and cursive fonts under a stroke, a translucent fill or a shadow. Glyphs unite only with glyphs this modifier also marks. Color glyphs, text bent by [[DeformModifier]], texture paint, layers with a [[LayerBlend]] other than [[Normal]], [[F:LightSide.PaintOrder.Glyph|PaintOrder.Glyph]], custom shaders and lit world text under HDRP draw each glyph on its own.",
+      "remarks": "A text that unites at least one pair of glyphs draws with the heavier union variant of the text shader, so apply the modifier where joins or overlaps would show: connected scripts such as Arabic and cursive fonts under a stroke, a translucent fill or a shadow. Glyphs unite only with glyphs this modifier also marks, and in [[F:LightSide.PaintOrder.Glyph|PaintOrder.Glyph]] only with the glyphs the font draws touching them. Color glyphs, text bent by [[DeformModifier]], texture paint, layers with a [[LayerBlend]] other than [[Normal]], custom shaders and lit world text under HDRP draw each glyph on its own.",
       "seeAlso": [],
       "typeParameters": [],
       "category": "paint",
@@ -105327,6 +105784,10 @@
         "priority": 100
       },
       {
+        "name": "MarkdownTableParseRule",
+        "priority": 100
+      },
+      {
         "name": "MarkdownWrapRule",
         "priority": 100
       },
@@ -105624,6 +106085,10 @@
       },
       {
         "name": "AttributeKeys",
+        "priority": 100
+      },
+      {
+        "name": "BalanceModifier",
         "priority": 100
       },
       {
@@ -106238,6 +106703,10 @@
       },
       {
         "name": "ShadowModifier",
+        "priority": 100
+      },
+      {
+        "name": "StickerModifier",
         "priority": 100
       },
       {
